@@ -4,7 +4,7 @@ class ItemLevelUncapper(bl2sdk.BL2MOD):
     Name = "Item Level Uncapper"
     Author = "apple1417"
     Description = (
-        "Fixes that items stop spawning past level 100."
+        "Fixes the level cap of most items so that they continue spawning past level 100."
         "\nNote that some items may continue to spawn at higher levels after disabling this."
     )
     Types = [bl2sdk.ModTypes.Utility]

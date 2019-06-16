@@ -4,7 +4,9 @@ To use these mods install the Borderlands [PythonSDK](https://github.com/bl-sdk/
 Only complete mods are listed below.
 
 ### ItemLevelUncapper
-Fixes that items stop spawning past level 100.    
-Note that some items may continue to spawn at higher levels after disabling this.
+This mod is useless by itself, it should be used alongside the hexedit to increase the player level cap.    
+Fixes the level cap of most items so that they continue spawning past level 100.    
+Note that items past level 127 will overflow upon save-quit, and that Gibbed's Save Editor won't let you create items past 127, so past that point you'll have to pick up everything you use within the same session.    
+Also note that there may still be various other issues with an increased level cap, this only fixes that most items stopped spawning.
 
 Compatible with both BL2 and TPS.
