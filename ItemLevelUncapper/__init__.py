@@ -245,4 +245,12 @@ def parseNewItems(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl
     return True
 
 instance = ItemLevelUncapper()
+if __name__ == "__main__":
+    for mod in bl2sdk.Mods:
+        if mod.Name == instance.Name:
+            mod.Disable()
+            bl2sdk.Mods.remove(mod)
+            break
+    
+    instance.Enable()
 bl2sdk.Mods.append(instance)
