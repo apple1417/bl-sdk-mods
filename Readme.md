@@ -10,3 +10,9 @@ Note that items past level 127 will overflow upon save-quit, and that Gibbed's S
 Also note that there may still be various other issues with an increased level cap, this only fixes that most items stopped spawning.
 
 Compatible with both BL2 and TPS.
+
+### Onezerker
+Ever felt gunzerking with two different guns was too complicated? No? Well too bad. Makes you gunzerk with two copies of the same gun instead of two different ones.    
+Thanks to FromDarkHell for finding the object which lets you gunzerk with only one equipped gun.
+
+Only compatible with BL2 (obviously).
