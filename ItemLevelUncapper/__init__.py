@@ -8,9 +8,11 @@ class ItemLevelUncapper(bl2sdk.BL2MOD):
         "\nNote that some items may continue to spawn at higher levels after disabling this."
     )
     Types = [bl2sdk.ModTypes.Utility]
+    Version = "1.1"
 
     # Multitool hex edit caps at 255 so this should be more than enough
     NEW_LEVEL = 1024
+    
     """
       We need to force load all the vehicles because I don't have a proper hook for spawning one
       I could also force load every other object that we need to modify but:
@@ -82,67 +84,74 @@ class ItemLevelUncapper(bl2sdk.BL2MOD):
       )
     }
     FORCE_LOAD = None
+    CLASS_HANDLER_MAP = None
     def __init__(self):
         self.FORCE_LOAD = self._FORCE_LOAD_BL2
         # Not the greatest way of checking game
         if bl2sdk.FindObject("ItemNamePartDefinition", "GD_Flax_Items.CandyParts.Prefix_Rock") == None:
             self.FORCE_LOAD = self._FORCE_LOAD_TPS
-
-    # For all objects we can access on the menu
+        
+        # All classes we will be searching through and their handlers
+        # Do this in here so we can actually get a proper refrence to the functions
+        self.CLASS_HANDLER_MAP = {
+            "ClassModBalanceDefinition":            self.handleInvBalance,
+            "ItemBalanceDefinition":                self.handleInvBalance,
+            "MissionWeaponBalanceDefinition":       self.handleInvBalance,
+            "WeaponBalanceDefinition":              self.handleInvBalance,
+            
+            "ItemPartListCollectionDefinition":     self.handlePartListCollection,
+            "WeaponPartListCollectionDefinition":   self.handlePartListCollection,
+            
+            "ItemPartListDefinition":               self.handleRawPartList,
+            "WeaponPartListDefinition":             self.handleRawPartList,
+            
+            "ItemNamePartDefinition":               self.handleNamePart,
+            "WeaponNamePartDefinition":             self.handleNamePart
+        }
+    
+        # Hopefully I can remove this in a future SDK update
+        self.Author += "\nVersion: " + str(self.Version)
+    
+    """
+      We store all objects that we can access on the menu so that we can save a decent amount of
+       time by not trying to handle them again on map load
+      Unfortuantly this does assume you're on the main menu
+      If you manually import or exec it while in game it's possible that a dynamically loaded object
+       gets flagged, and then doesn't get uncapped later on when it's unloaded + reloaded
+      Seeing as most people are just going to enable it in the mods menu this is probably fine
+    """
     menuObjects = set()
-
+    
     def Enable(self):
         bl2sdk.RegisterHook("WillowGame.WillowHUD.CreateWeaponScopeMovie", "ILU-MapLoad", parseNewItems)
-
+        
         # If you're re-enabling then we can exit right here, the rest of this is non-reversible
         if len(self.menuObjects) > 0:
             return
-
-        # Objects we load here should still be alive for all the FindAll commands
+        
+        # Objects we load here will still be alive for all the FindAll commands, we don't need to
+        #  parse them yet
         for package, objects in self.FORCE_LOAD.items():
             bl2sdk.LoadPackage(package)
             for obj in objects:
                  bl2sdk.KeepAlive(bl2sdk.FindObject(obj[0], obj[1]))
-
-        # FindAll() doesn't cover subclasses
-        for obj in bl2sdk.FindAll("ItemBalanceDefinition"):
-            self.handleInvBalance(obj)
-            self.menuObjects.add(obj)
-        for obj in bl2sdk.FindAll("ClassModBalanceDefinition"):
-            self.handleInvBalance(obj)
-            self.menuObjects.add(obj)
-        for obj in bl2sdk.FindAll("WeaponBalanceDefinition"):
-            self.handleInvBalance(obj)
-            self.menuObjects.add(obj)
-        for obj in bl2sdk.FindAll("MissionWeaponBalanceDefinition"):
-            self.handleInvBalance(obj)
-            self.menuObjects.add(obj)
-
-        for obj in bl2sdk.FindAll("ItemPartListCollectionDefinition"):
-            self.handlePartListCollection(obj)
-            self.menuObjects.add(obj)
-        for obj in bl2sdk.FindAll("WeaponPartListCollectionDefinition"):
-            self.handlePartListCollection(obj)
-            self.menuObjects.add(obj)
-
-        for obj in bl2sdk.FindAll("ItemPartListDefinition"):
-            self.handleRawPartList(obj)
-            self.menuObjects.add(obj)
-        for obj in bl2sdk.FindAll("WeaponPartListDefinition"):
-            self.handleRawPartList(obj)
-            self.menuObjects.add(obj)
-
-        for obj in bl2sdk.FindAll("WeaponNamePartDefinition"):
-            self.handleNamePart(obj)
-            self.menuObjects.add(obj)
-        for obj in bl2sdk.FindAll("ItemNamePartDefinition"):
-            self.handleNamePart(obj)
-            self.menuObjects.add(obj)
-
+        
+        # Do our inital parse over everything, saving what we can access
+        for clas, handler in self.CLASS_HANDLER_MAP.items():
+            for obj in bl2sdk.FindAll(clas):
+                self.menuObjects.add(obj)
+                handler(obj)
+    
     def Disable(self):
         bl2sdk.RemoveHook("WillowGame.WillowHUD.CreateWeaponScopeMovie", "ILU-MapLoad")
-
-    # Takes an object and a set of it's CAID indexes which corospond to level
+    
+    def parseNewItems(self):
+        for clas, handler in self.CLASS_HANDLER_MAP.items():
+            for obj in bl2sdk.FindAll(clas):
+                if obj not in self.menuObjects:
+                    handler(obj)
+    
+    # Takes an object and a set of it's CAID indexes which corospond to max level
     # Usually this will only be one index but just in case we handle multiple
     def fixCAID(self, obj, indexes):
         if not obj.ConsolidatedAttributeInitData:
@@ -160,7 +169,7 @@ class ItemLevelUncapper(bl2sdk.BL2MOD):
                 if changeAmount >= len(indexes):
                     return
             index += 1
-
+    
     def handleInvBalance(self, obj):
         if "WillowGame.Default__" in str(obj):
             return
@@ -169,7 +178,7 @@ class ItemLevelUncapper(bl2sdk.BL2MOD):
         for manu in obj.Manufacturers:
             for grade in manu.Grades:
                 grade.GameStageRequirement.MaxGameStage = self.NEW_LEVEL
-
+    
     # This function takes in both Item and WeaponPartListCollections, which are very similar, BUT
     #  store their parts in different fields
     def handlePartListCollection(self, obj):
@@ -190,9 +199,9 @@ class ItemLevelUncapper(bl2sdk.BL2MOD):
                 "MaterialPartData"
             }
         else:
-            bl2sdk.Log(f"ILU: Unexpected class on {str(obj)}")
+            bl2sdk.Log(f"[ILU] Unexpected class on {str(obj)}")
             return
-
+        
         levelIndexes = set()
         for part in allParts:
             weighted = getattr(obj, part).WeightedParts
@@ -201,7 +210,7 @@ class ItemLevelUncapper(bl2sdk.BL2MOD):
                     if wPart.MaxGameStageIndex:
                         levelIndexes.add(wPart.MaxGameStageIndex)
         self.fixCAID(obj, levelIndexes)
-
+    
     # For ____PartListDefinitions rather than ____PartList*Collection*Definitions
     def handleRawPartList(self, obj):
         if "WillowGame.Default__" in str(obj):
@@ -218,39 +227,23 @@ class ItemLevelUncapper(bl2sdk.BL2MOD):
         obj.MaxExpLevelRequirement = self.NEW_LEVEL
 
 def parseNewItems(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-    for obj in bl2sdk.FindAll("InventoryBalanceDefinition"):
-        if obj not in instance.menuObjects:
-            instance.handleInvBalance(obj)
-
-    for obj in bl2sdk.FindAll("ItemPartListCollectionDefinition"):
-        if obj not in instance.menuObjects:
-            instance.handlePartListCollection(obj)
-    for obj in bl2sdk.FindAll("WeaponPartListCollectionDefinition"):
-        if obj not in instance.menuObjects:
-            instance.handlePartListCollection(obj)
-
-    for obj in bl2sdk.FindAll("ItemPartListDefinition"):
-        if obj not in instance.menuObjects:
-            instance.handleRawPartList(obj)
-    for obj in bl2sdk.FindAll("WeaponPartListDefinition"):
-        if obj not in instance.menuObjects:
-            instance.handleRawPartList(obj)
-
-    for obj in bl2sdk.FindAll("WeaponNamePartDefinition"):
-        if obj not in instance.menuObjects:
-            instance.handleNamePart(obj)
-    for obj in bl2sdk.FindAll("ItemNamePartDefinition"):
-        if obj not in instance.menuObjects:
-            instance.handleNamePart(obj)
+    instance.parseNewItems()
     return True
 
 instance = ItemLevelUncapper()
 if __name__ == "__main__":
+    bl2sdk.Log("[ILU] Manually loaded")
     for mod in bl2sdk.Mods:
         if mod.Name == instance.Name:
             mod.Disable()
             bl2sdk.Mods.remove(mod)
+            bl2sdk.Log("[ILU] Disabled and removed last instance")
             break
+    else:
+        bl2sdk.Log("[ILU] Could not find previous instance")
     
+    bl2sdk.Log("[ILU] Auto-enabling")
+    instance.Status = "Enabled"
+    instance.SettingsInputs = {"Enter": "Disable"}
     instance.Enable()
 bl2sdk.Mods.append(instance)
