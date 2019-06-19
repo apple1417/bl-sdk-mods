@@ -8,6 +8,7 @@ class Onezerker(bl2sdk.BL2MOD):
         "Gunzerk with two copies of the same gun instead of two different ones."
     )
     Types = [bl2sdk.ModTypes.Gameplay]
+    Version = "1.1"
     
     class LoggingLevel:
         NONE = 0
@@ -30,14 +31,19 @@ class Onezerker(bl2sdk.BL2MOD):
         else:
             bl2sdk.KeepAlive(obj)
             self.numWeapObj = obj
+        # Hopefully I can remove this in a future SDK update
+        self.Author += "\nVersion: " + str(self.Version)
     
     def Enable(self):
         if self.numWeapObj == None:
             bl2sdk.Log("[Onezerker] Didn't load correctly, not enabling")
             return
+        bl2sdk.RegisterHook("WillowGame.DualWieldActionSkill.OnActionSkillEnded", "Onezerker", OnActionSkillEnded)
         bl2sdk.RegisterHook("WillowGame.DualWieldActionSkill.EquipInitialWeapons", "Onezerker", EquipInitialWeapons)
+        bl2sdk.RegisterHook("WillowGame.DualWieldActionSkill.SwitchWeapons", "Onezerker", SwitchWeapons)
         bl2sdk.RegisterHook("WillowGame.DualWieldActionSkill.SwitchToWeapon", "Onezerker", SwitchToWeapon)
         bl2sdk.RegisterHook("WillowGame.DualWieldActionSkill.BringWeaponsUpAfterPutDown", "Onezerker", BringWeaponsUpAfterPutDown)
+        bl2sdk.RegisterHook("WillowGame.Behavior_RefillWeapon.ApplyBehaviorToContext", "Onezerker", ApplyBehaviorToContext)
         bl2sdk.RegisterHook("WillowGame.WillowPawn.TossInventory", "Onezerker", TossInventory)
         bl2sdk.RegisterHook("Engine.Weapon.ClientGivenTo", "Onezerker", ClientGivenTo)
         
@@ -45,10 +51,13 @@ class Onezerker(bl2sdk.BL2MOD):
         self.numWeapObj.NumberOfWeapons = 1
     
     def Disable(self):
+        bl2sdk.RemoveHook("WillowGame.DualWieldActionSkill.OnActionSkillEnded", "Onezerker")
         bl2sdk.RemoveHook("WillowGame.DualWieldActionSkill.EquipInitialWeapons", "Onezerker")
+        bl2sdk.RemoveHook("WillowGame.DualWieldActionSkill.SwitchWeapons", "Onezerker")
         bl2sdk.RemoveHook("WillowGame.DualWieldActionSkill.SwitchToWeapon", "Onezerker")
         bl2sdk.RemoveHook("WillowGame.DualWieldActionSkill.BringWeaponsUpAfterPutDown", "Onezerker")
         bl2sdk.RemoveHook("WillowGame.WillowPawn.TossInventory", "Onezerker")
+        bl2sdk.RemoveHook("WillowGame.Behavior_RefillWeapon.ApplyBehaviorToContext", "Onezerker")
         bl2sdk.RemoveHook("Engine.Weapon.ClientGivenTo", "Onezerker")
         if self.numWeapObj != None:
             self.numWeapObj.NumberOfWeapons = self.previousNumWeap
@@ -61,14 +70,33 @@ class Onezerker(bl2sdk.BL2MOD):
             bl2sdk.Log(str(function))
             bl2sdk.Log(str(params))
     
+    weaponMap = {}
     def dupeWeapon(self, weapon):
+        """
+          We save a map of existing duped weapons to try make sure you get the same one back
+          For one this helps keep memory usage down, but more importantly it means when you switch
+           back you'll have the same amount of ammo left in the mag - you can't get free offhand
+           reloads just by switching to another gun + back
+        """
+        if weapon in self.weaponMap:
+            return self.weaponMap[weapon]
+        
         newWeapon = weapon.CreateClone()
         newWeapon.AmmoPool.PoolManager = weapon.AmmoPool.PoolManager
         newWeapon.AmmoPool.PoolIndexInManager = weapon.AmmoPool.PoolIndexInManager
         newWeapon.AmmoPool.PoolGUID = weapon.AmmoPool.PoolGUID
         newWeapon.AmmoPool.Data = weapon.AmmoPool.Data
         newWeapon.InvManager = weapon.InvManager
+        self.weaponMap[weapon] = newWeapon
         return newWeapon
+    
+    # Called when you stop gunzerking
+    def OnActionSkillEnded(self, caller, function, params):
+        self.debugLogging(caller, function, params)
+        # Reset the map so that you don't end up with partially used weapons next time you start
+        #  (and to free up a bit of memory)
+        self.weaponMap = {}
+        return True
     
     # Called when you start gunzerking
     def EquipInitialWeapons(self, caller, function, params):
@@ -93,6 +121,42 @@ class Onezerker(bl2sdk.BL2MOD):
             caller.SetTimer(min(weap.GetEquipTime(), weapAlt.GetEquipTime()), False, "SprintTransition")
         caller.SetLeftSideControl()
     
+    # Called when you try switch weapons while gunzerking using the scrollwheel/cycle weapon
+    # Unfortuantly there are no arguments, so I can't tell if you scroll backwards
+    def SwitchWeapons(self, caller, function, params):
+        self.debugLogging(caller, function, params)
+        
+        Pawn = bl2sdk.GetEngine().GamePlayers[0].Actor.Pawn
+        
+        # Usually you just swap both weapons, but here we'll go down the inventory in order
+        newSlot = (Pawn.Weapon.QuickSelectSlot % 4) + 1
+        weapon = Pawn.InvManager.InventoryChain
+        while weapon != None:
+            if weapon.QuickSelectSlot == newSlot:
+                break
+            weapon = weapon.Inventory
+        if weapon == None:
+            weapon = Pawn.InvManager.InventoryChain
+        
+        weapAlt = self.dupeWeapon(weapon)
+        Pawn.InvManager.SetCurrentWeapon(weapon, False)
+        Pawn.InvManager.SetCurrentWeapon(weapAlt, True)
+        caller.SetOffHandCrosshair(weapAlt);
+    
+    # Called when you try switch weapons while gunzerking using the number keys
+    # This time we are given the weapon to switch too, which simplifies things
+    def SwitchToWeapon(self, caller, function, params):
+        self.debugLogging(caller, function, params)
+        
+        Pawn = bl2sdk.GetEngine().GamePlayers[0].Actor.Pawn
+        
+        if params.NewWeapon != Pawn.Weapon:
+            Pawn.InvManager.SetCurrentWeapon(params.NewWeapon, False);
+            
+            weapAlt = self.dupeWeapon(params.NewWeapon)
+            Pawn.InvManager.SetCurrentWeapon(weapAlt, True)
+            caller.SetOffHandCrosshair(weapAlt);
+    
     # Called when you return from the menu while gunzerking
     def BringWeaponsUpAfterPutDown(self, caller, function, params):
         self.debugLogging(caller, function, params)
@@ -113,19 +177,13 @@ class Onezerker(bl2sdk.BL2MOD):
         caller.ForceRefreshSkills()
         caller.ClientBringWeaponsUpAfterPutDown(weapon, self.dupeWeapon(weapon))
     
-    
-    # Called when you try switch weapons while gunzerking
-    def SwitchToWeapon(self, caller, function, params):
+    # Called whenever a "Behavior_RefillWeapon" is run, happens to only be when auto loader triggers
+    def ApplyBehaviorToContext(self, caller, function, params):
         self.debugLogging(caller, function, params)
-        
-        Pawn = bl2sdk.GetEngine().GamePlayers[0].Actor.Pawn
-        
-        if params.NewWeapon != Pawn.Weapon:
-            Pawn.InvManager.SetCurrentWeapon(params.NewWeapon, False);
-            
-            weapAlt = self.dupeWeapon(params.NewWeapon)
-            Pawn.InvManager.SetCurrentWeapon(weapAlt, True)
-            caller.SetOffHandCrosshair(weapAlt);
+        # Remove from the weapon map so that it's remade with full ammo
+        if params.ContextObject in self.weaponMap:
+            del self.weaponMap[params.ContextObject]
+        return True
     
     # Called whenever you try drop your active weapon
     def TossInventory(self, caller, function, params):
@@ -157,7 +215,8 @@ class Onezerker(bl2sdk.BL2MOD):
             caller.super(PC.Pawn).TossInventory(params.Inv, params.ForceVelocity)
         
         # Unfortuantly this gets delayed but I need to know what weapon to dupe
-        PC.Pawn.InvManager.SetCurrentWeapon(self.dupeWeapon(PC.Pawn.Weapon), True)
+        if PC.Pawn.Weapon != None:
+            PC.Pawn.InvManager.SetCurrentWeapon(self.dupeWeapon(PC.Pawn.Weapon), True)
     
     """
     Called whenever anyone:
@@ -180,14 +239,23 @@ class Onezerker(bl2sdk.BL2MOD):
         Pawn.InvManager.SetCurrentWeapon(self.dupeWeapon(caller), True)
         return True
 
+def OnActionSkillEnded(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
+    return instance.OnActionSkillEnded(caller, function, params)
+
 def EquipInitialWeapons(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
     return instance.EquipInitialWeapons(caller, function, params)
+
+def SwitchWeapons(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
+    return instance.SwitchWeapons(caller, function, params)
+
+def SwitchToWeapon(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
+    return instance.SwitchToWeapon(caller, function, params)
 
 def BringWeaponsUpAfterPutDown(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
     return instance.BringWeaponsUpAfterPutDown(caller, function, params)
 
-def SwitchToWeapon(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-    return instance.SwitchToWeapon(caller, function, params)
+def ApplyBehaviorToContext(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
+    return instance.ApplyBehaviorToContext(caller, function, params)
 
 def TossInventory(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
     return instance.TossInventory(caller, function, params)
@@ -197,11 +265,19 @@ def ClientGivenTo(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl
 
 instance = Onezerker()
 if __name__ == "__main__":
+    bl2sdk.Log("[Onezerker] Manually loaded")
     for mod in bl2sdk.Mods:
         if mod.Name == instance.Name:
             mod.Disable()
             bl2sdk.Mods.remove(mod)
+            bl2sdk.Log("[Onezerker] Disabled and removed last instance")
             break
+    else:
+        bl2sdk.Log("[Onezerker] Could not find previous instance")
     
-    instance.Enable()
+    if instance.numWeapObj != None:
+        bl2sdk.Log("[Onezerker] Auto-enabling")
+        instance.Status = "Enabled"
+        instance.SettingsInputs = {"Enter": "Disable"}
+        instance.Enable()
 bl2sdk.Mods.append(instance)
