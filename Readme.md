@@ -1,8 +1,9 @@
 ## bl-sdk-mods
 To use these mods:
 1. Install the Borderlands [PythonSDK](https://github.com/bl-sdk/PythonSDK)
-2. Download the zip file for the mod
-3. Copy the folder inside the zip into the SDK's mods folder, `[Borderlands]\Binaries\Win32\Mods`
+2. Open the SDK Mods folder - launch the game, go into the new `Mods` menu, make sure you've got the `General` mod selected, and then press `O`
+3. Download one of the mod zip files and open it
+4. Copy the folder from inside the zip into the SDK Mods folder you just opened
 
 If a folder doesn't have a zip file then the mod inside is likely incomplete. If you know what you're doing you can attempt to install it manually, but it may well have issues.    
 Only complete mods are listed below.
