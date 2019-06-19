@@ -1,6 +1,10 @@
 ## bl-sdk-mods
-To use these mods install the Borderlands [PythonSDK](https://github.com/bl-sdk/PythonSDK), then copy the whole folder into the SDK's "Mods" folder.
+To use these mods:
+1. Install the Borderlands [PythonSDK](https://github.com/bl-sdk/PythonSDK)
+2. Download the zip file for the mod
+3. Copy the folder inside the zip into the SDK's mods folder, `[Borderlands]\Binaries\Win32\Mods`
 
+If a folder doesn't have a zip file then the mod inside is likely incomplete. If you know what you're doing you can attempt to install it manually, but it may well have issues.    
 Only complete mods are listed below.
 
 ### ItemLevelUncapper
