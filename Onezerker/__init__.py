@@ -8,7 +8,7 @@ class Onezerker(bl2sdk.BL2MOD):
         "Gunzerk with two copies of the same gun instead of two different ones."
     )
     Types = [bl2sdk.ModTypes.Gameplay]
-    Version = "1.1"
+    Version = "1.2"
     
     class LoggingLevel:
         NONE = 0
@@ -128,15 +128,17 @@ class Onezerker(bl2sdk.BL2MOD):
         
         Pawn = bl2sdk.GetEngine().GamePlayers[0].Actor.Pawn
         
-        # Usually you just swap both weapons, but here we'll go down the inventory in order
-        newSlot = (Pawn.Weapon.QuickSelectSlot % 4) + 1
+        # Get the equiped weapon list in order
+        weaponList = [None, None, None, None]
         weapon = Pawn.InvManager.InventoryChain
         while weapon != None:
-            if weapon.QuickSelectSlot == newSlot:
-                break
+            weaponList[weapon.QuickSelectSlot - 1] = weapon
             weapon = weapon.Inventory
-        if weapon == None:
-            weapon = Pawn.InvManager.InventoryChain
+        # Usually you just swap both weapons, but here we'll go down the inventory in order
+        index = Pawn.Weapon.QuickSelectSlot % 4
+        while weaponList[index] == None:
+            index = (index + 1) % 4
+        weapon = weaponList[index]
         
         weapAlt = self.dupeWeapon(weapon)
         Pawn.InvManager.SetCurrentWeapon(weapon, False)
