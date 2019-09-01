@@ -30,3 +30,9 @@ What exactly is shown on the card is very customizable through the options menu.
 Note that there are thousands of parts, so it's not impossible that the mod gets something wrong, don't be afraid to double check. If you do find an issue please report it alongside a gibbed code for the item.
 
 Compatible with both BL2 and TPS.
+
+### Scaling Adjuster
+A simple tool that adds an option to change the game's base scaling value. Your settings are saved between sessions    
+Note that you may have to save quit for values to update.
+
+Compatible with both BL2 and TPS.
