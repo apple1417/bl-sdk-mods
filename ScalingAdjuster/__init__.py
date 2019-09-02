@@ -14,7 +14,7 @@ class ScalingAdjuster(bl2sdk.BL2MOD):
         "Note that you may have to save quit to get values to update."
     )
     Types: List[bl2sdk.ModTypes] = [bl2sdk.ModTypes.Utility]
-    Version = "1.0"
+    Version = "1.1"
 
     # Doing options a little weirdly so that the same file works for both games
     EXE_NAME: str = path.basename(executable)
@@ -45,12 +45,12 @@ class ScalingAdjuster(bl2sdk.BL2MOD):
             with open(self.OPTIONS_PATH) as file:
                 self.OptionsDict = json.load(file)
 
+    def Enable(self) -> None:
+        self.RegisterGameConfigOption(self.scalingSlider)
+
         if self.EXE_NAME in self.OptionsDict:
             self.scalingObject.ConstantValue = self.OptionsDict[self.EXE_NAME]
             self.scalingSlider.CurrentValue = int(self.OptionsDict[self.EXE_NAME] * 100)
-
-    def Enable(self) -> None:
-        self.RegisterGameConfigOption(self.scalingSlider)
 
     def Disable(self) -> None:
         self.UnregisterGameConfigOption(self.scalingSlider)
