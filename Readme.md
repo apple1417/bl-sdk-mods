@@ -8,7 +8,14 @@ To use these mods:
 If a folder doesn't have a zip file then the mod inside is likely incomplete. If you know what you're doing you can attempt to install it manually, but it may well have issues.    
 Only complete mods are listed below.
 
-### ItemLevelUncapper
+### Enemy Level Randomizer
+As the name might suggest, randomizes enemy levels. Probably a bad idea.
+
+Note that this has a few options to let you customize the randomization. You can for example just turn randomization off and only add a pre-defined offset onto enemies' levels.
+
+Compatible with both BL2 and TPS
+
+### Item Level Uncapper
 This mod is useless by itself, it should be used alongside the hexedit to increase the player level cap.    
 Fixes the level cap of most items so that they continue spawning past level 100.    
 Note that items past level 127 will overflow upon save-quit, and that Gibbed's Save Editor won't let you create items past 127, so past that point you'll have to pick up everything you use within the same session.    
