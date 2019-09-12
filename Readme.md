@@ -8,6 +8,14 @@ To use these mods:
 If a folder doesn't have a zip file then the mod inside is likely incomplete. If you know what you're doing you can attempt to install it manually, but it may well have issues.    
 Only complete mods are listed below.
 
+
+### Ammo Cheats
+Adds a keybind to cycle through infinite ammo modes. You can choose to have true infinite ammo, just free reloads, or to turn it off altogether. Also affects grenades.
+
+Thanks to Mopioid for the code to create training messages.
+
+Compatible with both BL2 and TPS.
+
 ### Enemy Level Randomizer
 As the name might suggest, randomizes enemy levels. Probably a bad idea.
 
