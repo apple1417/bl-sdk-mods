@@ -45,7 +45,7 @@ class AmmoCheats(bl2sdk.BL2MOD):
         bl2sdk.RegisterHook("WillowGame.WillowWeapon.ConsumeAmmo", "AmmoCheats", ConsumeAmmo)
         bl2sdk.RegisterHook("WillowGame.WillowPlayerController.ConsumeProjectileResource", "AmmoCheats", ConsumeProjectileResource)
 
-        key = "I"
+        key = "N"
         try:
             with open(self.KEYBIND_PATH) as f:
                 key = f.read()
