@@ -51,3 +51,12 @@ A simple tool that adds an option to change the game's base scaling value. Your 
 Note that you may have to save quit for values to update.
 
 Compatible with both BL2 and TPS.
+
+### Side Mission Randomizer
+Ever felt it was too easy to unlock all your favourite side missions? Randomizes the progression order of all side missions. Turns the lovely (mostly) linear progression graph into a spaghetti nightmare.
+
+This mod will create other mods in the sdk mod menu for each seed you generate, only one of which can be active at a time. If you want to share a seed with friends, select the main mod, open the settings file, and copy paste it over into their settings file.
+
+If you want to spoil yourself you can also generate a dump of the exact mission progressions.
+
+Compatible with both BL2 and TPS.

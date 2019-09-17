@@ -1,12 +1,13 @@
 import bl2sdk
 import json
-import random
 import os
+import random
 from os import path
 from typing import Dict
 from typing import List
-from typing import Optional
 from typing import NamedTuple
+from typing import Optional
+from typing import Union
 
 
 # Simple data class to store the info we need about each seed
@@ -45,35 +46,41 @@ class SideMissionRandomizerChild(SideMissionRandomizerBase):
 
         self.SMRSeed = SMRSeed
 
+        # If you don't define a name just use the actual seed
         seedName = self.SMRSeed.Name
         if len(seedName) == 0:
             seedName = str(self.SMRSeed.Seed)
 
         self.DUMP_PATH = path.join(self.LOCAL_DIR, f"{seedName}.txt")
-        self.Name += f" {seedName}"
+        self.Name += f" ({seedName})"
         self.Description = (
             f"<font size='24' color='#FFDEAD'>SMR - {seedName}</font>\n"
-            f"{self.Description}"
+            f"{self.Description}\n"
+            "\n"
+            f"Seed: {self.SMRSeed.Seed}"
         )
 
         rand = random.Random(SMRSeed.Seed)
         def randSample(array: List[bl2sdk.UObject]) -> List[bl2sdk.UObject]:
-            amount = min(10, len(array), max(0, int(rand.normalvariate(2, 4))))
+            amount = min(10, len(array), max(1, int(rand.normalvariate(3, 2))))
             return rand.sample(array, amount)
 
-        missions = list(SMRParent.DefaultMissions)
-        availibleMissions = randSample(missions)
+        # To generate the random tree:
+        #  1. Select a few missions to be unlocked by default
+        #  2. Select a random mission that hasn't been unlocked yet
+        #  3. Set it's dependencies to be a random selection of the unlocked missions
+        #  4. Add it to the unlocked set and loop
+        lockedMissions = list(SMRParent.DefaultDependencies.keys())
+        availibleMissions = randSample(lockedMissions) + randSample(lockedMissions)
 
-        self.NewDependencies: Dict[bl2sdk.UObject, bl2sdk.FArray] = {}
+        self.NewDependencies: Dict[bl2sdk.UObject, List[bl2sdk.UObject]] = {}
         for m in availibleMissions:
-            missions.remove(m)
+            lockedMissions.remove(m)
             self.NewDependencies[m] = []
 
-        while len(missions) > 0:
-            newMission = rand.choice(missions)
-            missions.remove(newMission)
-
-            bl2sdk.Log(str(type(newMission)))
+        while len(lockedMissions) > 0:
+            newMission = rand.choice(lockedMissions)
+            lockedMissions.remove(newMission)
 
             self.NewDependencies[newMission] = randSample(availibleMissions)
 
@@ -81,11 +88,11 @@ class SideMissionRandomizerChild(SideMissionRandomizerBase):
 
     def Enable(self) -> None:
         for mission in self.NewDependencies:
-            bl2sdk.Log(f"{mission}: {self.NewDependencies[mission]}")
-            bl2sdk.Log(f"{type(mission)}, {type(self.NewDependencies[mission])}")
             mission.Dependencies = self.NewDependencies[mission]
 
     def SettingsInputPressed(self, name: str) -> None:
+        # Most of these pass through into the parent mod cause we only want to let one child be
+        #  active at a time
         if name == "Enable":
             SMRParent.EnableChild(self)
 
@@ -100,6 +107,7 @@ class SideMissionRandomizerChild(SideMissionRandomizerBase):
 
     def DumpToFile(self) -> None:
         # Invert the map to show what each mission unlocks instead of dependencies
+        # This is just a nicer sorting order
         unlockMap: Dict[str, List[str]] = {}
         for mission in self.NewDependencies:
             for dep in self.NewDependencies[mission]:
@@ -141,10 +149,9 @@ class SideMissionRandomizerParent(SideMissionRandomizerBase):
         self.CurrentlyEnabledChild: Optional[SideMissionRandomizerChild] = None
         self.SeedInfo: List[SideMissionRandomizerSeed] = []
 
+    # This is essentially the disable function for all of the child mods
     def RevertMissionsToDefaults(self) -> None:
         for mission in self.DefaultDependencies:
-            bl2sdk.Log(f"{mission}: {self.DefaultDependencies[mission]}")
-            bl2sdk.Log(f"{type(mission)}, {type(self.DefaultDependencies[mission])}")
             mission.Dependencies = self.DefaultDependencies[mission]
 
     def SettingsInputPressed(self, name: str) -> None:
@@ -159,24 +166,25 @@ class SideMissionRandomizerParent(SideMissionRandomizerBase):
             self.Status = "Enabled"
             self.Name = super().Name + " - <font color='#00FF00'>Loaded</font>"
 
-            # Save the default mission Dependencies, so that we're able to restore them
-            self.DefaultDependencies: Dict[bl2sdk.UObject, bl2sdk.FArray] = {}
+            # Save the default mission dependencies, so that we're able to restore them
+            # We can't do this in __init__() cause they're not all loaded at that point
+            self.DefaultDependencies: Dict[bl2sdk.UObject, List[bl2sdk.UObject]] = {}
             for mission in bl2sdk.FindAll("MissionDefinition"):
                 # Filter out the default MissionDefinition and all main missions
                 if mission.bPlotCritical or not mission.MissionName:
                     continue
 
-                bl2sdk.Log(f"{type(mission)}, {type(mission.Dependencies)}")
-                self.DefaultDependencies[mission] = mission.Dependencies
+                # Need to convert this to a list because the default FArray returned is a reference
+                self.DefaultDependencies[mission] = list(mission.Dependencies)
 
             self.LoadFromFile()
-
 
         elif name == "Reload From File":
             self.LoadFromFile()
 
         elif name == "New Seed":
-            SMRSeed = SideMissionRandomizerSeed(random.randrange(0xFFFFFFFF), "")
+            seed = random.randrange(0xFFFFFFFF)
+            SMRSeed = SideMissionRandomizerSeed(seed, str(seed))
             self.SeedInfo.append(SMRSeed)
             self.SaveSeedInfo()
 
@@ -193,6 +201,8 @@ class SideMissionRandomizerParent(SideMissionRandomizerBase):
             self.LoadFromFile()
 
         elif name == "Open Seed File":
+            if not path.exists(self.SEED_PATH):
+                self.SaveSeedInfo()
             os.startfile(self.SEED_PATH)
 
     def LoadFromFile(self) -> None:
@@ -212,6 +222,7 @@ class SideMissionRandomizerParent(SideMissionRandomizerBase):
         for seed in self.SeedInfo:
             bl2sdk.Mods.insert(index, SideMissionRandomizerChild(seed))
 
+    # Two helper functions to explicitly list the var names in the json dump
     def SaveSeedInfo(self) -> None:
         newInfo = []
         for entry in self.SeedInfo:
@@ -237,24 +248,15 @@ class SideMissionRandomizerParent(SideMissionRandomizerBase):
         child.Enable()
 
     def DisableChild(self, child: SideMissionRandomizerChild) -> None:
-        if self.CurrentlyEnabledChild is None:
-            bl2sdk.Log((
-                f"[SMR] Child '{child.Name}' requested to be disabled, but no child is currently"
-                 " stored as enabled"
-            ))
-        elif self.CurrentlyEnabledChild != child:
-            bl2sdk.Log((
-                f"[SMR] Child '{child.Name}' requested to be disabled, but is not the child stored"
-                f" as currently enabled, '{self.CurrentlyEnabledChild.Name}'"
-            ))
+        child.Status = "Disabled"
+        child.SettingsInputs["Enter"] = "Enable"
+        # Just in case for some reason this isn't the same as 'child'
+        if self.CurrentlyEnabledChild is not None:
             self.CurrentlyEnabledChild.Status = "Disabled"
             self.CurrentlyEnabledChild.SettingsInputs["Enter"] = "Enable"
 
         self.CurrentlyEnabledChild = None
         self.RevertMissionsToDefaults()
-
-        child.Status = "Disabled"
-        child.SettingsInputs["Enter"] = "Enable"
 
     def RemoveChild(self, child: SideMissionRandomizerChild) -> None:
         if self.CurrentlyEnabledChild == child:
