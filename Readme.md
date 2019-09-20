@@ -9,10 +9,14 @@ If a folder doesn't have a zip file then the mod inside is likely incomplete. If
 Only complete mods are listed below.
 
 
-### Ammo Cheats
-Adds a keybind to cycle through infinite ammo modes. You can choose to have true infinite ammo, just free reloads, or to turn it off altogether. Also affects grenades.
-
-Thanks to Mopioid for the code to create training messages.
+### Apple's Borderlands Cheats
+Adds keybinds performing various cheaty things. Currently contains:
+- Infinite Ammo
+- God Mode
+- One Shot Mode
+- Passive Mode
+- A 'Kill All' Button
+- A 'Level Up' Button
 
 Compatible with both BL2 and TPS.
 
@@ -53,10 +57,10 @@ Note that you may have to save quit for values to update.
 Compatible with both BL2 and TPS.
 
 ### Side Mission Randomizer
-Ever felt it was too easy to unlock all your favourite side missions? Randomizes the progression order of all side missions. Turns the lovely (mostly) linear progression graph into a spaghetti nightmare.
+Ever felt it was too easy to unlock all your favourite side missions? This mod randomizes their progression order. Turns the lovely (mostly) linear progression graph into a spaghetti nightmare.
 
 This mod will create other mods in the sdk mod menu for each seed you generate, only one of which can be active at a time. If you want to share a seed with friends, select the main mod, open the settings file, and copy paste it over into their settings file.
 
-If you want to spoil yourself you can also generate a dump of the exact mission progressions.
+If you want to spoil yourself you can also generate a dump of the exact mission progression.
 
 Compatible with both BL2 and TPS.
