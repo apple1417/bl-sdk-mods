@@ -117,7 +117,7 @@ class ApplesBorderlandsCheats(bl2sdk.BL2MOD):
 
         class PassiveMode(ABCCycleableCheat):
             Name = "Passive Mode"
-            KeybindName = "Toggle Passive Mode"
+            KeybindName = "Cycle Passive Mode"
 
             # These are in the same order as in the games's struct
             OFF: str = "Off"  # Technically this is OPINION_Enemy
