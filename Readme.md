@@ -14,9 +14,12 @@ Adds keybinds performing various cheaty things. Currently contains:
 - Infinite Ammo
 - God Mode
 - One Shot Mode
+- Instant Cooldowns
 - Passive Mode
 - A 'Kill All' Button
 - A 'Level Up' Button
+- A 'Add OP Level' Button
+- A 'Suicide' Button
 
 Compatible with both BL2 and TPS.
 

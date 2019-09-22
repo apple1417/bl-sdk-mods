@@ -26,11 +26,32 @@ if __name__ == "__main__":
 
 # Small helper classes I have to define out here to be able to inherit from
 class ABCCheat(metaclass=ABCMeta):
+    Name: str
     KeybindName: str
 
     @abstractmethod
     def Callback(self) -> None:
         raise NotImplementedError
+
+    def ShowMessage(self, message: str) -> None:
+        PC = bl2sdk.GetEngine().GamePlayers[0].Actor
+        HUDMovie = PC.GetHUDMovie()
+
+        if HUDMovie is None:
+            return
+
+        HUDMovie.ClearTrainingText()
+        HUDMovie.AddTrainingText(
+            message,
+            self.Name,
+            2,
+            (),
+            "",
+            False,
+            0,
+            PC.PlayerReplicationInfo,
+            True
+        )
 
 class ABCCycleableCheat(ABCCheat):
     Name: str
@@ -52,25 +73,7 @@ class ABCCycleableCheat(ABCCheat):
 
     def Callback(self) -> None:
         self.value = self.Order[(self.Order.index(self.value) + 1) % len(self.Order)]
-
-        PC = bl2sdk.GetEngine().GamePlayers[0].Actor
-        HUDMovie = PC.GetHUDMovie()
-
-        if HUDMovie is None:
-            return
-
-        HUDMovie.ClearTrainingText()
-        HUDMovie.AddTrainingText(
-            f"{self.Name}: {self.value}",
-            self.Name,
-            2,
-            (),
-            "",
-            False,
-            0,
-            PC.PlayerReplicationInfo,
-            True
-        )
+        self.ShowMessage(f"{self.Name}: {self.value}")
 
 class ApplesBorderlandsCheats(bl2sdk.BL2MOD):
     Name: str = "Apple's Borderlands Cheats"
@@ -79,7 +82,7 @@ class ApplesBorderlandsCheats(bl2sdk.BL2MOD):
         "Adds keybinds performing various cheaty things"
     )
     Types: List[bl2sdk.ModTypes] = [bl2sdk.ModTypes.Utility]
-    Version = "1.0"
+    Version = "1.1"
     SettingsInputs = {
         "Enter": "Enable",
         "R": "Reset Keybinds"
@@ -115,6 +118,14 @@ class ApplesBorderlandsCheats(bl2sdk.BL2MOD):
             ON: str = "On"
             Order = (OFF, ON)
 
+        class InstantCooldown(ABCCycleableCheat):
+            Name = "Instant Cooldown"
+            KeybindName = "Toggle Instant Cooldown"
+
+            OFF: str = "Off"
+            ON: str = "On"
+            Order = (OFF, ON)
+
         class PassiveMode(ABCCycleableCheat):
             Name = "Passive Mode"
             KeybindName = "Cycle Passive Mode"
@@ -138,6 +149,7 @@ class ApplesBorderlandsCheats(bl2sdk.BL2MOD):
                 allegiance2.ForcedOtherOpinion = self.Order.index(self.value)
 
         class KillAll(ABCCheat):
+            Name = "Kill All"
             KeybindName = "Kill All"
 
             def Callback(self) -> None:
@@ -148,64 +160,47 @@ class ApplesBorderlandsCheats(bl2sdk.BL2MOD):
                     pool.CurrentValue = 0
 
         class LevelUp(ABCCheat):
+            Name = "Level Up"
             KeybindName = "Level Up"
 
             def Callback(self) -> None:
                 bl2sdk.GetEngine().GamePlayers[0].Actor.ExpLevelUp(True)
 
-        """
-        This would be neat but it's a bit too crashy for my tastes
-
-        class RaiseGearLevel(ABCCheat):
-            Name = "Raise Equipped Gear Level"
-            KeybindName = "Raise Equipped Gear Level"
-
-            # This is it's own function so that we can overwrite it to slightly adjust the cheat
-            def adjustItem(self, item: bl2sdk.UObject) -> None:
-                item.DefinitionData.GameStage += 1
-                item.DefinitionData.ManufacturerGradeIndex += 1
+        class OPLevel(ABCCheat):
+            Name = "Add OP Level"
+            KeybindName = "Add OP Level"
 
             def Callback(self) -> None:
-                inv = bl2sdk.GetEngine().GamePlayers[0].Actor.Pawn.InvManager
+                PC = bl2sdk.GetEngine().GamePlayers[0].Actor
+                if PC.PlayerReplicationInfo.NumOverpowerLevelsUnlocked == PC.GetMaximumPossibleOverpowerModifier():
+                    self.ShowMessage("You are already at the maximum OP level")
+                else:
+                    PC.PlayerReplicationInfo.NumOverpowerLevelsUnlocked += 1
+                    self.ShowMessage(f"You have now unlocked OP {PC.PlayerReplicationInfo.NumOverpowerLevelsUnlocked}")
 
-                weapon = inv.InventoryChain
-                while weapon != None:
-                    self.adjustItem(weapon)
+        class Suicide(ABCCheat):
+            Name = "Suicide"
+            KeybindName = "Suicide"
 
-                    ammo = weapon.ReloadCnt
-                    # This function will add extra ammo for having picked up a new weapon
-                    # We don't want it to do so, so we have to save the count before hand then
-                    #  remove the extra after
-                    weapon.InitializeInternal()
-
-                    weapon.ReloadCnt = ammo
-                    weapon.AmmoPool.Data.AddCurrentValueImpulse(
-                        -weapon.DefinitionData.WeaponTypeDefinition.StartingAmmoCount
-                    )
-
-                    weapon = weapon.Inventory
-
-                item = inv.ItemChain
-                while item != None:
-                    self.adjustItem(item)
-                    item.InitializeInternal()
-                    item = item.Inventory
-        """
-
+            def Callback(self) -> None:
+                bl2sdk.GetEngine().GamePlayers[0].Actor.CausePlayerDeath(True)
 
         def __init__(self) -> None:
             self.ammo: ABCCycleableCheat = self.InfiniteAmmo()
             self.god: ABCCycleableCheat = self.GodMode()
             self.one: ABCCycleableCheat = self.OneShot()
-            self.passive: ABCCycleableCheat = self.PassiveMode()
+            self.cooldown: ABCCycleableCheat = self.InstantCooldown()
 
             self.all: Tuple[ABCCheat, ...] = (
                 self.ammo,
                 self.god,
                 self.one,
-                self.passive,
+                self.cooldown,
+                self.PassiveMode(),
                 self.KillAll(),
-                self.LevelUp()
+                self.LevelUp(),
+                self.OPLevel(),
+                self.Suicide()
             )
 
     def __init__(self) -> None:
@@ -257,7 +252,7 @@ class ApplesBorderlandsCheats(bl2sdk.BL2MOD):
                 # Set the health low so that your shot kills it, rather than just to 0 killing it
                 #  straight away
                 bl2sdk.DoInjectedCallNext()
-                caller.SetHealth(0.01)
+                caller.SetHealth(1)
 
             return True
 
@@ -277,10 +272,16 @@ class ApplesBorderlandsCheats(bl2sdk.BL2MOD):
             caller.SetHealth(1)
             return False
 
+        # For instant cooldown mode
+        def StartActiveMeleeSkillCooldown(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
+            return self.options.cooldown == self.Cheats.InstantCooldown.OFF
+
         bl2sdk.RegisterHook("WillowGame.WillowWeapon.ConsumeAmmo", "ApplesBorderlandsCheats", ConsumeAmmo)
         bl2sdk.RegisterHook("WillowGame.WillowPlayerController.ConsumeProjectileResource", "ApplesBorderlandsCheats", ConsumeProjectileResource)
         bl2sdk.RegisterHook("Engine.Pawn.TakeDamage", "ApplesBorderlandsCheats", TakeDamage)
         bl2sdk.RegisterHook("Engine.Pawn.SetHealth", "ApplesBorderlandsCheats", SetHealth)
+        bl2sdk.RegisterHook("WillowGame.WillowPlayerController.StartActiveSkillCooldown", "ApplesBorderlandsCheats", StartActiveMeleeSkillCooldown)
+        bl2sdk.RegisterHook("WillowGame.WillowPlayerController.StartMeleeSkillCooldown", "ApplesBorderlandsCheats", StartActiveMeleeSkillCooldown)
 
         loadedBinds: Dict[str, str] = {}
         try:
@@ -309,6 +310,8 @@ class ApplesBorderlandsCheats(bl2sdk.BL2MOD):
         bl2sdk.RemoveHook("WillowGame.WillowPlayerController.ConsumeProjectileResource", "ApplesBorderlandsCheats")
         bl2sdk.RemoveHook("Engine.Pawn.TakeDamage", "ApplesBorderlandsCheats")
         bl2sdk.RemoveHook("Engine.Pawn.SetHealth", "ApplesBorderlandsCheats")
+        bl2sdk.RemoveHook("WillowGame.WillowPlayerController.StartActiveSkillCooldown", "ApplesBorderlandsCheats")
+        bl2sdk.RemoveHook("WillowGame.WillowPlayerController.StartMeleeSkillCooldown", "ApplesBorderlandsCheats")
 
         for name in self.Keybinds:
             self.UnregisterGameInput(name)
