@@ -23,6 +23,7 @@ def ShowTrainingMessage(Title: str, Message: str, Duration: float = 2) -> None:
 
     _RawShowTrainingMessage(Title, Message, Duration, False, 0)
 
+
 def ShowPausedTrainingMessage(Title: str, Message: str, MinDuration: float = 0) -> None:
     """
     Pauses the game and displays a feedback message in the center of the screen, like those used for
@@ -43,7 +44,8 @@ def ShowPausedTrainingMessage(Title: str, Message: str, MinDuration: float = 0) 
 
     _RawShowTrainingMessage(Title, Message, 1, True, MinDuration)
 
-""" This function actually does the work for the previous two wrappers """
+
+# This function actually does the work for the previous two wrappers
 def _RawShowTrainingMessage(
     Title: str,
     Message: str,
@@ -71,7 +73,6 @@ def _RawShowTrainingMessage(
     )
 
 
-
 class DialogBoxButton(NamedTuple):
     """
     A simple dataclass used with Dialog Boxes.
@@ -88,7 +89,8 @@ class DialogBoxButton(NamedTuple):
     Tip: str
 
 
-def ShowDialogBox(*,
+def ShowDialogBox(
+    *,
     Title: str,
     Buttons: Sequence[DialogBoxButton],
     DefaultButtonIndex: int = 0,
@@ -125,13 +127,48 @@ def ShowDialogBox(*,
     """
 
     # Check we have valid input
-    for b in Buttons:
-        if not isinstance(b, DialogBoxButton):
-            raise TypeError(f"Dialog box was not passed sequence of DialogBoxButtons")
-    if len(Buttons) == 0 or len(Buttons) > 5:
-        raise ValueError("A dialog box must have 1-5 buttons")
+    try:
+        for b in Buttons:
+            if not isinstance(b, DialogBoxButton):
+                raise TypeError
+    except TypeError:
+        raise TypeError(f"'{Buttons}' is not a sequence of DialogBoxButtons")
+    if len(Buttons) < 1:
+        raise ValueError("A dialog box must have at least one button")
     if 0 > DefaultButtonIndex <= len(Buttons):
         raise IndexError("Default button index out of range")
+
+    # We can only show 5 buttons on a single dialog, so we have to split it into pages if given more
+    if len(Buttons) > 5:
+        nextPage = DialogBoxButton("More Options", "")
+        # Split the buttons into pages of 4 + the next page button
+        pages = [list(Buttons[i:i + 4]) + [nextPage] for i in range(0, len(Buttons), 4)]
+
+        # Subtract one to end up on the right page when we "advance" one to get the cycle started
+        currentPage = int(DefaultButtonIndex / 4) - 1
+        DefaultButtonIndex %= 4
+
+        def AdvancePage(button: Optional[DialogBoxButton]) -> None:
+            nonlocal currentPage
+
+            if button == nextPage:
+                currentPage = (currentPage + 1) % len(pages)
+                ShowDialogBox(
+                    Title=Title,
+                    Buttons=pages[currentPage],
+                    DefaultButtonIndex=DefaultButtonIndex,
+                    Callback=AdvancePage,
+                    Caption=Caption,
+                    PreventCanceling=PreventCanceling,
+                    Tooltip=Tooltip
+                )
+            else:
+                if Callback is not None:
+                    Callback(button)
+
+        AdvancePage(nextPage)
+        DefaultButtonIndex = 0
+        return
 
     # A default dialog box that you can't exit out of will open after this call
     # This is why we have to do all the input checking beforehand
@@ -150,21 +187,21 @@ def ShowDialogBox(*,
         dialog.AppendButton(f"Button{idx}", Buttons[idx].Name, Buttons[idx].Tip)
 
     dialog.SetDefaultButton(f"Button{DefaultButtonIndex}", True)
-    dialog.ApplyLayout();
+    dialog.ApplyLayout()
 
     # One of these two functions is called when you exit the dialog
     def Accepted(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-        if Callback is not None:
-            Callback(Buttons[dialog.CurrentSelection])
         bl2sdk.RemoveHook("WillowGame.WillowGFxDialogBox.Accepted", "CustomDialogBox")
         bl2sdk.RemoveHook("WillowGame.WillowGFxDialogBox.Cancelled", "CustomDialogBox")
+        if Callback is not None:
+            Callback(Buttons[dialog.CurrentSelection])
         return True
 
     def Cancelled(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-        if Callback is not None:
-            Callback(None)
         bl2sdk.RemoveHook("WillowGame.WillowGFxDialogBox.Accepted", "CustomDialogBox")
         bl2sdk.RemoveHook("WillowGame.WillowGFxDialogBox.Cancelled", "CustomDialogBox")
+        if Callback is not None:
+            Callback(None)
         return True
 
     bl2sdk.RegisterHook("WillowGame.WillowGFxDialogBox.Accepted", "CustomDialogBox", Accepted)
