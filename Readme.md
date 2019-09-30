@@ -30,6 +30,11 @@ Note that this has a few options to let you customize the randomization. You can
 
 Compatible with both BL2 and TPS
 
+### Hide Undiscovered Missions
+A super simple mod that hides undiscovered missions in your mission log.
+
+Compatible with both BL2 and TPS
+
 ### Item Level Uncapper
 This mod is useless by itself, it should be used alongside the hexedit to increase the player level cap.    
 Fixes the level cap of most items so that they continue spawning past level 100.    
