@@ -7,7 +7,7 @@ from typing import Dict
 from typing import List
 from typing import NamedTuple
 from typing import Optional
-from typing import Union
+from typing import Tuple
 
 
 # Simple data class to store the info we need about each seed
@@ -24,7 +24,7 @@ class SideMissionRandomizerBase(bl2sdk.BL2MOD):
         "Randomizes the progression order of side missions."
     )
     Types: List[bl2sdk.ModTypes] = [bl2sdk.ModTypes.Gameplay]
-    Version = "1.0"
+    Version = "1.1"
 
     LOCAL_DIR: str = path.dirname(path.realpath(__file__))
 
@@ -61,6 +61,7 @@ class SideMissionRandomizerChild(SideMissionRandomizerBase):
         )
 
         rand = random.Random(SMRSeed.Seed)
+
         def randSample(array: List[bl2sdk.UObject]) -> List[bl2sdk.UObject]:
             amount = min(10, len(array), max(1, int(rand.normalvariate(3, 2))))
             return rand.sample(array, amount)
@@ -89,6 +90,7 @@ class SideMissionRandomizerChild(SideMissionRandomizerBase):
     def Enable(self) -> None:
         for mission in self.NewDependencies:
             mission.Dependencies = self.NewDependencies[mission]
+            mission.ObjectiveDependency = (None, 0)
 
     def SettingsInputPressed(self, name: str) -> None:
         # Most of these pass through into the parent mod cause we only want to let one child be
@@ -131,7 +133,7 @@ class SideMissionRandomizerChild(SideMissionRandomizerBase):
 class SideMissionRandomizerParent(SideMissionRandomizerBase):
     def __init__(self) -> None:
         super().__init__()
-        self.SettingsInputs: Dict[str, str]  = {
+        self.SettingsInputs: Dict[str, str] = {
             "Enter": "Load"
         }
 
@@ -153,6 +155,8 @@ class SideMissionRandomizerParent(SideMissionRandomizerBase):
     def RevertMissionsToDefaults(self) -> None:
         for mission in self.DefaultDependencies:
             mission.Dependencies = self.DefaultDependencies[mission]
+        for mission in self.DefaultObjectiveDependencies:
+            mission.ObjectiveDependency = self.DefaultObjectiveDependencies[mission]
 
     def SettingsInputPressed(self, name: str) -> None:
         if name == "Load":
@@ -169,6 +173,7 @@ class SideMissionRandomizerParent(SideMissionRandomizerBase):
             # Save the default mission dependencies, so that we're able to restore them
             # We can't do this in __init__() cause they're not all loaded at that point
             self.DefaultDependencies: Dict[bl2sdk.UObject, List[bl2sdk.UObject]] = {}
+            self.DefaultObjectiveDependencies: Dict[bl2sdk.UObject, Tuple[bl2sdk.UObject, int]] = {}
             for mission in bl2sdk.FindAll("MissionDefinition"):
                 # Filter out the default MissionDefinition and all main missions
                 if mission.bPlotCritical or not mission.MissionName:
@@ -176,6 +181,10 @@ class SideMissionRandomizerParent(SideMissionRandomizerBase):
 
                 # Need to convert this to a list because the default FArray returned is a reference
                 self.DefaultDependencies[mission] = list(mission.Dependencies)
+                self.DefaultObjectiveDependencies[mission] = (
+                    mission.ObjectiveDependency.Objective,
+                    mission.ObjectiveDependency.Status
+                )
 
             self.LoadFromFile()
 
@@ -265,6 +274,7 @@ class SideMissionRandomizerParent(SideMissionRandomizerBase):
 
         self.SeedInfo.remove(child.SMRSeed)
         self.SaveSeedInfo()
+
 
 SMRParent: SideMissionRandomizerParent = SideMissionRandomizerParent()
 bl2sdk.Mods.append(SMRParent)
