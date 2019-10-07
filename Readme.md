@@ -5,8 +5,7 @@ To use these mods:
 3. Download one of the mod zip files and open it
 4. Copy the folder from inside the zip into the SDK Mods folder you just opened
 
-If a folder doesn't have a zip file then the mod inside is likely incomplete. If you know what you're doing you can attempt to install it manually, but it may well have issues.    
-Only complete mods are listed below.
+If a folder doesn't have a zip file, or is not listed below, then the mod inside is likely incomplete. If you know what you're doing you can attempt to install it manually, but it may well have issues.
 
 
 ### Apple's Borderlands Cheats
@@ -70,5 +69,16 @@ Ever felt it was too easy to unlock all your favourite side missions? This mod r
 This mod will create other mods in the sdk mod menu for each seed you generate, only one of which can be active at a time. If you want to share a seed with friends, select the main mod, open the settings file, and copy paste it over into their settings file.
 
 If you want to spoil yourself you can also generate a dump of the exact mission progression.
+
+Compatible with both BL2 and TPS.
+
+### User Feedback
+THIS IS NOT A MOD BY ITSELF, IT'S A LIBRARY OTHER MODS USE.    
+
+Simple helper file for showing feedback to users. Adds functions/classes to let you show three types of messages:
+
+1. Small messages on the left of the screen, like those used for respawn cost messages.
+2. Messages in the middle of the screen that pause the game, like those used for the special edition item message on new characters.
+3. Dialog boxes with multiple options to choose from, like those used to select playthrough or to confirm quitting.
 
 Compatible with both BL2 and TPS.
