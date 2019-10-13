@@ -75,10 +75,12 @@ Compatible with both BL2 and TPS.
 ### User Feedback
 THIS IS NOT A MOD BY ITSELF, IT'S A LIBRARY OTHER MODS USE.    
 
-Simple helper file for showing feedback to users. Adds functions/classes to let you show three types of messages:
+Adds several functions/classes to let you show various types of feedback to and get input from your users.
 
-1. Small messages on the left of the screen, like those used for respawn cost messages.
-2. Messages in the middle of the screen that pause the game, like those used for the special edition item message on new characters.
-3. Dialog boxes with multiple options to choose from, like those used to select playthrough or to confirm quitting.
+Currently includes:
+1. Small messages on the left of the HUD, like those used for respawn cost messages.
+2. Training dialog boxes in the middle of the screen, like those used for most training messages or the special edition item message.
+3. Options boxes where the user can select from multiple different options, like those used to select playthrough or to confirm quitting.
+4. A custom training box that takes text input.
 
 Compatible with both BL2 and TPS.
