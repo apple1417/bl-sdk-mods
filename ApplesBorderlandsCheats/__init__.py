@@ -1,213 +1,133 @@
 import bl2sdk
+import html
 import json
 import os
-from abc import ABCMeta
-from abc import abstractmethod
-from typing import Callable
-from typing import Dict
-from typing import List
-from typing import Tuple
+from typing import ClassVar, Dict, List
 
+# Some setup to let this run just as well if you re-exec the file as when it was intially imported
 if __name__ == "__main__":
+    import importlib
+    import sys
+    bl2sdk.Log("[ABC] Reloading other modules")
+    importlib.reload(sys.modules["ApplesBorderlandsCheats.Cheats"])
+    importlib.reload(sys.modules["ApplesBorderlandsCheats.Presets"])
+
     # __file__ isn't set when you call this through a pyexec, so we have to do something real silly
     # If we cause an exception then the traceback will contain the file name, which we can regex out
-    import re, traceback
+    import re
+    import traceback
     try:
-        fake += 1
-    except NameError as e:
+        fake += 1  # type: ignore
+    except NameError:
         match = re.search(r"File \"(.*?)\", line", traceback.format_exc())
-        if match is None:
-            __file__ = "C\:"
-            bl2sdk.Log(f"[ABC] File path: {__file__}")
-        else:
+        if match is not None:
             __file__ = match.group(1)
-            bl2sdk.Log(f"[ABC] File path: {__file__}")
+    bl2sdk.Log(f"[ABC] File path: {__file__}")
 
+# It complains that these aren't at the top of the file but we might need to reload them first
+from ApplesBorderlandsCheats.Cheats import ABCOptions  # noqa
+from ApplesBorderlandsCheats.Presets import PresetManager  # noqa
 
-# Small helper classes I have to define out here to be able to inherit from
-class ABCCheat(metaclass=ABCMeta):
-    Name: str
-    KeybindName: str
-
-    @abstractmethod
-    def Callback(self) -> None:
-        raise NotImplementedError
-
-    def ShowMessage(self, message: str) -> None:
-        PC = bl2sdk.GetEngine().GamePlayers[0].Actor
-        HUDMovie = PC.GetHUDMovie()
-
-        if HUDMovie is None:
-            return
-
-        HUDMovie.ClearTrainingText()
-        HUDMovie.AddTrainingText(
-            message,
-            self.Name,
-            2,
-            (),
-            "",
-            False,
-            0,
-            PC.PlayerReplicationInfo,
-            True
-        )
-
-class ABCCycleableCheat(ABCCheat):
-    Name: str
-    Order: Tuple[str, ...]
-
-    def __init__(self, value: str = "") -> None:
-        if value == "":
-            value = self.Order[0]
-        if value not in self.Order:
-            raise ValueError
-        self.value = value
-
-    def __eq__(self, obj: object) -> bool:
-        if isinstance(obj, str):
-            return self.value == obj
-        elif type(self) == type(obj):
-            return self.value == obj.value  # type: ignore
-        return False
-
-    def Callback(self) -> None:
-        self.value = self.Order[(self.Order.index(self.value) + 1) % len(self.Order)]
-        self.ShowMessage(f"{self.Name}: {self.value}")
 
 class ApplesBorderlandsCheats(bl2sdk.BL2MOD):
-    Name: str = "Apple's Borderlands Cheats"
-    Author: str = "apple1417"
-    Description: str = (
+    Name: ClassVar[str] = "Apple's Borderlands Cheats"
+    Author: ClassVar[str] = "apple1417"
+    Description: ClassVar[str] = (
         "Adds keybinds performing various cheaty things"
     )
-    Types: List[bl2sdk.ModTypes] = [bl2sdk.ModTypes.Utility]
-    Version = "1.1"
-    SettingsInputs = {
+    Types: ClassVar[List[bl2sdk.ModTypes]] = [bl2sdk.ModTypes.Utility]
+    Version: ClassVar[str] = "1.2"
+
+    BASE_PATH: ClassVar[str] = os.path.dirname(os.path.realpath(__file__))
+    KEYBIND_PATH: ClassVar[str] = os.path.join(BASE_PATH, "Keybinds.json")
+    PRESET_PATH: ClassVar[str] = os.path.join(BASE_PATH, "Presets.json")
+
+    SettingsInputs: Dict[str, str] = {
         "Enter": "Enable",
+        "P": "Configure Presets",
         "R": "Reset Keybinds"
     }
 
-    KEYBIND_PATH: str = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Keybinds.json")
-
-    # Holds information about the current cheat state, as well as defines each cheat
-    class Cheats:
-        class InfiniteAmmo(ABCCycleableCheat):
-            Name = " Infinite Ammo"
-            KeybindName = "Cycle Infinite Ammo"
-
-            OFF: str = "Off"
-            RELOADS: str = "Free Reloads"
-            FULL: str = "Full"
-            Order = (OFF, RELOADS, FULL)
-
-        class GodMode(ABCCycleableCheat):
-            Name = "God Mode"
-            KeybindName = "Cycle God Mode"
-
-            OFF: str = "Off"
-            ALLOWDAMAGE: str = "Prevent Death"
-            FULL: str = "No Damage"
-            Order = (OFF, ALLOWDAMAGE, FULL)
-
-        class OneShot(ABCCycleableCheat):
-            Name = "One Shot Mode"
-            KeybindName = "Toggle One Shot Mode"
-
-            OFF: str = "Off"
-            ON: str = "On"
-            Order = (OFF, ON)
-
-        class InstantCooldown(ABCCycleableCheat):
-            Name = "Instant Cooldown"
-            KeybindName = "Toggle Instant Cooldown"
-
-            OFF: str = "Off"
-            ON: str = "On"
-            Order = (OFF, ON)
-
-        class PassiveMode(ABCCycleableCheat):
-            Name = "Passive Mode"
-            KeybindName = "Cycle Passive Mode"
-
-            # These are in the same order as in the games's struct
-            OFF: str = "Off"  # Technically this is OPINION_Enemy
-            NEUTRAL: str = "Neutral"
-            FRIENDLY: str = "Friendly"
-            Order = (OFF, NEUTRAL, FRIENDLY)
-
-            def Callback(self) -> None:
-                super().Callback()
-
-                allegiance = bl2sdk.FindObject("PawnAllegiance", "GD_AI_Allegiance.Allegiance_Player")
-                allegiance2 = bl2sdk.FindObject("PawnAllegiance", "GD_AI_Allegiance.Allegiance_Player_NoLevel")
-
-                allegiance.bForceAllOtherOpinions = self != self.OFF
-                allegiance2.bForceAllOtherOpinions = self != self.OFF
-
-                allegiance.ForcedOtherOpinion = self.Order.index(self.value)
-                allegiance2.ForcedOtherOpinion = self.Order.index(self.value)
-
-        class KillAll(ABCCheat):
-            Name = "Kill All"
-            KeybindName = "Kill All"
-
-            def Callback(self) -> None:
-                playerPool = bl2sdk.GetEngine().GamePlayers[0].Actor.Pawn.HealthPool.Data
-                for pool in bl2sdk.FindAll("HealthResourcePool"):
-                    if pool == playerPool:
-                        continue
-                    pool.CurrentValue = 0
-
-        class LevelUp(ABCCheat):
-            Name = "Level Up"
-            KeybindName = "Level Up"
-
-            def Callback(self) -> None:
-                bl2sdk.GetEngine().GamePlayers[0].Actor.ExpLevelUp(True)
-
-        class OPLevel(ABCCheat):
-            Name = "Add OP Level"
-            KeybindName = "Add OP Level"
-
-            def Callback(self) -> None:
-                PC = bl2sdk.GetEngine().GamePlayers[0].Actor
-                if PC.PlayerReplicationInfo.NumOverpowerLevelsUnlocked == PC.GetMaximumPossibleOverpowerModifier():
-                    self.ShowMessage("You are already at the maximum OP level")
-                else:
-                    PC.PlayerReplicationInfo.NumOverpowerLevelsUnlocked += 1
-                    self.ShowMessage(f"You have now unlocked OP {PC.PlayerReplicationInfo.NumOverpowerLevelsUnlocked}")
-
-        class Suicide(ABCCheat):
-            Name = "Suicide"
-            KeybindName = "Suicide"
-
-            def Callback(self) -> None:
-                bl2sdk.GetEngine().GamePlayers[0].Actor.CausePlayerDeath(True)
-
-        def __init__(self) -> None:
-            self.ammo: ABCCycleableCheat = self.InfiniteAmmo()
-            self.god: ABCCycleableCheat = self.GodMode()
-            self.one: ABCCycleableCheat = self.OneShot()
-            self.cooldown: ABCCycleableCheat = self.InstantCooldown()
-
-            self.all: Tuple[ABCCheat, ...] = (
-                self.ammo,
-                self.god,
-                self.one,
-                self.cooldown,
-                self.PassiveMode(),
-                self.KillAll(),
-                self.LevelUp(),
-                self.OPLevel(),
-                self.Suicide()
-            )
-
     def __init__(self) -> None:
         # Hopefully I can remove this in a future SDK update
-        self.Author += "\nVersion: " + str(self.Version)
+        self.Author += "\nVersion: " + str(self.Version)  # type: ignore
 
-        self.options = self.Cheats()
+        self.Options = ABCOptions()
+        self.PresetManager = PresetManager(self.PRESET_PATH)
+
+        # This is a kind of hacky way for the preset manager to interface with the keybinds system
+        # It's because the keybinds system is badly made and requires the main mod instance to
+        #  register all binds itself, just so that it can use the single callback on that instance
+        # It would be much better if you could provide a custom callback per keybind - even if
+        #  you're not using something like my preset system, with any decent amount of binds you're
+        #  going to split up the callbacks anyway, it just gets too messy all being in one function
+        # Hooks already work in this way too so it'd only help standardize code more
+
+        # Output from the preset manager is html-escaped, the keybind menu doesn't use html, so this
+        #  stuff all has to convert it
+        def AddPresetKeybind(name: str) -> None:
+            self.Keybinds[html.unescape(name)] = "None"
+            if self.Status == "Enabled":
+                self.RegisterGameInput(html.unescape(name), "None")
+            self.SaveKeybinds()
+
+        def RenamePresetKeybind(oldName: str, newName: str) -> None:
+            bind = self.Keybinds[html.unescape(oldName)]
+            del self.Keybinds[html.unescape(oldName)]
+            self.Keybinds[html.unescape(newName)] = bind
+            if self.Status == "Enabled":
+                self.UnregisterGameInput(html.unescape(oldName))
+                self.RegisterGameInput(html.unescape(newName), bind)
+            self.SaveKeybinds()
+
+        def RemovePresetKeybind(name: str) -> None:
+            del self.Keybinds[html.unescape(name)]
+            if self.Status == "Enabled":
+                self.UnregisterGameInput(html.unescape(name))
+            self.SaveKeybinds()
+
+        def ReloadAllKeybinds() -> None:
+            if self.Status == "Enabled":
+                for key in self.Keybinds:
+                    self.UnregisterGameInput(key)
+            self.LoadKeybinds()
+            if self.Status == "Enabled":
+                for name, key in self.Keybinds.items():
+                    self.RegisterGameInput(name, key)
+
+        self.PresetManager.AddKeybind = AddPresetKeybind  # type: ignore
+        self.PresetManager.RenameKeybind = RenamePresetKeybind  # type: ignore
+        self.PresetManager.RemoveKeybind = RemovePresetKeybind  # type: ignore
+        self.PresetManager.ReloadAllKeybinds = ReloadAllKeybinds  # type: ignore
+        self.LoadKeybinds()
+
+    def LoadKeybinds(self) -> None:
+        loadedBinds: Dict[str, str] = {}
+        try:
+            with open(self.KEYBIND_PATH) as file:
+                loadedBinds = json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError):
+            pass
+
+        # Limit to just the binds associated with valid cheats/presets
+        self.Keybinds: Dict[str, str] = {}
+        for cheat in self.Options.All:
+            if cheat.KeybindName in loadedBinds:
+                self.Keybinds[cheat.KeybindName] = loadedBinds[cheat.KeybindName]
+            else:
+                self.Keybinds[cheat.KeybindName] = "None"
+        for preset in self.PresetManager.PresetList:
+            name = html.unescape(preset.Name)
+            if name in loadedBinds:
+                self.Keybinds[name] = loadedBinds[name]
+            else:
+                self.Keybinds[name] = "None"
+
+        self.SaveKeybinds()
+
+    def SaveKeybinds(self) -> None:
+        with open(self.KEYBIND_PATH, "w") as file:
+            json.dump(self.Keybinds, file, indent=2)
 
     def SettingsInputPressed(self, name: str) -> None:
         if name == "Enable":
@@ -217,6 +137,9 @@ class ApplesBorderlandsCheats(bl2sdk.BL2MOD):
         elif name == "Disable":
             self.Status = "Disabled"
             self.SettingsInputs["Enter"] = "Enable"
+            self.Disable()
+        elif name == "Configure Presets":
+            self.PresetManager.StartConfiguring()
         elif name == "Reset Keybinds":
             if self.Status == "Enabled":
                 for name in self.Keybinds:
@@ -228,122 +151,60 @@ class ApplesBorderlandsCheats(bl2sdk.BL2MOD):
             except FileNotFoundError:
                 pass
 
-    def Enable(self) -> None:
-        # For weapon infinite ammo
-        def ConsumeAmmo(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-            if self.options.ammo == self.Cheats.InfiniteAmmo.FULL:
-                caller.RefillClip()
-            return self.options.ammo == self.Cheats.InfiniteAmmo.OFF
-
-        # For grenade infinite ammo
-        def ConsumeProjectileResource(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-            return self.options.ammo == self.Cheats.InfiniteAmmo.OFF
-
-        # For full god and one shot mode
-        def TakeDamage(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-            PC = bl2sdk.GetEngine().GamePlayers[0].Actor
-            if caller == PC.Pawn:
-                return self.options.god != self.Cheats.GodMode.FULL
-
-            if params.InstigatedBy != PC:
-                return True
-
-            if self.options.one == self.Cheats.OneShot.ON:
-                # Set the health low so that your shot kills it, rather than just to 0 killing it
-                #  straight away
-                bl2sdk.DoInjectedCallNext()
-                caller.SetHealth(1)
-
-            return True
-
-        # For 1hp god mode
-        def SetHealth(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-            if caller != bl2sdk.GetEngine().GamePlayers[0].Actor.Pawn:
-                return True
-
-            # This function is never called if you have full god mode on, so this is safe
-            if params.NewHealth > caller.GetHealth() or params.NewHealth > 1:
-                return True
-
-            if self.options.god != self.Cheats.GodMode.ALLOWDAMAGE:
-                return True
-
-            bl2sdk.DoInjectedCallNext()
-            caller.SetHealth(1)
-            return False
-
-        # For instant cooldown mode
-        def StartActiveMeleeSkillCooldown(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-            return self.options.cooldown == self.Cheats.InstantCooldown.OFF
-
-        bl2sdk.RegisterHook("WillowGame.WillowWeapon.ConsumeAmmo", "ApplesBorderlandsCheats", ConsumeAmmo)
-        bl2sdk.RegisterHook("WillowGame.WillowPlayerController.ConsumeProjectileResource", "ApplesBorderlandsCheats", ConsumeProjectileResource)
-        bl2sdk.RegisterHook("Engine.Pawn.TakeDamage", "ApplesBorderlandsCheats", TakeDamage)
-        bl2sdk.RegisterHook("Engine.Pawn.SetHealth", "ApplesBorderlandsCheats", SetHealth)
-        bl2sdk.RegisterHook("WillowGame.WillowPlayerController.StartActiveSkillCooldown", "ApplesBorderlandsCheats", StartActiveMeleeSkillCooldown)
-        bl2sdk.RegisterHook("WillowGame.WillowPlayerController.StartMeleeSkillCooldown", "ApplesBorderlandsCheats", StartActiveMeleeSkillCooldown)
-
-        loadedBinds: Dict[str, str] = {}
-        try:
-            with open(self.KEYBIND_PATH) as file:
-                loadedBinds = json.load(file)
-        except FileNotFoundError:
-            pass
-
-        # Limit to just the binds associated with the cheats, incase someone messes with the file
-        self.Keybinds: Dict[str, str] = {}
-        for cheat in self.options.all:
-            if cheat.KeybindName in loadedBinds:
-                self.Keybinds[cheat.KeybindName] = loadedBinds[cheat.KeybindName]
-            else:
-                # By default we don't want these bound
-                self.Keybinds[cheat.KeybindName] = "None"
-
-        with open(self.KEYBIND_PATH, "w") as file:
-            json.dump(self.Keybinds, file, indent=2)
-
-        for name in self.Keybinds:
-            self.RegisterGameInput(name, self.Keybinds[name])
-
-    def Disable(self) -> None:
-        bl2sdk.RemoveHook("WillowGame.WillowWeapon.ConsumeAmmo", "ApplesBorderlandsCheats")
-        bl2sdk.RemoveHook("WillowGame.WillowPlayerController.ConsumeProjectileResource", "ApplesBorderlandsCheats")
-        bl2sdk.RemoveHook("Engine.Pawn.TakeDamage", "ApplesBorderlandsCheats")
-        bl2sdk.RemoveHook("Engine.Pawn.SetHealth", "ApplesBorderlandsCheats")
-        bl2sdk.RemoveHook("WillowGame.WillowPlayerController.StartActiveSkillCooldown", "ApplesBorderlandsCheats")
-        bl2sdk.RemoveHook("WillowGame.WillowPlayerController.StartMeleeSkillCooldown", "ApplesBorderlandsCheats")
-
-        for name in self.Keybinds:
-            self.UnregisterGameInput(name)
-
     def GameInputRebound(self, name: str, key: str) -> None:
         if name not in self.Keybinds:
             return
-
         self.Keybinds[name] = key
 
-        with open(self.KEYBIND_PATH, "w") as file:
-            json.dump(self.Keybinds, file, indent=2)
+        self.SaveKeybinds()
 
     def GameInputPressed(self, input) -> None:  # type: ignore
-        for cheat in self.options.all:
+        for cheat in self.Options.All:
             if input.Name == cheat.KeybindName:
-                cheat.Callback()
+                cheat.OnPress()
+        for preset in self.PresetManager.PresetList:
+            if input.Name == preset.Name:
+                preset.ApplySettings(self.Options)
+
+    def Enable(self) -> None:
+        for hook, funcList in self.Options.Hooks.items():
+            for i in range(len(funcList)):
+                bl2sdk.RegisterHook(hook, f"ApplesBorderlandsCheats_{i}", funcList[i])
+
+        self.LoadKeybinds()
+        for name, key in self.Keybinds.items():
+            self.RegisterGameInput(name, key)
+
+    def Disable(self) -> None:
+        for hook, funcList in self.Options.Hooks.items():
+            for i in range(len(funcList)):
+                bl2sdk.RemoveHook(hook, f"ApplesBorderlandsCheats_{i}")
+
+        # SDK causes errors if you try unregister a keybind that hasn't been registered
+        for name in self.Keybinds:
+            try:
+                self.UnregisterGameInput(name)
+            except KeyError:
+                pass
+
 
 instance = ApplesBorderlandsCheats()
-if __name__ == "__main__":
+if __name__ != "__main__":
+    bl2sdk.Mods.append(instance)
+else:
     bl2sdk.Log("[ABC] Manually loaded")
-    for mod in bl2sdk.Mods:
-        if mod.Name == instance.Name:
-            mod.Disable()
-            bl2sdk.Mods.remove(mod)
+    for i in range(len(bl2sdk.Mods)):
+        mod = bl2sdk.Mods[i]
+        if bl2sdk.Mods[i].Name == instance.Name:
+            bl2sdk.Mods[i].Disable()
+            bl2sdk.Mods[i] = instance
             bl2sdk.Log("[ABC] Disabled and removed last instance")
             break
     else:
         bl2sdk.Log("[ABC] Could not find previous instance")
+        bl2sdk.Mods.append(instance)
 
     bl2sdk.Log("[ABC] Auto-enabling")
     instance.Status = "Enabled"
     instance.SettingsInputs["Enter"] = "Disable"
     instance.Enable()
-bl2sdk.Mods.append(instance)
