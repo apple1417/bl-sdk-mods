@@ -338,6 +338,9 @@ class OptionBox(GFxMovie):
         """
         Displays the option box with the provided button selected.
 
+        If the same button has been included multiple times it will prioritize the first copy on the
+         current page, followed by the first copy in the overall list.
+
         Args:
             button: The button you want to be selected
         Raises:
@@ -345,13 +348,17 @@ class OptionBox(GFxMovie):
                 If the provided button is not currently in one of the stored pages. This may happen
                  if you forgot to call UpdatePages().
         """
-        for page in self._Pages:
-            if button in page.Buttons:
-                self._CurrentPageIndex = self._Pages.index(page)
-                page.DefaultButtonIndex = page.Buttons.index(button)
-                break
+        currentPage = self._Pages[self._CurrentPageIndex]
+        if button in currentPage.Buttons:
+            currentPage.DefaultButtonIndex = currentPage.Buttons.index(button)
         else:
-            raise ValueError(f"Provided button {button} is not on any of the current pages!")
+            for page in self._Pages:
+                if button in page.Buttons:
+                    self._CurrentPageIndex = self._Pages.index(page)
+                    page.DefaultButtonIndex = page.Buttons.index(button)
+                    break
+            else:
+                raise ValueError(f"Provided button {button} is not on any of the current pages!")
 
         self.Show()
         self._Pages[self._CurrentPageIndex].DefaultButtonIndex = 0
