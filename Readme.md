@@ -15,10 +15,15 @@ Adds keybinds performing various cheaty things. Currently contains:
 - One Shot Mode
 - Instant Cooldowns
 - Passive Mode
+- Free Shops
+- Ghost Mode
 - A 'Kill All' Button
 - A 'Level Up' Button
 - A 'Add OP Level' Button
 - A 'Suicide' Button
+- Teleport Between Fast Travels
+- Teleport Between Level Transitions
+- A 'Reset Shops' Button
 
 Compatible with both BL2 and TPS.
 
@@ -54,6 +59,11 @@ Shows the parts making up all of your items and weapons on their cards. Yes this
 What exactly is shown on the card is very customizable through the options menu. Don't care about a part slot? You can turn it off. Running out of space with all the parts you want to show? You can remove the original description. Or playing Randomizer and want to know what weapons each part comes from? Why not use detailed part names. All these options save between sessions, so you only have to set them up once.
 
 Note that there are thousands of parts, so it's not impossible that the mod gets something wrong, don't be afraid to double check. If you do find an issue please report it alongside a gibbed code for the item.
+
+Compatible with both BL2 and TPS.
+
+### Rounds Per Minute
+Makes item cards display rounds per minute rather than per second.
 
 Compatible with both BL2 and TPS.
 
