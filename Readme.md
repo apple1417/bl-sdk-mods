@@ -8,6 +8,9 @@ To use these mods:
 If a folder doesn't have a zip file, or is not listed below, then the mod inside is likely incomplete. If you know what you're doing you can attempt to install it manually, but it may well have issues.
 
 
+### Always Offline
+Forces the game to never download SHiFT hotfixes, meaning you can always safely use offline text mods.
+
 ### Apple's Borderlands Cheats
 Adds keybinds performing various cheaty things. Currently contains:
 - Infinite Ammo
