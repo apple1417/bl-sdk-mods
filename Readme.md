@@ -50,6 +50,11 @@ Also note that there may still be various other issues with an increased level c
 
 Compatible with both BL2 and TPS.
 
+### No BL3 Ads
+Removes the BL3 ads from the main menu.
+
+Compatible with BL2. TPS probably also works, but the sdk currently crashes there.
+
 ### Onezerker
 Ever felt gunzerking with two different guns was too complicated? No? Well too bad. Makes you gunzerk with two copies of the same gun instead of two different ones.    
 Thanks to FromDarkHell for finding the object which lets you gunzerk with only one equipped gun.
