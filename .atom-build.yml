@@ -1,0 +1,8 @@
+cmd: mypy
+name: Mypy
+args:
+    - "{FILE_ACTIVE_PATH}\\{FILE_ACTIVE_NAME}"
+cwd: "{PROJECT_PATH}"
+sh: False
+errorMatch:
+    - '(?<file>.+?):(?<line>\\d+): (?<message>.+)'
