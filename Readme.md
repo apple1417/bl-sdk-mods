@@ -90,6 +90,13 @@ If you want to spoil yourself you can also generate a dump of the exact mission 
 
 Compatible with both BL2 and TPS.
 
+### True Damage Logger
+Prints the actual amount of damage you deal to console, bypassing visual damage cap.
+
+Has a configurable minimum damage before logging, in case you don't want to spam your console.
+
+Compatible with BL2. TPS probably also works, but the sdk currently crashes there.
+
 ### User Feedback
 THIS IS NOT A MOD BY ITSELF, IT'S A LIBRARY OTHER MODS USE.    
 
