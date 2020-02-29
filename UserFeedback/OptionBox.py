@@ -1,4 +1,4 @@
-import bl2sdk
+import unrealsdk
 from typing import List, Optional, Sequence
 from .GFxMovie import GFxMovie
 
@@ -40,7 +40,7 @@ class _Page(GFxMovie):
     PreventCanceling: bool
     Priority: int
 
-    _OptionBox: Optional[bl2sdk.UObject]
+    _OptionBox: Optional[unrealsdk.UObject]
 
     def __init__(
         self, *,
@@ -78,7 +78,7 @@ class _Page(GFxMovie):
         self._OptionBox = None
 
     def Show(self) -> None:
-        self._OptionBox = bl2sdk.GetEngine().GamePlayers[0].Actor.GFxUIManager.ShowDialog()
+        self._OptionBox = unrealsdk.GetEngine().GamePlayers[0].Actor.GFxUIManager.ShowDialog()
 
         self._OptionBox.SetText(self.Title, self.Caption)
         self._OptionBox.bNoCancel = self.PreventCanceling
@@ -94,44 +94,44 @@ class _Page(GFxMovie):
 
         # One of these two functions is called when you exit the box
         # We run callbacks after removing hooks so that you can immediately re-show it if you want
-        def Accepted(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
+        def Accepted(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
             if caller == self._OptionBox:
-                bl2sdk.RemoveHook("WillowGame.WillowGFxDialogBox.Accepted", "CustomOptionBox")
-                bl2sdk.RemoveHook("WillowGame.WillowGFxDialogBox.Cancelled", "CustomOptionBox")
-                bl2sdk.RemoveHook("WillowGame.WillowGFxDialogBox.HandleInputKey", "CustomOptionBox")
+                unrealsdk.RemoveHook("WillowGame.WillowGFxDialogBox.Accepted", "CustomOptionBox")
+                unrealsdk.RemoveHook("WillowGame.WillowGFxDialogBox.Cancelled", "CustomOptionBox")
+                unrealsdk.RemoveHook("WillowGame.WillowGFxDialogBox.HandleInputKey", "CustomOptionBox")
                 self._OptionBox = None
                 self.OnPress(self.Buttons[int(caller.CurrentSelection)])
             return True
 
-        def Cancelled(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
+        def Cancelled(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
             if caller == self._OptionBox:
-                bl2sdk.RemoveHook("WillowGame.WillowGFxDialogBox.Accepted", "CustomOptionBox")
-                bl2sdk.RemoveHook("WillowGame.WillowGFxDialogBox.Cancelled", "CustomOptionBox")
-                bl2sdk.RemoveHook("WillowGame.WillowGFxDialogBox.HandleInputKey", "CustomOptionBox")
+                unrealsdk.RemoveHook("WillowGame.WillowGFxDialogBox.Accepted", "CustomOptionBox")
+                unrealsdk.RemoveHook("WillowGame.WillowGFxDialogBox.Cancelled", "CustomOptionBox")
+                unrealsdk.RemoveHook("WillowGame.WillowGFxDialogBox.HandleInputKey", "CustomOptionBox")
                 self._OptionBox = None
                 self.OnCancel()
             return True
 
-        def HandleInputKey(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
+        def HandleInputKey(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
             if caller == self._OptionBox:
                 self.OnInput(params.ukey, params.uevent)
             return True
 
-        bl2sdk.RegisterHook("WillowGame.WillowGFxDialogBox.Accepted", "CustomOptionBox", Accepted)
-        bl2sdk.RegisterHook("WillowGame.WillowGFxDialogBox.Cancelled", "CustomOptionBox", Cancelled)
-        bl2sdk.RegisterHook("WillowGame.WillowGFxDialogBox.HandleInputKey", "CustomOptionBox", HandleInputKey)
+        unrealsdk.RegisterHook("WillowGame.WillowGFxDialogBox.Accepted", "CustomOptionBox", Accepted)
+        unrealsdk.RegisterHook("WillowGame.WillowGFxDialogBox.Cancelled", "CustomOptionBox", Cancelled)
+        unrealsdk.RegisterHook("WillowGame.WillowGFxDialogBox.HandleInputKey", "CustomOptionBox", HandleInputKey)
 
     def IsShowing(self) -> bool:
         return self._OptionBox is not None
 
     def Hide(self) -> None:
-        bl2sdk.RemoveHook("WillowGame.WillowGFxDialogBox.Accepted", "CustomOptionBox")
-        bl2sdk.RemoveHook("WillowGame.WillowGFxDialogBox.Cancelled", "CustomOptionBox")
-        bl2sdk.RemoveHook("WillowGame.WillowGFxDialogBox.HandleInputKey", "CustomOptionBox")
+        unrealsdk.RemoveHook("WillowGame.WillowGFxDialogBox.Accepted", "CustomOptionBox")
+        unrealsdk.RemoveHook("WillowGame.WillowGFxDialogBox.Cancelled", "CustomOptionBox")
+        unrealsdk.RemoveHook("WillowGame.WillowGFxDialogBox.HandleInputKey", "CustomOptionBox")
 
         # If it's already closed just give a warning`
         if self._OptionBox is None:
-            bl2sdk.Log(
+            unrealsdk.Log(
                 "[UserFeedback] Warning: tried to hide a option box page that was already closed"
             )
             return

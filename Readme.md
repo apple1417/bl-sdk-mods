@@ -53,7 +53,7 @@ Compatible with both BL2 and TPS.
 ### No BL3 Ads
 Removes the BL3 ads from the main menu.
 
-Compatible with BL2. TPS probably also works, but the sdk currently crashes there.
+Compatible with both BL2 and TPS.
 
 ### Onezerker
 Ever felt gunzerking with two different guns was too complicated? No? Well too bad. Makes you gunzerk with two copies of the same gun instead of two different ones.    
@@ -95,7 +95,7 @@ Prints the actual amount of damage you deal to console, bypassing visual damage 
 
 Has a configurable minimum damage before logging, in case you don't want to spam your console.
 
-Compatible with BL2. TPS probably also works, but the sdk currently crashes there.
+Compatible with both BL2 and TPS.
 
 ### User Feedback
 THIS IS NOT A MOD BY ITSELF, IT'S A LIBRARY OTHER MODS USE.    

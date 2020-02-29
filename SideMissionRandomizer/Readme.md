@@ -1,5 +1,8 @@
 ## Changelog
 
+### Side Mission Randomizer v1.2
+Updated for SDK versions 0.7.4-0.7.6.
+
 ### Side Mission Randomizer v1.1
 Fixed that object dependencies were not removed, potentially causing softlocks.    
 This does not affect randomization

@@ -1,45 +1,37 @@
-import bl2sdk
-import json
-import os
+import unrealsdk
+from Mods.SaveManager import storeModSettings  # type: ignore
+from typing import cast, ClassVar, Dict, List, Tuple, Union
 
-import sys
-sys.path.append("..")
-from PythonPartNotifier import PartNamer
+from Mods.PythonPartNotifier.PartNamer import GetPartName  # noqa
+OptionDescription = Tuple[Union[
+    Tuple[str, Union[str, Tuple[str, ...]], int],
+    Tuple[str, Union[str, Tuple[str, ...]], int, str]
+], ...]
 
-bl2sdk.Log("[PPN] Main file loaded")
 
-# If __file__ is not defined temporarily define it as the empty string so this doesn't error
-# It gets properly set later
-try:
-    fake_a = __file__
-except:
-    __file__ = ""
-
-class PythonPartNotifier(bl2sdk.BL2MOD):
+class PythonPartNotifier(unrealsdk.BL2MOD):
     # Use a short name so that the settings are readable
-    Name = "PPN"
-    Author = "apple1417"
-    Description = (
+    Name: ClassVar[str] = "PPN"
+    Author: ClassVar[str] = "apple1417"
+    Description: ClassVar[str] = (
         # Put the full name in the description
         "<font size='24' color='#FFDEAD'>Python Part Notifier</font>\n"
         "Lets you show all parts on your items and weapons, even if other mods have modified them.\n"
         "\n"
         "Make sure to check out the options menu to customize what exactly is shown."
     )
-    Types = [bl2sdk.ModTypes.Utility]
-    Version = "1.0"
+    Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
+    Version: ClassVar[str] = "1.1"
 
-    # A list to store options in the order they should appear, and a dict to map the option name
-    #  to it's current value
-    Options = []
-    OptionsDict = {}
+    Options: List[Union[unrealsdk.Options.Slider, unrealsdk.Options.Spinner, unrealsdk.Options.Boolean, unrealsdk.Options.Hidden]]
+    OptionsDict: Dict[str, Union[int, bool]]
 
-    BOOL_OPTIONS = (
+    BOOL_OPTIONS: ClassVar[Tuple[Tuple[str, str, bool], ...]] = (
         ("Detailed Part Names", "Should part names include the weapon and part type they're for rather than just the manufacturer.", False),
         ("Remove Descriptions", "Should the default descriptions be removed to create more space for the part descriptions.", False)
     )
 
-    WEAPON_PARTS = (
+    WEAPON_PARTS: ClassVar[OptionDescription] = (
         # Name, Attribute, Default Option Value, Custom Description
         ("Weapon Accessory", "Accessory1PartDefinition", 1),
         ("Weapon 2nd Accessory", "Accessory2PartDefinition", 0),
@@ -52,7 +44,7 @@ class PythonPartNotifier(bl2sdk.BL2MOD):
         ("Weapon Stock", "StockPartDefinition", 1),
         ("Weapon Type", "WeaponTypeDefinition", 0)
     )
-    SHIELD_PARTS = (
+    SHIELD_PARTS: ClassVar[OptionDescription] = (
         ("Shield Accessory", "DeltaItemPartDefinition", 0),
         ("Shield Battery", "BetaItemPartDefinition", 1),
         ("Shield Body", "AlphaItemPartDefinition", 1),
@@ -67,7 +59,7 @@ class PythonPartNotifier(bl2sdk.BL2MOD):
         ), 1, "Should parts in slots that aren't normally used be shown if they contain a part.")
     )
 
-    GRENADE_PARTS = (
+    GRENADE_PARTS: ClassVar[OptionDescription] = (
         ("Grenade Accessory", "DeltaItemPartDefinition", 0),
         ("Grenade Blast Radius", "ZetaItemPartDefinition", 1),
         ("Grenade Child Count", "EtaItemPartDefinition", 1),
@@ -79,7 +71,7 @@ class PythonPartNotifier(bl2sdk.BL2MOD):
         ("Grenade Trigger", "GammaItemPartDefinition", 1),
         ("Grenade Type", "ItemDefinition", 0)
     )
-    COM_PARTS = (
+    COM_PARTS: ClassVar[OptionDescription] = (
         ("COM Specialization", "AlphaItemPartDefinition", 1),
         ("COM Primary", "BetaItemPartDefinition", 1),
         ("COM Secondary", "GammaItemPartDefinition", 1),
@@ -93,7 +85,7 @@ class PythonPartNotifier(bl2sdk.BL2MOD):
             "ThetaItemPartDefinition"
         ), 1, "Should parts in slots that aren't normally used be shown if they contain a part.")
     )
-    ARTIFACT_PARTS = (
+    ARTIFACT_PARTS: ClassVar[OptionDescription] = (
         ("Relic Body", "EtaItemPartDefinition", 0),
         ("Relic Upgrade", "ThetaItemPartDefinition", 1),
         # These are the various relic enable effect parts
@@ -105,12 +97,15 @@ class PythonPartNotifier(bl2sdk.BL2MOD):
         ("Relic Epsilon", "EpsilonItemPartDefinition", 0),
         ("Relic Zeta", "ZetaItemPartDefinition", 0),
         ("Relic Type", "ItemDefinition", 0),
-        ("Relic Extras", "MaterialItemPartDefinition", 1,
+        (
+            "Relic Extras",
+            "MaterialItemPartDefinition",
+            1,
             "Should parts in slots that aren't normally used be shown if they contain a part."
-        ),
+        )
     )
     # Map to turn the item class back into those above tables
-    PARTS_MAP = {
+    PARTS_MAP: Dict[str, OptionDescription] = {
         "WillowWeapon": WEAPON_PARTS,
         "WillowShield": SHIELD_PARTS,
         "WillowGrenadeMod": GRENADE_PARTS,
@@ -119,151 +114,154 @@ class PythonPartNotifier(bl2sdk.BL2MOD):
     }
 
     # List of options with headers
-    ALL_OPTIONS = (
+    ALL_OPTIONS: Tuple[Tuple[str, OptionDescription], ...] = (
         ("Weapon Parts", WEAPON_PARTS),
         ("Shield Parts", SHIELD_PARTS),
         ("Grenade Parts", GRENADE_PARTS),
         ("Class Mod Parts", COM_PARTS),
-        ("Relic Parts", ARTIFACT_PARTS)
+        ("Relic Parts", ARTIFACT_PARTS),
+        ("Oz Kit Parts", ARTIFACT_PARTS)
     )
 
-    IS_BL2 = True
+    IS_BL2: ClassVar[bool] = unrealsdk.GetEngine().GetEngineVersion() == 8639
 
-    OPTIONS_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "options.json")
-
-    def __init__(self):
+    def __init__(self) -> None:
         # Hopefully I can remove this in a future SDK update
-        self.Author += "\nVersion: " + str(self.Version)
+        self.Author += "\nVersion: " + str(self.Version)  # type: ignore
 
-        self.IS_BL2 = os.path.basename(sys.executable) == "Borderlands2.exe"
+        self.SetDefaultOptions()
 
-        savedOptions = {}
-        if os.path.exists(self.OPTIONS_PATH):
-            with open(self.OPTIONS_PATH) as file:
-                savedOptions = json.load(file)
+    def SetDefaultOptions(self) -> None:
+        self.Options = []
+        self.OptionsDict = {}
 
-        for option in self.BOOL_OPTIONS:
-            name = option[0]
-            value = option[2]
-            # Load option from file if it was set
-            if name in savedOptions:
-                value = savedOptions[name]
-            descrip = option[1]
+        for boolOption in self.BOOL_OPTIONS:
+            name = boolOption[0]
+            boolValue = boolOption[2]
+            descrip = boolOption[1]
 
-            self.Options.append(bl2sdk.Options.BooleanOption(
-                Caption = name,
-                Description = descrip,
-                StartingValue = value
+            self.Options.append(unrealsdk.Options.Boolean(
+                Caption=name,
+                Description=descrip,
+                StartingValue=boolValue
             ))
-            self.OptionsDict[option[0]] = option[2]
+            self.OptionsDict[boolOption[0]] = boolOption[2]
+
         for optionCategory in self.ALL_OPTIONS:
-            self.Options.append(bl2sdk.Options.SliderOption(
-                Caption = self.translateTPS(optionCategory[0]),
-                Description = "Category Header",
-                StartingValue = 0,
-                MinValue = 0,
-                MaxValue = 0,
-                Increment = 1
-            ))
+            relics = optionCategory[0] == "Relic Parts"
+            ozKits = optionCategory[0] == "Oz Kit Parts"
+            hidden = (relics and not self.IS_BL2) or (ozKits and self.IS_BL2)
+
+            newOption: Union[
+                unrealsdk.Options.Spinner,
+                unrealsdk.Options.Slider,
+                unrealsdk.Options.Hidden
+            ]
+            newOption = unrealsdk.Options.Slider(
+                Caption=optionCategory[0],
+                Description="Category Header",
+                StartingValue=0,
+                MinValue=0,
+                MaxValue=0,
+                Increment=1
+            )
+            if not hidden:
+                self.Options.append(newOption)
+
             for option in optionCategory[1]:
                 name = option[0]
-                value = option[2]
-                # Load option from file if it was set
-                if name in savedOptions:
-                    value = savedOptions[name]
+                value = int(option[2])
+
+                if ozKits:
+                    name = self.translateTPS(name, True)
+
                 # Check if we have a description override
                 descrip = "Should the part be shown in the description or not."
                 if len(option) == 4:
-                    descrip = option[3]
+                    descrip = cast(Tuple[str, str, int, str], option)[3]
 
-                self.Options.append(bl2sdk.Options.SpinnerOption(
-                    Caption =  self.translateTPS(name),
-                    Description = descrip,
-                    StartingChoiceIndex = value,
-                    Choices = ["Hidden", "Shown"] # TODO: Stats
-                ))
+                if hidden:
+                    newOption = unrealsdk.Options.Hidden(
+                        valueName=name,
+                        StartingValue=["Hidden", "Shown"][value]
+                    )
+                else:
+                    newOption = unrealsdk.Options.Spinner(
+                        Caption=name,
+                        Description=descrip,
+                        StartingChoice=["Hidden", "Shown"][value],
+                        Choices=["Hidden", "Shown"]
+                    )
+                self.Options.append(newOption)
                 self.OptionsDict[name] = value
 
-    def ModOptionChanged(self, option, newValue):
+    def ModOptionChanged(
+        self,
+        option: Union[unrealsdk.Options.Slider, unrealsdk.Options.Spinner, unrealsdk.Options.Boolean, unrealsdk.Options.Hidden],
+        newValue: Union[bool, str]
+    ) -> None:
         if option in self.Options:
-            # Clean this up a bit for the settings file
-            newValue = int(newValue)
-            self.OptionsDict[option.Caption] = newValue
-
-            # Would be better if we waited for you to close the settings window, but this is easy
-            with open(self.OPTIONS_PATH, "w") as file:
-                json.dump(self.OptionsDict, file, indent=4)
+            if type(newValue) == int:
+                self.OptionsDict[option.Caption] = cast(int, option.Choices.index(newValue))
+            elif type(newValue == bool):
+                self.OptionsDict[option.Caption] = cast(bool, newValue)
 
     # Add a key to reset all options when in the mod menu
-    SettingsInputs = {
+    SettingsInputs: Dict[str, str] = {
         "Enter": "Enable",
         "R": "Reset Options"
     }
-    def SettingsInputPressed(self, name: str):
+
+    def SettingsInputPressed(self, name: str) -> None:
         if name == "Enable":
             self.Status = "Enabled"
-            self.SettingsInputs = {
-                "Enter": "Disable",
-                "R": "Reset Options"
-            }
+            self.SettingsInputs["Enter"] = "Disable"
             self.Enable()
         elif name == "Disable":
             self.Status = "Disabled"
-            self.SettingsInputs = {
-                "Enter": "Enable",
-                "R": "Reset Options"
-            }
+            self.SettingsInputs["Enter"] = "Enable"
             self.Disable()
 
         elif name == "Reset Options":
-            if os.path.exists(self.OPTIONS_PATH):
-                os.remove(self.OPTIONS_PATH)
-            optionsListIndex = 0
-            for option in self.BOOL_OPTIONS:
-                self.OptionsDict[option[0]] = option[2]
-                self.Options[optionsListIndex].CurrentValue = option[2]
-                optionsListIndex += 1
-            for optionCategory in self.ALL_OPTIONS:
-                optionsListIndex += 1
-                for option in optionCategory[1]:
-                    self.OptionsDict[option[0]] = option[2]
-                    self.Options[optionsListIndex].CurrentValue = option[2]
-                    optionsListIndex += 1
+            self.SetDefaultOptions()
+            storeModSettings()
 
     # The SDK doesn't support unicode yet (even though the game does), so some characters need to be
     #  replaced to keep everything readable
-    UNICODE_REPLACEMENTS = (
-        ("•", "*"), # The bullet point at the start of every line
-    )
+    UNICODE_REPLACEMENTS: Dict[str, str] = {
+        "•": "*"  # The bullet point at the start of every line
+    }
 
     # Some terms should be changed in TPS
-    TPS_REPLACEMENTS = (
-        ("Bandit", "Scav"),
-        ("Bouncing Bonny", "Bouncing Bazza"),
-        ("Relic", "Oz Kit")
-    )
-    def translateTPS(self, text):
-        if not self.IS_BL2:
-            for replacement in self.TPS_REPLACEMENTS:
-                text = text.replace(replacement[0], replacement[1])
+    TPS_REPLACEMENTS: Dict[str, str] = {
+        "Bandit": "Scav",
+        "Bouncing Bonny": "Bouncing Bazza",
+        "Relic": "Oz Kit"
+    }
+
+    def translateTPS(self, text: str, force: bool = False) -> str:
+        if force or not self.IS_BL2:
+            for rep in self.TPS_REPLACEMENTS:
+                text = text.replace(rep, self.TPS_REPLACEMENTS[rep])
         return text
 
-    blockSetFunStats = False
+    _blockSetFunStats: bool = False
 
-    def Enable(self):
+    def Enable(self) -> None:
         # Called whenever an item card is created
-        def SetItemCardEx(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
+        def SetItemCardEx(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
             # If we don't actually have an item then there's no need to do anything special
             item = params.InventoryItem.ObjectPointer
-            if item == None: return True
+            if item is None:
+                return True
 
             # Get the default text and convert it as needed
             text = item.GenerateFunStatsText()
-            if text == None or self.OptionsDict["Remove Descriptions"]:
+            if text is None or self.OptionsDict["Remove Descriptions"]:
                 text = ""
             else:
-                for replacement in self.UNICODE_REPLACEMENTS:
-                    text = text.replace(replacement[0], replacement[1])
+                for rep in self.UNICODE_REPLACEMENTS:
+                    text = text.replace(rep, self.UNICODE_REPLACEMENTS[rep])
 
             # Based off of item class we need to look at different parts
             clas = str(item).split(" ")[0]
@@ -277,9 +275,9 @@ class PythonPartNotifier(bl2sdk.BL2MOD):
                     continue
 
                 if type(category[1]) == str:
-                    partText += self.handleSingleSlot(item, category)
+                    partText += self.handleSingleSlot(item, cast(Tuple[str, str, int], category))
                 else:
-                    partText += self.handleMultipleSlots(item, category)
+                    partText += self.handleMultipleSlots(item, cast(Tuple[str, List[str], int], category))
 
             # If we're not adding anthing then we can let the normal function handle it
             if len(partText) == 0:
@@ -290,50 +288,44 @@ class PythonPartNotifier(bl2sdk.BL2MOD):
             # This function is actually quite complex, so rather than replicate it we'll write out
             #  our text, then let the regular function run but block it from overwriting the text
             caller.SetFunStats(text)
-            self.blockSetFunStats = True
+            self._blockSetFunStats = True
             return True
 
         # Called to set the description on an item card
         # We just hook this so that we can occasionally block it
-        def SetFunStats(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-            if self.blockSetFunStats:
-                self.blockSetFunStats = False
-            else:
-                return True
+        def SetFunStats(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+            if self._blockSetFunStats:
+                self._blockSetFunStats = False
+                return False
+            return True
 
-        bl2sdk.RegisterHook("WillowGame.ItemCardGFxObject.SetFunStats", "PythonPartNotifier", SetFunStats)
-        bl2sdk.RegisterHook("WillowGame.ItemCardGFxObject.SetItemCardEx", "PythonPartNotifier", SetItemCardEx)
+        unrealsdk.RegisterHook("WillowGame.ItemCardGFxObject.SetFunStats", "PythonPartNotifier", SetFunStats)
+        unrealsdk.RegisterHook("WillowGame.ItemCardGFxObject.SetItemCardEx", "PythonPartNotifier", SetItemCardEx)
 
-        for option in self.Options:
-            self.RegisterGameConfigOption(option)
+    def Disable(self) -> None:
+        unrealsdk.RemoveHook("WillowGame.ItemCardGFxObject.SetFunStats", "PythonPartNotifier")
+        unrealsdk.RemoveHook("WillowGame.ItemCardGFxObject.SetItemCardEx", "PythonPartNotifier")
 
-    def Disable(self):
-        bl2sdk.RemoveHook("WillowGame.ItemCardGFxObject.SetFunStats", "PythonPartNotifier")
-        bl2sdk.RemoveHook("WillowGame.ItemCardGFxObject.SetItemCardEx", "PythonPartNotifier")
-
-        for option in self.Options:
-            self.UnregisterGameConfigOption(option)
-
-    def handleSingleSlot(self, item, category):
+    def handleSingleSlot(self, item: unrealsdk.UObject, category: Tuple[str, str, int]) -> str:
         part = getattr(item.DefinitionData, category[1])
-        if part == None:
+        if part is None:
             return ""
 
         trim = " ".join(category[0].split(" ")[1:])
         text = f"{trim}: <font color='#FFDEAD'>"
-        text += PartNamer.getPartName(part, self.OptionsDict["Detailed Part Names"])
+        text += GetPartName(part, cast(bool, self.OptionsDict["Detailed Part Names"]))
         text += "</font>"
 
         # TODO: Stats
 
         return text + "\n"
 
-    def handleMultipleSlots(self, item, category):
+    def handleMultipleSlots(self, item: unrealsdk.UObject, category: Tuple[str, List[str], int]) -> str:
         # Get a count of each part so we can combine them if there are multiple copies
-        partCounts = {}
+        partCounts: Dict[unrealsdk.UObject, int] = {}
         for slot in category[1]:
             part = getattr(item.DefinitionData, slot)
-            if part == None:
+            if part is None:
                 continue
             if part in partCounts:
                 partCounts[part] += 1
@@ -346,7 +338,7 @@ class PythonPartNotifier(bl2sdk.BL2MOD):
         trim = " ".join(category[0].split(" ")[1:])
         text = f"{trim}: <font color='#FFDEAD'>"
         for part in partCounts:
-            text += PartNamer.getPartName(part, True)
+            text += GetPartName(part, True)
             if partCounts[part] > 1:
                 text += f" x{partCounts[part]}"
 
@@ -356,34 +348,27 @@ class PythonPartNotifier(bl2sdk.BL2MOD):
         # Remove the extra ", "
         return f"{text[:-2]} </font>\n"
 
+
 instance = PythonPartNotifier()
-if __name__ == "__main__":
-    bl2sdk.Log("[PPN] Manually loaded")
-    for mod in bl2sdk.Mods:
-        if mod.Name == instance.Name:
-            mod.Disable()
-            bl2sdk.Mods.remove(mod)
-            bl2sdk.Log("[PPN] Disabled and removed last instance")
+if __name__ != "__main__":
+    unrealsdk.RegisterMod(instance)
+else:
+    unrealsdk.Log(f"[{instance.Name}] Manually loaded")
+    for i in range(len(unrealsdk.Mods)):
+        mod = unrealsdk.Mods[i]
+        if unrealsdk.Mods[i].Name == instance.Name:
+            unrealsdk.Mods[i].Disable()
 
-            import importlib
-            bl2sdk.Log("[PPN] Reloading other modules")
-            importlib.reload(PartNamer)
-
+            unrealsdk.RegisterMod(instance)
+            unrealsdk.Mods.remove(instance)
+            unrealsdk.Mods[i] = instance
+            unrealsdk.Log(f"[{instance.Name}] Disabled and removed last instance")
             break
     else:
-        bl2sdk.Log("[PPN] Could not find previous instance")
+        unrealsdk.Log(f"[{instance.Name}] Could not find previous instance")
+        unrealsdk.RegisterMod(instance)
 
-    # __file__ isn't set when you call this through a pyexec, so we have to do something real silly
-    # If we cause an exception then the traceback will contain the file name, which we can regex out
-    import re, traceback
-    try:
-        fake_b += 1
-    except NameError as e:
-        __file__ = re.search(r"File \"(.*?)\", line", traceback.format_exc()).group(1)
-        bl2sdk.Log(f"[PPN] File path: {__file__}")
-
-    bl2sdk.Log("[PPN] Auto-enabling")
+    unrealsdk.Log(f"[{instance.Name}] Auto-enabling")
     instance.Status = "Enabled"
-    instance.SettingsInputs = {"Enter": "Disable"}
+    instance.SettingsInputs["Enter"] = "Disable"
     instance.Enable()
-bl2sdk.Mods.append(instance)

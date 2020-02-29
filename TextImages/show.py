@@ -1,3 +1,3 @@
 import UserFeedback
 
-UserFeedback.TrainingBox("", open("Mods\\Image\\img.txt").read()).Show()
+UserFeedback.TrainingBox("", open("Mods\\TextImages\\img.txt").read()).Show()

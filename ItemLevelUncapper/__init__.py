@@ -1,18 +1,20 @@
-import bl2sdk
+import unrealsdk
+from typing import Callable, ClassVar, Dict, List, Set, Tuple
 
-class ItemLevelUncapper(bl2sdk.BL2MOD):
-    Name = "Item Level Uncapper"
-    Author = "apple1417"
-    Description = (
+
+class ItemLevelUncapper(unrealsdk.BL2MOD):
+    Name: ClassVar[str] = "Item Level Uncapper"
+    Author: ClassVar[str] = "apple1417"
+    Description: ClassVar[str] = (
         "Fixes the level cap of most items so that they continue spawning past level 100."
         "\nNote that some items may continue to spawn at higher levels after disabling this."
     )
-    Types = [bl2sdk.ModTypes.Utility]
-    Version = "1.1"
+    Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
+    Version: ClassVar[str] = "1.2"
 
     # Multitool hex edit caps at 255 so this should be more than enough
-    NEW_LEVEL = 1024
-    
+    NEW_LEVEL: ClassVar[int] = 1024
+
     """
       We need to force load all the vehicles because I don't have a proper hook for spawning one
       I could also force load every other object that we need to modify but:
@@ -22,7 +24,7 @@ class ItemLevelUncapper(bl2sdk.BL2MOD):
        3. It is slighly *less* unlikely for gearbox to add new items than vehicles, meaning there's
            less chance I have to hardcode more things
     """
-    _FORCE_LOAD_BL2 = {
+    _FORCE_LOAD_BL2: Dict[str, Tuple[Tuple[str, str], ...]] = {
       "GD_Runner_Streaming": (
         ("InventoryBalanceDefinition", "GD_Runner_Streaming.Weapon.ItemGrades.ItemGrade_FrontMachineGun"),
         ("InventoryBalanceDefinition", "GD_Runner_Streaming.Weapon.ItemGrades.ItemGrade_MachineGun"),
@@ -38,13 +40,13 @@ class ItemLevelUncapper(bl2sdk.BL2MOD):
         ("InventoryBalanceDefinition", "GD_BTech_Streaming.Weapon.ItemGrades.ItemGrade_SawBladeLauncher")
       ),
       "GD_Orchid_HarpoonHovercraft": (
-        ("InventoryBalanceDefinition", "GD_Orchid_HarpoonHovercraft.Weapon.ItemGrades.ItemGrade_Harpoon")
+        ("InventoryBalanceDefinition", "GD_Orchid_HarpoonHovercraft.Weapon.ItemGrades.ItemGrade_Harpoon"),
       ),
       "GD_Orchid_RocketHovercraft": (
-        ("InventoryBalanceDefinition", "GD_Orchid_RocketHovercraft.Weapon.ItemGrades.ItemGrade_DualRockets")
+        ("InventoryBalanceDefinition", "GD_Orchid_RocketHovercraft.Weapon.ItemGrades.ItemGrade_DualRockets"),
       ),
       "GD_Orchid_SawHovercraft": (
-        ("InventoryBalanceDefinition", "GD_Orchid_SawHovercraft.Weapon.ItemGrades.ItemGrade_SawBladeLauncher")
+        ("InventoryBalanceDefinition", "GD_Orchid_SawHovercraft.Weapon.ItemGrades.ItemGrade_SawBladeLauncher"),
       ),
       "GD_Sage_ShockFanBoat": (
         ("InventoryBalanceDefinition", "GD_Sage_ShockFanBoat.Weapons.ItemGrades.ItemGrade_StickyShock"),
@@ -67,7 +69,7 @@ class ItemLevelUncapper(bl2sdk.BL2MOD):
 
       )
     }
-    _FORCE_LOAD_TPS = {
+    _FORCE_LOAD_TPS: Dict[str, Tuple[Tuple[str, str], ...]] = {
       "GD_MoonBuggy_Streaming": (
         ("InventoryBalanceDefinition", "GD_MoonBuggy_Streaming.Weapon.ItemGrades.ItemGrade_FrontMachineGun"),
         ("InventoryBalanceDefinition", "GD_MoonBuggy_Streaming.Weapon.ItemGrades.ItemGrade_LightLaser"),
@@ -83,35 +85,10 @@ class ItemLevelUncapper(bl2sdk.BL2MOD):
         ("WeaponPartListDefinition", "GD_Co_StingRay_Streaming.Parts.SightPartList_StingRay_Tether")
       )
     }
-    FORCE_LOAD = None
-    CLASS_HANDLER_MAP = None
-    def __init__(self):
-        self.FORCE_LOAD = self._FORCE_LOAD_BL2
-        # Not the greatest way of checking game
-        if bl2sdk.FindObject("ItemNamePartDefinition", "GD_Flax_Items.CandyParts.Prefix_Rock") == None:
-            self.FORCE_LOAD = self._FORCE_LOAD_TPS
-        
-        # All classes we will be searching through and their handlers
-        # Do this in here so we can actually get a proper refrence to the functions
-        self.CLASS_HANDLER_MAP = {
-            "ClassModBalanceDefinition":            self.handleInvBalance,
-            "ItemBalanceDefinition":                self.handleInvBalance,
-            "MissionWeaponBalanceDefinition":       self.handleInvBalance,
-            "WeaponBalanceDefinition":              self.handleInvBalance,
-            
-            "ItemPartListCollectionDefinition":     self.handlePartListCollection,
-            "WeaponPartListCollectionDefinition":   self.handlePartListCollection,
-            
-            "ItemPartListDefinition":               self.handleRawPartList,
-            "WeaponPartListDefinition":             self.handleRawPartList,
-            
-            "ItemNamePartDefinition":               self.handleNamePart,
-            "WeaponNamePartDefinition":             self.handleNamePart
-        }
-    
-        # Hopefully I can remove this in a future SDK update
-        self.Author += "\nVersion: " + str(self.Version)
-    
+
+    FORCE_LOAD: ClassVar[Dict[str, Tuple[Tuple[str, str], ...]]]
+    CLASS_HANDLER_MAP: ClassVar[Dict[str, Callable[[unrealsdk.UObject], None]]]
+
     """
       We store all objects that we can access on the menu so that we can save a decent amount of
        time by not trying to handle them again on map load
@@ -120,40 +97,72 @@ class ItemLevelUncapper(bl2sdk.BL2MOD):
        gets flagged, and then doesn't get uncapped later on when it's unloaded + reloaded
       Seeing as most people are just going to enable it in the mods menu this is probably fine
     """
-    menuObjects = set()
-    
-    def Enable(self):
-        bl2sdk.RegisterHook("WillowGame.WillowHUD.CreateWeaponScopeMovie", "ILU-MapLoad", parseNewItems)
-        
+    MenuObjects: Set[unrealsdk.UObject] = set()
+
+    def __init__(self) -> None:
+        # Hopefully I can remove this in a future SDK update
+        self.Author += "\nVersion: " + str(self.Version)  # type: ignore
+
+        if unrealsdk.GetEngine().GetEngineVersion() == 8639:
+            self.FORCE_LOAD = self._FORCE_LOAD_BL2  # type: ignore
+        else:
+            self.FORCE_LOAD = self._FORCE_LOAD_TPS  # type: ignore
+
+        # All classes we will be searching through and their handlers
+        # Do this in here so we can actually get a proper refrence to the functions
+        self.CLASS_HANDLER_MAP = {  # type: ignore
+            "InventoryBalanceDefinition":           self.HandleInvBalance,
+            "ItemBalanceDefinition":                self.HandleInvBalance,
+            "ClassModBalanceDefinition":            self.HandleInvBalance,
+            "WeaponBalanceDefinition":              self.HandleInvBalance,
+            "MissionWeaponBalanceDefinition":       self.HandleInvBalance,
+
+            "ItemPartListCollectionDefinition":     self.HandlePartListCollection,
+            "WeaponPartListCollectionDefinition":   self.HandlePartListCollection,
+
+            "ItemPartListDefinition":               self.HandleRawPartList,
+            "WeaponPartListDefinition":             self.HandleRawPartList,
+
+            "ItemNamePartDefinition":               self.HandleNamePart,
+            "WeaponNamePartDefinition":             self.HandleNamePart,
+
+            "InteractiveObjectBalanceDefinition":   self.HandleGradedObject,
+            "VehicleBalanceDefinition":             self.HandleGradedObject
+        }
+
+    def Enable(self) -> None:
+        def CreateWeaponScopeMovie(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+            for clas, handler in self.CLASS_HANDLER_MAP.items():
+                for obj in unrealsdk.FindAll(clas):
+                    if obj not in self.MenuObjects:
+                        handler(obj)
+            return True
+
+        unrealsdk.RegisterHook("WillowGame.WillowHUD.CreateWeaponScopeMovie", "ItemLevelUncapper", CreateWeaponScopeMovie)
+
         # If you're re-enabling then we can exit right here, the rest of this is non-reversible
-        if len(self.menuObjects) > 0:
+        if len(self.MenuObjects) > 0:
             return
-        
+
         # Objects we load here will still be alive for all the FindAll commands, we don't need to
         #  parse them yet
         for package, objects in self.FORCE_LOAD.items():
-            bl2sdk.LoadPackage(package)
+            unrealsdk.LoadPackage(package)
             for obj in objects:
-                 bl2sdk.KeepAlive(bl2sdk.FindObject(obj[0], obj[1]))
-        
+                unrealsdk.KeepAlive(unrealsdk.FindObject(obj[0], obj[1]))
+
         # Do our inital parse over everything, saving what we can access
         for clas, handler in self.CLASS_HANDLER_MAP.items():
-            for obj in bl2sdk.FindAll(clas):
-                self.menuObjects.add(obj)
+            for obj in unrealsdk.FindAll(clas):
+                self.MenuObjects.add(obj)
                 handler(obj)
-    
-    def Disable(self):
-        bl2sdk.RemoveHook("WillowGame.WillowHUD.CreateWeaponScopeMovie", "ILU-MapLoad")
-    
-    def parseNewItems(self):
-        for clas, handler in self.CLASS_HANDLER_MAP.items():
-            for obj in bl2sdk.FindAll(clas):
-                if obj not in self.menuObjects:
-                    handler(obj)
-    
+
+    def Disable(self) -> None:
+        unrealsdk.RemoveHook("WillowGame.WillowHUD.CreateWeaponScopeMovie", "ItemLevelUncapper")
+
     # Takes an object and a set of it's CAID indexes which corospond to max level
     # Usually this will only be one index but just in case we handle multiple
-    def fixCAID(self, obj, indexes):
+    def FixCAID(self, obj: unrealsdk.UObject, indexes: Set[int]) -> None:
         if not obj.ConsolidatedAttributeInitData:
             return
         # I can't call len() on these arrays (for now), so I need to manually count it
@@ -169,23 +178,22 @@ class ItemLevelUncapper(bl2sdk.BL2MOD):
                 if changeAmount >= len(indexes):
                     return
             index += 1
-    
-    def handleInvBalance(self, obj):
+
+    def HandleInvBalance(self, obj: unrealsdk.UObject) -> None:
         if "WillowGame.Default__" in str(obj):
             return
         if not obj.Manufacturers:
             return
         for manu in obj.Manufacturers:
-            for grade in manu.Grades:
-                grade.GameStageRequirement.MaxGameStage = self.NEW_LEVEL
-    
+            self.HandleGradedObject(manu)
+
     # This function takes in both Item and WeaponPartListCollections, which are very similar, BUT
     #  store their parts in different fields
-    def handlePartListCollection(self, obj):
+    def HandlePartListCollection(self, obj: unrealsdk.UObject) -> None:
         if "WillowGame.Default__" in str(obj):
             return
         itemType = str(obj).split(" ")[0]
-        allParts = set()
+        allParts: Set[str] = set()
         if itemType == "ItemPartListCollectionDefinition":
             allParts = {
                 "AlphaPartData", "BetaPartData", "GammaPartData", "DeltaPartData",
@@ -199,51 +207,58 @@ class ItemLevelUncapper(bl2sdk.BL2MOD):
                 "MaterialPartData"
             }
         else:
-            bl2sdk.Log(f"[ILU] Unexpected class on {str(obj)}")
+            unrealsdk.Log(f"[ILU] Unexpected class on {str(obj)}")
             return
-        
+
         levelIndexes = set()
         for part in allParts:
             weighted = getattr(obj, part).WeightedParts
-            if weighted != None:
+            if weighted is not None:
                 for wPart in weighted:
                     if wPart.MaxGameStageIndex:
                         levelIndexes.add(wPart.MaxGameStageIndex)
-        self.fixCAID(obj, levelIndexes)
-    
+        self.FixCAID(obj, levelIndexes)
+
     # For ____PartListDefinitions rather than ____PartList*Collection*Definitions
-    def handleRawPartList(self, obj):
+    def HandleRawPartList(self, obj: unrealsdk.UObject) -> None:
         if "WillowGame.Default__" in str(obj):
             return
         levelIndexes = set()
         for wPart in obj.WeightedParts:
             if wPart.MaxGameStageIndex:
                 levelIndexes.add(wPart.MaxGameStageIndex)
-        self.fixCAID(obj, levelIndexes)
+        self.FixCAID(obj, levelIndexes)
 
-    def handleNamePart(self, obj):
+    def HandleNamePart(self, obj: unrealsdk.UObject) -> None:
         if "WillowGame.Default__" in str(obj):
             return
         obj.MaxExpLevelRequirement = self.NEW_LEVEL
 
-def parseNewItems(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-    instance.parseNewItems()
-    return True
+    def HandleGradedObject(self, obj: unrealsdk.UObject) -> None:
+        for grade in obj.Grades:
+            grade.GameStageRequirement.MaxGameStage = self.NEW_LEVEL
+
 
 instance = ItemLevelUncapper()
-if __name__ == "__main__":
-    bl2sdk.Log("[ILU] Manually loaded")
-    for mod in bl2sdk.Mods:
-        if mod.Name == instance.Name:
-            mod.Disable()
-            bl2sdk.Mods.remove(mod)
-            bl2sdk.Log("[ILU] Disabled and removed last instance")
+if __name__ != "__main__":
+    unrealsdk.RegisterMod(instance)
+else:
+    unrealsdk.Log(f"[{instance.Name}] Manually loaded")
+    for i in range(len(unrealsdk.Mods)):
+        mod = unrealsdk.Mods[i]
+        if unrealsdk.Mods[i].Name == instance.Name:
+            unrealsdk.Mods[i].Disable()
+
+            unrealsdk.RegisterMod(instance)
+            unrealsdk.Mods.remove(instance)
+            unrealsdk.Mods[i] = instance
+            unrealsdk.Log(f"[{instance.Name}] Disabled and removed last instance")
             break
     else:
-        bl2sdk.Log("[ILU] Could not find previous instance")
-    
-    bl2sdk.Log("[ILU] Auto-enabling")
+        unrealsdk.Log(f"[{instance.Name}] Could not find previous instance")
+        unrealsdk.RegisterMod(instance)
+
+    unrealsdk.Log(f"[{instance.Name}] Auto-enabling")
     instance.Status = "Enabled"
-    instance.SettingsInputs = {"Enter": "Disable"}
+    instance.SettingsInputs["Enter"] = "Disable"
     instance.Enable()
-bl2sdk.Mods.append(instance)

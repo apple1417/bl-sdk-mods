@@ -1,9 +1,9 @@
-import bl2sdk
+import unrealsdk
 from abc import ABCMeta, abstractmethod
 from typing import Callable, ClassVar, Dict, List, Tuple
-from UserFeedback import ShowHUDMessage
+from Mods.UserFeedback import ShowHUDMessage
 
-SDKHook = Callable[[bl2sdk.UObject, bl2sdk.UFunction, bl2sdk.FStruct], bool]
+SDKHook = Callable[[unrealsdk.UObject, unrealsdk.UFunction, unrealsdk.FStruct], bool]
 
 
 # Base class for our cheats
@@ -72,8 +72,8 @@ class ABCList:
 
         def GetHooks(self) -> Dict[str, SDKHook]:
             # For weapons
-            def ConsumeAmmo(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-                PC = bl2sdk.GetEngine().GamePlayers[0].Actor
+            def ConsumeAmmo(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+                PC = unrealsdk.GetEngine().GamePlayers[0].Actor
                 if PC is None or PC.Pawn is None or caller != PC.Pawn.Weapon:
                     return True
                 if self == self.FULL:
@@ -81,8 +81,8 @@ class ABCList:
                 return self == self.OFF
 
             # For grenades
-            def ConsumeProjectileResource(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-                if caller != bl2sdk.GetEngine().GamePlayers[0].Actor:
+            def ConsumeProjectileResource(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+                if caller != unrealsdk.GetEngine().GamePlayers[0].Actor:
                     return True
                 return self == ABCList.InfiniteAmmo.OFF
 
@@ -101,8 +101,8 @@ class ABCList:
         Order = (OFF, ALLOWDAMAGE, FULL)
 
         def GetHooks(self) -> Dict[str, SDKHook]:
-            def TakeDamage(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-                PC = bl2sdk.GetEngine().GamePlayers[0].Actor
+            def TakeDamage(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+                PC = unrealsdk.GetEngine().GamePlayers[0].Actor
 
                 if caller != PC.Pawn:
                     return True
@@ -127,8 +127,8 @@ class ABCList:
         KeybindName = "Toggle One Shot Mode"
 
         def GetHooks(self) -> Dict[str, SDKHook]:
-            def TakeDamage(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-                PC = bl2sdk.GetEngine().GamePlayers[0].Actor
+            def TakeDamage(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+                PC = unrealsdk.GetEngine().GamePlayers[0].Actor
 
                 if params.InstigatedBy != PC:
                     return True
@@ -155,8 +155,8 @@ class ABCList:
 
         def GetHooks(self) -> Dict[str, SDKHook]:
             # We can use the same simple function for both action and melee skills
-            def StartActiveMeleeSkillCooldown(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-                if caller != bl2sdk.GetEngine().GamePlayers[0].Actor:
+            def StartActiveMeleeSkillCooldown(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+                if caller != unrealsdk.GetEngine().GamePlayers[0].Actor:
                     return True
                 return self == self.OFF
 
@@ -176,8 +176,8 @@ class ABCList:
         Order = (OFF, NEUTRAL, FRIENDLY)
 
         def OnCycle(self) -> None:
-            allegiance = bl2sdk.FindObject("PawnAllegiance", "GD_AI_Allegiance.Allegiance_Player")
-            allegiance2 = bl2sdk.FindObject("PawnAllegiance", "GD_AI_Allegiance.Allegiance_Player_NoLevel")
+            allegiance = unrealsdk.FindObject("PawnAllegiance", "GD_AI_Allegiance.Allegiance_Player")
+            allegiance2 = unrealsdk.FindObject("PawnAllegiance", "GD_AI_Allegiance.Allegiance_Player_NoLevel")
 
             allegiance.bForceAllOtherOpinions = self != self.OFF
             allegiance2.bForceAllOtherOpinions = self != self.OFF
@@ -192,13 +192,13 @@ class ABCList:
         def GetHooks(self) -> Dict[str, SDKHook]:
             # This function is called to check, among other things, if you can afford the item
             # If free shops are on we want you to always be able to afford it
-            def GetItemStatus(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-                if params.WPC != bl2sdk.GetEngine().GamePlayers[0].Actor:
+            def GetItemStatus(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+                if params.WPC != unrealsdk.GetEngine().GamePlayers[0].Actor:
                     return True
                 if self == self.OFF:
                     return True
 
-                bl2sdk.DoInjectedCallNext()
+                unrealsdk.DoInjectedCallNext()
                 status: int = caller.GetItemStatus(params.Item, params.WPC, params.ItemPrice)
 
                 # If we get back SIS_ItemCanBePurchased (0) we don't have to do anything
@@ -206,12 +206,12 @@ class ABCList:
                     return True
 
                 # Otherwise temporarily give all the money you'd need to purcahse it and check again
-                PRI: bl2sdk.UObject = params.WPC.PlayerReplicationInfo
+                PRI: unrealsdk.UObject = params.WPC.PlayerReplicationInfo
                 currency: int = caller.GetCurrencyTypeInventoryIsSoldIn(params.Item)
                 wallet: int = PRI.GetCurrencyOnHand(currency)
 
                 PRI.SetCurrencyOnHand(currency, params.ItemPrice)
-                bl2sdk.DoInjectedCallNext()
+                unrealsdk.DoInjectedCallNext()
                 status = caller.GetItemStatus(params.Item, params.WPC, params.ItemPrice)
 
                 # Revert your money back
@@ -226,8 +226,8 @@ class ABCList:
 
             # The next three functions are called when you spend money at a shop, so we obviously
             #  have to overwrite them to prevent that
-            def ServerPlayerBoughtItem(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-                if caller != bl2sdk.GetEngine().GamePlayers[0].Actor:
+            def ServerPlayerBoughtItem(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+                if caller != unrealsdk.GetEngine().GamePlayers[0].Actor:
                     return True
                 if self == self.OFF:
                     return True
@@ -256,7 +256,7 @@ class ABCList:
 
                 # Make sure you can afford the item + buy it
                 PRI.SetCurrencyOnHand(currency, price)
-                bl2sdk.DoInjectedCallNext()
+                unrealsdk.DoInjectedCallNext()
                 caller.ServerPlayerBoughtItem(
                     params.InventoryObject,
                     params.Quantity,
@@ -268,8 +268,8 @@ class ABCList:
                 PRI.SetCurrencyOnHand(currency, wallet)
                 return False
 
-            def PlayerBuyBackInventory(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-                if caller != bl2sdk.GetEngine().GamePlayers[0].Actor:
+            def PlayerBuyBackInventory(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+                if caller != unrealsdk.GetEngine().GamePlayers[0].Actor:
                     return True
                 if self == self.OFF:
                     return True
@@ -278,27 +278,27 @@ class ABCList:
                 PRI = caller.PlayerReplicationInfo
                 wallet = PRI.GetCurrencyOnHand(params.FormOfCurrency)
                 PRI.SetCurrencyOnHand(params.FormOfCurrency, params.Price)
-                bl2sdk.DoInjectedCallNext()
+                unrealsdk.DoInjectedCallNext()
                 caller.PlayerBuyBackInventory(params.FormOfCurrency, params.Price, params.Quantity)
                 PRI.SetCurrencyOnHand(params.FormOfCurrency, wallet)
 
                 return False
 
-            def ServerPurchaseBlackMarketUpgrade(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-                if caller != bl2sdk.GetEngine().GamePlayers[0].Actor:
+            def ServerPurchaseBlackMarketUpgrade(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+                if caller != unrealsdk.GetEngine().GamePlayers[0].Actor:
                     return True
                 if self == self.OFF:
                     return True
 
                 # This is a static method so any black market will do
-                BM = bl2sdk.FindAll("WillowVendingMachineBlackMarket")[0]
+                BM = unrealsdk.FindAll("WillowVendingMachineBlackMarket")[0]
                 price = BM.StaticGetSellingPriceForBlackMarketInventory(params.BalanceDef, caller)
 
                 # And the same logic once again
                 PRI = caller.PlayerReplicationInfo
                 wallet = PRI.GetCurrencyOnHand(1)
                 PRI.SetCurrencyOnHand(1, price)
-                bl2sdk.DoInjectedCallNext()
+                unrealsdk.DoInjectedCallNext()
                 caller.ServerPurchaseBlackMarketUpgrade(params.BalanceDef)
                 PRI.SetCurrencyOnHand(1, wallet)
 
@@ -320,7 +320,7 @@ class ABCList:
         MaxSpeed: ClassVar[int] = 100000
         SpeedIncrement: ClassVar[float] = 1.2
 
-        Pawn: bl2sdk.UObject
+        Pawn: unrealsdk.UObject
         LastLevel: str
         LastOff: bool
 
@@ -332,7 +332,7 @@ class ABCList:
         def OnCycle(self) -> None:
             # If you switch levels while in ghost it gets turned off automatically, so don't do
             #  anything if you toggle it off after changing map
-            engine = bl2sdk.GetEngine()
+            engine = unrealsdk.GetEngine()
             level = engine.GetCurrentWorldInfo().GetStreamingPersistentMapName()
             if level != self.LastLevel and self == self.OFF:
                 self.LastLevel = level
@@ -363,10 +363,10 @@ class ABCList:
 
         def GetHooks(self) -> Dict[str, SDKHook]:
             # Let scrolling adjust your movement speed
-            def InputKey(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
+            def InputKey(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
                 if params.Event != 0:
                     return True
-                PC = bl2sdk.GetEngine().GamePlayers[0].Actor
+                PC = unrealsdk.GetEngine().GamePlayers[0].Actor
                 speed = PC.SpectatorCameraSpeed
                 if params.key == "MouseScrollUp":
                     PC.SpectatorCameraSpeed = min(speed * self.SpeedIncrement, self.MaxSpeed)
@@ -381,11 +381,11 @@ class ABCList:
 
         def OnPress(self) -> None:
             playerPools = []
-            # Unintuitively, `bl2sdk.GetEngine().GamePlayers` does not hold remote players
-            for pawn in bl2sdk.FindAll("WillowPlayerPawn"):
+            # Unintuitively, `unrealsdk.GetEngine().GamePlayers` does not hold remote players
+            for pawn in unrealsdk.FindAll("WillowPlayerPawn"):
                 if pawn.HealthPool.Data is not None:
                     playerPools.append(pawn.HealthPool.Data)
-            for pool in bl2sdk.FindAll("HealthResourcePool"):
+            for pool in unrealsdk.FindAll("HealthResourcePool"):
                 if pool in playerPools:
                     continue
                 pool.CurrentValue = 0
@@ -395,14 +395,14 @@ class ABCList:
         KeybindName = "Level Up"
 
         def OnPress(self) -> None:
-            bl2sdk.GetEngine().GamePlayers[0].Actor.ExpLevelUp(True)
+            unrealsdk.GetEngine().GamePlayers[0].Actor.ExpLevelUp(True)
 
     class OPLevel(ABCCheat):
         Name = "Add OP Level"
         KeybindName = "Add OP Level"
 
         def OnPress(self) -> None:
-            PC = bl2sdk.GetEngine().GamePlayers[0].Actor
+            PC = unrealsdk.GetEngine().GamePlayers[0].Actor
             rep = PC.PlayerReplicationInfo
             if rep.NumOverpowerLevelsUnlocked == PC.GetMaximumPossibleOverpowerModifier():
                 ShowHUDMessage(
@@ -421,7 +421,7 @@ class ABCList:
         KeybindName = "Suicide"
 
         def OnPress(self) -> None:
-            bl2sdk.GetEngine().GamePlayers[0].Actor.CausePlayerDeath(True)
+            unrealsdk.GetEngine().GamePlayers[0].Actor.CausePlayerDeath(True)
 
     class TPFastTravel(ABCCheat):
         Name = "Teleport Between Fast Travel Stations"
@@ -436,7 +436,7 @@ class ABCList:
         def OnPress(self) -> None:
             # Get the list of all station names in the world
             currentTravels = []
-            for obj in bl2sdk.FindAll(self.TPClass):
+            for obj in unrealsdk.FindAll(self.TPClass):
                 if obj.TravelDefinition is None:
                     continue
                 currentTravels.append(obj.TravelDefinition.Name)
@@ -452,7 +452,7 @@ class ABCList:
 
             self.LastTravelIndex = (self.LastTravelIndex + 1) % len(self.AllTravels)
             station = self.AllTravels[self.LastTravelIndex]
-            bl2sdk.GetEngine().GamePlayers[0].Actor.TeleportPlayerToStation(station)
+            unrealsdk.GetEngine().GamePlayers[0].Actor.TeleportPlayerToStation(station)
 
     class TPLevelTravel(TPFastTravel):
         Name = "Teleport Between Level Transitions"
@@ -466,7 +466,7 @@ class ABCList:
 
         def OnPress(self) -> None:
             count = 0
-            for obj in bl2sdk.FindAll("WillowVendingMachine"):
+            for obj in unrealsdk.FindAll("WillowVendingMachine"):
                 if obj.Name == "Default__WillowVendingMachine":
                     continue
                 count += 1
@@ -486,7 +486,7 @@ class ABCList:
         KeybindName = "Finish Active Mission"
 
         def OnPress(self) -> None:
-            PC = bl2sdk.GetEngine().GamePlayers[0].Actor
+            PC = unrealsdk.GetEngine().GamePlayers[0].Actor
             tracker = PC.WorldInfo.GRI.MissionTracker
             mission = tracker.GetActiveMission()
             # 3 is MS_ReadyToTurnIn
@@ -494,9 +494,7 @@ class ABCList:
     """
 
 
-# Holds information about the current cheat state
-# Some of the cheats are hardcoded attributes so that we can easily reference them
-# The rest are generated automatically from 'ABCList'
+# Holds information about the current cheat state, generated automatically from 'ABCList'
 # Also keeps track of all the hooks its cheats need - generated automatically again
 class ABCOptions:
     All: Tuple[ABCCheat, ...]
@@ -514,8 +512,8 @@ class ABCOptions:
         self.All = tuple(allCheats)
 
         # Put hook collisions into a list so that they can both run
-        # Double hooking a function can be finicky so we're assuming their written so that the order
-        #  they're registered doesn't matter
+        # Double hooking a function can be finicky so we're assuming the hooks are written so that
+        #  the order they're run in doesn't matter
         # If really needed you can hook a sub/super class instead
         self.Hooks = {}
         for cheat in self.All:

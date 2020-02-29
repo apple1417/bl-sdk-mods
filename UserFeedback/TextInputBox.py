@@ -1,4 +1,4 @@
-import bl2sdk
+import unrealsdk
 from typing import ClassVar, Dict, List, Tuple, Optional
 from .GFxMovie import GFxMovie
 
@@ -30,7 +30,7 @@ class TextInputBox(GFxMovie):
     _Message: List[str]
     _CursorPos: int
     _IsShiftPressed: bool
-    _TrainingBox: Optional[bl2sdk.UObject]
+    _TrainingBox: Optional[unrealsdk.UObject]
 
     _SubmitKeys: ClassVar[Tuple[str, ...]] = (
         "Enter",
@@ -122,7 +122,7 @@ class TextInputBox(GFxMovie):
         self._CursorPos = len(self._Message)
         self._IsShiftPressed = False
 
-        self._TrainingBox = bl2sdk.GetEngine().GamePlayers[0].Actor.GFxUIManager.ShowTrainingDialog(
+        self._TrainingBox = unrealsdk.GetEngine().GamePlayers[0].Actor.GFxUIManager.ShowTrainingDialog(
             self.DefaultMessage + "<u>  </u>",
             self.Title,
             0,
@@ -132,7 +132,7 @@ class TextInputBox(GFxMovie):
         self._TrainingBox.SetPriority(self.Priority)
         self._TrainingBox.ApplyLayout()
 
-        def HandleInputKey(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
+        def HandleInputKey(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
             if caller != self._TrainingBox:
                 return True
             self._HandleInput(params.ukey, params.uevent)
@@ -141,11 +141,11 @@ class TextInputBox(GFxMovie):
             # Decode when we exit from keypresses
             if params.uevent == 1:
                 if params.ukey in self._SubmitKeys:
-                    bl2sdk.RemoveHook("WillowGame.WillowGFxTrainingDialogBox.HandleInputKey", "CustomTextInputBox")
+                    unrealsdk.RemoveHook("WillowGame.WillowGFxTrainingDialogBox.HandleInputKey", "CustomTextInputBox")
                     self._TrainingBox = None
                     self.OnSubmit("".join(self._Message))
                 elif params.ukey in self._ExitKeys:
-                    bl2sdk.RemoveHook("WillowGame.WillowGFxTrainingDialogBox.HandleInputKey", "CustomTextInputBox")
+                    unrealsdk.RemoveHook("WillowGame.WillowGFxTrainingDialogBox.HandleInputKey", "CustomTextInputBox")
                     self._TrainingBox = None
                     self.OnSubmit("")
 
@@ -155,7 +155,7 @@ class TextInputBox(GFxMovie):
                 useKey = caller.GetPC().PlayerInput.GetKeyForAction("Use", True)
             return str(params.ukey) != useKey
 
-        bl2sdk.RegisterHook("WillowGame.WillowGFxTrainingDialogBox.HandleInputKey", "CustomTextInputBox", HandleInputKey)
+        unrealsdk.RegisterHook("WillowGame.WillowGFxTrainingDialogBox.HandleInputKey", "CustomTextInputBox", HandleInputKey)
 
     def IsShowing(self) -> bool:
         """
@@ -173,12 +173,12 @@ class TextInputBox(GFxMovie):
         Displays a warning but does nothing if the text input box is not currently being displayed.
         """
         if self._TrainingBox is None:
-            bl2sdk.Log(
+            unrealsdk.Log(
                 "[UserFeedback] Warning: tried to hide a text input box that was already closed"
             )
             return
 
-        bl2sdk.RemoveHook("WillowGame.WillowGFxTrainingDialogBox.HandleInputKey", "CustomTextInputBox")
+        unrealsdk.RemoveHook("WillowGame.WillowGFxTrainingDialogBox.HandleInputKey", "CustomTextInputBox")
 
         self._TrainingBox.Close()
         self._TrainingBox = None

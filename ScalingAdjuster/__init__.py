@@ -1,85 +1,100 @@
-import bl2sdk
-import json
-from os import path
-from sys import executable
-from typing import Dict
-from typing import List
+import unrealsdk
+from typing import ClassVar, List, Union
 
 
-class ScalingAdjuster(bl2sdk.BL2MOD):
-    Name: str = "Scaling Adjuster"
-    Author: str = "apple1417"
-    Description: str = (
+class ScalingAdjuster(unrealsdk.BL2MOD):
+    Name: ClassVar[str] = "Scaling Adjuster"
+    Author: ClassVar[str] = "apple1417"
+    Description: ClassVar[str] = (
         "Adds an option to let you easily adjust the game's base scaling value.\n"
         "Note that you may have to save quit to get values to update."
     )
-    Types: List[bl2sdk.ModTypes] = [bl2sdk.ModTypes.Utility]
-    Version = "1.1"
+    Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
+    Version: ClassVar[str] = "1.2"
 
-    # Doing options a little weirdly so that the same file works for both games
-    EXE_NAME: str = path.basename(executable)
-    OPTIONS_PATH: str = path.join(path.dirname(path.realpath(__file__)), "options.json")
-    OptionsDict: Dict[str, float] = {}
+    Options: List[Union[unrealsdk.Options.Slider, unrealsdk.Options.Spinner, unrealsdk.Options.Boolean, unrealsdk.Options.Hidden]]
+
+    IS_BL2: ClassVar[bool] = unrealsdk.GetEngine().GetEngineVersion() == 8639
+
+    ScalingObject: unrealsdk.UObject
+    ScalingSlider: unrealsdk.Options.Slider
+    DEFAULT_SCALING: float
 
     def __init__(self) -> None:
         # Hopefully I can remove this in a future SDK update
-        self.Author += "\nVersion: " + str(self.Version)
+        self.Author += "\nVersion: " + str(self.Version)  # type: ignore
 
-        self.scalingObject = bl2sdk.FindObject(
+        self.ScalingObject = unrealsdk.FindObject(
             "ConstantAttributeValueResolver",
             "GD_Balance_HealthAndDamage.HealthAndDamage.Att_UniversalBalanceScaler:ConstantAttributeValueResolver_0"
         )
-        # Save this so that we can properly revert to default in both games
-        self.DEFAULT_SCALING: float = self.scalingObject.ConstantValue
+
         # Sliders don't properly support floats so we'll multiply the value by 100
-        self.scalingSlider: bl2sdk.Options.SliderOption = bl2sdk.Options.SliderOption(
+        shownCaption = "BL2 Scaling"
+        shownValue = 113.0
+        hiddenCaption = "TPS Scaling"
+        hiddenValue = 111.0
+        if not self.IS_BL2:
+            shownCaption, hiddenCaption = hiddenCaption, shownCaption
+            shownValue, hiddenValue = hiddenValue, shownValue
+
+        self.DEFAULT_SCALING = shownValue
+        self.ScalingSlider = unrealsdk.Options.Slider(
             Description="The game's base scaling value (multiplied by 100). 113 means every level the numbers get 13% higher.",
-            Caption="",
-            StartingValue=self.DEFAULT_SCALING * 100,
+            Caption=shownCaption,
+            StartingValue=shownValue,
             MinValue=0,
             MaxValue=500,
             Increment=1
         )
+        hiddenOption = unrealsdk.Options.Hidden(
+            valueName=hiddenCaption,
+            StartingValue=hiddenValue
+        )
 
-        if path.exists(self.OPTIONS_PATH):
-            with open(self.OPTIONS_PATH) as file:
-                self.OptionsDict = json.load(file)
+        self.Options = []
+        if self.IS_BL2:
+            self.Options.append(self.ScalingSlider)
+            self.Options.append(hiddenOption)
+        else:
+            self.Options.append(hiddenOption)
+            self.Options.append(self.ScalingSlider)
 
     def Enable(self) -> None:
-        self.RegisterGameConfigOption(self.scalingSlider)
-
-        if self.EXE_NAME in self.OptionsDict:
-            self.scalingObject.ConstantValue = self.OptionsDict[self.EXE_NAME]
-            self.scalingSlider.CurrentValue = int(self.OptionsDict[self.EXE_NAME] * 100)
+        self.ScalingObject.ConstantValue = self.ScalingSlider.CurrentValue
 
     def Disable(self) -> None:
-        self.UnregisterGameConfigOption(self.scalingSlider)
+        self.ScalingObject.ConstantValue = self.DEFAULT_SCALING
 
-        self.scalingObject.ConstantValue = self.DEFAULT_SCALING
-        self.scalingSlider.CurrentValue = self.DEFAULT_SCALING * 100
-
-    def ModOptionChanged(self, scalingSlider: bl2sdk.Options.SliderOption, newValue: int) -> None:
-        if scalingSlider == self.scalingSlider:
-            self.scalingObject.ConstantValue = newValue / 100
-            self.OptionsDict[self.EXE_NAME] = newValue / 100
-
-            with open(self.OPTIONS_PATH, "w") as file:
-                json.dump(self.OptionsDict, file, indent=4)
+    def ModOptionChanged(
+        self,
+        option: Union[unrealsdk.Options.Slider, unrealsdk.Options.Spinner, unrealsdk.Options.Boolean, unrealsdk.Options.Hidden],
+        newValue: int
+    ) -> None:
+        if option == self.ScalingSlider:
+            self.ScalingObject.ConstantValue = newValue / 100
 
 
 instance = ScalingAdjuster()
-if __name__ == "__main__":
-    bl2sdk.Log("[Scaling Adjuster] Manually loaded")
-    for mod in bl2sdk.Mods:
-        if mod.Name == instance.Name:
-            mod.Disable()
-            bl2sdk.Mods.remove(mod)
-            bl2sdk.Log("[Scaling Adjuster] Disabled and removed last instance")
+if __name__ != "__main__":
+    unrealsdk.RegisterMod(instance)
+else:
+    unrealsdk.Log(f"[{instance.Name}] Manually loaded")
+    for i in range(len(unrealsdk.Mods)):
+        mod = unrealsdk.Mods[i]
+        if unrealsdk.Mods[i].Name == instance.Name:
+            unrealsdk.Mods[i].Disable()
+
+            unrealsdk.RegisterMod(instance)
+            unrealsdk.Mods.remove(instance)
+            unrealsdk.Mods[i] = instance
+            unrealsdk.Log(f"[{instance.Name}] Disabled and removed last instance")
             break
     else:
-        bl2sdk.Log("[Scaling Adjuster] Could not find previous instance")
-    bl2sdk.Log("[Scaling Adjuster] Auto-enabling")
+        unrealsdk.Log(f"[{instance.Name}] Could not find previous instance")
+        unrealsdk.RegisterMod(instance)
+
+    unrealsdk.Log(f"[{instance.Name}] Auto-enabling")
     instance.Status = "Enabled"
-    instance.SettingsInputs = {"Enter": "Disable"}
+    instance.SettingsInputs["Enter"] = "Disable"
     instance.Enable()
-bl2sdk.Mods.append(instance)

@@ -1,4 +1,4 @@
-import bl2sdk
+import unrealsdk
 from typing import ClassVar, Tuple, Optional
 from .GFxMovie import GFxMovie
 
@@ -30,7 +30,7 @@ class TrainingBox(GFxMovie):
     MenuHint: int
     Priority: int
 
-    _TrainingBox: Optional[bl2sdk.UObject]
+    _TrainingBox: Optional[unrealsdk.UObject]
     _ExitKeys: ClassVar[Tuple[str, ...]] = (
         "Enter",
         "Escape",
@@ -82,7 +82,7 @@ class TrainingBox(GFxMovie):
 
     def Show(self) -> None:
         """ Displays the training box. """
-        self._TrainingBox = bl2sdk.GetEngine().GamePlayers[0].Actor.GFxUIManager.ShowTrainingDialog(
+        self._TrainingBox = unrealsdk.GetEngine().GamePlayers[0].Actor.GFxUIManager.ShowTrainingDialog(
             self.Message,
             self.Title,
             self.MinDuration,
@@ -92,7 +92,7 @@ class TrainingBox(GFxMovie):
         self._TrainingBox.SetPriority(self.Priority)
         self._TrainingBox.ApplyLayout()
 
-        def HandleInputKey(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
+        def HandleInputKey(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
             if caller == self._TrainingBox:
                 self.OnInput(params.ukey, params.uevent)
 
@@ -103,12 +103,12 @@ class TrainingBox(GFxMovie):
                     if caller.GetPC().PlayerInput is not None:
                         useKey = caller.GetPC().PlayerInput.GetKeyForAction("Use", True)
                     if params.ukey in self._ExitKeys or params.ukey == useKey:
-                        bl2sdk.RemoveHook("WillowGame.WillowGFxTrainingDialogBox.HandleInputKey", "CustomTrainingBox")
+                        unrealsdk.RemoveHook("WillowGame.WillowGFxTrainingDialogBox.HandleInputKey", "CustomTrainingBox")
                         self._TrainingBox = None
                         self.OnExit()
             return True
 
-        bl2sdk.RegisterHook("WillowGame.WillowGFxTrainingDialogBox.HandleInputKey", "CustomTrainingBox", HandleInputKey)
+        unrealsdk.RegisterHook("WillowGame.WillowGFxTrainingDialogBox.HandleInputKey", "CustomTrainingBox", HandleInputKey)
 
     def IsShowing(self) -> bool:
         """
@@ -126,12 +126,12 @@ class TrainingBox(GFxMovie):
         Displays a warning but does nothing if the training box is not currently being displayed.
         """
         if self._TrainingBox is None:
-            bl2sdk.Log(
+            unrealsdk.Log(
                 "[UserFeedback] Warning: tried to hide a training box that was already closed"
             )
             return
 
-        bl2sdk.RemoveHook("WillowGame.WillowGFxTrainingDialogBox.HandleInputKey", "CustomTrainingBox")
+        unrealsdk.RemoveHook("WillowGame.WillowGFxTrainingDialogBox.HandleInputKey", "CustomTrainingBox")
 
         # No nice GC trick this time, will get caught next cycle
         self._TrainingBox.Close()

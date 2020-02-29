@@ -1,8 +1,9 @@
-import bl2sdk
-bl2sdk.Log("[PPN] PartNamer Loaded")
+import unrealsdk
+from typing import cast, Dict, Optional, Tuple
+
 
 # Easier to split out the different item types to different functions
-def getPartName(part, full=False):
+def GetPartName(part: unrealsdk.UObject, full: bool = False) -> str:
     name = str(part)
     if name.startswith("Weapon"):
         return _getWeaponPartName(part, full)
@@ -15,11 +16,12 @@ def getPartName(part, full=False):
     elif name.startswith("Artifact"):
         return _getArtifactPartName(part, full)
 
-    return part.Name
+    return str(part.Name)
+
 
 # Little helper function that looks for elements in a string and returns a coloured representation
 #  if it finds one
-def _getElement(string):
+def _getElement(string: str) -> Optional[str]:
     string = string.lower()
     if "fire" in string or "incendiary" in string:
         return "<font color='#F57500'>Fire</font>"
@@ -35,8 +37,10 @@ def _getElement(string):
         return "<font color='#F1D300'>Explosive</font>"
     elif "none" in string:
         return "None"
+    return None
 
-def _getWeaponPartName(part, full):
+
+def _getWeaponPartName(part: unrealsdk.UObject, full: bool) -> str:
     # Check through meshes first, which will eliminate most parts
     mesh = part.GestaltModeSkeletalMeshName
     if mesh in WEAP_MESH_NAMES and part.bIsGestaltMode:
@@ -102,16 +106,16 @@ def _getWeaponPartName(part, full):
     # Element parts share a lot of meshes so it's easier to seperate them here
     elif "element" in name:
         element = _getElement(name)
-        if element == None and "egun" in name:
+        if element is None and "egun" in name:
             element = "EGun"
-        if full and element == "None":
+        elif full and element == "None":
             return f"'No Element' {weapType} Element"
         else:
-            return element + (f" {weapType} Element" if full else "")
-    # GLitch attachment parts share meshes again
+            return cast(str, element) + (f" {weapType} Element" if full else "")
+    # Glitch attachment parts share meshes again
     elif "glitch_attachment" in name:
-        splitName = part.Name.split("_")
-        # Unfortauntly the sdk kills *most* of the numbers
+        # Get the full proper name
+        splitName = part.PathName(part).split(".")[-1].split("_")
         if len(splitName) == 3:
             return f"{splitName[2]} Glitch" + (f" Attachment" if full else "")
         return f"Glitch Attachment"
@@ -120,9 +124,10 @@ def _getWeaponPartName(part, full):
         return f"{manufacturer} {weapType}" + (" Weapon Type" if full else "")
 
     # For everything else (materials) just return the object name
-    return part.Name
+    return str(part.Name)
 
-def _getShieldPartName(part, full):
+
+def _getShieldPartName(part: unrealsdk.UObject, full: bool) -> str:
     # Despite widely different base packages, the 2nd last ones are mostly the sam
     partType = part.Outer.Name
     name = part.Name
@@ -138,7 +143,7 @@ def _getShieldPartName(part, full):
         mesh = part.GestaltModeSkeletalMeshName
 
         if mesh in SHIELD_MESH_NAMES:
-            return SHIELD_MESH_NAMES[mesh] +  (f" Shield {partType}" if full else "")
+            return SHIELD_MESH_NAMES[mesh] + (f" Shield {partType}" if full else "")
 
         text = ""
         # Want to add Nova/Spike to the Torgue accessories
@@ -146,10 +151,12 @@ def _getShieldPartName(part, full):
             text = "Torgue"
             # This will always return the same thing but it's better to keep formatting in one place
             element = _getElement(name)
+            if element is not None and element != "None":
+                text += f" {element}"
             if "Nova" in name:
-                text += f" {element} Nova"
+                text += " Nova"
             elif "Spike" in name:
-                text += f" {element} Spike"
+                text += " Spike"
         # Maliwan and Anshin accessories share a model
         elif mesh == "Shield_Body_Anshin":
             if "Chimera" in name or name == "Orchid_Seraph_Anshin_Shield_Accessory":
@@ -157,16 +164,12 @@ def _getShieldPartName(part, full):
             else:
                 text = "Maliwan"
                 element = _getElement(name)
-                if element == None or element == "None":
-                    if "Nova" in name:
-                        text += " Nova"
-                    elif "Spike" in name:
-                        text += " Spike"
-                else:
-                    if "Nova" in name:
-                        text += f" {element} Nova"
-                    elif "Spike" in name:
-                        text += f" {element} Spike"
+                if element is not None and element != "None":
+                    text += f" {element}"
+                if "Nova" in name:
+                    text += " Nova"
+                elif "Spike" in name:
+                    text += " Spike"
         # Small workaround for anshin roid parts
         elif "Anshin" in mesh:
             text = "Anshin"
@@ -190,7 +193,6 @@ def _getShieldPartName(part, full):
 
             return text + (f" Shield {partType}" if full else "")
 
-
     elif str(part).startswith("ShieldDefinition"):
         # A few DLC parts don't follow the pattern
         if name in SHIELD_TYPE_OVERRIDES:
@@ -199,9 +201,12 @@ def _getShieldPartName(part, full):
         # This works suprisngly well
         text = nameSplit[1]
         # Just need to translate a few terms
-        if text == "Chimera": text = "Adaptive"
-        elif text == "Impact": text = "Amp"
-        elif text == "Juggernaut": text = "Turtle"
+        if text == "Chimera":
+            text = "Adaptive"
+        elif text == "Impact":
+            text = "Amp"
+        elif text == "Juggernaut":
+            text = "Turtle"
 
         # Add the element if applicable
         if text == "Nova" or text == "Spike":
@@ -211,9 +216,10 @@ def _getShieldPartName(part, full):
 
         return text + (" Shield Type" if full else "")
 
-    return part.Name
+    return str(part.Name)
 
-def _getGrenadePartName(part, full):
+
+def _getGrenadePartName(part: unrealsdk.UObject, full: bool) -> str:
     # Grenade parts split up nicely just like shield ones
     partType = part.Outer.Name
     name = part.Name
@@ -224,6 +230,8 @@ def _getGrenadePartName(part, full):
 
     if partType == "Accessory":
         element = _getElement(name)
+        if element is None or element == "None":
+            element = "Non-Elemental"
 
         # These accessories only have one grade, no need to show "Grade 0"
         if name == "Accessory_Explosive":
@@ -249,7 +257,7 @@ def _getGrenadePartName(part, full):
     elif partType == "Trigger":
         return f"Grade {name[-1]}" + (" Grenade Trigger" if full else "")
     elif partType == "DamageRadius":
-        size = nameSplit[1]
+        size = cast(str, nameSplit[1])
         # Just want to add a space :)
         if size == "ExtraLarge":
             size = "Extra Large"
@@ -272,9 +280,10 @@ def _getGrenadePartName(part, full):
         if name in GRENADE_DEFINTION_NAMES:
             return GRENADE_DEFINTION_NAMES[name] + (" Grenade Type" if full else "")
 
-    return part.Name
+    return str(part.Name)
 
-def _getCOMPartName(part, full):
+
+def _getCOMPartName(part: unrealsdk.UObject, full: bool) -> str:
     partType = part.Outer.Name
     name = part.Name
     nameSplit = name.split("_")
@@ -294,7 +303,7 @@ def _getCOMPartName(part, full):
 
     elif str(part).startswith("ClassModDefinition"):
         # Most COMs just have the full name as the last part after the last underscore
-        comName = nameSplit[-1]
+        comName = cast(str, nameSplit[-1])
 
         if name in COM_DEFINITION_OVERRIDES:
             return COM_DEFINITION_OVERRIDES[name] + (" COM Type" if full else "")
@@ -327,9 +336,10 @@ def _getCOMPartName(part, full):
 
         return comName + (" COM Type" if full else "")
 
-    return part.Name
+    return str(part.Name)
 
-def _getArtifactPartName(part, full):
+
+def _getArtifactPartName(part: unrealsdk.UObject, full: bool) -> str:
     partType = part.Outer.Name
     name = part.Name
     nameSplit = name.split("_")
@@ -382,13 +392,18 @@ def _getArtifactPartName(part, full):
 
                 # Keep the element formatting in one place
                 if baseName == "TwoFace":
-                    text = _getElement(text) + " Two Face Duality"
+                    text = ""
+                    element = _getElement(text)
+                    if element is not None and element != "None":
+                        text += element + " "
+                    text += "Two Face Duality"
 
         return text + (" Relic Type" if full else "")
 
-    return part.Name
+    return str(part.Name)
 
-ARTIFACT_DEFINITION_VARIANTS = {
+
+ARTIFACT_DEFINITION_VARIANTS: Dict[str, Dict[str, str]] = {
     "Aggression": {
         "A": "AR Aggression",
         "B": "RL Aggression",
@@ -430,7 +445,7 @@ ARTIFACT_DEFINITION_VARIANTS = {
 }
 
 # Need to use full names for this one cause of Anemone duplicating stuff
-ARTIFACT_DEFINITION_OVERRIDES = {
+ARTIFACT_DEFINITION_OVERRIDES: Dict[str, str] = {
     "ArtifactDefinition GD_Anemone_Relics.A_Item_Unique.Artifact_Deputy": "Hard Carry",
     "ArtifactDefinition GD_Anemone_Relics.A_Item_Unique.Relic_Lust": "Mouthwash",
     "ArtifactDefinition GD_Anemone_Relics.A_Item.Artifact_Elemental_Status": "Winter is Over",
@@ -464,7 +479,7 @@ ARTIFACT_DEFINITION_OVERRIDES = {
     "ArtifactDefinition GD_Sage_Artifacts.A_Item.Artifact_SeraphBreath": "Breath of the Seraphs"
 }
 
-ARTIFACT_BODY_OVERRIDES = {
+ARTIFACT_BODY_OVERRIDES: Dict[str, str] = {
     "Body_AckAck": "Ack Ack",
     "Body_AggressionTenacity": "Heart of the Ancients",
     "Body_AntiAir_PerdyLights": "Perdy Lights",
@@ -489,7 +504,7 @@ ARTIFACT_BODY_OVERRIDES = {
     "Body_VitalityStockpile": "Blood of the Ancients"
 }
 
-ARTIFACT_SPECIAL_NAMES = {
+ARTIFACT_SPECIAL_NAMES: Dict[str, str] = {
     "EnableSpecial_Element1": "Fire",
     "EnableSpecial_Element2": "Shock",
     "EnableSpecial_Element3": "Corrosive",
@@ -497,7 +512,7 @@ ARTIFACT_SPECIAL_NAMES = {
     "EnableSpecial_ElementNone": "Explosive"
 }
 
-COM_DEFINITION_OVERRIDES = {
+COM_DEFINITION_OVERRIDES: Dict[str, str] = {
     "ClassMod_Assassin_Rogue": "TN Rouge",
     "ClassMod_Mechromancer_Necromancer": "TN Necromancer",
     "ClassMod_Barbarian_Barbarian": "TN Barbarian",
@@ -529,7 +544,7 @@ COM_DEFINITION_OVERRIDES = {
     "ClassMod_Doppelganger_RoleModel": "Role Model",
 }
 
-GRENADE_DEFINTION_NAMES = {
+GRENADE_DEFINTION_NAMES: Dict[str, str] = {
     "GrenadeMod_BabyBoomer": "Baby Boomer",
     "GrenadeMod_Blade": "Midnight Star",
     "GrenadeMod_BonusPackage": "Bonus Package",
@@ -555,7 +570,7 @@ GRENADE_DEFINTION_NAMES = {
     "Iris_Seraph_GrenadeMod_ONegative": "O-Negative"
 }
 
-GRENADE_DELIVERY_NAMES = {
+GRENADE_DELIVERY_NAMES: Dict[str, str] = {
     "Delivery_BabyBoomer": "Baby Boomer",
     "Delivery_Blade": "Midnight Star",
     "Delivery_ChainLightning": "Chain Lightning",
@@ -581,7 +596,7 @@ GRENADE_DELIVERY_NAMES = {
     "Delivery_Snowball": "Snowball"
 }
 
-GRENADE_PAYLOAD_NAMES = {
+GRENADE_PAYLOAD_NAMES: Dict[str, str] = {
     "Iris_Seraph_GrenadeMod_Crossfire_Part_Payload": "Crossfire",
     "Iris_Seraph_GrenadeMod_MeteorShower_Part_Payload": "Meteor Shower",
     "Payload_AreaEffect": "Area Effect",
@@ -601,7 +616,7 @@ GRENADE_PAYLOAD_NAMES = {
     "Payload_Transfusion": "Transfusion"
 }
 
-GRENADE_PART_TYPE_OVERRIDES = {
+GRENADE_PART_TYPE_OVERRIDES: Dict[str, str] = {
     "Iris_Seraph_GrenadeMod_MeteorShower_Part_Damage4": "Damage",
     "Iris_Seraph_GrenadeMod_MeteorShower_Part_Damage5": "Damage",
     "Iris_Seraph_GrenadeMod_MeteorShower_Part_Damage6": "Damage",
@@ -614,7 +629,7 @@ GRENADE_PART_TYPE_OVERRIDES = {
     "Iris_Seraph_GrenadeMod_ONegative_Part_Damage7": "Damage",
 }
 
-SHIELD_MESH_NAMES = {
+SHIELD_MESH_NAMES: Dict[str, str] = {
     # These are actually bodies
     "Shield_Accessory_Bandit": "Bandit",
     "Shield_Accessory_Dahl": "Dahl",
@@ -635,7 +650,7 @@ SHIELD_MESH_NAMES = {
     "Shield_Body_Dahl": "Dahl",
     "Shield_Body_Hyperion": "Hyperion",
     "Shield_Body_Pangolin": "Pangolin",
-    "Shield_Body_Tediore": "Tediore", # Turns out tediore body actually uses this name too
+    "Shield_Body_Tediore": "Tediore",  # Turns out tediore body actually uses this name too
     "Shield_Body_Vladof": "Vladof",
     "Shield_Capacitor_Bandit": "Bandit",
     "Shield_Capacitor_Dahl": "Dahl",
@@ -645,7 +660,7 @@ SHIELD_MESH_NAMES = {
     "Shield_Capacitor_Vladof": "Vladof"
 }
 
-SHIELD_PART_TYPE_OVERRIDES = {
+SHIELD_PART_TYPE_OVERRIDES: Dict[str, str] = {
     "Iris_Seraph_Shield_Booster_Accessory4_Booster": "Accessory",
     "Iris_Seraph_Shield_Booster_Material": "Material",
     "Iris_Seraph_Shield_Juggernaut_Material": "Material",
@@ -656,7 +671,7 @@ SHIELD_PART_TYPE_OVERRIDES = {
     "Orchid_Seraph_Anshin_Shield_Material": "Material"
 }
 
-SHIELD_TYPE_OVERRIDES = {
+SHIELD_TYPE_OVERRIDES: Dict[str, str] = {
     "Aster_Seraph_Antagonist_Shield": "Antagonist",
     "Aster_Seraph_Blockade_Shield": "Blockade",
     "Iris_Seraph_Shield_Booster": "Big Boom Blaster",
@@ -671,10 +686,7 @@ SHIELD_TYPE_OVERRIDES = {
     "Shield_Worming": "Retainer"
 }
 
-# The format for these two dicts is:
-#   {string to compare to: (short string, string to append for full)}
-# This just makes it easier to deal with the various weapon types all going through the same code
-WEAP_OBJ_NAMES = {
+WEAP_OBJ_NAMES: Dict[str, Tuple[str, str]] = {
     "AR_Accessory_BanditClamp_Damage": ("Damage Clamp", "AR Accessory"),
     "AR_Accessory_BanditClamp_Wild": ("Wild Clamp", "AR Accessory"),
     "AR_Accessory_Bayonet": ("Bayonet", "1 AR Accessory"),
@@ -712,7 +724,7 @@ WEAP_OBJ_NAMES = {
     "Sniper_Accessory_Bayonet1": ("Bayonet", "SR Accessory"),
 }
 
-WEAP_MESH_NAMES = {
+WEAP_MESH_NAMES: Dict[str, Tuple[str, str]] = {
     "Acc_Barrel_Bayonet2": ("Bayonet", "2 AR Accessory"),
     "Acc_Barrel_Bipod": ("Accuracy Bipod", "SR Accessory"),
     "Acc_Barrel_Bipod2": ("Crit Bipod", "SR Accessory"),

@@ -1,4 +1,4 @@
-import bl2sdk
+import unrealsdk
 
 
 def ShowHUDMessage(Title: str, Message: str, Duration: float = 2, MenuHint: int = 0) -> None:
@@ -19,7 +19,7 @@ def ShowHUDMessage(Title: str, Message: str, Duration: float = 2, MenuHint: int 
              Defaults to 0, no hint. 1-5 represent the different the different menu tabs, in the
              same order as the game: Missions; Map; Inventory; Skills; BAR. Defaults to 0.
     """
-    PC = bl2sdk.GetEngine().GamePlayers[0].Actor
+    PC = unrealsdk.GetEngine().GamePlayers[0].Actor
     HUDMovie = PC.GetHUDMovie()
 
     if HUDMovie is None:

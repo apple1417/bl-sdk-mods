@@ -1,18 +1,18 @@
-import bl2sdk
+import unrealsdk
 from .GFxMovie import GFxMovie
 
 """
 This class is not reccomended to be used.
 
 There to various bugs out of my control, depending on implementation you either confuse the game
- about what `GFxMovie` is focused, softlocking you untill you run the command `disconnect`, or just
+ about what `GFxMovie` is focused, softlocking you until you run the command `disconnect`, or just
  plain crash the game.
 
 This file has only been left in so that the code isn't lost - if it can be made to work then this
  would be a much more elegant alternative to `TextInputBox`.
 """
 
-_ChatDef = bl2sdk.FindObject("GFxMovieDefinition", "UI_TextChat.TextChat_Def")
+_ChatDef = unrealsdk.FindObject("GFxMovieDefinition", "UI_TextChat.TextChat_Def")
 
 
 class ChatBox(GFxMovie):
@@ -37,7 +37,7 @@ class ChatBox(GFxMovie):
 
     # This var is not neccesarily accurate, you should still call IsShowing()
     _WasChatOpened: bool
-    _Chat: bl2sdk.UObject
+    _Chat: unrealsdk.UObject
 
     def __init__(
         self,
@@ -57,7 +57,7 @@ class ChatBox(GFxMovie):
 
         self._WasChatOpened = False
 
-        self._Chat = bl2sdk.GetEngine().GamePlayers[0].Actor.GFxUIManager.PlayMovie(_ChatDef)
+        self._Chat = unrealsdk.GetEngine().GamePlayers[0].Actor.GFxUIManager.PlayMovie(_ChatDef)
         self._Chat.StopTextChatInternal()
         self._Chat.Close()
 
@@ -69,7 +69,7 @@ class ChatBox(GFxMovie):
          for some reason using too many messes with `GFxMovie` focus. This means we need to know
          when our object has been GCed.
 
-        Now you might just say "Use bl2sdk.KeepAlive()", but that does not actually stop it from
+        Now you might just say "Use unrealsdk.KeepAlive()", but that does not actually stop it from
          being unloaded - presumably because it's in `Transient`.
 
         Unfortuantly, the SDK doesn't provide a proper way to check this if an object is GCed, best
@@ -85,31 +85,31 @@ class ChatBox(GFxMovie):
     def Show(self) -> None:
         """ Displays the chat box. """
         if self._IsChatGCed():
-            self._Chat = bl2sdk.GetEngine().GamePlayers[0].Actor.GFxUIManager.PlayMovie(_ChatDef)
+            self._Chat = unrealsdk.GetEngine().GamePlayers[0].Actor.GFxUIManager.PlayMovie(_ChatDef)
 
         self._Chat.SetPriority(self.Priority)
         self._Chat.StartTextChat()
         self._WasChatOpened = True
 
-        def AddChatMessageInternal(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
+        def AddChatMessageInternal(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
             # Oddly enough it tries to call this on the object for the actual chatbox, not our own
             #  one, so we have to block it on all objects - likely won't matter but worth noting.
-            bl2sdk.RemoveHook("WillowGame.TextChatGFxMovie.AddChatMessageInternal", "ChatBoxInput")
-            bl2sdk.RemoveHook("WillowGame.TextChatGFxMovie.HandleTextChatInput", "ChatBoxInput")
+            unrealsdk.RemoveHook("WillowGame.TextChatGFxMovie.AddChatMessageInternal", "ChatBoxInput")
+            unrealsdk.RemoveHook("WillowGame.TextChatGFxMovie.HandleTextChatInput", "ChatBoxInput")
             self.OnSubmit(params.msg)
             return False
 
-        def HandleTextChatInput(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
+        def HandleTextChatInput(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
             if caller == self._Chat:
                 self.OnInput(params.ukey, params.uevent)
                 if params.ukey == "Escape":
-                    bl2sdk.RemoveHook("WillowGame.TextChatGFxMovie.AddChatMessageInternal", "ChatBoxInput")
-                    bl2sdk.RemoveHook("WillowGame.TextChatGFxMovie.HandleTextChatInput", "ChatBoxInput")
+                    unrealsdk.RemoveHook("WillowGame.TextChatGFxMovie.AddChatMessageInternal", "ChatBoxInput")
+                    unrealsdk.RemoveHook("WillowGame.TextChatGFxMovie.HandleTextChatInput", "ChatBoxInput")
                     self.OnSubmit("")
             return True
 
-        bl2sdk.RegisterHook("WillowGame.TextChatGFxMovie.AddChatMessageInternal", "ChatBoxInput", AddChatMessageInternal)
-        bl2sdk.RegisterHook("WillowGame.TextChatGFxMovie.HandleTextChatInput", "ChatBoxInput", HandleTextChatInput)
+        unrealsdk.RegisterHook("WillowGame.TextChatGFxMovie.AddChatMessageInternal", "ChatBoxInput", AddChatMessageInternal)
+        unrealsdk.RegisterHook("WillowGame.TextChatGFxMovie.HandleTextChatInput", "ChatBoxInput", HandleTextChatInput)
 
     def IsShowing(self) -> bool:
         """
@@ -121,8 +121,8 @@ class ChatBox(GFxMovie):
         if self._IsChatGCed() and self._WasChatOpened:
             self._WasChatOpened = False
             # If we thought chat was open then we likely still have hooks lying around
-            bl2sdk.RemoveHook("WillowGame.TextChatGFxMovie.AddChatMessageInternal", "ChatBoxInput")
-            bl2sdk.RemoveHook("WillowGame.TextChatGFxMovie.HandleTextChatInput", "ChatBoxInput")
+            unrealsdk.RemoveHook("WillowGame.TextChatGFxMovie.AddChatMessageInternal", "ChatBoxInput")
+            unrealsdk.RemoveHook("WillowGame.TextChatGFxMovie.HandleTextChatInput", "ChatBoxInput")
 
         return self._WasChatOpened
 
@@ -133,11 +133,11 @@ class ChatBox(GFxMovie):
         Displays a warning but does nothing if the chat box is not currently being displayed.
         """
         if not self.IsShowing():
-            bl2sdk.Log("[UserFeedback] Warning: tried to hide a chat box that was already closed")
+            unrealsdk.Log("[UserFeedback] Warning: tried to hide a chat box that was already closed")
             return
 
-        bl2sdk.RemoveHook("WillowGame.TextChatGFxMovie.AddChatMessageInternal", "ChatBoxInput")
-        bl2sdk.RemoveHook("WillowGame.TextChatGFxMovie.HandleTextChatInput", "ChatBoxInput")
+        unrealsdk.RemoveHook("WillowGame.TextChatGFxMovie.AddChatMessageInternal", "ChatBoxInput")
+        unrealsdk.RemoveHook("WillowGame.TextChatGFxMovie.HandleTextChatInput", "ChatBoxInput")
 
         self._Chat.StopTextChatInternal()
         self._Chat.Close()

@@ -6,6 +6,9 @@ from .OptionBox import OptionBoxButton as OptionBoxButton
 from .TextInputBox import TextInputBox as TextInputBox
 from .TrainingBox import TrainingBox as TrainingBox
 
+VersionMajor: int = 1
+VersionMinor: int = 1
+
 # Just to satisfy pyflakes' unused imports warning - can't seem to get it to ignore this file
 if False:
     GFxMovie()

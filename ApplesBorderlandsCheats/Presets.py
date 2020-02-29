@@ -6,10 +6,10 @@ from typing import ClassVar, Dict, List, Optional, Tuple, Union
 from .Cheats import ABCCheat
 from .Cheats import ABCCycleableCheat
 from .Cheats import ABCOptions
-from UserFeedback import OptionBox
-from UserFeedback import OptionBoxButton
-from UserFeedback import ShowHUDMessage
-from UserFeedback import TextInputBox
+from Mods.UserFeedback import OptionBox
+from Mods.UserFeedback import OptionBoxButton
+from Mods.UserFeedback import ShowHUDMessage
+from Mods.UserFeedback import TextInputBox
 
 _AllCheats: Tuple[ABCCheat, ...] = ABCOptions().All
 
@@ -316,7 +316,6 @@ class PresetManager:
 
         # Save the sanity-checked info
         self.SavePresets()
-        self.ReloadAllKeybinds()
 
     def SavePresets(self) -> None:
         data = []
@@ -334,7 +333,7 @@ class PresetManager:
         self._UpdateConfigureBox()
         self._ConfigureBox.Show()
 
-    # The next four functions should be overwritten by the main mod
+    # The next three functions should be overwritten by the main mod
     def AddKeybind(self, Name: str) -> None:
         raise NotImplementedError
 
@@ -343,10 +342,6 @@ class PresetManager:
 
     def RemoveKeybind(self, Name: str) -> None:
         raise NotImplementedError
-
-    # Only passing cause we call this as part of the constructer
-    def ReloadAllKeybinds(self) -> None:
-        pass
 
     def _OnFinishConfiguringPreset(self) -> None:
         self.SavePresets()

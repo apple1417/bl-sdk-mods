@@ -10,10 +10,11 @@ Added new cheats:
 - Teleport between level transitions
 - Reset shops
 
-Reworded a few cheat names/options     
+Reworded a few cheat names/options
 Fixed that the mod couldn't be disabled    
 Fixed some cases where you would take lethal damage in 1hp god mode, though it may still be possible (at least it's rarer)    
 Fixed that one shot mode didn't account for shields    
+Fixed that some forms of splash damage still dealt regular damage in one shot mode    
 Fixed that enemies could become invincible in one shot mode if you managed to deal less than 1 damage    
 
 Fixed that infinite ammo would affect all players in the lobby    

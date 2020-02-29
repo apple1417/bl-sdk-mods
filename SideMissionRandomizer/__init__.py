@@ -1,4 +1,4 @@
-import bl2sdk
+import unrealsdk
 import json
 import os
 import random
@@ -17,14 +17,14 @@ class SideMissionRandomizerSeed(NamedTuple):
 
 
 # This class just store the base info about the mod in a single place
-class SideMissionRandomizerBase(bl2sdk.BL2MOD):
+class SideMissionRandomizerBase(unrealsdk.BL2MOD):
     Name: str = "Side Mission Randomizer"
     Author: str = "apple1417"
     Description: str = (
         "Randomizes the progression order of side missions."
     )
-    Types: List[bl2sdk.ModTypes] = [bl2sdk.ModTypes.Gameplay]
-    Version = "1.1"
+    Types: List[unrealsdk.ModTypes] = [unrealsdk.ModTypes.Gameplay]
+    Version = "1.2"
 
     LOCAL_DIR: str = path.dirname(path.realpath(__file__))
 
@@ -62,7 +62,7 @@ class SideMissionRandomizerChild(SideMissionRandomizerBase):
 
         rand = random.Random(SMRSeed.Seed)
 
-        def randSample(array: List[bl2sdk.UObject]) -> List[bl2sdk.UObject]:
+        def randSample(array: List[unrealsdk.UObject]) -> List[unrealsdk.UObject]:
             amount = min(10, len(array), max(1, int(rand.normalvariate(3, 2))))
             return rand.sample(array, amount)
 
@@ -74,7 +74,7 @@ class SideMissionRandomizerChild(SideMissionRandomizerBase):
         lockedMissions = list(SMRParent.DefaultDependencies.keys())
         availibleMissions = randSample(lockedMissions) + randSample(lockedMissions)
 
-        self.NewDependencies: Dict[bl2sdk.UObject, List[bl2sdk.UObject]] = {}
+        self.NewDependencies: Dict[unrealsdk.UObject, List[unrealsdk.UObject]] = {}
         for m in availibleMissions:
             lockedMissions.remove(m)
             self.NewDependencies[m] = []
@@ -172,9 +172,9 @@ class SideMissionRandomizerParent(SideMissionRandomizerBase):
 
             # Save the default mission dependencies, so that we're able to restore them
             # We can't do this in __init__() cause they're not all loaded at that point
-            self.DefaultDependencies: Dict[bl2sdk.UObject, List[bl2sdk.UObject]] = {}
-            self.DefaultObjectiveDependencies: Dict[bl2sdk.UObject, Tuple[bl2sdk.UObject, int]] = {}
-            for mission in bl2sdk.FindAll("MissionDefinition"):
+            self.DefaultDependencies: Dict[unrealsdk.UObject, List[unrealsdk.UObject]] = {}
+            self.DefaultObjectiveDependencies: Dict[unrealsdk.UObject, Tuple[unrealsdk.UObject, int]] = {}
+            for mission in unrealsdk.FindAll("MissionDefinition"):
                 # Filter out the default MissionDefinition and all main missions
                 if mission.bPlotCritical or not mission.MissionName:
                     continue
@@ -199,8 +199,8 @@ class SideMissionRandomizerParent(SideMissionRandomizerBase):
 
             newMod = SideMissionRandomizerChild(SMRSeed)
 
-            index = bl2sdk.Mods.index(self) + 1
-            bl2sdk.Mods.insert(index, newMod)
+            index = unrealsdk.Mods.index(self) + 1
+            unrealsdk.Mods.insert(index, newMod)
 
             self.EnableChild(newMod)
 
@@ -217,19 +217,19 @@ class SideMissionRandomizerParent(SideMissionRandomizerBase):
     def LoadFromFile(self) -> None:
         # Clear out any existing mods in the list
         toRemove = set()
-        for mod in bl2sdk.Mods:
+        for mod in unrealsdk.Mods:
             if isinstance(mod, SideMissionRandomizerChild):
                 toRemove.add(mod)
         for mod in toRemove:
-            bl2sdk.Mods.remove(mod)
+            unrealsdk.Mods.remove(mod)
         self.RevertMissionsToDefaults()
         self.CurrentlyEnabledChild = None
 
         # Create all of the child mods
-        index = bl2sdk.Mods.index(self) + 1
+        index = unrealsdk.Mods.index(self) + 1
         self.SeedInfo = self.LoadSeedInfo()
         for seed in self.SeedInfo:
-            bl2sdk.Mods.insert(index, SideMissionRandomizerChild(seed))
+            unrealsdk.Mods.insert(index, SideMissionRandomizerChild(seed))
 
     # Two helper functions to explicitly list the var names in the json dump
     def SaveSeedInfo(self) -> None:
@@ -270,11 +270,11 @@ class SideMissionRandomizerParent(SideMissionRandomizerBase):
     def RemoveChild(self, child: SideMissionRandomizerChild) -> None:
         if self.CurrentlyEnabledChild == child:
             self.DisableChild(child)
-        bl2sdk.Mods.remove(child)
+        unrealsdk.Mods.remove(child)
 
         self.SeedInfo.remove(child.SMRSeed)
         self.SaveSeedInfo()
 
 
 SMRParent: SideMissionRandomizerParent = SideMissionRandomizerParent()
-bl2sdk.Mods.append(SMRParent)
+unrealsdk.RegisterMod(SMRParent)

@@ -1,70 +1,42 @@
-import bl2sdk
-import json
-from os import path
+import unrealsdk
 from typing import ClassVar, List, Union
 
-# Some setup to let this run just as well if you re-exec the file as when it was intially imported
-if __name__ == "__main__":
-    import importlib
-    import sys
-    bl2sdk.Log("[ABC] Reloading other modules")
-    importlib.reload(sys.modules["ApplesBorderlandsCheats.Cheats"])
-    importlib.reload(sys.modules["ApplesBorderlandsCheats.Presets"])
 
-    # __file__ isn't set when you call this through a pyexec, so we have to do something real silly
-    # If we cause an exception then the traceback will contain the file name, which we can regex out
-    import re
-    import traceback
-    try:
-        fake += 1  # type: ignore
-    except NameError:
-        match = re.search(r"File \"(.*?)\", line", traceback.format_exc())
-        if match is not None:
-            __file__ = match.group(1)
-    bl2sdk.Log(f"[TDL] File path: {__file__}")
-
-
-class TrueDamageLogger(bl2sdk.BL2MOD):
+class TrueDamageLogger(unrealsdk.BL2MOD):
     Name: ClassVar[str] = "True Damage Logger"
     Author: ClassVar[str] = "apple1417"
     Description: ClassVar[str] = (
         "Prints the actual amount of damage you deal to console, bypassing visual damage cap."
     )
-    Types: ClassVar[List[bl2sdk.ModTypes]] = [bl2sdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.0"
+    Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
+    Version: ClassVar[str] = "1.1"
 
-    SETTINGS_PATH: ClassVar[str] = path.join(path.dirname(path.realpath(__file__)), "settings.json")
+    Options: List[Union[unrealsdk.Options.Slider, unrealsdk.Options.Spinner, unrealsdk.Options.Boolean, unrealsdk.Options.Hidden]]
 
-    MinZeros: int
-    MinDamageSlider: bl2sdk.Options.SliderOption
+    MinDamageSlider: unrealsdk.Options.Slider
 
     def __init__(self) -> None:
         # Hopefully I can remove this in a future SDK update
         self.Author += "\nVersion: " + str(self.Version)  # type: ignore
 
-        try:
-            with open(self.SETTINGS_PATH) as file:
-                self.MinZeros = json.load(file)["MinZeros"]
-        except OSError:
-            self.MinZeros = 6
-
-        self.MinDamageSlider = bl2sdk.Options.SliderOption(
+        self.MinDamageSlider = unrealsdk.Options.Slider(
             Description="The minimum amount of zeros a damage number has to have before it is logged to console.",
             Caption="Minimum Zeros",
-            StartingValue=self.MinZeros,
+            StartingValue=6,
             MinValue=0,
             MaxValue=40,
             Increment=1
         )
+        self.Options = [self.MinDamageSlider]
 
     def Enable(self) -> None:
-        def TakeDamage(caller: bl2sdk.UObject, function: bl2sdk.UFunction, params: bl2sdk.FStruct) -> bool:
-            PC = bl2sdk.GetEngine().GamePlayers[0].Actor
+        def TakeDamage(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+            PC = unrealsdk.GetEngine().GamePlayers[0].Actor
 
             if params.InstigatedBy != PC:
                 return True
 
-            if params.Damage < 10**self.MinZeros:
+            if params.Damage < 10**self.MinDamageSlider.CurrentValue:
                 return True
 
             name = caller.PathName(caller)
@@ -80,46 +52,36 @@ class TrueDamageLogger(bl2sdk.BL2MOD):
                         continue
                     name = pt.DisplayName
 
-            bl2sdk.Log(f"Dealt {params.Damage} damage to level {caller.GetExpLevel()} {name}")
+            unrealsdk.Log(f"Dealt {params.Damage} damage to level {caller.GetExpLevel()} {name}")
 
             return True
 
-        self.RegisterGameConfigOption(self.MinDamageSlider)
-        bl2sdk.RegisterHook("WillowGame.WillowPawn.TakeDamage", "TrueDamageLogger", TakeDamage)
+        unrealsdk.RegisterHook("WillowGame.WillowPawn.TakeDamage", "TrueDamageLogger", TakeDamage)
 
     def Disable(self) -> None:
-        self.UnregisterGameConfigOption(self.MinDamageSlider)
-        bl2sdk.RemoveHook("WillowGame.WillowPawn.TakeDamage", "TrueDamageLogger")
-
-    def ModOptionChanged(
-        self,
-        # Why can't these have a single base class
-        option: Union[bl2sdk.Options.SliderOption, bl2sdk.Options.SpinnerOption, bl2sdk.Options.BooleanOption],
-        newValue: int
-    ) -> None:
-
-        if option != self.MinDamageSlider:
-            return
-
-        self.MinZeros = int(newValue)
-
-        with open(self.SETTINGS_PATH, "w") as file:
-            json.dump({"MinZeros": self.MinZeros}, file, indent=4)
+        unrealsdk.RemoveHook("WillowGame.WillowPawn.TakeDamage", "TrueDamageLogger")
 
 
 instance = TrueDamageLogger()
-if __name__ == "__main__":
-    bl2sdk.Log("[TDL] Manually loaded")
-    for mod in bl2sdk.Mods:
-        if mod.Name == instance.Name:
-            mod.Disable()
-            bl2sdk.Mods.remove(mod)
-            bl2sdk.Log("[TDL] Disabled and removed last instance")
+if __name__ != "__main__":
+    unrealsdk.RegisterMod(instance)
+else:
+    unrealsdk.Log(f"[{instance.Name}] Manually loaded")
+    for i in range(len(unrealsdk.Mods)):
+        mod = unrealsdk.Mods[i]
+        if unrealsdk.Mods[i].Name == instance.Name:
+            unrealsdk.Mods[i].Disable()
+
+            unrealsdk.RegisterMod(instance)
+            unrealsdk.Mods.remove(instance)
+            unrealsdk.Mods[i] = instance
+            unrealsdk.Log(f"[{instance.Name}] Disabled and removed last instance")
             break
     else:
-        bl2sdk.Log("[TDL] Could not find previous instance")
-    bl2sdk.Log("[TDL] Auto-enabling")
+        unrealsdk.Log(f"[{instance.Name}] Could not find previous instance")
+        unrealsdk.RegisterMod(instance)
+
+    unrealsdk.Log(f"[{instance.Name}] Auto-enabling")
     instance.Status = "Enabled"
-    instance.SettingsInputs = {"Enter": "Disable"}
+    instance.SettingsInputs["Enter"] = "Disable"
     instance.Enable()
-bl2sdk.Mods.append(instance)
