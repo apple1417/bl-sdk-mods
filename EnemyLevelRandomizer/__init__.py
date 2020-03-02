@@ -13,7 +13,7 @@ class EnemyLevelRandomizer(unrealsdk.BL2MOD):
         "Probably a bad idea."
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Gameplay]
-    Version: ClassVar[str] = "1.1"
+    Version: ClassVar[str] = "1.2"
 
     Options: List[Union[unrealsdk.Options.Slider, unrealsdk.Options.Spinner, unrealsdk.Options.Boolean, unrealsdk.Options.Hidden]]
 
@@ -59,9 +59,9 @@ class EnemyLevelRandomizer(unrealsdk.BL2MOD):
             if str(caller).startswith("WillowPlayerPawn"):
                 return True
 
-            default = params.NewGameStage + self.OffsetSlider.CurrentValue
+            default = max(0, params.NewGameStage + self.OffsetSlider.CurrentValue)
             min_val = max(0, default - self.MinSlider.CurrentValue)
-            max_val = min(255, default + self.MaxSlider.CurrentValue)
+            max_val = max(0, default + self.MaxSlider.CurrentValue)
             val = random.randrange(min_val, max_val + 1)
 
             unrealsdk.DoInjectedCallNext()
