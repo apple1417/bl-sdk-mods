@@ -101,26 +101,32 @@ class ABCList:
         Order = (OFF, ALLOWDAMAGE, FULL)
 
         def GetHooks(self) -> Dict[str, SDKHook]:
+            # Blocking this function stops knockback for full god mode
             def TakeDamage(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-                PC = unrealsdk.GetEngine().GamePlayers[0].Actor
+                if caller != unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn:
+                    return True
 
-                if caller != PC.Pawn:
+                return self != self.FULL
+
+            def SetHealth(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+                if caller != unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn:
                     return True
 
                 if self == self.FULL:
+                    # The previous function should prevent getting here, but just in case
                     return False
                 elif self == self.ALLOWDAMAGE:
-                    # The damage does get adjusted a bit when this function runs
-                    # This means it's possible for something to do barely less damage than your
-                    #  current heath, but then get adjusted high enough to kill you
-                    # Because of this we add a little buffer - if you're using this cheat anyway you
-                    #  probably don't care too much if it forces you to 1 a tad early
-                    if (params.Damage * 1.05) > caller.GetHealth():
+                    if params.NewHealth < 1:
+                        unrealsdk.DoInjectedCallNext()
                         caller.SetHealth(1)
                         return False
+
                 return True
 
-            return {"WillowGame.WillowPlayerPawn.TakeDamage": TakeDamage}
+            return {
+                "WillowGame.WillowPlayerPawn.TakeDamage": TakeDamage,
+                "Engine.Pawn.SetHealth": SetHealth
+            }
 
     class OneShot(ABCToggleableCheat):
         Name = "One Shot Mode"
@@ -147,7 +153,7 @@ class ABCList:
 
                 return True
 
-            return {"WillowGame.WillowPawn.TakeDamage": TakeDamage}
+            return {"Engine.Pawn.TakeDamage": TakeDamage}
 
     class InstantCooldown(ABCToggleableCheat):
         Name = "Instant Cooldown"

@@ -1,5 +1,12 @@
 ## Changelog
 
+### Apple's Borderlands Cheats v1.4
+Improved the hook for 1hp god mode, it should actually no longer be possible to take lethal damage.
+Made the hook for one shot mode use a parent class, which might fix issues if there's ever an entity that's not a `WillowPawn`.
+
+### Apple's Borderlands Cheats v1.3
+Updated for SDK versions 0.7.4-0.7.6.
+
 ### Apple's Borderlands Cheats v1.2
 Added configurable presets, which let you change the state of or run as many cheats as you want with a single keypress. For example, a single keypress could enable full infinite ammo, 1hp god mode, and kill all enemies. You can open the menu to create and configure as many presets as you like by pressing `P` when you have the mod selected.
 

@@ -9,11 +9,10 @@ class TrueDamageLogger(unrealsdk.BL2MOD):
         "Prints the actual amount of damage you deal to console, bypassing visual damage cap."
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.1"
-
-    Options: List[Union[unrealsdk.Options.Slider, unrealsdk.Options.Spinner, unrealsdk.Options.Boolean, unrealsdk.Options.Hidden]]
+    Version: ClassVar[str] = "1.2"
 
     MinDamageSlider: unrealsdk.Options.Slider
+    Options: List[Union[unrealsdk.Options.Slider, unrealsdk.Options.Spinner, unrealsdk.Options.Boolean, unrealsdk.Options.Hidden]]
 
     def __init__(self) -> None:
         # Hopefully I can remove this in a future SDK update
@@ -30,36 +29,38 @@ class TrueDamageLogger(unrealsdk.BL2MOD):
         self.Options = [self.MinDamageSlider]
 
     def Enable(self) -> None:
-        def TakeDamage(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+        def DisplayRecentDamageForPlayer(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
             PC = unrealsdk.GetEngine().GamePlayers[0].Actor
-
-            if params.InstigatedBy != PC:
+            if params.PC != PC:
                 return True
 
-            if params.Damage < 10**self.MinDamageSlider.CurrentValue:
+            damage = params.DamageEventData.TotalDamageForDamageType
+            if damage < 10**self.MinDamageSlider.CurrentValue:
                 return True
 
-            name = caller.PathName(caller)
-            if caller.AIClass is not None and caller.AIClass.DefaultDisplayName is not None:
-                name = caller.AIClass.DefaultDisplayName
+            actor = params.DamageEventData.DamagedActor
 
-            if caller.BalanceDefinitionState.BalanceDefinition is not None:
+            name = actor.PathName(actor)
+            if actor.AIClass is not None and actor.AIClass.DefaultDisplayName is not None:
+                name = actor.AIClass.DefaultDisplayName
+
+            if actor.BalanceDefinitionState.BalanceDefinition is not None:
                 ptNum = PC.GetCurrentPlaythrough() + 1
-                for pt in caller.BalanceDefinitionState.BalanceDefinition.PlayThroughs:
+                for pt in actor.BalanceDefinitionState.BalanceDefinition.PlayThroughs:
                     if pt.PlayThrough > ptNum:
                         continue
                     if pt.DisplayName is None or len(pt.DisplayName) == 0:
                         continue
                     name = pt.DisplayName
 
-            unrealsdk.Log(f"Dealt {params.Damage} damage to level {caller.GetExpLevel()} {name}")
+            unrealsdk.Log(f"Dealt {damage} damage to level {actor.GetExpLevel()} {name}")
 
             return True
 
-        unrealsdk.RegisterHook("WillowGame.WillowPawn.TakeDamage", "TrueDamageLogger", TakeDamage)
+        unrealsdk.RegisterHook("WillowGame.WillowDamageTypeDefinition.DisplayRecentDamageForPlayer", "TrueDamageLogger", DisplayRecentDamageForPlayer)
 
     def Disable(self) -> None:
-        unrealsdk.RemoveHook("WillowGame.WillowPawn.TakeDamage", "TrueDamageLogger")
+        unrealsdk.RemoveHook("WillowGame.WillowDamageTypeDefinition.DisplayRecentDamageForPlayer", "TrueDamageLogger")
 
 
 instance = TrueDamageLogger()

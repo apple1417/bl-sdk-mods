@@ -1,8 +1,8 @@
 import unrealsdk
 from Mods.SaveManager import storeModSettings  # type: ignore
-from Mods.KeybindManager import KeybindBinding  # type: ignore
 
 import html
+from dataclasses import dataclass
 from os import path
 from typing import ClassVar, Dict, List
 
@@ -31,6 +31,33 @@ from Mods.ApplesBorderlandsCheats.Cheats import ABCOptions  # noqa
 from Mods.ApplesBorderlandsCheats.Presets import PresetManager  # noqa
 
 
+# TODO: work out how I want to use this generally over multiple mods
+@dataclass
+class Keybind:
+    Name: str
+    Key: str = "None"
+
+    def __getitem__(self, i: int) -> str:
+        if not isinstance(i, int):
+            raise TypeError(f"list indices must be integers or slices, not {type(i)}")
+        if i == 0:
+            return self.Name
+        elif i == 1:
+            return self.Key
+        else:
+            raise IndexError("list index out of range")
+
+    def __setitem__(self, i: int, val: str) -> None:
+        if not isinstance(i, int):
+            raise TypeError(f"list indices must be integers or slices, not {type(i)}")
+        if i == 0:
+            self.Name = val
+        elif i == 1:
+            self.Key = val
+        else:
+            raise IndexError("list index out of range")
+
+
 class ApplesBorderlandsCheats(unrealsdk.BL2MOD):
     Name: ClassVar[str] = "Apple's Borderlands Cheats"
     Author: ClassVar[str] = "apple1417"
@@ -38,7 +65,7 @@ class ApplesBorderlandsCheats(unrealsdk.BL2MOD):
         "Adds keybinds performing various cheaty things"
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.3"
+    Version: ClassVar[str] = "1.4"
 
     PRESET_PATH: ClassVar[str] = path.join(path.dirname(path.realpath(__file__)), "Presets.json")
 
@@ -46,7 +73,7 @@ class ApplesBorderlandsCheats(unrealsdk.BL2MOD):
     CheatPresetManager: PresetManager = PresetManager(PRESET_PATH)
 
     SettingsInputs: Dict[str, str]
-    Keybinds: List[List[str]]
+    Keybinds: List[Keybind]
 
     def __init__(self) -> None:
         # Hopefully I can remove this in a future SDK update
@@ -69,18 +96,18 @@ class ApplesBorderlandsCheats(unrealsdk.BL2MOD):
         # Output from the preset manager is html-escaped, the keybind menu doesn't use html, so this
         #  stuff all has to convert it
         def AddPresetKeybind(name: str) -> None:
-            self.Keybinds.append([html.unescape(name), "None"])
+            self.Keybinds.append(Keybind(html.unescape(name)))
             storeModSettings()
 
         def RenamePresetKeybind(oldName: str, newName: str) -> None:
             for bind in self.Keybinds:
-                if bind[0] == html.unescape(oldName):
-                    bind[0] = html.unescape(newName)
+                if bind.Name == html.unescape(oldName):
+                    bind.Name = html.unescape(newName)
             storeModSettings()
 
         def RemovePresetKeybind(name: str) -> None:
             for bind in self.Keybinds:
-                if bind[0] == html.unescape(name):
+                if bind.Name == html.unescape(name):
                     self.Keybinds.remove(bind)
             storeModSettings()
 
@@ -90,10 +117,10 @@ class ApplesBorderlandsCheats(unrealsdk.BL2MOD):
 
         self.Keybinds = []
         for cheat in self.CheatOptions.All:
-            self.Keybinds.append([cheat.KeybindName, "None"])
+            self.Keybinds.append(Keybind(cheat.KeybindName))
 
         for preset in self.CheatPresetManager.PresetList:
-            self.Keybinds.append([html.unescape(preset.Name), "None"])
+            self.Keybinds.append(Keybind(html.unescape(preset.Name)))
 
         storeModSettings()
 
@@ -110,10 +137,10 @@ class ApplesBorderlandsCheats(unrealsdk.BL2MOD):
             self.CheatPresetManager.StartConfiguring()
         elif name == "Reset Keybinds":
             for bind in self.Keybinds:
-                bind[1] = "None"
+                bind.Key = "None"
             storeModSettings()
 
-    def GameInputPressed(self, input: KeybindBinding) -> None:
+    def GameInputPressed(self, input: Keybind) -> None:
         for cheat in self.CheatOptions.All:
             if input.Name == cheat.KeybindName:
                 cheat.OnPress()
