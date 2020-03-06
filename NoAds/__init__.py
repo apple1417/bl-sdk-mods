@@ -3,14 +3,15 @@ import os
 from typing import ClassVar, Dict, List
 
 
-class NoBL3Ads(unrealsdk.BL2MOD):
-    Name: ClassVar[str] = "No BL3 Ads"
+class NoAds(unrealsdk.BL2MOD):
+    Name: ClassVar[str] = "No Ads"
     Author: ClassVar[str] = "apple1417"
     Description: ClassVar[str] = (
-        "Prevents the BL3 ads from showing."
+        "Prevents ads from showing.\n"
+        "Includes both the obnoxious BL3 ads as well as the small MoTD DLC ads."
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.1"
+    Version: ClassVar[str] = "1.2"
 
     # For some reason not defining these makes changing them overwrite *ALL* mods' values
     Status: str = "Disabled"
@@ -28,10 +29,11 @@ class NoBL3Ads(unrealsdk.BL2MOD):
             self.Enable()
 
     def Enable(self) -> None:
-        def CanAcessOakUpsell(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+        def BlockCall(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
             return False
 
-        unrealsdk.RegisterHook("WillowGame.WillowPlayerController.CanAcessOakUpsell", "NoBL3Ads", CanAcessOakUpsell)
+        unrealsdk.RegisterHook("WillowGame.FrontendGFxMovie.ShowMOTD", "AdBlock", BlockCall)
+        unrealsdk.RegisterHook("WillowGame.WillowPlayerController.CanAcessOakUpsell", "AdBlock", BlockCall)
 
         open(self.ENABLED_FILE, "a").close()
 
@@ -41,7 +43,8 @@ class NoBL3Ads(unrealsdk.BL2MOD):
         except FileNotFoundError:
             pass
 
-        unrealsdk.RemoveHook("WillowGame.WillowPlayerController.CanAcessOakUpsell", "NoBL3Ads")
+        unrealsdk.RemoveHook("WillowGame.FrontendGFxMovie.ShowMOTD", "AdBlock")
+        unrealsdk.RemoveHook("WillowGame.WillowPlayerController.CanAcessOakUpsell", "AdBlock")
 
 
-unrealsdk.RegisterMod(NoBL3Ads())
+unrealsdk.RegisterMod(NoAds())

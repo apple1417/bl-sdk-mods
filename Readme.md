@@ -50,8 +50,9 @@ Also note that there may still be various other issues with an increased level c
 
 Compatible with both BL2 and TPS.
 
-### No BL3 Ads
-Removes the BL3 ads from the main menu.
+### No Ads
+Prevents ads from showing.
+Includes both the obnoxious BL3 ads as well as the small MoTD DLC ads.
 
 Compatible with both BL2 and TPS.
 
