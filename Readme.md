@@ -30,6 +30,13 @@ Adds keybinds performing various cheaty things. Currently contains:
 
 Compatible with both BL2 and TPS.
 
+### AsyncUtil
+THIS IS NOT A MOD BY ITSELF, IT'S A LIBRARY OTHER MODS USE.    
+
+Adds a few simple functions to let you easily run callbacks in the future without hanging the game.
+
+Compatible with both BL2 and TPS.
+
 ### Enemy Level Randomizer
 As the name might suggest, randomizes enemy levels. Probably a bad idea.
 
