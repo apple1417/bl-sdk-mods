@@ -1,5 +1,4 @@
 from collections.abc import MutableMapping
-from dataclasses import dataclass
 from typing import Dict, Iterator, List, Mapping, Tuple, TypeVar
 
 K = TypeVar("K")
@@ -24,7 +23,7 @@ class SortedDict(MutableMapping, Mapping[K, V]):  # type: ignore
         max -= 1
 
         while min <= max:
-            idx = int((max + min)/2)
+            idx = int((max + min) / 2)
             idx_k = self._items[idx][0]
             if idx_k < key:  # type: ignore
                 min = idx + 1
@@ -49,7 +48,7 @@ class SortedDict(MutableMapping, Mapping[K, V]):  # type: ignore
             raise KeyError
 
         while min <= max:
-            idx = int((max + min)/2)
+            idx = int((max + min) / 2)
             item = self._items[idx]
             if item[0] < key:  # type: ignore
                 min = idx + 1
@@ -69,7 +68,7 @@ class SortedDict(MutableMapping, Mapping[K, V]):  # type: ignore
         max -= 1
 
         while min <= max:
-            idx = int((max + min)/2)
+            idx = int((max + min) / 2)
             idx_k = self._items[idx][0]
             if idx_k < key:  # type: ignore
                 min = idx + 1
@@ -80,7 +79,6 @@ class SortedDict(MutableMapping, Mapping[K, V]):  # type: ignore
                 return
         self._items.insert(min, (key, val))
 
-
     def __delitem__(self, key: K) -> None:
         min = 0
         max = len(self)
@@ -90,7 +88,7 @@ class SortedDict(MutableMapping, Mapping[K, V]):  # type: ignore
         max -= 1
 
         while min <= max:
-            idx = int((max + min)/2)
+            idx = int((max + min) / 2)
             idx_k = self._items[idx][0]
             if idx_k < key:  # type: ignore
                 min = idx + 1

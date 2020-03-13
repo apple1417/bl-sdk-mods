@@ -15,6 +15,7 @@ Condition = Callable[[], bool]
 _Callbacks: SortedDict[datetime, List[Callback]] = SortedDict({datetime.min: []})
 _CallbackMap: Dict[str, List[Callback]] = {}
 
+
 def _OnTick(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
     now = datetime.now()
     for time, callbk_list in _Callbacks.items():
@@ -31,6 +32,8 @@ def _OnTick(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: un
         else:
             break
     return True
+
+
 unrealsdk.RunHook("WillowGame.WillowGameViewportClient.Tick", "AsyncUtil", _OnTick)
 
 
@@ -59,6 +62,7 @@ def RunIn(time: float, callbk: Callback, key: str = "") -> None:
     else:
         _Callbacks[runAt] = [callbk]
 
+
 def RunEvery(time: float, callbk: Callback, key: str) -> None:
     """
     Repeatedly runs a callback at the provided interval.
@@ -78,6 +82,7 @@ def RunEvery(time: float, callbk: Callback, key: str) -> None:
         RunIn(time, InnerCallback, key)
     RunIn(time, InnerCallback, key)
 
+
 def RunEveryTick(callbk: Callback, key: str) -> None:
     """
     Repeatedly runs a callback every game tick.
@@ -91,6 +96,7 @@ def RunEveryTick(callbk: Callback, key: str) -> None:
     else:
         _CallbackMap[key] = [callbk]
     _Callbacks[datetime.min].append(callbk)
+
 
 def RunEveryWhile(time: float, cond: Condition, callbk: Callback, key: str) -> None:
     """
@@ -108,10 +114,11 @@ def RunEveryWhile(time: float, cond: Condition, callbk: Callback, key: str) -> N
         raise ValueError("RunEveryWhile() requires a non-zero, positive, time!")
 
     def InnerCallback() -> None:
-        if cond:
+        if cond():
             callbk()
             RunIn(time, InnerCallback, key)
     RunIn(time, InnerCallback, key)
+
 
 def RunWhen(cond: Condition, callbk: Callback, key: str = "") -> None:
     """
@@ -126,10 +133,11 @@ def RunWhen(cond: Condition, callbk: Callback, key: str = "") -> None:
         key = str(callbk)
 
     def InnerCallback() -> None:
-        if cond:
+        if cond():
             callbk()
             CancelFutureCallbacks(key)
     RunEveryTick(InnerCallback, key)
+
 
 def CancelFutureCallbacks(key: str) -> bool:
     """
