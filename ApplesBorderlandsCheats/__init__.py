@@ -6,29 +6,21 @@ from dataclasses import dataclass
 from os import path
 from typing import ClassVar, Dict, List
 
+from Mods.ApplesBorderlandsCheats.Cheats import ABCOptions
+from Mods.ApplesBorderlandsCheats.Presets import PresetManager
+
 # Some setup to let this run just as well if you re-exec the file as when it was intially imported
 if __name__ == "__main__":
     import importlib
     import sys
-    unrealsdk.Log("[ABC] Reloading other modules")
     importlib.reload(sys.modules["Mods.ApplesBorderlandsCheats.Cheats"])
     importlib.reload(sys.modules["Mods.ApplesBorderlandsCheats.Presets"])
 
-    # __file__ isn't set when you call this through a pyexec, so we have to do something real silly
-    # If we cause an exception then the traceback will contain the file name, which we can regex out
-    import re
-    import traceback
+    # See https://github.com/bl-sdk/PythonSDK/issues/68
     try:
-        fake += 1  # type: ignore
-    except NameError:
-        match = re.search(r"File \"(.*?)\", line", traceback.format_exc())
-        if match is not None:
-            __file__ = match.group(1)
-    unrealsdk.Log(f"[ABC] File path: {__file__}")
-
-# It complains that these aren't at the top of the file but we might need to reload them first
-from Mods.ApplesBorderlandsCheats.Cheats import ABCOptions  # noqa
-from Mods.ApplesBorderlandsCheats.Presets import PresetManager  # noqa
+        raise NotImplementedError
+    except NotImplementedError:
+        __file__ = sys.exc_info()[-1].tb_frame.f_code.co_filename  # type: ignore
 
 
 # TODO: work out how I want to use this generally over multiple mods
@@ -65,7 +57,7 @@ class ApplesBorderlandsCheats(unrealsdk.BL2MOD):
         "Adds keybinds performing various cheaty things"
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.4"
+    Version: ClassVar[str] = "1.5"
 
     PRESET_PATH: ClassVar[str] = path.join(path.dirname(path.realpath(__file__)), "Presets.json")
 

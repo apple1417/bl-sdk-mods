@@ -1,8 +1,10 @@
 import unrealsdk
 from Mods.SaveManager import storeModSettings  # type: ignore
-from typing import cast, ClassVar, Dict, List, Tuple, Union
+from typing import Any, cast, ClassVar, Dict, List, Tuple, Union
 
 from Mods.PythonPartNotifier.PartNamer import GetPartName  # noqa
+from Mods import AAA_OptionsWrapper as OptionsWrapper
+
 OptionDescription = Tuple[Union[
     Tuple[str, Union[str, Tuple[str, ...]], int],
     Tuple[str, Union[str, Tuple[str, ...]], int, str]
@@ -21,9 +23,9 @@ class PythonPartNotifier(unrealsdk.BL2MOD):
         "Make sure to check out the options menu to customize what exactly is shown."
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.1"
+    Version: ClassVar[str] = "1.2"
 
-    Options: List[Union[unrealsdk.Options.Slider, unrealsdk.Options.Spinner, unrealsdk.Options.Boolean, unrealsdk.Options.Hidden]]
+    Options: List[OptionsWrapper.Base]
     OptionsDict: Dict[str, Union[int, bool]]
 
     BOOL_OPTIONS: ClassVar[Tuple[Tuple[str, str, bool], ...]] = (
@@ -140,7 +142,7 @@ class PythonPartNotifier(unrealsdk.BL2MOD):
             boolValue = boolOption[2]
             descrip = boolOption[1]
 
-            self.Options.append(unrealsdk.Options.Boolean(
+            self.Options.append(OptionsWrapper.Boolean(
                 Caption=name,
                 Description=descrip,
                 StartingValue=boolValue
@@ -152,21 +154,15 @@ class PythonPartNotifier(unrealsdk.BL2MOD):
             ozKits = optionCategory[0] == "Oz Kit Parts"
             hidden = (relics and not self.IS_BL2) or (ozKits and self.IS_BL2)
 
-            newOption: Union[
-                unrealsdk.Options.Spinner,
-                unrealsdk.Options.Slider,
-                unrealsdk.Options.Hidden
-            ]
-            newOption = unrealsdk.Options.Slider(
+            self.Options.append(OptionsWrapper.Slider(
                 Caption=optionCategory[0],
                 Description="Category Header",
                 StartingValue=0,
                 MinValue=0,
                 MaxValue=0,
-                Increment=1
-            )
-            if not hidden:
-                self.Options.append(newOption)
+                Increment=1,
+                IsHidden=hidden
+            ))
 
             for option in optionCategory[1]:
                 name = option[0]
@@ -180,30 +176,24 @@ class PythonPartNotifier(unrealsdk.BL2MOD):
                 if len(option) == 4:
                     descrip = cast(Tuple[str, str, int, str], option)[3]
 
-                if hidden:
-                    newOption = unrealsdk.Options.Hidden(
-                        valueName=name,
-                        StartingValue=["Hidden", "Shown"][value]
-                    )
-                else:
-                    newOption = unrealsdk.Options.Spinner(
-                        Caption=name,
-                        Description=descrip,
-                        StartingChoice=["Hidden", "Shown"][value],
-                        Choices=["Hidden", "Shown"]
-                    )
-                self.Options.append(newOption)
+                self.Options.append(OptionsWrapper.Spinner(
+                    Caption=name,
+                    Description=descrip,
+                    StartingChoice=["Hidden", "Shown"][value],
+                    Choices=["Hidden", "Shown"],
+                    IsHidden=hidden
+                ))
                 self.OptionsDict[name] = value
 
     def ModOptionChanged(
         self,
-        option: Union[unrealsdk.Options.Slider, unrealsdk.Options.Spinner, unrealsdk.Options.Boolean, unrealsdk.Options.Hidden],
-        newValue: Union[bool, str]
+        option: OptionsWrapper.Base,
+        newValue: Any
     ) -> None:
         if option in self.Options:
-            if type(newValue) == int:
-                self.OptionsDict[option.Caption] = cast(int, option.Choices.index(newValue))
-            elif type(newValue == bool):
+            if isinstance(option, OptionsWrapper.Spinner):
+                self.OptionsDict[option.Caption] = option.Choices.index(newValue)
+            elif isinstance(option, OptionsWrapper.Boolean):
                 self.OptionsDict[option.Caption] = cast(bool, newValue)
 
     # Add a key to reset all options when in the mod menu

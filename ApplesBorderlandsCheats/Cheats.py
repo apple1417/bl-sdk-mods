@@ -142,6 +142,10 @@ class ABCList:
                 if self != self.ON:
                     return True
 
+                game = unrealsdk.FindAll("WillowCoopGameInfo")[-1]
+                if game.IsFriendlyFire(caller, params.InstigatedBy.Pawn):
+                    return True
+
                 caller.SetShieldStrength(0)
                 # Try set the health to 1 so that your shot kills them, giving xp
                 # Only do it if they have more than 1 health though, so that you don't get stuck in a
@@ -483,21 +487,15 @@ class ABCList:
                 f"Reset {count} shops"
             )
 
-    """
-    This would be neat but it doesn't complete objectives, so lots of things break
-    Just leaving it in the file for this version so it's in the git history
-
-    class FinishMission(ABCCheat):
-        Name = "Finish Active Mission"
-        KeybindName = "Finish Active Mission"
+    class ReviveSelf(ABCCheat):
+        Name = "Revive Self"
+        KeybindName = "Revive Self"
 
         def OnPress(self) -> None:
-            PC = unrealsdk.GetEngine().GamePlayers[0].Actor
-            tracker = PC.WorldInfo.GRI.MissionTracker
-            mission = tracker.GetActiveMission()
-            # 3 is MS_ReadyToTurnIn
-            tracker.SetMissionStatus(mission, 3, PC)
-    """
+            Pawn = unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn
+            if Pawn.bIsInjured and not Pawn.bIsDead:
+                Pawn.GoFromInjuredToHealthy()
+                Pawn.ClientOnRevived()
 
 
 # Holds information about the current cheat state, generated automatically from 'ABCList'

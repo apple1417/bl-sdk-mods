@@ -1,4 +1,5 @@
 import unrealsdk
+from datetime import datetime
 
 
 def ShowHUDMessage(Title: str, Message: str, Duration: float = 2, MenuHint: int = 0) -> None:
@@ -38,3 +39,19 @@ def ShowHUDMessage(Title: str, Message: str, Duration: float = 2, MenuHint: int 
         True,
         MenuHint
     )
+
+
+def ShowChatMessage(
+    User: str,
+    Message: str,
+    Timestap: datetime = datetime.now(),
+    ShowTimestamp: bool = True
+) -> None:
+    is12h = unrealsdk.FindAll("WillowSaveGameManager")[0].TimeFormat == "12"
+    time_str = Timestap.strftime(("[%H:%M:%S]", "[%I:%M:%S%p]")[is12h]).lower()
+
+    if ShowTimestamp:
+        User = f"{User} {time_str}"
+
+    ChatMovie = unrealsdk.GetEngine().GamePlayers[0].Actor.GetTextChatMovie()
+    ChatMovie.AddChatMessageInternal(User, Message)

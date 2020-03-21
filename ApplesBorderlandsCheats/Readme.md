@@ -1,5 +1,9 @@
 ## Changelog
 
+### Apple's Borderlands Cheats v1.5
+One shot mode will no longer set friendly NPC's health to 1.
+Added a "Revive Self" cheat.
+
 ### Apple's Borderlands Cheats v1.4
 Improved the hook for 1hp god mode, it should actually no longer be possible to take lethal damage.
 Made the hook for one shot mode use a parent class, which might fix issues if there's ever an entity that's not a `WillowPawn`.

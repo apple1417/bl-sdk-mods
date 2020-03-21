@@ -1,4 +1,4 @@
-## bl-sdk-mods
+# bl-sdk-mods
 To use these mods:
 1. Install the Borderlands [PythonSDK](https://github.com/bl-sdk/PythonSDK)
 2. Open the SDK Mods folder - launch the game, go into the new `Mods` menu, make sure you've got the `General` mod selected, and then press `O`
@@ -7,6 +7,7 @@ To use these mods:
 
 If a folder doesn't have a zip file, or is not listed below, then the mod inside is likely incomplete. If you know what you're doing you can attempt to install it manually, but it may well have issues.
 
+## Mods
 
 ### Always Offline
 Forces the game to never download SHiFT hotfixes, meaning you can always safely use offline text mods.
@@ -27,13 +28,6 @@ Adds keybinds performing various cheaty things. Currently contains:
 - Teleport Between Fast Travels
 - Teleport Between Level Transitions
 - A 'Reset Shops' Button
-
-Compatible with both BL2 and TPS.
-
-### AsyncUtil
-THIS IS NOT A MOD BY ITSELF, IT'S A LIBRARY OTHER MODS USE.    
-
-Adds a few simple functions to let you easily run callbacks in the future without hanging the game.
 
 Compatible with both BL2 and TPS.
 
@@ -105,9 +99,27 @@ Has a configurable minimum damage before logging, in case you don't want to spam
 
 Compatible with both BL2 and TPS.
 
-### User Feedback
-THIS IS NOT A MOD BY ITSELF, IT'S A LIBRARY OTHER MODS USE.    
+## Libraries
+These aren't mods by themselves, but other mods might make use of them.
 
+### AsyncUtil
+Adds a few simple functions to let you easily run callbacks in the future without hanging the game.
+
+Compatible with both BL2 and TPS.
+
+### Options Wrapper
+As the name might suggest, a small wrapper for the default SDK options classes.
+
+Adds proper inheritence between options - all options inherit from `Base`, boolean inherits from `Spinner`.
+Gives each class an `IsHidden` attribute, so you don't need to create an instance of a completely new class to hide an option.
+
+Replaces the default SDK options classes (hence the name being prefixed with `AAA_`, so it loads first).
+It *should* be fully compatible with all existing calls, and have the exact same feature set (plus more).
+If you really need one of the original classes however, they're stored under `OptionsWrapper.SDKOptions`.
+
+Compatible with both BL2 and TPS.
+
+### User Feedback
 Adds several functions/classes to let you show various types of feedback to and get input from your users.
 
 Currently includes:

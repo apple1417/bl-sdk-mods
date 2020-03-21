@@ -1,5 +1,7 @@
 import unrealsdk
-from typing import ClassVar, List, Union
+from typing import Any, cast, ClassVar, List
+
+from Mods import AAA_OptionsWrapper as OptionsWrapper
 
 
 class ScalingAdjuster(unrealsdk.BL2MOD):
@@ -10,15 +12,14 @@ class ScalingAdjuster(unrealsdk.BL2MOD):
         "Note that you may have to save quit to get values to update."
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.2"
+    Version: ClassVar[str] = "1.3"
 
-    Options: List[Union[unrealsdk.Options.Slider, unrealsdk.Options.Spinner, unrealsdk.Options.Boolean, unrealsdk.Options.Hidden]]
+    Options: List[OptionsWrapper.Base]
 
     IS_BL2: ClassVar[bool] = unrealsdk.GetEngine().GetEngineVersion() == 8639
 
     ScalingObject: unrealsdk.UObject
-    ScalingSlider: unrealsdk.Options.Slider
-    DEFAULT_SCALING: float
+    ScalingSlider: OptionsWrapper.Slider
 
     def __init__(self) -> None:
         # Hopefully I can remove this in a future SDK update
@@ -29,50 +30,42 @@ class ScalingAdjuster(unrealsdk.BL2MOD):
             "GD_Balance_HealthAndDamage.HealthAndDamage.Att_UniversalBalanceScaler:ConstantAttributeValueResolver_0"
         )
 
-        # Sliders don't properly support floats so we'll multiply the value by 100
-        shownCaption = "BL2 Scaling"
-        shownValue = 113.0
-        hiddenCaption = "TPS Scaling"
-        hiddenValue = 111.0
-        if not self.IS_BL2:
-            shownCaption, hiddenCaption = hiddenCaption, shownCaption
-            shownValue, hiddenValue = hiddenValue, shownValue
+        self.Options = [
+            OptionsWrapper.Slider(
+                Caption="BL2 Scaling",
+                Description="The game's base scaling value (multiplied by 100). 113 means every level the numbers get 13% higher.",
+                StartingValue=113,
+                MinValue=0,
+                MaxValue=500,
+                Increment=1,
+                IsHidden=not self.IS_BL2
+            ),
+            OptionsWrapper.Slider(
+                Caption="TPS Scaling",
+                Description="The game's base scaling value (multiplied by 100). 113 means every level the numbers get 13% higher.",
+                StartingValue=111,
+                MinValue=0,
+                MaxValue=500,
+                Increment=1,
+                IsHidden=self.IS_BL2
+            )
+        ]
 
-        self.DEFAULT_SCALING = shownValue
-        self.ScalingSlider = unrealsdk.Options.Slider(
-            Description="The game's base scaling value (multiplied by 100). 113 means every level the numbers get 13% higher.",
-            Caption=shownCaption,
-            StartingValue=shownValue,
-            MinValue=0,
-            MaxValue=500,
-            Increment=1
-        )
-        hiddenOption = unrealsdk.Options.Hidden(
-            valueName=hiddenCaption,
-            StartingValue=hiddenValue
-        )
-
-        self.Options = []
-        if self.IS_BL2:
-            self.Options.append(self.ScalingSlider)
-            self.Options.append(hiddenOption)
-        else:
-            self.Options.append(hiddenOption)
-            self.Options.append(self.ScalingSlider)
+        self.ScalingSlider = cast(OptionsWrapper.Slider, self.Options[0 if self.IS_BL2 else 1])
 
     def Enable(self) -> None:
         self.ScalingObject.ConstantValue = self.ScalingSlider.CurrentValue
 
     def Disable(self) -> None:
-        self.ScalingObject.ConstantValue = self.DEFAULT_SCALING
+        self.ScalingObject.ConstantValue = self.ScalingSlider.StartingValue
 
     def ModOptionChanged(
         self,
-        option: Union[unrealsdk.Options.Slider, unrealsdk.Options.Spinner, unrealsdk.Options.Boolean, unrealsdk.Options.Hidden],
-        newValue: int
+        option: OptionsWrapper.Base,
+        newValue: Any
     ) -> None:
         if option == self.ScalingSlider:
-            self.ScalingObject.ConstantValue = newValue / 100
+            self.ScalingObject.ConstantValue = cast(int, newValue) / 100
 
 
 instance = ScalingAdjuster()

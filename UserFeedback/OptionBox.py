@@ -1,8 +1,10 @@
 import unrealsdk
+from dataclasses import dataclass
 from typing import List, Optional, Sequence
 from .GFxMovie import GFxMovie
 
 
+@dataclass(unsafe_hash=True)
 class OptionBoxButton:
     """
     A simple dataclass representing a button.
@@ -12,14 +14,7 @@ class OptionBoxButton:
         Tip: A string that is added to the option box caption when hovering over this button.
     """
     Name: str
-    Tip: str
-
-    def __init__(self, Name: str, Tip: str = ""):
-        self.Name = Name
-        self.Tip = Tip
-
-    def __repr__(self) -> str:
-        return f"OptionBoxButton(Name='{self.Name}', Tip='{self.Tip}')"
+    Tip: str = ""
 
 
 class _Page(GFxMovie):

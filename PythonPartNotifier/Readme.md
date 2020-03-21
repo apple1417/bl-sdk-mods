@@ -1,5 +1,8 @@
 ## Changelog
 
+### Python Part Notifier v1.2
+Updated to use OptionsWrapper - no functionality changes.
+
 ### Python Part Notifier v1.1
 Updated for SDK versions 0.7.4-0.7.6.
 The glitch weapon accessories should all now properly have their effect displayed.
