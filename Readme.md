@@ -31,6 +31,13 @@ Adds keybinds performing various cheaty things. Currently contains:
 
 Compatible with both BL2 and TPS.
 
+### Borderlands Crowd Control
+Lets viewers on Twitch spend channel points to affect your game.
+
+Installation is more complex than other mods here, make sure to check out it's [readme](CrowdControl/Readme.md).
+
+Compatible with both BL2 and TPS.
+
 ### Enemy Level Randomizer
 As the name might suggest, randomizes enemy levels. Probably a bad idea.
 
