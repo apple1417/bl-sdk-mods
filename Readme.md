@@ -9,6 +9,11 @@ If a folder doesn't have a zip file, or is not listed below, then the mod inside
 
 ## Mods
 
+### Alt Use Vendors
+Adds alt use binds to refill health and ammo at their vendors, like in BL3.
+
+Compatible with both BL2 and TPS.
+
 ### Always Offline
 Forces the game to never download SHiFT hotfixes, meaning you can always safely use offline text mods.
 
