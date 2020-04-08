@@ -8,7 +8,7 @@ from Mods.UserFeedback import ShowHUDMessage
 class ManualReloads(DurationCrowdControlEffect):
     Name: ClassVar[str] = "Manual Reloads"
     Description: ClassVar[str] = (
-        "Turns off automatic reloads for 15s."
+        "Turns off automatic reloads."
     )
 
     Duration: ClassVar[int] = 15
