@@ -50,6 +50,13 @@ Note that this has a few options to let you customize the randomization. You can
 
 Compatible with both BL2 and TPS
 
+### Fix Hotfixes
+Allows you to use "online" text mod hotfixes, by adding dummy objects to reorder SHiFT services.
+
+Note that this solution is *not* stable, and will likely break if Gearbox reorders services again.
+
+Compatible with both BL2 and TPS.
+
 ### Hide Undiscovered Missions
 A super simple mod that hides undiscovered missions in your mission log.
 
