@@ -69,6 +69,11 @@ Includes both the obnoxious BL3 ads as well as the small MoTD DLC ads.
 
 Compatible with both BL2 and TPS.
 
+### No Offline Warning
+Automatically closes the spammy dialog warning you that SHiFT is offline.
+
+Compatible with both BL2 and TPS.
+
 ### Onezerker
 Ever felt gunzerking with two different guns was too complicated? No? Well too bad. Makes you gunzerk with two copies of the same gun instead of two different ones.    
 Thanks to FromDarkHell for finding the object which lets you gunzerk with only one equipped gun.
