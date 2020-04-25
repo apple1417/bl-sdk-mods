@@ -98,7 +98,7 @@ class TrainingBox(GFxMovie):
 
                 # We don't have a good function to hook for when this exits so we have to decode it
                 #  from the key presses
-                if self._TrainingBox.DelayUntilShowOk < 0 and params.uevent == 1:
+                if self._TrainingBox is not None and self._TrainingBox.DelayUntilShowOk < 0 and params.uevent == 1:
                     useKey = "FAKE"
                     if caller.GetPC().PlayerInput is not None:
                         useKey = caller.GetPC().PlayerInput.GetKeyForAction("Use", True)
@@ -117,7 +117,7 @@ class TrainingBox(GFxMovie):
         Returns:
             True if the training box is currently being displayed, False otherwise.
         """
-        return self._TrainingBox is None
+        return self._TrainingBox is not None
 
     def Hide(self) -> None:
         """

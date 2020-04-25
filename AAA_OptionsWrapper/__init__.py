@@ -1,11 +1,12 @@
 import unrealsdk
 from abc import ABC
-from typing import Any, Sequence, Tuple
+from typing import Any, ClassVar, Dict, List, Sequence, Tuple
 
 from Mods.SaveManager import storeModSettings  # type: ignore
 
 VersionMajor: int = 1
-VersionMinor: int = 0
+VersionMinor: int = 1
+
 
 class Base(ABC):
     """
@@ -295,3 +296,40 @@ unrealsdk.Options.Slider = Slider
 unrealsdk.Options.Spinner = Spinner
 unrealsdk.Options.Boolean = Boolean
 unrealsdk.Options.Hidden = Hidden
+
+
+# Provide an entry in the mods list just so users can see that this is loaded
+class _OptionsWrapper(unrealsdk.BL2MOD):
+    Name: ClassVar[str] = "OptionsWrapper"
+    Author: ClassVar[str] = "apple1417"
+    Description: ClassVar[str] = (
+        "Provides functionality for other mods, but does not do anything by itself."
+    )
+    Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
+    Version: ClassVar[str] = f"{VersionMajor}.{VersionMinor}"
+
+    Status: str
+    SettingsInputs: Dict[str, str]
+
+    def __init__(self) -> None:
+        self.Author += "\nVersion: " + str(self.Version)  # type: ignore
+
+        self.Status = "Enabled"
+        self.SettingsInputs = {}
+
+
+# Only register the mod on main menu, just to try keep it at the end of the list
+def _OnMainMenu(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+    instance = _OptionsWrapper()
+    unrealsdk.RegisterMod(instance)
+    if __name__ == "__main__":
+        for i in range(len(unrealsdk.Mods)):
+            if unrealsdk.Mods[i].Name == instance.Name:
+                unrealsdk.Mods.remove(instance)
+                unrealsdk.Mods[i] = instance
+                break
+    unrealsdk.RemoveHook("WillowGame.FrontendGFxMovie.Start", "OptionsWrapper")
+    return True
+
+
+unrealsdk.RegisterHook("WillowGame.FrontendGFxMovie.Start", "OptionsWrapper", _OnMainMenu)

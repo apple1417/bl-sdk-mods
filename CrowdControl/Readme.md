@@ -31,10 +31,14 @@ Crowd Control also requires Python to be installed locally, and to be added on y
 
 Next, actually install Crowd Control:
 
-1. [Download the latest Crowd Control release here](https://github.com/apple1417/bl-sdk-mods/raw/master/CrowdControl/CrowdControl.zip).
+1. Download the latest releases of:    
+   [Crowd Control](https://github.com/apple1417/bl-sdk-mods/raw/master/CrowdControl/CrowdControl.zip)    
+   [AsyncUtil](https://github.com/apple1417/bl-sdk-mods/raw/master/AsyncUtil/AsyncUtil.zip)    
+   [OptionsWrapper](https://github.com/apple1417/bl-sdk-mods/raw/master/AAA_OptionsWrapper/OptionsWrapper.zip)    
+   [UserFeedback](https://github.com/apple1417/bl-sdk-mods/raw/master/UserFeedback/UserFeedback.zip)    
 2. Back in the game folder, browse to `Binaries/Win32/Mods` - this should be one of the folders you extracted from the SDK.
-3. Copy all folders out of the Crowd Control zip into this Mods folder.
-4. Browse into `Binaries/Win32/Mods/CrowdControl`, which you just extracted again
+3. Copy all folders out of the various zip files into this Mods folder.
+4. Browse into `Binaries/Win32/Mods/CrowdControl`, which you just extracted.
 5. Double click `install.py` to run it, then follow the instructions it gives you.
 
 At this point the mod should be properly installed, but you will still have to configure your channel rewards. Start off by configuring the mod in game:

@@ -89,7 +89,7 @@ class TextInputBox(GFxMovie):
         Title: str,
         DefaultMessage: str = "",
         PausesGame: bool = False,
-        Priority: int = 254,
+        Priority: int = 254
     ) -> None:
         """
         Creates a text input box.
@@ -192,6 +192,18 @@ class TextInputBox(GFxMovie):
         """
         pass
 
+    def IsAllowedToWrite(self, Character: str, CurrentMessage: str, Position: int) -> bool:
+        """
+        Function called to determine if the character the user last input is may be added to the
+         message, allowing for advanced input filtering.
+
+        Args:
+            Character: The html-escaped character the user just input.
+            CurrentMessage: The current message, html-escaped, before adding the new character.
+            Position: The position of the new character in the message.
+        """
+        return True
+
     def _HandleInput(self, key: str, event: int) -> None:
         """
         Function called any time the user inputs anything while the text input box is open.
@@ -233,13 +245,16 @@ class TextInputBox(GFxMovie):
                 del self._Message[self._CursorPos]
         else:
             if key in self._KeyMap:
-                self._Message.insert(self._CursorPos, self._KeyMap[key][self._IsShiftPressed])
-                self._CursorPos += 1
+                key = self._KeyMap[key][self._IsShiftPressed]
             elif key in "QWERTYUIOPASDFGHJKLZXCVBNM":
                 if not self._IsShiftPressed:
                     key = key.lower()
-                self._Message.insert(self._CursorPos, key)
-                self._CursorPos += 1
+            else:
+                return
+            if not self.IsAllowedToWrite(key, "".join(self._Message), self._CursorPos):
+                return
+            self._Message.insert(self._CursorPos, key)
+            self._CursorPos += 1
 
         # Draw the updated box
         if self._TrainingBox is None:

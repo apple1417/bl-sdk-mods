@@ -1,13 +1,14 @@
 import unrealsdk
 from dataclasses import dataclass
-from typing import List, Optional, Sequence
+from enum import Enum, auto
+from typing import List, Optional, Sequence, Tuple
 from .GFxMovie import GFxMovie
 
 
 @dataclass(unsafe_hash=True)
 class OptionBoxButton:
     """
-    A simple dataclass representing a button.
+    A simple dataclass representing a button for `OptionBox`s.
 
     Attributes:
         Name: The name that the button should have.
@@ -17,13 +18,41 @@ class OptionBoxButton:
     Tip: str = ""
 
 
+class OptionScrollType(Enum):
+    """
+    An enum for the various ways an `OptionBox` can scroll between pages.
+
+                                 | Direction | Infinite  | Activator |  Display
+    -----------------------------+-----------+-----------+-----------+-----------
+    UNIDIRECTIONAL               |    Uni    |    Yes    |   Click   |   4/4/4
+    BIDIRECTIONAL                |    Bi     |    No     |   Click   |   4/3/4
+    BIDIRECTIONAL_INFINITE       |    Bi     |    Yes    |   Click   |   3/3/3
+    UNIDIRECTIONAL_HOVER         |    Uni    |    Yes    |   Hover   |   4/4/4
+    BIDIRECTIONAL_HOVER          |    Bi     |    No     |   Hover   |   4/3/4
+    BIDIRECTIONAL_INFINITE_HOVER |    Bi     |    Yes    |   Hover   |   3/3/3
+
+    Direction:  Which directions you can scroll.
+    Infinite:   If you can scroll from the last page back to first.
+    Activator:  What activates scrolling - clicking on the button or hovering over it.
+    Display:    How many buttons are displayed on the first/midde/last page(s). The last page may
+                 have less of course, and if there's only one page it may have up to 5.
+    """
+    UNIDIRECTIONAL = auto()
+    BIDIRECTIONAL = auto()
+    BIDIRECTIONAL_INFINITE = auto()
+    UNIDIRECTIONAL_HOVER = auto()
+    BIDIRECTIONAL_HOVER = auto()
+    BIDIRECTIONAL_INFINITE_HOVER = auto()
+
+
 class _Page(GFxMovie):
     """
     Class representing a single 'page' option box. You should probably use OptionBox over this.
 
-    This behaves almost the exact same way as OptionBox. The main differences are that it's limited
-     to no more than 5 buttons, that you don't need to call Update() when you change attributes,
-     and that it uses a DefaultButtonIndex field rather than having a special show method.
+    This class behaves very similarly to OptionBox. The main differences are that it's limited to no
+     more than 5 buttons (and thus doesn't have scrolling logic), you don't need to call Update()
+     when you change attributes, and that it uses a DefaultButtonIndex field rather than having a
+     special show method.
 
     You should only really use this class if you want to create your own logic for multiple pages.
     """
@@ -41,7 +70,6 @@ class _Page(GFxMovie):
         self, *,
         Title: str,
         Caption: str = "",
-        # Default tooltip the game uses
         Tooltip: str = "<StringAliasMap:GFx_Accept> Select     <StringAliasMap:GFx_Cancel> Cancel",
         Buttons: Sequence[OptionBoxButton],
         DefaultButtonIndex: int = 0,
@@ -57,9 +85,9 @@ class _Page(GFxMovie):
             raise ValueError(
                 f"'{Buttons}' is not a sequence of Buttons"
             ).with_traceback(e.__traceback__)
-        if 1 > len(Buttons) > 5:
+        if len(Buttons) < 1 or len(Buttons) > 5:
             raise ValueError("A single option box must have 1-5 buttons")
-        if 0 > int(DefaultButtonIndex) <= len(Buttons):
+        if int(DefaultButtonIndex) < 0 or int(DefaultButtonIndex) >= len(Buttons):
             raise IndexError("Default button index out of range")
 
         self.Title = str(Title)
@@ -124,7 +152,7 @@ class _Page(GFxMovie):
         unrealsdk.RemoveHook("WillowGame.WillowGFxDialogBox.Cancelled", "CustomOptionBox")
         unrealsdk.RemoveHook("WillowGame.WillowGFxDialogBox.HandleInputKey", "CustomOptionBox")
 
-        # If it's already closed just give a warning`
+        # If it's already closed just give a warning
         if self._OptionBox is None:
             unrealsdk.Log(
                 "[UserFeedback] Warning: tried to hide a option box page that was already closed"
@@ -167,13 +195,14 @@ class OptionBox(GFxMovie):
         Title: The title text to display at the top of the option box.
         Caption: The text to display in the main body of the option box.
         Tooltip: The text to display in the footer of the option box.
-        Buttons: A sequence of buttons that the user should pick from.
+        Buttons: A sequence of buttons that the user should pick from. This may contain duplicates.
         PreventCanceling:
             If the user should be prevented from pressing ESC to cancel out of the option
              without selecting anything.
         Priority:
             A byte representing the priority of the option box in reference to the game's other
              `GfxMovie`s. Higher values display above lower ones.
+        ScrollType: How the option box scrolls between pages, if there are multiple.
     """
 
     @staticmethod
@@ -199,16 +228,17 @@ class OptionBox(GFxMovie):
     Buttons: Sequence[OptionBoxButton]
     PreventCanceling: bool
     Priority: int
+    ScrollType: OptionScrollType
 
     def __init__(
         self, *,
         Title: str,
         Caption: str = "",
-        # Default tooltip the game uses
-        Tooltip: str = "<StringAliasMap:GFx_Accept> Select     <StringAliasMap:GFx_Cancel> Cancel",
+        Tooltip: str = "<StringAliasMap:GFx_Accept> Select    <StringAliasMap:GFx_Cancel> Cancel",
         Buttons: Sequence[OptionBoxButton],
         PreventCanceling: bool = False,
-        Priority: int = 254
+        Priority: int = 254,
+        ScrollType: OptionScrollType = OptionScrollType.UNIDIRECTIONAL_HOVER
     ) -> None:
         """
         Creates an Option Box.
@@ -223,7 +253,7 @@ class OptionBox(GFxMovie):
                  tooltip, which explains the keybinds.
             Buttons:
                 A sequence of OptionBoxButtons that the user should pick from. These will
-                 automatically be split into pages.
+                 automatically be split into pages. This may contain duplicates.
             PreventCanceling:
                 If the user should be prevented from pressing ESC to cancel out of the option
                  without selecting anything. Defaults to false.
@@ -232,10 +262,10 @@ class OptionBox(GFxMovie):
                  `GfxMovie`s. Higher values display above lower ones. Defaults to 254, the same as
                  the game's default.
         Raises:
-            IndexError:
-                If the DefaultButtonIndex does not corospond with an index of the Buttons sequence.
-            TypeError: If not passed a valid sequence of OptionBoxButtons.
-            ValueError: If not passed at least one button.
+            TypeError: If not passed a sequence of `OptionBoxButton`s.
+            ValueError:
+                If not passed at least one button.
+                If ScrollType has an invalid value not equal to anything in the enum.
         """
         self.Title = Title
         self.Caption = Caption
@@ -243,18 +273,29 @@ class OptionBox(GFxMovie):
         self.Buttons = Buttons
         self.PreventCanceling = PreventCanceling
         self.Priority = Priority
+        self.ScrollType = ScrollType
 
         self._CurrentPageIndex = 0
+        self._NextPageButton = OptionBoxButton("Next Page")
+        self._PreviousPageButton = OptionBoxButton("Previous Page")
 
         self.Update()
 
     _Pages: List[_Page]
     _CurrentPageIndex: int
     _NextPageButton: OptionBoxButton
+    _PreviousPageButton: OptionBoxButton
+
+    _UP_KEYS: Tuple[str, ...] = (
+        "Up", "XboxTypeS_DPad_Up", "Gamepad_LeftStick_Up"
+    )
+    _DOWN_KEYS: Tuple[str, ...] = (
+        "Down", "XboxTypeS_DPad_Down", "Gamepad_LeftStick_Down"
+    )
 
     def Update(self) -> None:
         """
-        Updates all pages to use the values currently stored in the instance's attributes.
+        Updates all of the internal pages to use the values currently stored in the attributes.
 
         Must be called whenever you update the attributes, otherwise the displayed boxes will
          continue to use the old values.
@@ -263,9 +304,10 @@ class OptionBox(GFxMovie):
          this, but you must call it if you change the button list.
 
         Raises:
-            IndexError:
-                If the DefaultButtonIndex does not corospond with an index of the Buttons sequence.
-            ValueError: If Buttons is not a sequence of at least one button.
+            TypeError: If not passed a sequence of `OptionBoxButton`s.
+            ValueError:
+                If Buttons is not a sequence of at least one button.
+                If ScrollType has an invalid value not equal to anything in the enum.
         """
 
         # Check we actually have a sequence of buttons - everything else can use a builtin converter
@@ -277,32 +319,39 @@ class OptionBox(GFxMovie):
             raise ValueError(
                 f"'{self.Buttons}' is not a sequence of Buttons"
             ).with_traceback(e.__traceback__)
-        if 1 > len(self.Buttons) > 5:
-            raise ValueError("A single option box must have 1-5 buttons")
-
-        self._NextPageButton = OptionBoxButton(
-            "Next Page",
-            f"Cycle through {int(len(self.Buttons) / 4) + 1} pages of options."
-        )
+        if len(self.Buttons) < 1:
+            raise ValueError("An option box must have at least one button")
 
         self._Pages = []
 
-        buttonGroups: List[List[OptionBoxButton]]
+        buttonGroups: List[List[OptionBoxButton]] = []
+        # If we have 5 buttons or less we only have one page
         if len(self.Buttons) <= 5:
-            # If we have 5 buttons or less then really this should just act like a single option box
-            buttonGroups = [list(self.Buttons)]
-        else:
-            # With more we split them into pages of 4 options and the next page button
-            buttonGroups = [list(self.Buttons[i:i + 4]) + [self._NextPageButton]
-                            for i in range(0, len(self.Buttons), 4)]
+            buttonGroups.append(list(self.Buttons))
 
-        def AdvancePage(button: OptionBoxButton) -> None:
-            if button == self._NextPageButton:
-                self._CurrentPageIndex = (self._CurrentPageIndex + 1) % len(self._Pages)
-                self.OnPageChange()
-                self.Show()
-            else:
-                self.OnPress(button)
+        elif self.ScrollType in (OptionScrollType.UNIDIRECTIONAL, OptionScrollType.UNIDIRECTIONAL_HOVER):
+            for i in range(0, len(self.Buttons), 4):
+                buttonGroups.append([*self.Buttons[i:i + 4], self._NextPageButton])
+
+        elif self.ScrollType in (OptionScrollType.BIDIRECTIONAL, OptionScrollType.BIDIRECTIONAL_HOVER):
+            buttonGroups.append([*self.Buttons[0:4], self._NextPageButton])
+            for i in range(4, len(self.Buttons), 3):
+                buttonGroups.append(
+                    [self._PreviousPageButton, *self.Buttons[i:i + 3], self._NextPageButton]
+                )
+            buttonGroups[-1].pop()
+            # Handle the case where a single button got put on the last page
+            if len(buttonGroups[-1]) == 2:
+                buttonGroups[-2][-1] = buttonGroups[-1][1]
+                del buttonGroups[-1]
+
+        elif self.ScrollType in (OptionScrollType.BIDIRECTIONAL_INFINITE, OptionScrollType.BIDIRECTIONAL_INFINITE_HOVER):
+            for i in range(0, len(self.Buttons), 3):
+                buttonGroups.append(
+                    [self._PreviousPageButton, *self.Buttons[i:i + 3], self._NextPageButton]
+                )
+        else:
+            raise ValueError("Invalid scroll type")
 
         for group in buttonGroups:
             box = _Page(
@@ -313,38 +362,43 @@ class OptionBox(GFxMovie):
                 PreventCanceling=bool(self.PreventCanceling),
                 Priority=int(self.Priority)
             )
-            box.OnPress = AdvancePage  # type: ignore
-            # Use lambdas so that you can update these later
-            box.OnInput = lambda k, e: self.OnInput(k, e)  # type: ignore
-            box.OnCancel = lambda: self.OnCancel()  # type: ignore
+            # Use internal callback functions partially so the actual callbacks can be updated
+            #  without calling this, and partially so that we can guarentee we run some stuff before
+            #  the user's callbacks
+            # Plus it makes it easier for subclasses to overwrite
+            box.OnPress = self._InternalOnPress  # type: ignore
+            box.OnInput = self._InternalOnInput  # type: ignore
+            box.OnCancel = self._InternalOnCancel  # type: ignore
 
             self._Pages.append(box)
 
-    def Show(self) -> None:
+    def Show(self, button: Optional[OptionBoxButton] = None) -> None:
         """
         Displays the option box on the current page.
 
         If the user scrolls through a few pages before exiting the option box then calling this
          function again will re-show the page they exited on.
-        """
-        self._Pages[self._CurrentPageIndex].Show()
 
-    def ShowButton(self, button: OptionBoxButton) -> None:
-        """
-        Displays the option box with the provided button selected.
-
-        If the same button has been included multiple times it will prioritize the first copy on the
-         current page, followed by the first copy in the overall list.
+        By default selects the first button, but optionally can select a specific button. If the
+         same button has been included in the list multiple times, it will prioritize the first copy
+         on the current page, followed by the first copy in the overall list.
 
         Args:
-            button: The button you want to be selected
+            button: An optional arg specifying the button that should be selected. Defaults to None.
         Raises:
             ValueError:
                 If the provided button is not currently in one of the stored pages. This may happen
-                 if you forgot to call UpdatePages().
+                 if you forgot to call Update().
         """
+
         currentPage = self._Pages[self._CurrentPageIndex]
-        if button in currentPage.Buttons:
+        if button is None:
+            currentPage.DefaultButtonIndex = 0
+            # Don't select the previous page button if we use hover scrolling
+            if self.ScrollType in (OptionScrollType.BIDIRECTIONAL_HOVER, OptionScrollType.BIDIRECTIONAL_INFINITE_HOVER):
+                if currentPage.Buttons[0] == self._PreviousPageButton:
+                    currentPage.DefaultButtonIndex = 1
+        elif button in currentPage.Buttons:
             currentPage.DefaultButtonIndex = currentPage.Buttons.index(button)
         else:
             for page in self._Pages:
@@ -355,8 +409,7 @@ class OptionBox(GFxMovie):
             else:
                 raise ValueError(f"Provided button {button} is not on any of the current pages!")
 
-        self.Show()
-        self._Pages[self._CurrentPageIndex].DefaultButtonIndex = 0
+        self._Pages[self._CurrentPageIndex].Show()
 
     def IsShowing(self) -> bool:
         """
@@ -390,9 +443,6 @@ class OptionBox(GFxMovie):
         """
         Callback function called any time the user inputs anything while the option box is open.
 
-        This sample implementation makes Home/End jump to the ends of a page, and Page Up/Down
-         scroll between pages.
-
         Args:
             key:
                 The key that was pressed. See the following link for reference.
@@ -401,36 +451,15 @@ class OptionBox(GFxMovie):
                 The input event type. See the following link for reference.
                 https://docs.unrealengine.com/en-US/API/Runtime/Engine/Engine/EInputEvent/index.html
         """
-        if event != 0:
-            return
-        if key == "PageUp":
-            if len(self._Pages) <= 1:
-                return
-            self.Hide()
-            self._CurrentPageIndex = (self._CurrentPageIndex + 1) % len(self._Pages)
-            self.OnPageChange()
-            self.Show()
-        elif key == "PageDown":
-            if len(self._Pages) <= 1:
-                return
-            self.Hide()
-            self._CurrentPageIndex = (self._CurrentPageIndex - 1) % len(self._Pages)
-            self.OnPageChange()
-            self.Show()
-        elif key == "Home":
-            self.Hide()
-            self.ShowButton(self._Pages[self._CurrentPageIndex].Buttons[0])
-        elif key == "End":
-            self.Hide()
-            self.ShowButton(self._Pages[self._CurrentPageIndex].Buttons[-1])
+        pass
 
     def OnPageChange(self) -> None:
-        """ Callback function intended to be overwritten. Called when the user changes pages. """
+        """ Callback function called when the user changes pages. """
         pass
 
     def OnPress(self, button: OptionBoxButton) -> None:
         """
-        Callback function intended to be overwritten. Called when the user presses a button.
+        Callback function called when the user presses a button.
 
         Args:
             button: The button that the user pressed.
@@ -438,8 +467,142 @@ class OptionBox(GFxMovie):
         pass
 
     def OnCancel(self) -> None:
-        """
-          Callback function intended to be overwritten. Called when the user cancels out of the
-           option box menu.
-        """
+        """ Callback function called when the user cancels out of the option box. """
         pass
+
+    """ Deprecated methods/attributes """
+    _DeprecationWarning_ShowButton: bool = False
+
+    def ShowButton(self, button: OptionBoxButton) -> None:
+        """
+        This has been deprecated since version 1.3. Use the optional argument on `Show()` instead.
+
+        Displays the option box with the provided button selected.
+
+        Args:
+            button: The button you want to be selected
+        Raises:
+            ValueError:
+                If the provided button is not currently in one of the stored pages. This may happen
+                 if you forgot to call Update().
+        """
+        if not self._DeprecationWarning_ShowButton:
+            unrealsdk.Log("[UserFeedback] Use of `OptionBox.ShowButton()` is deprecated!")
+            self._DeprecationWarning_ShowButton = True
+        self.Show(button)
+
+    """ Internal methods """
+
+    # Turns out we need this scrolling logic in a few places
+    def _PageUp(self) -> None:
+        pageIdx = (self._CurrentPageIndex - 1) % len(self._Pages)
+        buttonIdx = -1
+
+        if len(self._Pages) == 1:
+            buttonIdx = 0
+        if self.ScrollType == OptionScrollType.UNIDIRECTIONAL_HOVER:
+            buttonIdx = -2
+        elif self.ScrollType == OptionScrollType.BIDIRECTIONAL_HOVER:
+            if pageIdx != len(self._Pages) - 1:
+                buttonIdx = -2
+        elif self.ScrollType == OptionScrollType.BIDIRECTIONAL_INFINITE_HOVER:
+            buttonIdx = -2
+
+        if self.IsShowing():
+            self.Hide()
+        self._CurrentPageIndex = pageIdx
+        self.Show(self._Pages[pageIdx].Buttons[buttonIdx])
+        if len(self._Pages) < 1:
+            self.OnPageChange()
+
+    def _PageDown(self) -> None:
+        pageIdx = (self._CurrentPageIndex + 1) % len(self._Pages)
+        buttonIdx = 0
+
+        if len(self._Pages) == 1:
+            buttonIdx = -1
+        elif self.ScrollType == OptionScrollType.BIDIRECTIONAL_HOVER:
+            if pageIdx != 0:
+                buttonIdx = 1
+        elif self.ScrollType == OptionScrollType.BIDIRECTIONAL_INFINITE_HOVER:
+            buttonIdx = 1
+
+        if self.IsShowing():
+            self.Hide()
+        self._CurrentPageIndex = pageIdx
+        self.Show(self._Pages[pageIdx].Buttons[buttonIdx])
+        if len(self._Pages) < 1:
+            self.OnPageChange()
+
+    def _Home(self) -> None:
+        self.Hide()
+
+        buttonIdx = 0
+        if self.ScrollType == OptionScrollType.BIDIRECTIONAL_HOVER:
+            if self._CurrentPageIndex != 0:
+                buttonIdx = 1
+        elif self.ScrollType == OptionScrollType.BIDIRECTIONAL_INFINITE_HOVER:
+            buttonIdx = 1
+
+        self.Show(self._Pages[self._CurrentPageIndex].Buttons[buttonIdx])
+
+    def _End(self) -> None:
+        self.Hide()
+
+        buttonIdx = -1
+        if self.ScrollType == OptionScrollType.UNIDIRECTIONAL_HOVER:
+            buttonIdx = -2
+        elif self.ScrollType == OptionScrollType.BIDIRECTIONAL_HOVER:
+            if self._CurrentPageIndex != len(self._Pages) - 1:
+                buttonIdx = -2
+        elif self.ScrollType == OptionScrollType.BIDIRECTIONAL_INFINITE_HOVER:
+            buttonIdx = -2
+
+        self.Show(self._Pages[self._CurrentPageIndex].Buttons[buttonIdx])
+
+    def _InternalOnPress(self, button: OptionBoxButton) -> None:
+        if button == self._NextPageButton:
+            self._PageDown()
+        elif button == self._PreviousPageButton:
+            self._PageUp()
+        else:
+            self.OnPress(button)
+
+    def _InternalOnInput(self, key: str, event: int) -> None:
+        if event == 0:
+            if key == "PageUp":
+                if self._CurrentPageIndex == 0:
+                    if self.ScrollType in (OptionScrollType.BIDIRECTIONAL, OptionScrollType.BIDIRECTIONAL_HOVER):
+                        self._Home()
+                    else:
+                        self._PageUp()
+                else:
+                    self._PageUp()
+            elif key == "PageDown":
+                if self._CurrentPageIndex == len(self._Pages) - 1:
+                    if self.ScrollType in (OptionScrollType.BIDIRECTIONAL, OptionScrollType.BIDIRECTIONAL_HOVER):
+                        self._End()
+                    else:
+                        self._PageDown()
+                else:
+                    self._PageDown()
+            elif key == "Home":
+                self._Home()
+            elif key == "End":
+                self._End()
+        elif event == 1:
+            isHoverScroll = self.ScrollType in (
+                OptionScrollType.UNIDIRECTIONAL_HOVER,
+                OptionScrollType.BIDIRECTIONAL_HOVER,
+                OptionScrollType.BIDIRECTIONAL_INFINITE_HOVER
+            )
+            selectedButton = self.GetSelectedButton()
+            if key in self._UP_KEYS and isHoverScroll and selectedButton == self._PreviousPageButton:
+                self._PageUp()
+            elif key in self._DOWN_KEYS and isHoverScroll and selectedButton == self._NextPageButton:
+                self._PageDown()
+
+        self.OnInput(key, event)
+
+    def _InternalOnCancel(self) -> None:
+        self.OnCancel()

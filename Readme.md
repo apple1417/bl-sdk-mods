@@ -12,7 +12,8 @@ If a folder doesn't have a zip file, or is not listed below, then the mod inside
 ### Alt Use Vendors
 Adds alt use binds to refill health and ammo at their vendors, like in BL3.
 
-Compatible with both BL2 and TPS.
+Compatible with both BL2 and TPS.    
+Requires [AsyncUtil](https://github.com/apple1417/bl-sdk-mods/raw/master/AsyncUtil/AsyncUtil.zip).    
 
 ### Always Offline
 Forces the game to never download SHiFT hotfixes, meaning you can always safely use offline text mods.
@@ -34,7 +35,8 @@ Adds keybinds performing various cheaty things. Currently contains:
 - Teleport Between Level Transitions
 - A 'Reset Shops' Button
 
-Compatible with both BL2 and TPS.
+Compatible with both BL2 and TPS.    
+Requires [UserFeedback](https://github.com/apple1417/bl-sdk-mods/raw/master/UserFeedback/UserFeedback.zip).     
 
 ### Borderlands Crowd Control
 Lets viewers on Twitch spend channel points to affect your game.
@@ -95,6 +97,7 @@ What exactly is shown on the card is very customizable through the options menu.
 Note that there are thousands of parts, so it's not impossible that the mod gets something wrong, don't be afraid to double check. If you do find an issue please report it alongside a gibbed code for the item.
 
 Compatible with both BL2 and TPS.
+Requires [OptionsWrapper](https://github.com/apple1417/bl-sdk-mods/raw/master/AAA_OptionsWrapper/OptionsWrapper.zip).    
 
 ### Rounds Per Minute
 Makes item cards display rounds per minute rather than per second.
@@ -106,6 +109,7 @@ A simple tool that adds an option to change the game's base scaling value. Your 
 Note that you may have to save quit for values to update.
 
 Compatible with both BL2 and TPS.
+Requires [OptionsWrapper](https://github.com/apple1417/bl-sdk-mods/raw/master/AAA_OptionsWrapper/OptionsWrapper.zip).
 
 ### Side Mission Randomizer
 Ever felt it was too easy to unlock all your favourite side missions? This mod randomizes their progression order. Turns the lovely (mostly) linear progression graph into a spaghetti nightmare.

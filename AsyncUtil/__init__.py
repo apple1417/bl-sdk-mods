@@ -1,12 +1,12 @@
 import unrealsdk
 import traceback
 from datetime import datetime, timedelta
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, ClassVar, Dict, List
 
 from .SortedDict import SortedDict
 
 VersionMajor: int = 1
-VersionMinor: int = 0
+VersionMinor: int = 1
 
 Callback = Callable[[], Any]
 Condition = Callable[[], bool]
@@ -155,3 +155,40 @@ def CancelFutureCallbacks(key: str) -> bool:
                 _Callbacks[time].remove(callbk)
     del _CallbackMap[key]
     return True
+
+
+# Provide an entry in the mods list just so users can see that this is loaded
+class _AsyncUtil(unrealsdk.BL2MOD):
+    Name: ClassVar[str] = "AsyncUtil"
+    Author: ClassVar[str] = "apple1417"
+    Description: ClassVar[str] = (
+        "Provides functionality for other mods, but does not do anything by itself."
+    )
+    Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
+    Version: ClassVar[str] = f"{VersionMajor}.{VersionMinor}"
+
+    Status: str
+    SettingsInputs: Dict[str, str]
+
+    def __init__(self) -> None:
+        self.Author += "\nVersion: " + str(self.Version)  # type: ignore
+
+        self.Status = "Enabled"
+        self.SettingsInputs = {}
+
+
+# Only register the mod on main menu, just to try keep it at the end of the list
+def _OnMainMenu(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+    instance = _AsyncUtil()
+    unrealsdk.RegisterMod(instance)
+    if __name__ == "__main__":
+        for i in range(len(unrealsdk.Mods)):
+            if unrealsdk.Mods[i].Name == instance.Name:
+                unrealsdk.Mods.remove(instance)
+                unrealsdk.Mods[i] = instance
+                break
+    unrealsdk.RemoveHook("WillowGame.FrontendGFxMovie.Start", "AsyncUtil")
+    return True
+
+
+unrealsdk.RegisterHook("WillowGame.FrontendGFxMovie.Start", "AsyncUtil", _OnMainMenu)
