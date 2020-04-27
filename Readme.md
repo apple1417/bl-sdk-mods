@@ -111,6 +111,14 @@ Note that you may have to save quit for values to update.
 Compatible with both BL2 and TPS.
 Requires [OptionsWrapper](https://github.com/apple1417/bl-sdk-mods/raw/master/AAA_OptionsWrapper/OptionsWrapper.zip).
 
+### SDK Autorun
+Automatically runs console commands/SDK mods for you when you reach the main menu. Configurable entirely through an in game menu.
+
+Note that if you get stuck in a crash loop, you can disable this by deleteing the `config.json` that gets created in the mod directory.
+
+Compatible with both BL2 and TPS.    
+Requires [AsyncUtil](https://github.com/apple1417/bl-sdk-mods/raw/master/AsyncUtil/AsyncUtil.zip) and [UserFeedback](https://github.com/apple1417/bl-sdk-mods/raw/master/UserFeedback/UserFeedback.zip).  
+
 ### Side Mission Randomizer
 Ever felt it was too easy to unlock all your favourite side missions? This mod randomizes their progression order. Turns the lovely (mostly) linear progression graph into a spaghetti nightmare.
 
