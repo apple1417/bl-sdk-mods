@@ -42,6 +42,11 @@ class SDKAutorun(unrealsdk.BL2MOD):
             self.Status = "Disabled"
             self.SettingsInputs["Enter"] = "Enable"
 
+    SettingsInputs: Dict[str, str] = {
+        "Enter": "Enable",
+        "T": "Edit Tasks"
+    }
+
     CONFIG_FILE: ClassVar[str] = path.join(path.dirname(path.realpath(__file__)), "config.json")
 
     LaunchTasks: List[Tasks.BaseTask]
@@ -52,7 +57,6 @@ class SDKAutorun(unrealsdk.BL2MOD):
         self.Author += "\nVersion: " + str(self.Version)  # type: ignore
 
         self.IsEnabled = False
-        self.SettingsInputs["T"] = "Edit Tasks"
 
         forceOff = self.LoadTasks()
         self.SaveTasks()
