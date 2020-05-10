@@ -24,7 +24,7 @@ class SideMissionRandomizerBase(unrealsdk.BL2MOD):
         "Randomizes the progression order of side missions."
     )
     Types: List[unrealsdk.ModTypes] = [unrealsdk.ModTypes.Gameplay]
-    Version = "1.2"
+    Version = "1.3"
 
     LOCAL_DIR: str = path.dirname(path.realpath(__file__))
 
@@ -72,7 +72,9 @@ class SideMissionRandomizerChild(SideMissionRandomizerBase):
         #  3. Set it's dependencies to be a random selection of the unlocked missions
         #  4. Add it to the unlocked set and loop
         lockedMissions = list(SMRParent.DefaultDependencies.keys())
-        availibleMissions = randSample(lockedMissions) + randSample(lockedMissions)
+
+        startingAmount = min(30, len(lockedMissions), max(1, int(rand.normalvariate(20, 5))))
+        availibleMissions = rand.sample(lockedMissions, startingAmount)
 
         self.NewDependencies: Dict[unrealsdk.UObject, List[unrealsdk.UObject]] = {}
         for m in availibleMissions:
@@ -111,20 +113,30 @@ class SideMissionRandomizerChild(SideMissionRandomizerBase):
         # Invert the map to show what each mission unlocks instead of dependencies
         # This is just a nicer sorting order
         unlockMap: Dict[str, List[str]] = {}
+        defaults: List[str] = []
         for mission in self.NewDependencies:
+            count = 0
             for dep in self.NewDependencies[mission]:
                 if dep.MissionName in unlockMap:
                     unlockMap[dep.MissionName].append(mission.MissionName)
                 else:
                     unlockMap[dep.MissionName] = [mission.MissionName]
+                count += 1
+            if count == 0:
+                defaults.append(mission.MissionName)
 
         with open(self.DUMP_PATH, "w") as file:
             file.write(
-                "# I recommend you put this into a grapher such as http://www.webgraphviz.com/\n\n"
+                "# I recommend you put this into a dot file grapher such as http://www.webgraphviz.com/\n"
+                "digraph G {\n\n"
             )
+            for mission in sorted(defaults):
+                file.write(f'"No Dependencies" -> "{mission}"\n')
+            file.write("\n")
             for mission in sorted(unlockMap.keys()):
-                for unlock in unlockMap[mission]:
+                for unlock in sorted(unlockMap[mission]):
                     file.write(f'"{mission}" -> "{unlock}"\n')
+            file.write("\n}\n")
 
         os.startfile(self.DUMP_PATH)
 
