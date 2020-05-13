@@ -1,4 +1,5 @@
 import unrealsdk
+import traceback
 from typing import Any, cast, ClassVar, Dict
 
 from . import BaseTask, JSON
@@ -22,7 +23,12 @@ class SDKInput(BaseTask):
         for mod in unrealsdk.Mods:
             if mod.Name == self.ModName:
                 if self.Input in mod.SettingsInputs:
-                    mod.SettingsInputPressed(mod.SettingsInputs[self.Input])
+                    try:
+                        mod.SettingsInputPressed(mod.SettingsInputs[self.Input])
+                    except Exception:
+                        unrealsdk.Log(f"[{self.Name}] Mod '{self.ModName}' caused an exception while inputing '{self.Input}':")
+                        for line in traceback.format_exc():
+                            unrealsdk.Log(line)
                 else:
                     unrealsdk.Log(
                         f"[{self.Name}] Mod '{self.ModName}' does not currently support the input '{self.Input}'!"

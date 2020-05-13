@@ -1,4 +1,5 @@
 import unrealsdk
+import traceback
 from typing import ClassVar
 
 from . import BaseTask, JSON
@@ -22,7 +23,12 @@ class SDKEnable(BaseTask):
                 if mod.Status == "Enabled":
                     unrealsdk.Log(f"[{self.Name}] Mod '{self.ModName}' is already enabled!")
                 else:
-                    mod.SettingsInputPressed("Enable")
+                    try:
+                        mod.SettingsInputPressed("Enable")
+                    except Exception:
+                        unrealsdk.Log(f"[{self.Name}] Mod '{self.ModName}' caused an exception while trying to enable:")
+                        for line in traceback.format_exc():
+                            unrealsdk.Log(line)
                 break
         else:
             unrealsdk.Log(f"[{self.Name}] Unable to find mod '{self.ModName}'!")

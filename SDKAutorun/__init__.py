@@ -27,7 +27,7 @@ class SDKAutorun(unrealsdk.BL2MOD):
         "Automatically runs SDK mods or console commands on game launch."
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.0"
+    Version: ClassVar[str] = "1.2"
 
     @property
     def IsEnabled(self) -> bool:

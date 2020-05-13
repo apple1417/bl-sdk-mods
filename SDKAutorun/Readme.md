@@ -1,5 +1,8 @@
 ## Changelog
 
+### SDK Autorun v1.2
+Fixed that autorunning tasks would be interupted if other SDK mods caused an exception.
+
 ### SDK Autorun v1.1
 Fixed that the mod was making all other mods have a `[T] Edit Tasks` bind in their description.
 
