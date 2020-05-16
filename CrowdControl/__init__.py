@@ -40,14 +40,26 @@ else:
     raise ImportError("This mod relies on several windows-specific functions, it simply won't work on other platforms.")
 
     # Mypy can't take a hint
-    from ctypes import LibraryLoader
-    windll = LibraryLoader
+    from ctypes import c_byte, c_ulong
+    windll: Any  # This one's complicated
+    BYTE = c_byte
+    DWORD = c_ulong
 
     def GetLastError() -> int:
         return 0
 
     def WinError() -> WindowsError:
         return WindowsError()
+
+    def startfile(path: str) -> None:
+        pass
+
+    class STARTUPINFO:
+        dwFlags: int
+        wShowWindow: int
+
+    subprocess.STARTUPINFO = STARTUPINFO
+    subprocess.STARTF_USESHOWWINDOW = 1
 
 
 def GetPipeAvailableLen(pipe: IO[Any]) -> int:
