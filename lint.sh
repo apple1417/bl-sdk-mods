@@ -1,5 +1,3 @@
-set -x
-
 # Need the outer folder to be called 'Mods' like the actual folder
 mkdir Mods
 
@@ -34,9 +32,20 @@ for file in ${sdkFiles[@]}; do
     touch "Mods/$file"
 done
 
+exitCode=0
 for mod in ${lintDirs[@]}; do
     echo Checking \'${mod%/}\'
+
     # Need to use absolute paths for it to recognise `from Mods import ___`
     find "$PWD/Mods/$mod" -name "*.py" -print0 | xargs -0 mypy
+    if [ $? -ne 0 ]; then
+        exitCode=1
+    fi
+
     flake8 "Mods/$mod"
+    if [ $? -ne 0 ]; then
+        exitCode=1
+    fi
 done
+
+exit $exitCode

@@ -4,11 +4,14 @@ from PIL import Image
 MAX_W = 316
 MAX_H = 142
 
+
+MAGIC_SCALE = 1.482718894
+
 img = Image.open(sys.argv[1])
 w, h = img.size
 
-scale = min(MAX_W/w, MAX_H/h)
-img = img.resize((int(w*scale), int(h*scale*1.482718894)), Image.ANTIALIAS)
+scale = min(MAX_W / w, MAX_H / h)
+img = img.resize((int(w * scale), int(h * scale * MAGIC_SCALE)), Image.ANTIALIAS)
 
 w, h = img.size
 pix = img.load()
