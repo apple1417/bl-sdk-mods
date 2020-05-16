@@ -33,6 +33,7 @@ from ctypes import byref  # noqa
 
 if sys.platform == "win32":
     from os import startfile
+    from subprocess import STARTUPINFO
 
     from ctypes import GetLastError, windll, WinError
     from ctypes.wintypes import BYTE, DWORD
@@ -57,9 +58,6 @@ else:
     class STARTUPINFO:
         dwFlags: int
         wShowWindow: int
-
-    subprocess.STARTUPINFO = STARTUPINFO
-    subprocess.STARTF_USESHOWWINDOW = 1
 
 
 def GetPipeAvailableLen(pipe: IO[Any]) -> int:
@@ -188,8 +186,8 @@ class CrowdControl(unrealsdk.BL2MOD):
         if self.Token is None:
             return
 
-        startupinfo = subprocess.STARTUPINFO()
-        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        startupinfo = STARTUPINFO()
+        startupinfo.dwFlags |= 1  # STARTF_USESHOWWINDOW
         startupinfo.wShowWindow = 7  # SW_SHOWMINNOACTIVE
 
         self._listener = subprocess.Popen(
