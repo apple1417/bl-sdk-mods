@@ -5,7 +5,7 @@ import subprocess
 import sys
 import webbrowser
 from dataclasses import dataclass
-from os import path, startfile
+from os import path
 from typing import Any, ClassVar, Dict, IO, List, Optional
 
 from Mods import AAA_OptionsWrapper as OptionsWrapper
@@ -25,9 +25,39 @@ if __name__ == "__main__":
     except NotImplementedError:
         __file__ = sys.exc_info()[-1].tb_frame.f_code.co_filename  # type: ignore
 
-sys.path.append(path.join(path.dirname(__file__), "Native"))
-from ctypes import GetLastError, byref, windll, WinError  # noqa
-from ctypes.wintypes import BYTE, DWORD  # noqa
+_native_path = path.join(path.dirname(__file__), "Native")
+if _native_path not in sys.path:
+    sys.path.append(_native_path)
+
+from ctypes import byref  # noqa
+
+if sys.platform == "win32":
+    from os import startfile
+    from subprocess import STARTUPINFO
+
+    from ctypes import GetLastError, windll, WinError
+    from ctypes.wintypes import BYTE, DWORD
+else:
+    raise ImportError("This mod relies on several windows-specific functions, it simply won't work on other platforms.")
+
+    # Mypy can't take a hint
+    from ctypes import c_byte, c_ulong
+    windll: Any  # This one's complicated
+    BYTE = c_byte
+    DWORD = c_ulong
+
+    def GetLastError() -> int:
+        return 0
+
+    def WinError() -> WindowsError:
+        return WindowsError()
+
+    def startfile(path: str) -> None:
+        pass
+
+    class STARTUPINFO:
+        dwFlags: int
+        wShowWindow: int
 
 
 def GetPipeAvailableLen(pipe: IO[Any]) -> int:
@@ -156,8 +186,8 @@ class CrowdControl(unrealsdk.BL2MOD):
         if self.Token is None:
             return
 
-        startupinfo = subprocess.STARTUPINFO()
-        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        startupinfo = STARTUPINFO()
+        startupinfo.dwFlags |= 1  # STARTF_USESHOWWINDOW
         startupinfo.wShowWindow = 7  # SW_SHOWMINNOACTIVE
 
         self._listener = subprocess.Popen(

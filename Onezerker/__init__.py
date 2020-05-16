@@ -172,7 +172,7 @@ class Onezerker(unrealsdk.BL2MOD):
                 rot = PC.Rotation
                 vel = PC.Pawn.Velocity
 
-                multi = math.pi/0x7fff
+                multi = math.pi / 0x7fff
                 rotVect = (
                     math.cos(rot.Yaw * multi) * math.cos(rot.Pitch * multi),
                     math.sin(rot.Yaw * multi) * math.cos(rot.Pitch * multi),

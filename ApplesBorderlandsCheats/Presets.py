@@ -1,6 +1,6 @@
-import json
 import html
-from os import startfile
+import json
+import sys
 from typing import ClassVar, Dict, List, Optional, Tuple, Union
 
 from .Cheats import ABCCheat
@@ -10,6 +10,12 @@ from Mods.UserFeedback import OptionBox
 from Mods.UserFeedback import OptionBoxButton
 from Mods.UserFeedback import ShowHUDMessage
 from Mods.UserFeedback import TextInputBox
+
+if sys.platform == "win32":
+    from os import startfile
+else:
+    def startfile(path: str) -> None:
+        pass
 
 _AllCheats: Tuple[ABCCheat, ...] = ABCOptions().All
 
