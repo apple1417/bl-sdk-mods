@@ -1,3 +1,5 @@
+set -x
+
 # Need the outer folder to be called 'Mods' like the actual folder
 mkdir Mods
 
