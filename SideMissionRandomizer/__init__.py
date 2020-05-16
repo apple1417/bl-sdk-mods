@@ -1,13 +1,19 @@
 import unrealsdk
 import json
-import os
 import random
-from os import path
+import sys
+from os import path, remove
 from typing import Dict
 from typing import List
 from typing import NamedTuple
 from typing import Optional
 from typing import Tuple
+
+if sys.platform == "win32":
+    from os import startfile
+else:
+    def startfile(path: str) -> None:
+        pass
 
 
 # Simple data class to store the info we need about each seed
@@ -138,7 +144,7 @@ class SideMissionRandomizerChild(SideMissionRandomizerBase):
                     file.write(f'"{mission}" -> "{unlock}"\n')
             file.write("\n}\n")
 
-        os.startfile(self.DUMP_PATH)
+        startfile(self.DUMP_PATH)
 
 
 # This class defines the single parent "Mod" that you use to create the child mods
@@ -218,13 +224,13 @@ class SideMissionRandomizerParent(SideMissionRandomizerBase):
 
         elif name == "Delete All":
             if path.exists(self.SEED_PATH):
-                os.remove(self.SEED_PATH)
+                remove(self.SEED_PATH)
             self.LoadFromFile()
 
         elif name == "Open Seed File":
             if not path.exists(self.SEED_PATH):
                 self.SaveSeedInfo()
-            os.startfile(self.SEED_PATH)
+            startfile(self.SEED_PATH)
 
     def LoadFromFile(self) -> None:
         # Clear out any existing mods in the list

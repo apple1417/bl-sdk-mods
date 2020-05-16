@@ -5,7 +5,7 @@ import subprocess
 import sys
 import webbrowser
 from dataclasses import dataclass
-from os import path, startfile
+from os import path
 from typing import Any, ClassVar, Dict, IO, List, Optional
 
 from Mods import AAA_OptionsWrapper as OptionsWrapper
@@ -25,9 +25,14 @@ if __name__ == "__main__":
     except NotImplementedError:
         __file__ = sys.exc_info()[-1].tb_frame.f_code.co_filename  # type: ignore
 
-sys.path.append(path.join(path.dirname(__file__), "Native"))
-from ctypes import GetLastError, byref, windll, WinError  # noqa
-from ctypes.wintypes import BYTE, DWORD  # noqa
+if sys.platform == "win32":
+    from os import startfile
+
+    sys.path.append(path.join(path.dirname(__file__), "Native"))
+    from ctypes import GetLastError, byref, windll, WinError  # noqa
+    from ctypes.wintypes import BYTE, DWORD  # noqa
+else:
+    raise ImportError("This mod relies on several windows-specific functions, it simply cannot work on other platforms")
 
 
 def GetPipeAvailableLen(pipe: IO[Any]) -> int:
