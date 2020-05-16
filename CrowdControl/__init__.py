@@ -25,14 +25,29 @@ if __name__ == "__main__":
     except NotImplementedError:
         __file__ = sys.exc_info()[-1].tb_frame.f_code.co_filename  # type: ignore
 
+_native_path = path.join(path.dirname(__file__), "Native")
+if _native_path not in sys.path:
+    sys.path.append(_native_path)
+
+from ctypes import byref  # noqa
+
 if sys.platform == "win32":
     from os import startfile
 
-    sys.path.append(path.join(path.dirname(__file__), "Native"))
-    from ctypes import GetLastError, byref, windll, WinError  # noqa
-    from ctypes.wintypes import BYTE, DWORD  # noqa
+    from ctypes import GetLastError, windll, WinError
+    from ctypes.wintypes import BYTE, DWORD
 else:
-    raise ImportError("This mod relies on several windows-specific functions, it simply cannot work on other platforms")
+    raise ImportError("This mod relies on several windows-specific functions, it simply won't work on other platforms.")
+
+    # Mypy can't take a hint
+    from ctypes import LibraryLoader
+    windll = LibraryLoader
+
+    def GetLastError() -> int:
+        return 0
+
+    def WinError() -> WindowsError:
+        return WindowsError()
 
 
 def GetPipeAvailableLen(pipe: IO[Any]) -> int:
