@@ -25,69 +25,69 @@ class ItemLevelUncapper(unrealsdk.BL2MOD):
            less chance I have to hardcode more things
     """
     _FORCE_LOAD_BL2: Dict[str, Tuple[Tuple[str, str], ...]] = {
-      "GD_Runner_Streaming": (
-        ("InventoryBalanceDefinition", "GD_Runner_Streaming.Weapon.ItemGrades.ItemGrade_FrontMachineGun"),
-        ("InventoryBalanceDefinition", "GD_Runner_Streaming.Weapon.ItemGrades.ItemGrade_MachineGun"),
-        ("InventoryBalanceDefinition", "GD_Runner_Streaming.Weapon.ItemGrades.ItemGrade_RocketLauncher"),
-        ("WeaponPartListDefinition", "GD_Runner_Streaming.Parts.SightPartList_LightRunnerMG"),
-        ("WeaponPartListDefinition", "GD_Runner_Streaming.Parts.SightPartList_RocketRunner"),
-        ("WeaponPartListCollectionDefinition", "GD_Runner_Streaming.Parts.WeaponParts_LightRunnerMG"),
-        ("WeaponPartListCollectionDefinition", "GD_Runner_Streaming.Parts.WeaponParts_RocketRunner")
-      ),
-      "GD_BTech_Streaming": (
-        ("InventoryBalanceDefinition", "GD_BTech_Streaming.Weapon.ItemGrades.ItemGrade_Catapult"),
-        ("InventoryBalanceDefinition", "GD_BTech_Streaming.Weapon.ItemGrades.ItemGrade_FrontMachineGun"),
-        ("InventoryBalanceDefinition", "GD_BTech_Streaming.Weapon.ItemGrades.ItemGrade_SawBladeLauncher")
-      ),
-      "GD_Orchid_HarpoonHovercraft": (
-        ("InventoryBalanceDefinition", "GD_Orchid_HarpoonHovercraft.Weapon.ItemGrades.ItemGrade_Harpoon"),
-      ),
-      "GD_Orchid_RocketHovercraft": (
-        ("InventoryBalanceDefinition", "GD_Orchid_RocketHovercraft.Weapon.ItemGrades.ItemGrade_DualRockets"),
-      ),
-      "GD_Orchid_SawHovercraft": (
-        ("InventoryBalanceDefinition", "GD_Orchid_SawHovercraft.Weapon.ItemGrades.ItemGrade_SawBladeLauncher"),
-      ),
-      "GD_Sage_ShockFanBoat": (
-        ("InventoryBalanceDefinition", "GD_Sage_ShockFanBoat.Weapons.ItemGrades.ItemGrade_StickyShock"),
-        ("WeaponPartListDefinition", "GD_Sage_ShockFanBoat.Weapons.WeaponParts.SightPartList_StickyShock"),
-        ("WeaponPartListCollectionDefinition", "GD_Sage_ShockFanBoat.Weapons.WeaponParts.WeaponParts_StickyShock")
-      ),
-      "GD_Sage_CorrosiveFanBoat": (
-        ("InventoryBalanceDefinition", "GD_Sage_CorrosiveFanBoat.Weapons.ItemGrades.ItemGrade_CorrosiveSpew"),
-        ("WeaponPartListDefinition", "GD_Sage_CorrosiveFanBoat.Weapons.WeaponParts.SightPartList_CorrosiveSpew"),
-        ("WeaponPartListCollectionDefinition", "GD_Sage_CorrosiveFanBoat.Weapons.WeaponParts.WeaponParts_CorrosiveSpew")
-      ),
-      "GD_Sage_IncendiaryFanBoat": (
-        ("InventoryBalanceDefinition", "GD_Sage_IncendiaryFanBoat.Weapons.ItemGrades.ItemGrade_Flamethrower"),
-        ("InventoryBalanceDefinition", "GD_Sage_IncendiaryFanBoat.Weapons.ItemGrades.ItemGrade_IncendiaryMachineGun"),
-        ("WeaponPartListDefinition", "GD_Sage_IncendiaryFanBoat.Weapons.WeaponParts.BarrelPartList_FlameThrower"),
-        ("WeaponPartListDefinition", "GD_Sage_IncendiaryFanBoat.Weapons.WeaponParts.SightPartList_FlameThrower"),
-        ("WeaponPartListDefinition", "GD_Sage_IncendiaryFanBoat.Weapons.WeaponParts.SightPartList_IncendiaryMachineGun"),
-        ("WeaponPartListCollectionDefinition", "GD_Sage_IncendiaryFanBoat.Weapons.WeaponParts.WeaponParts_FlameThrower"),
-        ("WeaponPartListCollectionDefinition", "GD_Sage_IncendiaryFanBoat.Weapons.WeaponParts.WeaponParts_IncendiaryMachineGun")
-
-      )
+        "GD_Runner_Streaming": (
+            ("InventoryBalanceDefinition", "GD_Runner_Streaming.Weapon.ItemGrades.ItemGrade_FrontMachineGun"),
+            ("InventoryBalanceDefinition", "GD_Runner_Streaming.Weapon.ItemGrades.ItemGrade_MachineGun"),
+            ("InventoryBalanceDefinition", "GD_Runner_Streaming.Weapon.ItemGrades.ItemGrade_RocketLauncher"),
+            ("WeaponPartListDefinition", "GD_Runner_Streaming.Parts.SightPartList_LightRunnerMG"),
+            ("WeaponPartListDefinition", "GD_Runner_Streaming.Parts.SightPartList_RocketRunner"),
+            ("WeaponPartListCollectionDefinition", "GD_Runner_Streaming.Parts.WeaponParts_LightRunnerMG"),
+            ("WeaponPartListCollectionDefinition", "GD_Runner_Streaming.Parts.WeaponParts_RocketRunner")
+        ),
+        "GD_BTech_Streaming": (
+            ("InventoryBalanceDefinition", "GD_BTech_Streaming.Weapon.ItemGrades.ItemGrade_Catapult"),
+            ("InventoryBalanceDefinition", "GD_BTech_Streaming.Weapon.ItemGrades.ItemGrade_FrontMachineGun"),
+            ("InventoryBalanceDefinition", "GD_BTech_Streaming.Weapon.ItemGrades.ItemGrade_SawBladeLauncher")
+        ),
+        "GD_Orchid_HarpoonHovercraft": (
+            ("InventoryBalanceDefinition", "GD_Orchid_HarpoonHovercraft.Weapon.ItemGrades.ItemGrade_Harpoon"),
+        ),
+        "GD_Orchid_RocketHovercraft": (
+            ("InventoryBalanceDefinition", "GD_Orchid_RocketHovercraft.Weapon.ItemGrades.ItemGrade_DualRockets"),
+        ),
+        "GD_Orchid_SawHovercraft": (
+            ("InventoryBalanceDefinition", "GD_Orchid_SawHovercraft.Weapon.ItemGrades.ItemGrade_SawBladeLauncher"),
+        ),
+        "GD_Sage_ShockFanBoat": (
+            ("InventoryBalanceDefinition", "GD_Sage_ShockFanBoat.Weapons.ItemGrades.ItemGrade_StickyShock"),
+            ("WeaponPartListDefinition", "GD_Sage_ShockFanBoat.Weapons.WeaponParts.SightPartList_StickyShock"),
+            ("WeaponPartListCollectionDefinition", "GD_Sage_ShockFanBoat.Weapons.WeaponParts.WeaponParts_StickyShock")
+        ),
+        "GD_Sage_CorrosiveFanBoat": (
+            ("InventoryBalanceDefinition", "GD_Sage_CorrosiveFanBoat.Weapons.ItemGrades.ItemGrade_CorrosiveSpew"),
+            ("WeaponPartListDefinition", "GD_Sage_CorrosiveFanBoat.Weapons.WeaponParts.SightPartList_CorrosiveSpew"),
+            ("WeaponPartListCollectionDefinition", "GD_Sage_CorrosiveFanBoat.Weapons.WeaponParts.WeaponParts_CorrosiveSpew")
+        ),
+        "GD_Sage_IncendiaryFanBoat": (
+            ("InventoryBalanceDefinition", "GD_Sage_IncendiaryFanBoat.Weapons.ItemGrades.ItemGrade_Flamethrower"),
+            ("InventoryBalanceDefinition", "GD_Sage_IncendiaryFanBoat.Weapons.ItemGrades.ItemGrade_IncendiaryMachineGun"),
+            ("WeaponPartListDefinition", "GD_Sage_IncendiaryFanBoat.Weapons.WeaponParts.BarrelPartList_FlameThrower"),
+            ("WeaponPartListDefinition", "GD_Sage_IncendiaryFanBoat.Weapons.WeaponParts.SightPartList_FlameThrower"),
+            ("WeaponPartListDefinition", "GD_Sage_IncendiaryFanBoat.Weapons.WeaponParts.SightPartList_IncendiaryMachineGun"),
+            ("WeaponPartListCollectionDefinition", "GD_Sage_IncendiaryFanBoat.Weapons.WeaponParts.WeaponParts_FlameThrower"),
+            ("WeaponPartListCollectionDefinition", "GD_Sage_IncendiaryFanBoat.Weapons.WeaponParts.WeaponParts_IncendiaryMachineGun")
+        )
     }
+
     _FORCE_LOAD_TPS: Dict[str, Tuple[Tuple[str, str], ...]] = {
-      "GD_MoonBuggy_Streaming": (
-        ("InventoryBalanceDefinition", "GD_MoonBuggy_Streaming.Weapon.ItemGrades.ItemGrade_FrontMachineGun"),
-        ("InventoryBalanceDefinition", "GD_MoonBuggy_Streaming.Weapon.ItemGrades.ItemGrade_LightLaser"),
-        ("InventoryBalanceDefinition", "GD_MoonBuggy_Streaming.Weapon.ItemGrades.ItemGrade_MissilePod"),
-        ("InventoryBalanceDefinition", "GD_MoonBuggy_Streaming.Weapon.ItemGrades.ItemGrade_MissilePod_AIOnly"),
-        ("WeaponPartListDefinition", "GD_MoonBuggy_Streaming.Parts.SightPartList_LaserBuggy"),
-        ("WeaponPartListCollectionDefinition", "GD_MoonBuggy_Streaming.Parts.WeaponParts_LaserBuggy")
-      ),
-      "GD_Co_Stingray_Streaming": (
-        ("InventoryBalanceDefinition", "GD_Co_StingRay_Streaming.Weapon.ItemGrades.ItemGrade_FlakBurst"),
-        ("InventoryBalanceDefinition", "GD_Co_StingRay_Streaming.Weapon.ItemGrades.ItemGrade_Laser"),
-        ("InventoryBalanceDefinition", "GD_Co_StingRay_Streaming.Weapon.ItemGrades.ItemGrade_Rocket"),
-        ("WeaponPartListDefinition", "GD_Co_StingRay_Streaming.Parts.SightPartList_StingRay_Tether")
-      )
+        "GD_MoonBuggy_Streaming": (
+            ("InventoryBalanceDefinition", "GD_MoonBuggy_Streaming.Weapon.ItemGrades.ItemGrade_FrontMachineGun"),
+            ("InventoryBalanceDefinition", "GD_MoonBuggy_Streaming.Weapon.ItemGrades.ItemGrade_LightLaser"),
+            ("InventoryBalanceDefinition", "GD_MoonBuggy_Streaming.Weapon.ItemGrades.ItemGrade_MissilePod"),
+            ("InventoryBalanceDefinition", "GD_MoonBuggy_Streaming.Weapon.ItemGrades.ItemGrade_MissilePod_AIOnly"),
+            ("WeaponPartListDefinition", "GD_MoonBuggy_Streaming.Parts.SightPartList_LaserBuggy"),
+            ("WeaponPartListCollectionDefinition", "GD_MoonBuggy_Streaming.Parts.WeaponParts_LaserBuggy")
+        ),
+        "GD_Co_Stingray_Streaming": (
+            ("InventoryBalanceDefinition", "GD_Co_StingRay_Streaming.Weapon.ItemGrades.ItemGrade_FlakBurst"),
+            ("InventoryBalanceDefinition", "GD_Co_StingRay_Streaming.Weapon.ItemGrades.ItemGrade_Laser"),
+            ("InventoryBalanceDefinition", "GD_Co_StingRay_Streaming.Weapon.ItemGrades.ItemGrade_Rocket"),
+            ("WeaponPartListDefinition", "GD_Co_StingRay_Streaming.Parts.SightPartList_StingRay_Tether")
+        )
     }
 
-    FORCE_LOAD: ClassVar[Dict[str, Tuple[Tuple[str, str], ...]]]
-    CLASS_HANDLER_MAP: ClassVar[Dict[str, Callable[[unrealsdk.UObject], None]]]
+    FORCE_LOAD: Dict[str, Tuple[Tuple[str, str], ...]]
+    CLASS_HANDLER_MAP: Dict[str, Callable[[unrealsdk.UObject], None]]
 
     """
       We store all objects that we can access on the menu so that we can save a decent amount of
@@ -104,30 +104,30 @@ class ItemLevelUncapper(unrealsdk.BL2MOD):
         self.Author += "\nVersion: " + str(self.Version)  # type: ignore
 
         if unrealsdk.GetEngine().GetEngineVersion() == 8639:
-            self.FORCE_LOAD = self._FORCE_LOAD_BL2  # type: ignore
+            self.FORCE_LOAD = self._FORCE_LOAD_BL2
         else:
-            self.FORCE_LOAD = self._FORCE_LOAD_TPS  # type: ignore
+            self.FORCE_LOAD = self._FORCE_LOAD_TPS
 
         # All classes we will be searching through and their handlers
-        # Do this in here so we can actually get a proper refrence to the functions
-        self.CLASS_HANDLER_MAP = {  # type: ignore
-            "InventoryBalanceDefinition":           self.HandleInvBalance,
-            "ItemBalanceDefinition":                self.HandleInvBalance,
-            "ClassModBalanceDefinition":            self.HandleInvBalance,
-            "WeaponBalanceDefinition":              self.HandleInvBalance,
-            "MissionWeaponBalanceDefinition":       self.HandleInvBalance,
+        # Do this in here so we can actually get a proper reference to the functions
+        self.CLASS_HANDLER_MAP = {
+            "InventoryBalanceDefinition": self.HandleInvBalance,
+            "ItemBalanceDefinition": self.HandleInvBalance,
+            "ClassModBalanceDefinition": self.HandleInvBalance,
+            "WeaponBalanceDefinition": self.HandleInvBalance,
+            "MissionWeaponBalanceDefinition": self.HandleInvBalance,
 
-            "ItemPartListCollectionDefinition":     self.HandlePartListCollection,
-            "WeaponPartListCollectionDefinition":   self.HandlePartListCollection,
+            "ItemPartListCollectionDefinition": self.HandlePartListCollection,
+            "WeaponPartListCollectionDefinition": self.HandlePartListCollection,
 
-            "ItemPartListDefinition":               self.HandleRawPartList,
-            "WeaponPartListDefinition":             self.HandleRawPartList,
+            "ItemPartListDefinition": self.HandleRawPartList,
+            "WeaponPartListDefinition": self.HandleRawPartList,
 
-            "ItemNamePartDefinition":               self.HandleNamePart,
-            "WeaponNamePartDefinition":             self.HandleNamePart,
+            "ItemNamePartDefinition": self.HandleNamePart,
+            "WeaponNamePartDefinition": self.HandleNamePart,
 
-            "InteractiveObjectBalanceDefinition":   self.HandleGradedObject,
-            "VehicleBalanceDefinition":             self.HandleGradedObject
+            "InteractiveObjectBalanceDefinition": self.HandleGradedObject,
+            "VehicleBalanceDefinition": self.HandleGradedObject
         }
 
     def Enable(self) -> None:
