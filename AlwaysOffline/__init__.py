@@ -7,8 +7,7 @@ class AlwaysOffline(unrealsdk.BL2MOD):
     Name: ClassVar[str] = "Always Offline"
     Author: ClassVar[str] = "apple1417"
     Description: ClassVar[str] = (
-        "Forces the game to never download SHiFT hotfixes, meaning you can always safely use"
-        " offline text mods.\n"
+        "Forces the game to never connect to SHiFT.\n"
         "\n"
         "Note that enabling/disabling this mod only applies next time you launch the game."
     )
