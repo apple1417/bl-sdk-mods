@@ -1,7 +1,13 @@
 import unrealsdk
 from dataclasses import dataclass
 from typing import ClassVar, Dict, List
-from Mods import AsyncUtil
+
+try:
+    from Mods import AsyncUtil
+except ImportError as ex:
+    import webbrowser
+    webbrowser.open("https://apple1417.github.io/bl2/didntread/?m=Alt%20Use%20Vendors&au")
+    raise ex
 
 
 class AltUseVendors(unrealsdk.BL2MOD):
@@ -11,7 +17,7 @@ class AltUseVendors(unrealsdk.BL2MOD):
         "Adds alt use binds to quickly refill health and ammo at their vendors, like in BL3."
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.1"
+    Version: ClassVar[str] = "1.2"
 
     UpdatingOption: unrealsdk.Options.Boolean
     Options: List[unrealsdk.Options.Boolean]

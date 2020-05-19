@@ -8,10 +8,15 @@ from dataclasses import dataclass
 from os import path
 from typing import Any, ClassVar, Dict, IO, List, Optional
 
-from Mods import AAA_OptionsWrapper as OptionsWrapper
-from Mods import AsyncUtil
+try:
+    from Mods import AAA_OptionsWrapper as OptionsWrapper
+    from Mods import AsyncUtil
+    from Mods.UserFeedback import ShowHUDMessage, OptionBox, OptionBoxButton, TextInputBox, TrainingBox
+except ImportError as ex:
+    webbrowser.open("https://apple1417.github.io/bl2/didntread/?m=Borderlands%20Crowd%20Control&au&ow&uf")
+    raise ex
+
 from Mods.CrowdControl import Effects
-from Mods.UserFeedback import ShowHUDMessage, OptionBox, OptionBoxButton, TextInputBox, TrainingBox
 
 if __name__ == "__main__":
     import importlib
@@ -93,7 +98,7 @@ class CrowdControl(unrealsdk.BL2MOD):
         "Lets viewers on Twitch spend channel points to affect your game."
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Content, unrealsdk.ModTypes.Gameplay]
-    Version: ClassVar[str] = "1.0"
+    Version: ClassVar[str] = "1.1"
 
     SettingsInputs: Dict[str, str]
     Options: List[OptionsWrapper.Base]

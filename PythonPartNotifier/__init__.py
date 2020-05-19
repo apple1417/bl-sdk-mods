@@ -3,7 +3,13 @@ from Mods.SaveManager import storeModSettings  # type: ignore
 from typing import Any, cast, ClassVar, Dict, List, Tuple, Union
 
 from Mods.PythonPartNotifier.PartNamer import GetPartName  # noqa
-from Mods import AAA_OptionsWrapper as OptionsWrapper
+
+try:
+    from Mods import AAA_OptionsWrapper as OptionsWrapper
+except ImportError as ex:
+    import webbrowser
+    webbrowser.open("https://apple1417.github.io/bl2/didntread/?m=Python%20Part%20Notifier&ow")
+    raise ex
 
 OptionDescription = Tuple[Union[
     Tuple[str, Union[str, Tuple[str, ...]], int],
@@ -23,7 +29,7 @@ class PythonPartNotifier(unrealsdk.BL2MOD):
         "Make sure to check out the options menu to customize what exactly is shown."
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.2"
+    Version: ClassVar[str] = "1.3"
 
     Options: List[OptionsWrapper.Base]
     OptionsDict: Dict[str, Union[int, bool]]

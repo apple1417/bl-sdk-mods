@@ -1,5 +1,8 @@
 ## Changelog
 
+### Scaling Adjuster v1.4
+Now opens a webpage listing requirements when you don't install them all.
+
 ### Scaling Adjuster v1.3
 Updated to use OptionsWrapper - no functionality changes.
 

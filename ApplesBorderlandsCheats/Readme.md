@@ -1,5 +1,8 @@
 ## Changelog
 
+### Apple's Borderlands Cheats v1.6
+Now opens a webpage listing requirements when you don't install them all.
+
 ### Apple's Borderlands Cheats v1.5
 One shot mode will no longer set friendly NPC's health to 1.
 Added a "Revive Self" cheat.

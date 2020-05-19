@@ -1,5 +1,8 @@
 ## Changelog
 
+### SDK Autorun v1.3
+Now opens a webpage listing requirements when you don't install them all.
+
 ### SDK Autorun v1.2
 Fixed that autorunning tasks would be interupted if other SDK mods caused an exception.
 

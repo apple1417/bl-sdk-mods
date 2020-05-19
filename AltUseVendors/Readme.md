@@ -1,5 +1,8 @@
 ## Changelog
 
+### Alt Use Vendors v1.2
+Now opens a webpage listing requirements when you don't install them all.
+
 ### Alt Use Vendors v1.1
 Made vendor prices only update while a player is near them, which should be more lag friendly.    
 Also added an option to disable vendor price updating entirely - you won't see the prices anymore, but it should be even more lag friendly.

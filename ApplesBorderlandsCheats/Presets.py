@@ -6,10 +6,16 @@ from typing import ClassVar, Dict, List, Optional, Tuple, Union
 from .Cheats import ABCCheat
 from .Cheats import ABCCycleableCheat
 from .Cheats import ABCOptions
-from Mods.UserFeedback import OptionBox
-from Mods.UserFeedback import OptionBoxButton
-from Mods.UserFeedback import ShowHUDMessage
-from Mods.UserFeedback import TextInputBox
+
+try:
+    from Mods.UserFeedback import OptionBox
+    from Mods.UserFeedback import OptionBoxButton
+    from Mods.UserFeedback import ShowHUDMessage
+    from Mods.UserFeedback import TextInputBox
+except ImportError as ex:
+    import webbrowser
+    webbrowser.open("https://apple1417.github.io/bl2/didntread/?m=Apple%27s%20Borderlands%20Cheats&uf")
+    raise ex
 
 if sys.platform == "win32":
     from os import startfile

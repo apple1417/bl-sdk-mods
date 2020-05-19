@@ -57,7 +57,7 @@ class ApplesBorderlandsCheats(unrealsdk.BL2MOD):
         "Adds keybinds performing various cheaty things"
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.5"
+    Version: ClassVar[str] = "1.6"
 
     PRESET_PATH: ClassVar[str] = path.join(path.dirname(path.realpath(__file__)), "Presets.json")
 

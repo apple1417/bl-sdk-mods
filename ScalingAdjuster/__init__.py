@@ -1,7 +1,12 @@
 import unrealsdk
 from typing import Any, cast, ClassVar, List
 
-from Mods import AAA_OptionsWrapper as OptionsWrapper
+try:
+    from Mods import AAA_OptionsWrapper as OptionsWrapper
+except ImportError as ex:
+    import webbrowser
+    webbrowser.open("https://apple1417.github.io/bl2/didntread/?m=Scaling%20Adjuster&ow")
+    raise ex
 
 
 class ScalingAdjuster(unrealsdk.BL2MOD):
@@ -12,7 +17,7 @@ class ScalingAdjuster(unrealsdk.BL2MOD):
         "Note that you may have to save quit to get values to update."
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.3"
+    Version: ClassVar[str] = "1.4"
 
     Options: List[OptionsWrapper.Base]
 

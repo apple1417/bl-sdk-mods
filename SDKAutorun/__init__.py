@@ -3,7 +3,15 @@ import json
 from os import path
 from typing import Any, cast, ClassVar, Dict, List, Type
 
-from Mods import UserFeedback
+try:
+    from Mods import AsyncUtil  # noqa  # Unused in this file but better to check in one place
+    from Mods import UserFeedback
+except ImportError as ex:
+    import webbrowser
+    webbrowser.open("https://apple1417.github.io/bl2/didntread/?m=SDK%20Autorun&au&uf")
+    raise ex
+
+
 from Mods.SDKAutorun import Tasks
 
 if __name__ == "__main__":
@@ -27,7 +35,7 @@ class SDKAutorun(unrealsdk.BL2MOD):
         "Automatically runs SDK mods or console commands on game launch."
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.2"
+    Version: ClassVar[str] = "1.3"
 
     @property
     def IsEnabled(self) -> bool:

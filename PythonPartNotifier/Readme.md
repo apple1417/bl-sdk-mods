@@ -1,5 +1,8 @@
 ## Changelog
 
+### Python Part Notifier v1.3
+Now opens a webpage listing requirements when you don't install them all.
+
 ### Python Part Notifier v1.2
 Updated to use OptionsWrapper - no functionality changes.
 
