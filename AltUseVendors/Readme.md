@@ -1,5 +1,8 @@
 ## Changelog
 
+### Alt Use Vendors v1.3
+Fixed crashes caused by enabling this mod then exiting the game - it didn't actually affect anything but people kept asking.
+
 ### Alt Use Vendors v1.2
 Now opens a webpage listing requirements when you don't install them all.
 

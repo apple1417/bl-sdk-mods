@@ -17,7 +17,7 @@ class AltUseVendors(unrealsdk.BL2MOD):
         "Adds alt use binds to quickly refill health and ammo at their vendors, like in BL3."
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.2"
+    Version: ClassVar[str] = "1.3"
 
     UpdatingOption: unrealsdk.Options.Boolean
     Options: List[unrealsdk.Options.Boolean]
@@ -168,6 +168,7 @@ class AltUseVendors(unrealsdk.BL2MOD):
         self.HealthIcon = unrealsdk.FindObject("InteractionIconDefinition", f"GD_InteractionIcons.Default.{HEALTH_NAME}")
         self.AmmoIcon = unrealsdk.FindObject("InteractionIconDefinition", f"GD_InteractionIcons.Default.{AMMO_NAME}")
         baseIcon = unrealsdk.FindObject("InteractionIconDefinition", "GD_InteractionIcons.Default.Icon_DefaultUse")
+        PC = unrealsdk.GetEngine().GamePlayers[0].Actor
 
         if self.HealthIcon is None:
             self.HealthIcon = unrealsdk.ConstructObject(
@@ -179,8 +180,11 @@ class AltUseVendors(unrealsdk.BL2MOD):
             unrealsdk.KeepAlive(self.HealthIcon)
 
             self.HealthIcon.Icon = 3
-            self.HealthIcon.Action = "UseSecondary"
-            self.HealthIcon.Text = "REFILL HEALTH"
+            # Setting values directly on the object causes a crash on quitting the game
+            # Everything still works fine, not super necessary to fix, but people get paranoid
+            # https://github.com/bl-sdk/PythonSDK/issues/45
+            PC.ServerRCon(f"set {PC.PathName(self.HealthIcon)} Action UseSecondary")
+            PC.ServerRCon(f"set {PC.PathName(self.HealthIcon)} Text REFILL HEALTH")
 
         if self.AmmoIcon is None:
             self.AmmoIcon = unrealsdk.ConstructObject(
@@ -192,8 +196,8 @@ class AltUseVendors(unrealsdk.BL2MOD):
             unrealsdk.KeepAlive(self.AmmoIcon)
 
             self.AmmoIcon.Icon = 7
-            self.AmmoIcon.Action = "UseSecondary"
-            self.AmmoIcon.Text = "REFILL AMMO"
+            PC.ServerRCon(f"set {PC.PathName(self.AmmoIcon)} Action UseSecondary")
+            PC.ServerRCon(f"set {PC.PathName(self.AmmoIcon)} Text REFILL AMMO")
 
     def OnUpdate(self) -> None:
         # Can't look for pawns directly due to the streaming ones, which will crash the game
