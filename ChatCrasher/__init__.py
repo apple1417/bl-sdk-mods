@@ -3,11 +3,13 @@ import os
 from typing import ClassVar, Dict, List
 
 
-class AlwaysOffline(unrealsdk.BL2MOD):
-    Name: ClassVar[str] = "Always Offline"
+class ChatCrasher(unrealsdk.BL2MOD):
+    Name: ClassVar[str] = "Chat Crasher"
     Author: ClassVar[str] = "apple1417"
     Description: ClassVar[str] = (
-        "Forces the game to never connect to SHiFT.\n"
+        "Crashes the game when using chat, either by typing manually or by execing a mod file"
+        " containing a say command.\n"
+        "Also forces the game to never connect to SHiFT.\n"
         "\n"
         "Note that enabling/disabling this mod only applies next time you launch the game."
     )
@@ -47,4 +49,4 @@ class AlwaysOffline(unrealsdk.BL2MOD):
         unrealsdk.RemoveHook("WillowGame.WillowGFxMoviePressStart.DoSparkAuthentication", "AlwaysOffline")
 
 
-unrealsdk.Mods.append(AlwaysOffline())
+unrealsdk.Mods.append(ChatCrasher())
