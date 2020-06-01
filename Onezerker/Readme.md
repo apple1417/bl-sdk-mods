@@ -1,5 +1,8 @@
 ## Changelog
 
+### Onezerker v1.5
+Fixed that scrolling or using the cycle weapons button on a controller would crash the game.
+
 ### Onezerker v1.4
 Updated for SDK versions 0.7.4-0.7.6.
 

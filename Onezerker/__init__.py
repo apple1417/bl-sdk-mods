@@ -10,7 +10,7 @@ class Onezerker(unrealsdk.BL2MOD):
         "Gunzerk with two copies of the same gun instead of two different ones."
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Gameplay]
-    Version: ClassVar[str] = "1.4"
+    Version: ClassVar[str] = "1.5"
 
     SettingsInputs: Dict[str, str]
 
@@ -106,7 +106,7 @@ class Onezerker(unrealsdk.BL2MOD):
                 weapon = weapon.Inventory
             # Usually you just swap both weapons, but here we'll go down the inventory in order
             index = Pawn.Weapon.QuickSelectSlot % 4
-            while weaponList[index] is not None:
+            while weaponList[index] is None:
                 index = (index + 1) % 4
             weapon = weaponList[index]
 
