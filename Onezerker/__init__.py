@@ -1,5 +1,4 @@
 import unrealsdk
-import math
 from typing import ClassVar, Dict, List, Optional
 
 
@@ -10,7 +9,7 @@ class Onezerker(unrealsdk.BL2MOD):
         "Gunzerk with two copies of the same gun instead of two different ones."
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Gameplay]
-    Version: ClassVar[str] = "1.5"
+    Version: ClassVar[str] = "1.6"
 
     SettingsInputs: Dict[str, str]
 
@@ -26,7 +25,7 @@ class Onezerker(unrealsdk.BL2MOD):
 
         # Almost certainly because you tried to load this in TPS
         if obj is None:
-            unrealsdk.Log("[Onezerker] Unable to find NumberWeaponsEquiped object, assuming loaded in TPS")
+            unrealsdk.Log(f"[{self.Name}] Unable to find NumberWeaponsEquiped object, assuming loaded in TPS")
             self.Name = f"<font color='#ff0000'>{self.Name}</font>"  # type: ignore
             self.Description += "\n<font color='#ff0000'>Incompatible with TPS</font>"  # type: ignore
             self.SettingsInputs = {}
@@ -38,12 +37,7 @@ class Onezerker(unrealsdk.BL2MOD):
         self.WeaponMap = {}
 
     def DupeWeapon(self, weapon: unrealsdk.UObject) -> unrealsdk.UObject:
-        """
-          We save a map of existing duped weapons to try make sure you get the same one back
-          For one this helps keep memory usage down, but more importantly it means when you switch
-           back you'll have the same amount of ammo left in the mag - you can't get free offhand
-           reloads just by switching to another gun + back
-        """
+        # We keep a map of duped weapons so that swapping doesn't reload them
         if weapon in self.WeaponMap:
             return self.WeaponMap[weapon]
 
@@ -53,159 +47,185 @@ class Onezerker(unrealsdk.BL2MOD):
         newWeapon.AmmoPool.PoolGUID = weapon.AmmoPool.PoolGUID
         newWeapon.AmmoPool.Data = weapon.AmmoPool.Data
         newWeapon.InvManager = weapon.InvManager
+
         self.WeaponMap[weapon] = newWeapon
         return newWeapon
 
     def Enable(self) -> None:
         if self.NumWeapObj is None:
-            unrealsdk.Log("[Onezerker] Didn't load correctly, not enabling")
+            unrealsdk.Log(f"[{self.Name}] Didn't load correctly, not enabling")
             self.Status = "Disabled"
             self.SettingsInputs = {}
             return
 
-        # Called when you stop gunzerking
         def OnActionSkillEnded(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-            # Reset the map so that you don't end up with partially used weapons next time you start
-            #  (and to free up a bit of memory)
+            if caller.MyWillowPC != unrealsdk.GetEngine().GamePlayers[0].Actor:
+                return True
+
             self.WeaponMap = {}
             return True
 
-        # Called when you start gunzerking
         def EquipInitialWeapons(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-            PC = unrealsdk.GetEngine().GamePlayers[0].Actor
-            if PC.Pawn is None:
-                return False
-            weap = PC.Pawn.Weapon
+            if caller.MyWillowPC != unrealsdk.GetEngine().GamePlayers[0].Actor:
+                return True
+
+            if caller.MyWillowPawn is None:
+                return True
+            weap = caller.MyWillowPawn.Weapon
             if weap is None:
                 return False
 
             # This is the only real bit of the function we overwrite
             weapAlt = self.DupeWeapon(weap)
-            PC.Pawn.OffHandWeapon = weapAlt
+            caller.MyWillowPawn.OffHandWeapon = weapAlt
 
-            PC.Pawn.InvManager.SetCurrentWeapon(weap, False)
-            PC.Pawn.InvManager.SetCurrentWeapon(weapAlt, True)
+            caller.MyWillowPawn.InvManager.SetCurrentWeapon(weap, False)
+            caller.MyWillowPawn.InvManager.SetCurrentWeapon(weapAlt, True)
             weap.RefillClip()
             weapAlt.RefillClip()
-            if PC.bInSprintState:
+            if caller.MyWillowPC.bInSprintState:
                 caller.SetTimer(min(weap.GetEquipTime(), weapAlt.GetEquipTime()), False, "SprintTransition")
             caller.SetLeftSideControl()
 
             return False
 
-        # Called when you try switch weapons while gunzerking using the scrollwheel/cycle weapon
-        # Unfortuantly there are no arguments, so I can't tell if you scroll backwards
-        def SwitchWeapons(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-            Pawn = unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn
+        # Called when switching weapons by scrolling/controller quick switch
+        def NextWeapon(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+            return ScrollWeapons(caller, True)
 
-            # Get the equiped weapon list in order
+        def PrevWeapon(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+            return ScrollWeapons(caller, False)
+
+        def ScrollWeapons(caller: unrealsdk.UObject, next: bool) -> bool:
+            pawn = unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn
+            if caller.Owner != pawn:
+                return True
+
+            if pawn.MyActionSkill is None:
+                return True
+            if pawn.MyActionSkill.Class.Name != "DualWieldActionSkill":
+                return True
+
             weaponList = [None, None, None, None]
-            weapon = Pawn.InvManager.InventoryChain
+            weapon = pawn.InvManager.InventoryChain
             while weapon is not None:
                 weaponList[weapon.QuickSelectSlot - 1] = weapon
                 weapon = weapon.Inventory
-            # Usually you just swap both weapons, but here we'll go down the inventory in order
-            index = Pawn.Weapon.QuickSelectSlot % 4
-            while weaponList[index] is None:
+
+            # Don't think this could actually happen but to be safe
+            if weaponList.count(None) >= 4:
+                return True
+
+            index = pawn.Weapon.QuickSelectSlot - 1
+            if next:
                 index = (index + 1) % 4
+                while weaponList[index] is None:
+                    index = (index + 1) % 4
+            else:
+                index = (index - 1) % 4
+                while weaponList[index] is None:
+                    index = (index - 1) % 4
             weapon = weaponList[index]
 
             weapAlt = self.DupeWeapon(weapon)
-            Pawn.InvManager.SetCurrentWeapon(weapon, False)
-            Pawn.InvManager.SetCurrentWeapon(weapAlt, True)
-            caller.SetOffHandCrosshair(weapAlt)
+            pawn.InvManager.SetCurrentWeapon(weapon, False)
+            pawn.InvManager.SetCurrentWeapon(weapAlt, True)
+            pawn.MyActionSkill.SetOffHandCrosshair(weapAlt)
 
             return False
 
-        # Called when you try switch weapons while gunzerking using the number keys
-        # This time we are given the weapon to switch too, which simplifies things
+        # Called when switching weapons (while gunzerking) using the number keys/dpad
         def SwitchToWeapon(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-            Pawn = unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn
+            if caller.MyWillowPC != unrealsdk.GetEngine().GamePlayers[0].Actor:
+                return True
 
-            if params.NewWeapon != Pawn.Weapon:
-                Pawn.InvManager.SetCurrentWeapon(params.NewWeapon, False)
+            if params.NewWeapon != caller.MyWillowPawn.Weapon:
+                caller.MyWillowPawn.InvManager.SetCurrentWeapon(params.NewWeapon, False)
 
                 weapAlt = self.DupeWeapon(params.NewWeapon)
-                Pawn.InvManager.SetCurrentWeapon(weapAlt, True)
+                caller.MyWillowPawn.InvManager.SetCurrentWeapon(weapAlt, True)
                 caller.SetOffHandCrosshair(weapAlt)
 
             return False
 
-        # Called when you return from the menu while gunzerking
+        # Called on exiting menus
         def BringWeaponsUpAfterPutDown(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-            Pawn = unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn
+            if caller.MyWillowPC != unrealsdk.GetEngine().GamePlayers[0].Actor:
+                return True
 
-            # There is a function that *should* return this in list form, but it doesn't work properly so,
-            #  we have to parse down the linked list instead
-            weapon = Pawn.InvManager.InventoryChain
+            weapon = caller.MyWillowPawn.InvManager.InventoryChain
             while weapon is not None:
                 if weapon.QuickSelectSlot == params.MainHandWeaponSlot:
                     break
                 weapon = weapon.Inventory
-            # If you dropped the equiped slot
+
+            # If you dropped the equiped slot default to the start of the list - not sure if other
+            #  behaviour might be better?
             if weapon is None:
-                weapon = Pawn.InvManager.InventoryChain
+                weapon = caller.MyWillowPawn.InvManager.InventoryChain
+                # If you dropped all weapons just let the game handle it
+                if weapon is None:
+                    return True
 
             caller.ForceRefreshSkills()
             caller.ClientBringWeaponsUpAfterPutDown(weapon, self.DupeWeapon(weapon))
 
             return False
 
-        # Called whenever a "Behavior_RefillWeapon" is run, happens to only be when auto loader triggers
         def ApplyBehaviorToContext(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-            # Remove from the weapon map so that it's remade with full ammo
+            """
+            The only `Behavior_RefillWeapon` is auto loader - this is only called when it triggers
+
+            All the other hooks guarentee that items only get duplicated if they're from the local
+             player, so we can assume that if an item is in the map, the local player owns it.
+
+            Auto loader only reloads unequipped weapons, so we can also guarentee that you will have
+             to go through one of the other hooks to switch back to it.
+            Because of this we can just remove the object from the map, it'll get recreated.
+            For some reason just replicating the `.RefillClip()` call doesn't work.
+
+            Now this might break if you do inventory merging, but really that's kinda on you.
+            """
             if params.ContextObject in self.WeaponMap:
                 del self.WeaponMap[params.ContextObject]
             return True
 
-        # Called whenever you try drop your active weapon
+        # These two are identical except for the bit where I re-call the hooked function
+        # I wish there was a neat way to merge them
         def TossInventory(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-            PC = unrealsdk.GetEngine().GamePlayers[0].Actor
-
-            # If you're not currently gunzerking then don't bother doing anything special
-            if PC.Pawn.MyActionSkill is None:
+            pawn = unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn
+            if caller != pawn:
+                return True
+            if pawn.MyActionSkill is None:
+                return True
+            if pawn.MyActionSkill.Class.Name != "DualWieldActionSkill":
                 return True
 
-            if params.Inv == PC.Pawn.Weapon:
-                # I can't properly call the built in functions for this so let's do a bunch of maths
-                loc = PC.Pawn.Location
-                rot = PC.Rotation
-                vel = PC.Pawn.Velocity
+            unrealsdk.DoInjectedCallNext()
+            caller.TossInventory(
+                params.Inv,
+                (params.ForceVelocity.X, params.ForceVelocity.Y, params.ForceVelocity.Z)
+            )
 
-                multi = math.pi / 0x7fff
-                rotVect = (
-                    math.cos(rot.Yaw * multi) * math.cos(rot.Pitch * multi),
-                    math.sin(rot.Yaw * multi) * math.cos(rot.Pitch * multi),
-                    math.sin(rot.Pitch * multi),
-                )
-
-                dot = (rotVect[0] * vel.X) + (rotVect[1] * vel.Y) + (rotVect[2] * vel.Z) + 100
-
-                params.Inv.DropFrom((loc.X, loc.Y, loc.Z), (rotVect[0] * dot, rotVect[1] * dot, rotVect[2] * dot + 200))
-            else:
-                caller.super(PC.Pawn).TossInventory(params.Inv, params.ForceVelocity)
-
-            # Unfortuantly this gets delayed but I need to know what weapon to dupe
-            if PC.Pawn.Weapon is not None:
-                PC.Pawn.InvManager.SetCurrentWeapon(self.DupeWeapon(PC.Pawn.Weapon), True)
+            if pawn.Weapon is not None:
+                pawn.InvManager.SetCurrentWeapon(self.DupeWeapon(pawn.Weapon), True)
 
             return False
 
-        # Called when you get off of a ladder
         def EndClimbLadder(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-            # Don't do anything special if this isn't our pawn or when not gunzerking
-            if caller.MyActionSkill is None:
+            pawn = unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn
+            if caller != pawn:
+                return True
+            if pawn.MyActionSkill is None:
+                return True
+            if pawn.MyActionSkill.Class.Name != "DualWieldActionSkill":
                 return True
 
-            # Recreate the rest of the function
-            caller.Controller.EndClimbLadder()
-            if caller.Controller.Physics == 9:
-                caller.Controller.SetPhysics(1)
-            caller.Controller.SetWeaponsRestricted(False, True)
-            caller.SetCollision(caller.bCollideActors, True, caller.bIgnoreEncroachers)
+            unrealsdk.DoInjectedCallNext()
+            caller.EndClimbLadder(params.OldLadder)
 
-            # Fix our offhand, this syncs up for once
-            caller.InvManager.SetCurrentWeapon(self.DupeWeapon(caller.Controller.LastUsedWeapon), True)
+            if pawn.Weapon is not None:
+                pawn.InvManager.SetCurrentWeapon(self.DupeWeapon(pawn.Weapon), True)
 
             return False
 
@@ -217,39 +237,44 @@ class Onezerker(unrealsdk.BL2MOD):
         Very conviniently, in case 3 alone the paramater "bDoNotActivate" is false
         """
         def ClientGivenTo(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-            Pawn = unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn
-
-            # If you're not the one who called on, you didn't force equip, or you're not gunzerking
-            #  then don't bother doing anything special
-            if params.NewOwner != Pawn or params.bDoNotActivate or Pawn.MyActionSkill is None:
+            pawn = unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn
+            if params.NewOwner != pawn:
+                return True
+            if params.bDoNotActivate:
+                return True
+            if pawn.MyActionSkill is None:
+                return True
+            if pawn.MyActionSkill.Class.Name != "DualWieldActionSkill":
                 return True
 
-            # In contrast to dropping, unfortuantly this doesn't get delayed, there's no animation
-            Pawn.InvManager.SetCurrentWeapon(self.DupeWeapon(caller), True)
+            pawn.InvManager.SetCurrentWeapon(self.DupeWeapon(caller), True)
             return True
 
-        unrealsdk.RegisterHook("WillowGame.DualWieldActionSkill.OnActionSkillEnded", "Onezerker", OnActionSkillEnded)
-        unrealsdk.RegisterHook("WillowGame.DualWieldActionSkill.EquipInitialWeapons", "Onezerker", EquipInitialWeapons)
-        unrealsdk.RegisterHook("WillowGame.DualWieldActionSkill.SwitchWeapons", "Onezerker", SwitchWeapons)
-        unrealsdk.RegisterHook("WillowGame.DualWieldActionSkill.SwitchToWeapon", "Onezerker", SwitchToWeapon)
-        unrealsdk.RegisterHook("WillowGame.DualWieldActionSkill.BringWeaponsUpAfterPutDown", "Onezerker", BringWeaponsUpAfterPutDown)
-        unrealsdk.RegisterHook("WillowGame.Behavior_RefillWeapon.ApplyBehaviorToContext", "Onezerker", ApplyBehaviorToContext)
-        unrealsdk.RegisterHook("WillowGame.WillowPawn.TossInventory", "Onezerker", TossInventory)
-        unrealsdk.RegisterHook("WillowGame.WillowPlayerPawn.EndClimbLadder", "Onezerker", EndClimbLadder)
-        unrealsdk.RegisterHook("Engine.Weapon.ClientGivenTo", "Onezerker", ClientGivenTo)
+        unrealsdk.RegisterHook("WillowGame.DualWieldActionSkill.OnActionSkillEnded", self.Name, OnActionSkillEnded)
+        unrealsdk.RegisterHook("WillowGame.DualWieldActionSkill.EquipInitialWeapons", self.Name, EquipInitialWeapons)
+        unrealsdk.RegisterHook("WillowGame.WillowInventoryManager.NextWeapon", self.Name, NextWeapon)
+        unrealsdk.RegisterHook("WillowGame.WillowInventoryManager.PrevWeapon", self.Name, PrevWeapon)
+        unrealsdk.RegisterHook("WillowGame.DualWieldActionSkill.SwitchToWeapon", self.Name, SwitchToWeapon)
+        unrealsdk.RegisterHook("WillowGame.DualWieldActionSkill.BringWeaponsUpAfterPutDown", self.Name, BringWeaponsUpAfterPutDown)
+        unrealsdk.RegisterHook("WillowGame.Behavior_RefillWeapon.ApplyBehaviorToContext", self.Name, ApplyBehaviorToContext)
+        unrealsdk.RegisterHook("WillowGame.WillowPawn.TossInventory", self.Name, TossInventory)
+        unrealsdk.RegisterHook("WillowGame.WillowPlayerPawn.EndClimbLadder", self.Name, EndClimbLadder)
+        unrealsdk.RegisterHook("Engine.Weapon.ClientGivenTo", self.Name, ClientGivenTo)
 
         self.NumWeapObj.NumberOfWeapons = 1
 
     def Disable(self) -> None:
-        unrealsdk.RemoveHook("WillowGame.DualWieldActionSkill.OnActionSkillEnded", "Onezerker")
-        unrealsdk.RemoveHook("WillowGame.DualWieldActionSkill.EquipInitialWeapons", "Onezerker")
-        unrealsdk.RemoveHook("WillowGame.DualWieldActionSkill.SwitchWeapons", "Onezerker")
-        unrealsdk.RemoveHook("WillowGame.DualWieldActionSkill.SwitchToWeapon", "Onezerker")
-        unrealsdk.RemoveHook("WillowGame.DualWieldActionSkill.BringWeaponsUpAfterPutDown", "Onezerker")
-        unrealsdk.RemoveHook("WillowGame.Behavior_RefillWeapon.ApplyBehaviorToContext", "Onezerker")
-        unrealsdk.RemoveHook("WillowGame.WillowPawn.TossInventory", "Onezerker")
-        unrealsdk.RemoveHook("WillowGame.WillowPlayerPawn.EndClimbLadder", "Onezerker")
-        unrealsdk.RemoveHook("Engine.Weapon.ClientGivenTo", "Onezerker")
+        unrealsdk.RemoveHook("WillowGame.DualWieldActionSkill.OnActionSkillEnded", self.Name)
+        unrealsdk.RemoveHook("WillowGame.DualWieldActionSkill.EquipInitialWeapons", self.Name)
+        unrealsdk.RemoveHook("WillowGame.WillowInventoryManager.NextWeapon", self.Name)
+        unrealsdk.RemoveHook("WillowGame.WillowInventoryManager.PrevWeapon", self.Name)
+        unrealsdk.RemoveHook("WillowGame.DualWieldActionSkill.SwitchToWeapon", self.Name)
+        unrealsdk.RemoveHook("WillowGame.DualWieldActionSkill.BringWeaponsUpAfterPutDown", self.Name)
+        unrealsdk.RemoveHook("WillowGame.Behavior_RefillWeapon.ApplyBehaviorToContext", self.Name)
+        unrealsdk.RemoveHook("WillowGame.WillowPawn.TossInventory", self.Name)
+        unrealsdk.RemoveHook("WillowGame.WillowPlayerPawn.EndClimbLadder", self.Name)
+        unrealsdk.RemoveHook("Engine.Weapon.ClientGivenTo", self.Name)
+
         if self.NumWeapObj is not None:
             self.NumWeapObj.NumberOfWeapons = 2
 

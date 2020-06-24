@@ -1,5 +1,9 @@
 ## Changelog
 
+### Onezerker v1.6
+Scrolling while gunzerking is now bidirectional.    
+Also contains all sorts of internal tweaks that should prevent this from affecting other player or enemies.
+
 ### Onezerker v1.5
 Fixed that scrolling or using the cycle weapons button on a controller would crash the game.
 
@@ -13,7 +17,7 @@ Small update to fix ladders removing your offhand weapon.
 Fixed a few issues with scrolling when you have less than 4 weapons equipped.
 
 ### Onezerker v1.1
-Fixed that scrolling or using the cycle weapons button on a controller would give you two different weapons.
+Fixed that scrolling or using the cycle weapons button on a controller would give you two different weapons.    
 Fixed that switching weapons would reload your offhand. Autoloader will still reload it normally.
 
 ### Onezerker v1.0
