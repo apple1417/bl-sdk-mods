@@ -1,5 +1,8 @@
 ## Changelog
 
+### Scaling Adjuster v1.5
+Fixed that saved custom scaling would be applied with 100x the effect when you just enabled the mod, without changing the value.
+
 ### Scaling Adjuster v1.4
 Now opens a webpage listing requirements when you don't install them all.
 

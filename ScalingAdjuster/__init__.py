@@ -17,7 +17,7 @@ class ScalingAdjuster(unrealsdk.BL2MOD):
         "Note that you may have to save quit to get values to update."
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.4"
+    Version: ClassVar[str] = "1.5"
 
     Options: List[OptionsWrapper.Base]
 
@@ -59,10 +59,10 @@ class ScalingAdjuster(unrealsdk.BL2MOD):
         self.ScalingSlider = cast(OptionsWrapper.Slider, self.Options[0 if self.IS_BL2 else 1])
 
     def Enable(self) -> None:
-        self.ScalingObject.ConstantValue = self.ScalingSlider.CurrentValue
+        self.ScalingObject.ConstantValue = self.ScalingSlider.CurrentValue / 100
 
     def Disable(self) -> None:
-        self.ScalingObject.ConstantValue = self.ScalingSlider.StartingValue
+        self.ScalingObject.ConstantValue = self.ScalingSlider.StartingValue / 100
 
     def ModOptionChanged(
         self,
