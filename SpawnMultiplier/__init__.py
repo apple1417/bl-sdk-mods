@@ -17,7 +17,7 @@ class SpawnMultiplier(unrealsdk.BL2MOD):
         "Make sure to go to settings to configure what the multiplier is."
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Gameplay]
-    Version: ClassVar[str] = "1.0"
+    Version: ClassVar[str] = "1.1"
 
     Options: List[OptionsWrapper.Base]
 
@@ -78,11 +78,11 @@ class SpawnMultiplier(unrealsdk.BL2MOD):
             return True
 
         def PostBeginPlay(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-            caller.PostBeginPlay()
             caller.SpawnData.MaxActiveActors = caller.SpawnData.MaxActiveActors * self.MultiplierSlider.CurrentValue
             caller.MaxActiveActorsIsNormal = caller.MaxActiveActorsIsNormal * self.MultiplierSlider.CurrentValue
             caller.MaxActiveActorsThreatened = caller.MaxActiveActorsThreatened * self.MultiplierSlider.CurrentValue
             caller.MaxTotalActors = caller.MaxTotalActors * self.MultiplierSlider.CurrentValue
+
             return True
 
         self.OldMultiplier = self.MultiplierSlider.CurrentValue
@@ -92,6 +92,16 @@ class SpawnMultiplier(unrealsdk.BL2MOD):
     def Disable(self) -> None:
         unrealsdk.RemoveHook("GearboxFramework.PopulationMaster.SpawnPopulationControlledActorn", self.Name)
         unrealsdk.RemoveHook("WillowGame.PopulationOpportunityDen.PostBeginPlay", self.Name)
+
+        for den in unrealsdk.FindAll("PopulationOpportunityDen"):
+            den.SpawnData.MaxActiveActors = round(den.SpawnData.MaxActiveActors / self.MultiplierSlider.CurrentValue)
+            den.MaxActiveActorsIsNormal = round(den.MaxActiveActorsIsNormal / self.MultiplierSlider.CurrentValue)
+            den.MaxActiveActorsThreatened = round(den.MaxActiveActorsThreatened / self.MultiplierSlider.CurrentValue)
+            den.MaxTotalActors = round(den.MaxTotalActors / self.MultiplierSlider.CurrentValue)
+
+        # Being careful incase our reference has been GCed
+        if unrealsdk.FindAll("WillowPopulationMaster")[-1] == self.CurrentPopMaster:
+            self.CurrentPopMaster.MaxActorCost = self.OriginalLimit
 
     def ModOptionChanged(
         self,
@@ -104,16 +114,16 @@ class SpawnMultiplier(unrealsdk.BL2MOD):
         # Only need to redo these numbers when changing multiplier, always have to redo spawn limit
         if option == self.MultiplierSlider:
             # This function gets called after the value is changed grr
-            multiplier = self.MultiplierSlider.CurrentValue / self.OldMultiplier
+            adjustment = self.MultiplierSlider.CurrentValue / self.OldMultiplier
             self.OldMultiplier = self.MultiplierSlider.CurrentValue
 
             for den in unrealsdk.FindAll("PopulationOpportunityDen"):
-                den.SpawnData.MaxActiveActors = int(den.SpawnData.MaxActiveActors * multiplier)
-                den.MaxActiveActorsIsNormal = int(den.MaxActiveActorsIsNormal * multiplier)
-                den.MaxActiveActorsThreatened = int(den.MaxActiveActorsThreatened * multiplier)
-                den.MaxTotalActors = int(den.MaxTotalActors * multiplier)
+                den.SpawnData.MaxActiveActors = round(den.SpawnData.MaxActiveActors * adjustment)
+                den.MaxActiveActorsIsNormal = round(den.MaxActiveActorsIsNormal * adjustment)
+                den.MaxActiveActorsThreatened = round(den.MaxActiveActorsThreatened * adjustment)
+                den.MaxTotalActors = round(den.MaxTotalActors * adjustment)
 
-        # Don't want to use `self.CurrentPopMaster` just in case it's been GCed
+        # Again careful incase our reference has been GCed
         popMaster = unrealsdk.FindAll("WillowPopulationMaster")[-1]
         if popMaster is None:
             return
