@@ -17,7 +17,7 @@ class SpawnMultiplier(unrealsdk.BL2MOD):
         "Make sure to go to settings to configure what the multiplier is."
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Gameplay]
-    Version: ClassVar[str] = "1.1"
+    Version: ClassVar[str] = "1.2"
 
     Options: List[OptionsWrapper.Base]
 
@@ -78,19 +78,27 @@ class SpawnMultiplier(unrealsdk.BL2MOD):
             return True
 
         def PostBeginPlay(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-            caller.SpawnData.MaxActiveActors = caller.SpawnData.MaxActiveActors * self.MultiplierSlider.CurrentValue
+            # Not a typo, this is 0 right now, it gets set to `MaxActiveActorsIsNormal` later
+            caller.SpawnData.MaxActiveActors = caller.MaxActiveActorsIsNormal * self.MultiplierSlider.CurrentValue
+
             caller.MaxActiveActorsIsNormal = caller.MaxActiveActorsIsNormal * self.MultiplierSlider.CurrentValue
             caller.MaxActiveActorsThreatened = caller.MaxActiveActorsThreatened * self.MultiplierSlider.CurrentValue
             caller.MaxTotalActors = caller.MaxTotalActors * self.MultiplierSlider.CurrentValue
 
             return True
 
+        for den in unrealsdk.FindAll("PopulationOpportunityDen"):
+            den.SpawnData.MaxActiveActors = round(den.SpawnData.MaxActiveActors * self.MultiplierSlider.CurrentValue)
+            den.MaxActiveActorsIsNormal = round(den.MaxActiveActorsIsNormal * self.MultiplierSlider.CurrentValue)
+            den.MaxActiveActorsThreatened = round(den.MaxActiveActorsThreatened * self.MultiplierSlider.CurrentValue)
+            den.MaxTotalActors = round(den.MaxTotalActors * self.MultiplierSlider.CurrentValue)
+
         self.OldMultiplier = self.MultiplierSlider.CurrentValue
-        unrealsdk.RunHook("GearboxFramework.PopulationMaster.SpawnPopulationControlledActorn", self.Name, SpawnPopulationControlledActor)
+        unrealsdk.RunHook("GearboxFramework.PopulationMaster.SpawnPopulationControlledActor", self.Name, SpawnPopulationControlledActor)
         unrealsdk.RunHook("WillowGame.PopulationOpportunityDen.PostBeginPlay", self.Name, PostBeginPlay)
 
     def Disable(self) -> None:
-        unrealsdk.RemoveHook("GearboxFramework.PopulationMaster.SpawnPopulationControlledActorn", self.Name)
+        unrealsdk.RemoveHook("GearboxFramework.PopulationMaster.SpawnPopulationControlledActor", self.Name)
         unrealsdk.RemoveHook("WillowGame.PopulationOpportunityDen.PostBeginPlay", self.Name)
 
         for den in unrealsdk.FindAll("PopulationOpportunityDen"):
