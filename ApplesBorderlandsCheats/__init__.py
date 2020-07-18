@@ -15,10 +15,11 @@ try:
         raise RuntimeError("UserFeedback version is too old, need at least v1.3!")
     if UserFeedback.VersionMajor == 1 and UserFeedback.VersionMinor < 3:
         raise RuntimeError("UserFeedback version is too old, need at least v1.3!")
-except (ImportError, RuntimeError) as ex:
+# UF 1.0 didn't have version fields, hence the `NameError`
+except (ImportError, RuntimeError, NameError) as ex:
     import webbrowser
     url = "https://apple1417.github.io/bl2/didntread/?m=Apple%27s%20Borderlands%20Cheats&uf=v1.3"
-    if isinstance(ex, RuntimeError):
+    if isinstance(ex, RuntimeError) or isinstance(ex, NameError):
         url += "&update"
     webbrowser.open(url)
     raise ex
