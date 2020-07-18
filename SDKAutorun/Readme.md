@@ -1,5 +1,8 @@
 ## Changelog
 
+### SDK Autorun v1.4
+Now also opens a webpage warning you when requirements are outdated.
+
 ### SDK Autorun v1.3
 Now opens a webpage listing requirements when you don't install them all.
 

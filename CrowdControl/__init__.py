@@ -11,9 +11,18 @@ from typing import Any, ClassVar, Dict, IO, List, Optional
 try:
     from Mods import AAA_OptionsWrapper as OptionsWrapper
     from Mods import AsyncUtil
+    from Mods import UserFeedback
     from Mods.UserFeedback import ShowHUDMessage, OptionBox, OptionBoxButton, TextInputBox, TrainingBox
+
+    if UserFeedback.VersionMajor < 1:
+        raise RuntimeError("UserFeedback version is too old, need at least v1.2!")
+    if UserFeedback.VersionMajor == 1 and UserFeedback.VersionMinor < 2:
+        raise RuntimeError("UserFeedback version is too old, need at least v1.2!")
 except ImportError as ex:
-    webbrowser.open("https://apple1417.github.io/bl2/didntread/?m=Borderlands%20Crowd%20Control&au&ow&uf")
+    url = "https://apple1417.github.io/bl2/didntread/?m=Borderlands%20Crowd%20Control&au=v1.0&ow=v1.0&uf=v1.2"
+    if isinstance(ex, RuntimeError):
+        url += "&update"
+    webbrowser.open(url)
     raise ex
 
 from Mods.CrowdControl import Effects
@@ -98,7 +107,7 @@ class CrowdControl(unrealsdk.BL2MOD):
         "Lets viewers on Twitch spend channel points to affect your game."
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Content, unrealsdk.ModTypes.Gameplay]
-    Version: ClassVar[str] = "1.1"
+    Version: ClassVar[str] = "1.2"
 
     SettingsInputs: Dict[str, str]
     Options: List[OptionsWrapper.Base]

@@ -6,9 +6,17 @@ from typing import Any, cast, ClassVar, Dict, List, Type
 try:
     from Mods import AsyncUtil  # noqa  # Unused in this file but better to check in one place
     from Mods import UserFeedback
-except ImportError as ex:
+
+    if UserFeedback.VersionMajor < 1:
+        raise RuntimeError("UserFeedback version is too old, need at least v1.3!")
+    if UserFeedback.VersionMajor == 1 and UserFeedback.VersionMinor < 3:
+        raise RuntimeError("UserFeedback version is too old, need at least v1.3!")
+except (ImportError, RuntimeError) as ex:
     import webbrowser
-    webbrowser.open("https://apple1417.github.io/bl2/didntread/?m=SDK%20Autorun&au&uf")
+    url = "https://apple1417.github.io/bl2/didntread/?m=SDK%20Autorun&au=v1.0&uf=v1.3"
+    if isinstance(ex, RuntimeError):
+        url += "&update"
+    webbrowser.open(url)
     raise ex
 
 
@@ -35,7 +43,7 @@ class SDKAutorun(unrealsdk.BL2MOD):
         "Automatically runs SDK mods or console commands on game launch."
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.3"
+    Version: ClassVar[str] = "1.4"
 
     @property
     def IsEnabled(self) -> bool:
