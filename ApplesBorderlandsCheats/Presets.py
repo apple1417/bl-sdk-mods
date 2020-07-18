@@ -1,21 +1,15 @@
 import html
 import json
 import sys
-from typing import ClassVar, Dict, List, Optional, Tuple, Union
+from typing import ClassVar, Dict, List, Optional, Union
 
-from .Cheats import ABCCheat
-from .Cheats import ABCCycleableCheat
-from .Cheats import ABCOptions
+from Mods.ApplesBorderlandsCheats.Cheats import ABCCheat, ABCCycleableCheat
 
-try:
-    from Mods.UserFeedback import OptionBox
-    from Mods.UserFeedback import OptionBoxButton
-    from Mods.UserFeedback import ShowHUDMessage
-    from Mods.UserFeedback import TextInputBox
-except ImportError as ex:
-    import webbrowser
-    webbrowser.open("https://apple1417.github.io/bl2/didntread/?m=Apple%27s%20Borderlands%20Cheats&uf")
-    raise ex
+from Mods.UserFeedback import OptionBox
+from Mods.UserFeedback import OptionBoxButton
+from Mods.UserFeedback import ShowHUDMessage
+from Mods.UserFeedback import TextInputBox
+
 
 if sys.platform == "win32":
     from os import startfile
@@ -23,12 +17,11 @@ else:
     def startfile(path: str) -> None:
         pass
 
-_AllCheats: Tuple[ABCCheat, ...] = ABCOptions().All
-
 
 class Preset:
     Name: str
     IsBeingConfigured: bool
+    CheatList: List[ABCCheat]
 
     _NewSettings: Dict[str, str]
     _OldSettings: Dict[str, str]
@@ -36,7 +29,7 @@ class Preset:
     _SelectedCheat: Optional[ABCCheat]
     _ConfigureBox: OptionBox
     _SaveBox: OptionBox
-    _CheatConfigureBoxes: Dict[OptionBoxButton, OptionBox]
+    _CheatConfigureBoxes: Dict[str, OptionBox]
 
     _SaveButton: ClassVar[OptionBoxButton] = OptionBoxButton("Save")
     _DiscardButton: ClassVar[OptionBoxButton] = OptionBoxButton("Discard")
@@ -47,9 +40,10 @@ class Preset:
         "Do not change this cheat's state."
     )
 
-    def __init__(self, Name: str, Settings: Dict[str, str]) -> None:
+    def __init__(self, Name: str, Settings: Dict[str, str], CheatList: List[ABCCheat]) -> None:
         self.Name = Name
         self.IsBeingConfigured = False
+        self.CheatList = CheatList
 
         self._NewSettings = Settings
         self._OldSettings = dict(Settings)
@@ -69,7 +63,7 @@ class Preset:
 
         self._CheatConfigureBoxes = {}
         cheatButtons: List[OptionBoxButton] = []
-        for cheat in _AllCheats:
+        for cheat in self.CheatList:
             tip: str
             box: OptionBox
             if not isinstance(cheat, ABCCycleableCheat):
@@ -95,7 +89,7 @@ class Preset:
                     tip = f"Currently: {self._NewSettings[cheat.Name]}"
 
                 cheatOptions: List[OptionBoxButton] = []
-                for option in cheat.Order:
+                for option in cheat.AllValues:
                     cheatOptions.append(OptionBoxButton(option))
                 cheatOptions.append(self._IgnoreButton)
 
@@ -113,7 +107,7 @@ class Preset:
             box.OnCancel = lambda: self._ConfigureBox.Show()  # type: ignore
 
             button = OptionBoxButton(cheat.Name, tip)
-            self._CheatConfigureBoxes[button] = box
+            self._CheatConfigureBoxes[cheat.Name] = box
             cheatButtons.append(button)
 
         self._ConfigureBox = OptionBox(
@@ -142,15 +136,15 @@ class Preset:
 
         return dict(self._NewSettings)
 
-    def ApplySettings(self, options: ABCOptions) -> None:
+    def ApplySettings(self) -> None:
         settings = self.GetSettings()
         message = ""
-        for cheat in options.All:
+        for cheat in self.CheatList:
             if cheat.Name in settings:
                 if isinstance(cheat, ABCCycleableCheat):
-                    cheat.value = settings[cheat.Name]
+                    cheat.CurrentValue = settings[cheat.Name]
                     cheat.OnCycle()
-                    message += f"{cheat.Name}: {cheat.value}\n"
+                    message += f"{cheat.Name}: {cheat.CurrentValue}\n"
                 else:
                     cheat.OnPress()
                     message += f"Executed '{cheat.Name}'\n"
@@ -161,6 +155,13 @@ class Preset:
         if self.IsBeingConfigured:
             raise RuntimeError("Tried to re-configure a preset that is currently being configured")
         self.IsBeingConfigured = True
+
+        for idx, button in enumerate(self._ConfigureBox.Buttons):
+            newTip = "Currently: Ignore"
+            if button.Name in self._NewSettings:
+                newTip = f"Currently: {self._NewSettings[button.Name]}"
+            button.Tip = newTip
+
         self._ConfigureBox.Show()
 
     def _FinishConfiguring(self, button: OptionBoxButton) -> None:
@@ -169,24 +170,17 @@ class Preset:
         elif button == self._DiscardButton:
             self._NewSettings = dict(self._OldSettings)
 
-        for page in self._ConfigureBox.Buttons:
-            tip = "Currently: Ignore"
-            if button.Name in self._NewSettings:
-                tip = f"Currently: {self._NewSettings[button.Name]}"
-            button.Tip = tip
-        self._ConfigureBox.Update()
-
         self.IsBeingConfigured = False
         self.OnFinishConfiguring()
 
     def _SelectSpecificCheat(self, button: OptionBoxButton) -> None:
-        for cheat in _AllCheats:
+        for cheat in self.CheatList:
             if cheat.Name == button.Name:
                 self._SelectedCheat = cheat
                 break
         else:
             raise RuntimeError("Could not find cheat associated with the button just pressed")
-        self._CheatConfigureBoxes[button].Show()
+        self._CheatConfigureBoxes[button.Name].Show()
 
     def _ChangeCheatValue(self, button: OptionBoxButton) -> None:
         if self._SelectedCheat is None:
@@ -219,6 +213,7 @@ class Preset:
 class PresetManager:
     FileName: str
     PresetList: List[Preset]
+    CheatList: List[ABCCheat]
 
     _NewPreset: ClassVar[OptionBoxButton] = OptionBoxButton("Create New Preset")
     _OpenPresetFile: ClassVar[OptionBoxButton] = OptionBoxButton(
@@ -232,7 +227,7 @@ class PresetManager:
     _No: ClassVar[OptionBoxButton] = OptionBoxButton("No")
 
     _ConfigureBox: OptionBox
-    _ButtonPresetMap: Dict[OptionBoxButton, Preset]
+    _ButtonPresetMap: Dict[str, Preset]
 
     _CurrentPreset: Optional[Preset]
     _PresetActionBox: OptionBox
@@ -240,8 +235,9 @@ class PresetManager:
 
     _RenameBox: TextInputBox
 
-    def __init__(self, FileName: str):
+    def __init__(self, FileName: str, CheatList: List[ABCCheat]):
         self.FileName = FileName
+        self.CheatList = CheatList
 
         self._ConfigureBox = OptionBox(
             Title="Configure Presets",
@@ -307,7 +303,7 @@ class PresetManager:
             if "Settings" in currentDict and isinstance(currentDict["Settings"], dict):
                 settings = currentDict["Settings"]
                 # Sanity-check the data
-                for cheat in _AllCheats:
+                for cheat in self.CheatList:
                     if cheat.Name in settings:
                         value = settings[cheat.Name]
                         # We don't really care what this value is for regular cheats, but better to
@@ -316,13 +312,13 @@ class PresetManager:
                             value = "Run"
                         settings[cheat.Name] = value
 
-            currentPreset = Preset(name, settings)
+            currentPreset = Preset(name, settings, self.CheatList)
             currentPreset.OnFinishConfiguring = self._OnFinishConfiguringPreset  # type: ignore
             self.PresetList.append(currentPreset)
 
         # If there are no valid presets then still add the first one
         if len(self.PresetList) == 0:
-            newPreset = Preset("Preset 1", {})
+            newPreset = Preset("Preset 1", {}, self.CheatList)
             newPreset.OnFinishConfiguring = self._OnFinishConfiguringPreset  # type: ignore
             self.PresetList.append(newPreset)
 
@@ -365,7 +361,7 @@ class PresetManager:
         for preset in self.PresetList:
             button = OptionBoxButton(html.unescape(preset.Name))
             buttonList.append(button)
-            self._ButtonPresetMap[button] = preset
+            self._ButtonPresetMap[button.Name] = preset
 
         buttonList += [
             self._NewPreset,
@@ -391,7 +387,7 @@ class PresetManager:
                     maxVal = val
             name = f"Preset {maxVal + 1}"
 
-            newPreset = Preset(name, {})
+            newPreset = Preset(name, {}, self.CheatList)
             newPreset.OnFinishConfiguring = self._OnFinishConfiguringPreset  # type: ignore
             self.PresetList.append(newPreset)
 
@@ -401,8 +397,8 @@ class PresetManager:
         elif button == self._OpenPresetFile:
             startfile(self.FileName)
 
-        if button in self._ButtonPresetMap:
-            self._CurrentPreset = self._ButtonPresetMap[button]
+        if button.Name in self._ButtonPresetMap:
+            self._CurrentPreset = self._ButtonPresetMap[button.Name]
             self._PresetActionBox.Title = f"Selected '{self._CurrentPreset.Name}'"
             self._PresetActionBox.Update()
             self._PresetActionBox.Show()
@@ -432,13 +428,16 @@ class PresetManager:
         if len(msg) > 0:
             self.RenameKeybind(self._CurrentPreset.Name, msg)
 
+            self._ButtonPresetMap[msg] = self._ButtonPresetMap[self._CurrentPreset.Name]
+            del self._ButtonPresetMap[self._CurrentPreset.Name]
+
             self._CurrentPreset.UpdateName(msg)
             self.SavePresets()
             self._UpdateConfigureBox()
 
         self._PresetActionBox.Title = f"Selected '{self._CurrentPreset.Name}'"
         self._PresetActionBox.Update()
-        self._PresetActionBox.ShowButton(self._RenamePreset)
+        self._PresetActionBox.Show(self._RenamePreset)
 
     def _OnConfirmDelete(self, button: Optional[OptionBoxButton]) -> None:
         if self._CurrentPreset is None:

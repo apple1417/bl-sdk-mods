@@ -13,7 +13,7 @@ from .TextInputBox import TextInputBox as TextInputBox
 from .TrainingBox import TrainingBox as TrainingBox
 
 VersionMajor: int = 1
-VersionMinor: int = 3
+VersionMinor: int = 4
 
 # Just to satisfy pyflakes' unused imports warning - can't seem to get it to ignore this file
 if False:

@@ -5,7 +5,7 @@ from typing import List, Optional, Sequence, Tuple
 from .GFxMovie import GFxMovie
 
 
-@dataclass(unsafe_hash=True)
+@dataclass
 class OptionBoxButton:
     """
     A simple dataclass representing a button for `OptionBox`s.

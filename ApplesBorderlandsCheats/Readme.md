@@ -1,14 +1,22 @@
 ## Changelog
 
+### Apple's Borderlands Cheats v1.7
+Kill all no longer kills friendlies.    
+Fixed that the game would crash if you save quit while in ghost mode, then tried to enter ghost mode again in the same level.    
+Renamed the ghost mode keybind to `Toggle Ghost Mode` to be more in line with the others - this will reset any bind you already have.    
+Fixed that changing the value of a cheat in the presets menu, then attempting to change it again without having saved inbetween, would instantly close the menu without saving.
+Rewrote a bunch of internals to make adding new cheats more straightforward.    
+Now opens a webpage to warn you when requirements are outdated.
+
 ### Apple's Borderlands Cheats v1.6
 Now opens a webpage listing requirements when you don't install them all.
 
 ### Apple's Borderlands Cheats v1.5
-One shot mode will no longer set friendly NPC's health to 1.
+One shot mode will no longer set friendly NPC's health to 1.    
 Added a "Revive Self" cheat.
 
 ### Apple's Borderlands Cheats v1.4
-Improved the hook for 1hp god mode, it should actually no longer be possible to take lethal damage.
+Improved the hook for 1hp god mode, it should actually no longer be possible to take lethal damage.    
 Made the hook for one shot mode use a parent class, which might fix issues if there's ever an entity that's not a `WillowPawn`.
 
 ### Apple's Borderlands Cheats v1.3
@@ -24,7 +32,7 @@ Added new cheats:
 - Teleport between level transitions
 - Reset shops
 
-Reworded a few cheat names/options
+Reworded a few cheat names/options    
 Fixed that the mod couldn't be disabled    
 Fixed some cases where you would take lethal damage in 1hp god mode, though it may still be possible (at least it's rarer)    
 Fixed that one shot mode didn't account for shields    

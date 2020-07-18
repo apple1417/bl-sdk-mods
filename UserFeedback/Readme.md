@@ -1,8 +1,10 @@
 ## Changelog
 
+### User Feedback v1.4
+Removed the `unsafe_hash = True` tag from `OptionsBoxButton`. This is a breaking change, but putting these objects in a dict was very precarious to begin with.    
 
 ### User Feedback v1.3
-Added an entry in the Mods list, so that users their version and verify that it's loaded.    
+Added an entry in the Mods list, so that users can see their version and verify that it's loaded.    
 Added `ReorderBox`, a subclass of `OptionBox` designed around reordering it's buttons.
 
 ##### OptionBox
@@ -22,11 +24,11 @@ Fixed that `IsShowing` returned inverted results.
 Fixed that hiding the dialog from within `OnInput` would raise `AttributeError`s.
 
 ### User Feedback v1.2
-Added `ShowChatMessage`
+Added `ShowChatMessage`.    
 Made `OptionsBoxButton` into a dataclass.
 
 ### User Feedback v1.1
-Updated for SDK versions 0.7.4-0.7.6.
+Updated for SDK versions 0.7.4-0.7.6.    
 Added `VersionMajor` and `VersionMinor` fields to the package.
 
 ### User Feedback v1.0

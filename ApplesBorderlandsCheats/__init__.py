@@ -6,8 +6,23 @@ from dataclasses import dataclass
 from os import path
 from typing import ClassVar, Dict, List
 
-from Mods.ApplesBorderlandsCheats.Cheats import ABCOptions
+from Mods.ApplesBorderlandsCheats.Cheats import ALL_CHEATS, ALL_HOOKS
 from Mods.ApplesBorderlandsCheats.Presets import PresetManager
+
+try:
+    from Mods import UserFeedback  # noqa  # Cleaner to check here even though we don't need it
+    if UserFeedback.VersionMajor < 1:
+        raise RuntimeError("UserFeedback version is too old, need at least v1.3!")
+    if UserFeedback.VersionMajor == 1 and UserFeedback.VersionMinor < 3:
+        raise RuntimeError("UserFeedback version is too old, need at least v1.3!")
+except (ImportError, RuntimeError) as ex:
+    import webbrowser
+    url = "https://apple1417.github.io/bl2/didntread/?m=Apple%27s%20Borderlands%20Cheats&uf=v1.3"
+    if isinstance(ex, RuntimeError):
+        url += "&update"
+    webbrowser.open(url)
+    raise ex
+
 
 # Some setup to let this run just as well if you re-exec the file as when it was intially imported
 if __name__ == "__main__":
@@ -57,12 +72,11 @@ class ApplesBorderlandsCheats(unrealsdk.BL2MOD):
         "Adds keybinds performing various cheaty things"
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.6"
+    Version: ClassVar[str] = "1.7"
 
     PRESET_PATH: ClassVar[str] = path.join(path.dirname(path.realpath(__file__)), "Presets.json")
 
-    CheatOptions: ClassVar[ABCOptions] = ABCOptions()
-    CheatPresetManager: PresetManager = PresetManager(PRESET_PATH)
+    CheatPresetManager: PresetManager
 
     SettingsInputs: Dict[str, str]
     Keybinds: List[Keybind]
@@ -76,6 +90,8 @@ class ApplesBorderlandsCheats(unrealsdk.BL2MOD):
             "P": "Configure Presets",
             "R": "Reset Keybinds"
         }
+
+        self.CheatPresetManager = PresetManager(self.PRESET_PATH, ALL_CHEATS)
 
         # This is a kind of hacky way for the preset manager to interface with the keybinds system
         # It's because the keybinds system is badly made and requires the main mod instance to
@@ -108,7 +124,7 @@ class ApplesBorderlandsCheats(unrealsdk.BL2MOD):
         self.CheatPresetManager.RemoveKeybind = RemovePresetKeybind  # type: ignore
 
         self.Keybinds = []
-        for cheat in self.CheatOptions.All:
+        for cheat in ALL_CHEATS:
             self.Keybinds.append(Keybind(cheat.KeybindName))
 
         for preset in self.CheatPresetManager.PresetList:
@@ -133,20 +149,20 @@ class ApplesBorderlandsCheats(unrealsdk.BL2MOD):
             storeModSettings()
 
     def GameInputPressed(self, input: Keybind) -> None:
-        for cheat in self.CheatOptions.All:
+        for cheat in ALL_CHEATS:
             if input.Name == cheat.KeybindName:
                 cheat.OnPress()
         for preset in self.CheatPresetManager.PresetList:
             if input.Name == preset.Name:
-                preset.ApplySettings(self.CheatOptions)
+                preset.ApplySettings()
 
     def Enable(self) -> None:
-        for hook, funcList in self.CheatOptions.Hooks.items():
+        for hook, funcList in ALL_HOOKS.items():
             for i in range(len(funcList)):
                 unrealsdk.RegisterHook(hook, f"ApplesBorderlandsCheats_{i}", funcList[i])
 
     def Disable(self) -> None:
-        for hook, funcList in self.CheatOptions.Hooks.items():
+        for hook, funcList in ALL_HOOKS.items():
             for i in range(len(funcList)):
                 unrealsdk.RemoveHook(hook, f"ApplesBorderlandsCheats_{i}")
 
