@@ -1,5 +1,8 @@
 ## Changelog
 
+### Apple's Borderlands Cheats v1.8
+Add preliminary support for upcoming sdk version.
+
 ### Apple's Borderlands Cheats v1.7
 Kill all no longer kills friendlies.    
 Fixed that the game would crash if you save quit while in ghost mode, then tried to enter ghost mode again in the same level.    

@@ -2,7 +2,6 @@ import unrealsdk
 from Mods.SaveManager import storeModSettings  # type: ignore
 
 import html
-from dataclasses import dataclass
 from os import path
 from typing import ClassVar, Dict, List
 
@@ -39,31 +38,35 @@ if __name__ == "__main__":
         __file__ = sys.exc_info()[-1].tb_frame.f_code.co_filename  # type: ignore
 
 
-# TODO: work out how I want to use this generally over multiple mods
-@dataclass
-class Keybind:
-    Name: str
-    Key: str = "None"
+if unrealsdk.PythonManagerVersion > 1:
+    from Mods.ModMenu.KeybindManager import Keybind
+else:
+    from dataclasses import dataclass
 
-    def __getitem__(self, i: int) -> str:
-        if not isinstance(i, int):
-            raise TypeError(f"list indices must be integers or slices, not {type(i)}")
-        if i == 0:
-            return self.Name
-        elif i == 1:
-            return self.Key
-        else:
-            raise IndexError("list index out of range")
+    @dataclass
+    class Keybind:  # type: ignore
+        Name: str
+        Key: str = "None"
 
-    def __setitem__(self, i: int, val: str) -> None:
-        if not isinstance(i, int):
-            raise TypeError(f"list indices must be integers or slices, not {type(i)}")
-        if i == 0:
-            self.Name = val
-        elif i == 1:
-            self.Key = val
-        else:
-            raise IndexError("list index out of range")
+        def __getitem__(self, i: int) -> str:
+            if not isinstance(i, int):
+                raise TypeError(f"list indices must be integers or slices, not {type(i)}")
+            if i == 0:
+                return self.Name
+            elif i == 1:
+                return self.Key
+            else:
+                raise IndexError("list index out of range")
+
+        def __setitem__(self, i: int, val: str) -> None:
+            if not isinstance(i, int):
+                raise TypeError(f"list indices must be integers or slices, not {type(i)}")
+            if i == 0:
+                self.Name = val
+            elif i == 1:
+                self.Key = val
+            else:
+                raise IndexError("list index out of range")
 
 
 class ApplesBorderlandsCheats(unrealsdk.BL2MOD):
@@ -73,7 +76,7 @@ class ApplesBorderlandsCheats(unrealsdk.BL2MOD):
         "Adds keybinds performing various cheaty things"
     )
     Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.7"
+    Version: ClassVar[str] = "1.8"
 
     PRESET_PATH: ClassVar[str] = path.join(path.dirname(path.realpath(__file__)), "Presets.json")
 
@@ -83,8 +86,8 @@ class ApplesBorderlandsCheats(unrealsdk.BL2MOD):
     Keybinds: List[Keybind]
 
     def __init__(self) -> None:
-        # Hopefully I can remove this in a future SDK update
-        self.Author += "\nVersion: " + str(self.Version)  # type: ignore
+        if unrealsdk.PythonManagerVersion == 1:
+            self.Author += "\nVersion: " + str(self.Version)  # type: ignore
 
         self.SettingsInputs = {
             "Enter": "Enable",
@@ -158,13 +161,13 @@ class ApplesBorderlandsCheats(unrealsdk.BL2MOD):
                 preset.ApplySettings()
 
     def Enable(self) -> None:
-        for hook, funcList in ALL_HOOKS.items():
-            for i in range(len(funcList)):
-                unrealsdk.RegisterHook(hook, f"ApplesBorderlandsCheats_{i}", funcList[i])
+        for hook, func_list in ALL_HOOKS.items():
+            for i, func in enumerate(func_list):
+                unrealsdk.RunHook(hook, f"ApplesBorderlandsCheats_{i}", func)
 
     def Disable(self) -> None:
-        for hook, funcList in ALL_HOOKS.items():
-            for i in range(len(funcList)):
+        for hook, func_list in ALL_HOOKS.items():
+            for i, func in enumerate(func_list):
                 unrealsdk.RemoveHook(hook, f"ApplesBorderlandsCheats_{i}")
 
 

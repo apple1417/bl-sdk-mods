@@ -1,4 +1,17 @@
+## Exceptions
+There are a few enemies which are not multiplied because doing so will cause softlocks.
+
+- Thousand Cuts Brick - You can't hand in the note if there are extras.
+- First Bunker autocannon - Extras will be invicible, but have to be killed to progress the quest.
+- Claptrap worshippers - Extras will be friendly, but must be killed to progress the quest.
+- Story kill Uranus - Extras don't spawn, but must be killed to open the doorway back.
+
 ## Changelog
+
+### Spawn Multiplier v1.4
+Fixed a few places where enemy spawns had an additional cap, which will now be increased along with the others.    
+Blacklisted a few enemies that would cause softlocks if multiplied.    
+Fixed potential compatability issue with an upcoming version of the sdk.
 
 ### Spawn Multiplier v1.3
 Prevented multiplying spawn counts for some non-enemy actors, which could cause softlocks in some cases (e.g. Burrows' generators).

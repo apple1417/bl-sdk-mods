@@ -2,10 +2,10 @@ import unrealsdk
 from abc import ABC
 from typing import Any, ClassVar, Dict, List, Sequence, Tuple
 
-from Mods.SaveManager import storeModSettings  # type: ignore
+from Mods.SaveManager import storeModSettings
 
 VersionMajor: int = 1
-VersionMinor: int = 1
+VersionMinor: int = 2
 
 
 class Base(ABC):
@@ -150,7 +150,7 @@ class Slider(Base):
 
     @CurrentValue.setter
     def CurrentValue(self, val: Any) -> None:
-        # The sdk options handler will convert an int to a float, so convert it abck
+        # The sdk options handler will convert an int to a float, so convert it back
         self._CurrentValue = int(val)
         storeModSettings()
 
@@ -285,19 +285,6 @@ class Boolean(Spinner):
         storeModSettings()
 
 
-class SDKOptions:
-    Slider = unrealsdk.Options.Slider
-    Spinner = unrealsdk.Options.Spinner
-    Boolean = unrealsdk.Options.Boolean
-    Hidden = unrealsdk.Options.Hidden
-
-
-unrealsdk.Options.Slider = Slider
-unrealsdk.Options.Spinner = Spinner
-unrealsdk.Options.Boolean = Boolean
-unrealsdk.Options.Hidden = Hidden
-
-
 # Provide an entry in the mods list just so users can see that this is loaded
 class _OptionsWrapper(unrealsdk.BL2MOD):
     Name: ClassVar[str] = "OptionsWrapper"
@@ -312,24 +299,64 @@ class _OptionsWrapper(unrealsdk.BL2MOD):
     SettingsInputs: Dict[str, str]
 
     def __init__(self) -> None:
-        self.Author += "\nVersion: " + str(self.Version)  # type: ignore
+        if unrealsdk.PythonManagerVersion == 1:
+            self.Author += "\nVersion: " + str(self.Version)  # type: ignore
 
         self.Status = "Enabled"
         self.SettingsInputs = {}
 
 
-# Only register the mod on main menu, just to try keep it at the end of the list
-def _OnMainMenu(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-    instance = _OptionsWrapper()
-    unrealsdk.RegisterMod(instance)
+if unrealsdk.PythonManagerVersion == 1:
+    class SDKOptions:
+        Slider = unrealsdk.Options.Slider
+        Spinner = unrealsdk.Options.Spinner
+        Boolean = unrealsdk.Options.Boolean
+        Hidden = unrealsdk.Options.Hidden
+
+    unrealsdk.Options.Slider = Slider
+    unrealsdk.Options.Spinner = Spinner
+    unrealsdk.Options.Boolean = Boolean
+    unrealsdk.Options.Hidden = Hidden
+
     if __name__ == "__main__":
-        for i in range(len(unrealsdk.Mods)):
-            if unrealsdk.Mods[i].Name == instance.Name:
-                unrealsdk.Mods.remove(instance)
-                unrealsdk.Mods[i] = instance
+        instance = _OptionsWrapper()
+        for idx, mod in enumerate(unrealsdk.Mods):
+            if mod.Name == instance.Name:
+                unrealsdk.Mods[idx] = instance
                 break
-    unrealsdk.RemoveHook("WillowGame.FrontendGFxMovie.Start", "OptionsWrapper")
-    return True
+    else:
+        # Only register the mod on main menu, just to try keep it at the end of the list
+        def _on_main_menu(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+            unrealsdk.RegisterMod(_OptionsWrapper())
+            unrealsdk.RemoveHook("WillowGame.FrontendGFxMovie.Start", "OptionsWrapper")
+            return True
 
+        unrealsdk.RegisterHook("WillowGame.FrontendGFxMovie.Start", "OptionsWrapper", _on_main_menu)
+else:
+    from Mods.ModMenu import Options, ModPriorities, ModTypes
 
-unrealsdk.RegisterHook("WillowGame.FrontendGFxMovie.Start", "OptionsWrapper", _OnMainMenu)
+    Base = Options.Base  # type: ignore
+    Hidden = Options.Base  # type: ignore
+    Slider = Options.Slider  # type: ignore
+    Spinner = Options.Spinner  # type: ignore
+    Boolean = Options.Boolean  # type: ignore
+    SDKOptions = Options  # type: ignore
+
+    instance = _OptionsWrapper()
+    unrealsdk.Log(f"[{instance.Name}] Loaded on updated SDK version - assuming changes have been internalized.")
+
+    instance.Name += " - <font color='#ff0000'>Obsolete</font>"  # type: ignore
+    instance.Description = (  # type: ignore
+        "The changes in this mod have been added into the SDK itself, it is no longer needed and"
+        " can be removed once all mods depending on it have been updated."
+    )
+    instance.Priority = ModPriorities.Library
+    instance.Types = ModTypes.Library  # type: ignore
+
+    if __name__ == "__main__":
+        for idx, mod in enumerate(unrealsdk.Mods):
+            if unrealsdk.Mods[idx].Name == instance.Name:
+                unrealsdk.Mods[idx] = instance
+                break
+    else:
+        unrealsdk.Mods.append(instance)
