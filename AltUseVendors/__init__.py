@@ -1,6 +1,8 @@
 import unrealsdk
 from dataclasses import dataclass
-from typing import ClassVar, Dict, List
+from typing import ClassVar, Dict, List, Set
+
+from Mods.ModMenu import EnabledSaveType, Options, Mods, ModTypes, RegisterMod, SDKMod
 
 try:
     from Mods import AsyncUtil
@@ -10,22 +12,26 @@ except ImportError as ex:
     raise ex
 
 
-class AltUseVendors(unrealsdk.BL2MOD):
-    Name: ClassVar[str] = "Alt Use Vendors"
-    Author: ClassVar[str] = "apple1417"
-    Description: ClassVar[str] = (
-        "Adds alt use binds to quickly refill health and ammo at their vendors, like in BL3."
+class AltUseVendors(SDKMod):
+    Name: str = "Alt Use Vendors"
+    Author: str = "apple1417"
+    Description: str = (
+        "Adds alt use binds to quickly refill health and ammo at their vendors, like in BL3.\n"
+        "\n"
+        "If you have issues with stuttering, disable updating costs in settings."
     )
-    Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.3"
+    Version: str = "1.4"
 
-    UpdatingOption: unrealsdk.Options.Boolean
-    Options: List[unrealsdk.Options.Boolean]
+    Types: ModTypes = ModTypes.Utility
+    SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
+
+    UpdatingOption: Options.Boolean
+    Options: List[Options.Base]
 
     HealthIcon: unrealsdk.UObject
     AmmoIcon: unrealsdk.UObject
 
-    TouchingActors: List[unrealsdk.UObject]
+    TouchingActors: Set[unrealsdk.UObject]
 
     @dataclass
     class _AmmoInfo:
@@ -35,7 +41,7 @@ class AltUseVendors(unrealsdk.BL2MOD):
     # Going to assume you haven't modded ammo amounts
     # The UCP does edit it to let you refill in one purchage, BUT it also doesn't change the price,
     #  so I think it's more worth sticking with the default amounts
-    AmmoMap: ClassVar[Dict[str, _AmmoInfo]] = {
+    AMMO_MAP: ClassVar[Dict[str, _AmmoInfo]] = {
         "AmmoShop_Assault_Rifle_Bullets": _AmmoInfo("Ammo_Combat_Rifle", 54),
         "AmmoShop_Grenade_Protean": _AmmoInfo("Ammo_Grenade_Protean", 3),
         "AmmoShop_Laser_Cells": _AmmoInfo("Ammo_Combat_Laser", 68),
@@ -46,12 +52,12 @@ class AltUseVendors(unrealsdk.BL2MOD):
         "AmmoShop_Sniper_Rifle_Cartridges": _AmmoInfo("Ammo_Sniper_Rifle", 18)
     }
 
-    UpdateDelay: ClassVar[float] = 0.25
+    UPDATE_DELAY: ClassVar[float] = 0.5
+
+    HEALTH_ICON_NAME: ClassVar[str] = "Icon_RefillHealth"
+    AMMO_ICON_NAME: ClassVar[str] = "Icon_RefillAmmo"
 
     def __init__(self) -> None:
-        # Hopefully I can remove this in a future SDK update
-        self.Author += "\nVersion: " + str(self.Version)  # type: ignore
-
         self.UpdatingOption = unrealsdk.Options.Boolean(
             "Updating Costs",
             "Should the costs of quick buying update live while you're in game. Disabling this"
@@ -63,7 +69,7 @@ class AltUseVendors(unrealsdk.BL2MOD):
         self.HealthIcon = None
         self.AmmoIcon = None
 
-        self.TouchingActors = []
+        self.TouchingActors = set()
 
     def Enable(self) -> None:
         self.CreateIcons()
@@ -89,12 +95,7 @@ class AltUseVendors(unrealsdk.BL2MOD):
                     return True
 
                 if cost == 0 or wallet < cost:
-                    # TODO: find something that actually plays a sound or something
-                    caller.NotifyUserCouldNotAffordAttemptedUse(
-                        params.User,
-                        params.UsedComponent,
-                        params.UsedType
-                    )
+                    PC.NotifyUnableToAffordUsableObject(1)
                     return True
 
                 PRI.AddCurrencyOnHand(0, -cost)
@@ -126,9 +127,9 @@ class AltUseVendors(unrealsdk.BL2MOD):
             if str(caller).split(" ")[0] != "WillowVendingMachine":
                 return True
 
-            self.TouchingActors.append(params.Other)
+            self.TouchingActors.add(params.Other)
             if self.UpdatingOption.CurrentValue and len(self.TouchingActors) == 1:
-                AsyncUtil.RunEvery(self.UpdateDelay, self.OnUpdate, self.Name)
+                AsyncUtil.RunEvery(self.UPDATE_DELAY, self.OnUpdate, self.Name)
 
             return True
 
@@ -138,7 +139,7 @@ class AltUseVendors(unrealsdk.BL2MOD):
 
             try:
                 self.TouchingActors.remove(params.Other)
-            except ValueError:  # If the player is not already in the array
+            except KeyError:  # If the player is not already in the set
                 pass
 
             if self.UpdatingOption.CurrentValue and len(self.TouchingActors) == 0:
@@ -146,10 +147,15 @@ class AltUseVendors(unrealsdk.BL2MOD):
 
             return True
 
+        def WillowClientDisableLoadingMovie(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+            self.TouchingActors.clear()
+            return True
+
         unrealsdk.RunHook("WillowGame.WillowInteractiveObject.ConditionalReactToUse", self.Name, ConditionalReactToUse)
         unrealsdk.RunHook("WillowGame.WillowInteractiveObject.InitializeFromDefinition", self.Name, InitializeFromDefinition)
         unrealsdk.RunHook("WillowGame.WillowInteractiveObject.Touch", self.Name, Touch)
         unrealsdk.RunHook("WillowGame.WillowInteractiveObject.UnTouch", self.Name, UnTouch)
+        unrealsdk.RunHook("WillowGame.WillowPlayerController.WillowClientDisableLoadingMovie", self.Name, WillowClientDisableLoadingMovie)
 
     def Disable(self) -> None:
         AsyncUtil.CancelFutureCallbacks(self.Name)
@@ -157,16 +163,15 @@ class AltUseVendors(unrealsdk.BL2MOD):
         unrealsdk.RemoveHook("WillowGame.WillowInteractiveObject.InitializeFromDefinition", self.Name)
         unrealsdk.RemoveHook("WillowGame.WillowInteractiveObject.Touch", self.Name)
         unrealsdk.RemoveHook("WillowGame.WillowInteractiveObject.UnTouch", self.Name)
+        unrealsdk.RemoveHook("WillowGame.WillowPlayerController.WillowClientDisableLoadingMovie", self.Name)
 
     def CreateIcons(self) -> None:
         if self.HealthIcon is not None and self.AmmoIcon is not None:
             return
-        HEALTH_NAME = "Icon_RefillHealth"
-        AMMO_NAME = "Icon_RefillAmmo"
 
         # Incase you're re-execing the file and running a new instance
-        self.HealthIcon = unrealsdk.FindObject("InteractionIconDefinition", f"GD_InteractionIcons.Default.{HEALTH_NAME}")
-        self.AmmoIcon = unrealsdk.FindObject("InteractionIconDefinition", f"GD_InteractionIcons.Default.{AMMO_NAME}")
+        self.HealthIcon = unrealsdk.FindObject("InteractionIconDefinition", f"GD_InteractionIcons.Default.{self.HEALTH_ICON_NAME}")
+        self.AmmoIcon = unrealsdk.FindObject("InteractionIconDefinition", f"GD_InteractionIcons.Default.{self.AMMO_ICON_NAME}")
         baseIcon = unrealsdk.FindObject("InteractionIconDefinition", "GD_InteractionIcons.Default.Icon_DefaultUse")
         PC = unrealsdk.GetEngine().GamePlayers[0].Actor
 
@@ -174,7 +179,7 @@ class AltUseVendors(unrealsdk.BL2MOD):
             self.HealthIcon = unrealsdk.ConstructObject(
                 Class=baseIcon.Class,
                 Outer=baseIcon.Outer,
-                Name=HEALTH_NAME,
+                Name=self.HEALTH_ICON_NAME,
                 Template=baseIcon
             )
             unrealsdk.KeepAlive(self.HealthIcon)
@@ -190,7 +195,7 @@ class AltUseVendors(unrealsdk.BL2MOD):
             self.AmmoIcon = unrealsdk.ConstructObject(
                 Class=baseIcon.Class,
                 Outer=baseIcon.Outer,
-                Name=AMMO_NAME,
+                Name=self.AMMO_ICON_NAME,
                 Template=baseIcon
             )
             unrealsdk.KeepAlive(self.AmmoIcon)
@@ -216,7 +221,7 @@ class AltUseVendors(unrealsdk.BL2MOD):
                     dist = minDist
                     closetPawn = pawn
 
-            cost = 0
+            cost: int
             if vendor.ShopType == 2:
                 cost = self.GetHealthCost(closetPawn, vendor)
             elif vendor.ShopType == 1:
@@ -278,12 +283,12 @@ class AltUseVendors(unrealsdk.BL2MOD):
             if item.DefinitionData is None or item.DefinitionData.ItemDefinition is None:
                 continue
             name = item.DefinitionData.ItemDefinition.Name
-            if name not in self.AmmoMap:
+            if name not in self.AMMO_MAP:
                 continue
 
-            amount = self.AmmoMap[name].AmountPerPurchase
+            amount = self.AMMO_MAP[name].AmountPerPurchase
             price = Vendor.GetSellingPriceForInventory(item, Pawn.Controller, 1) / amount
-            needed = ammoNeeded[self.AmmoMap[name].ResourceName]
+            needed = ammoNeeded[self.AMMO_MAP[name].ResourceName]
 
             if needed != 0:
                 totalPrice += max(1, int(needed * price))
@@ -301,9 +306,9 @@ class AltUseVendors(unrealsdk.BL2MOD):
             if item.DefinitionData is None or item.DefinitionData.ItemDefinition is None:
                 continue
             name = item.DefinitionData.ItemDefinition.Name
-            if name not in self.AmmoMap:
+            if name not in self.AMMO_MAP:
                 continue
-            validPools.append(self.AmmoMap[name].ResourceName)
+            validPools.append(self.AMMO_MAP[name].ResourceName)
 
         for pool in unrealsdk.FindAll("AmmoResourcePool"):
             if pool.Outer != manager:
@@ -325,7 +330,7 @@ class AltUseVendors(unrealsdk.BL2MOD):
         # If you turn on updating and there are people close to vendors, start updating
         if newValue:
             if len(self.TouchingActors) > 0:
-                AsyncUtil.RunEvery(self.UpdateDelay, self.OnUpdate, self.Name)
+                AsyncUtil.RunEvery(self.UPDATE_DELAY, self.OnUpdate, self.Name)
         # If you turn off updating, stop updating and make sure all vendors are usable at no cost
         else:
             AsyncUtil.CancelFutureCallbacks(self.Name)
@@ -336,25 +341,16 @@ class AltUseVendors(unrealsdk.BL2MOD):
 
 
 instance = AltUseVendors()
-if __name__ != "__main__":
-    unrealsdk.RegisterMod(instance)
-else:
+if __name__ == "__main__":
     unrealsdk.Log(f"[{instance.Name}] Manually loaded")
-    for i in range(len(unrealsdk.Mods)):
-        mod = unrealsdk.Mods[i]
-        if unrealsdk.Mods[i].Name == instance.Name:
-            unrealsdk.Mods[i].Disable()
+    for mod in Mods:
+        if mod.Name == instance.Name:
+            if mod.IsEnabled:
+                mod.Disable()
+            Mods.remove(mod)
+            unrealsdk.Log(f"[{instance.Name}] Removed last instance")
 
-            unrealsdk.RegisterMod(instance)
-            unrealsdk.Mods.remove(instance)
-            unrealsdk.Mods[i] = instance
-            unrealsdk.Log(f"[{instance.Name}] Disabled and removed last instance")
+            # Fixes inspect.getfile()
+            instance.__class__.__module__ = mod.__class__.__module__
             break
-    else:
-        unrealsdk.Log(f"[{instance.Name}] Could not find previous instance")
-        unrealsdk.RegisterMod(instance)
-
-    unrealsdk.Log(f"[{instance.Name}] Auto-enabling")
-    instance.Status = "Enabled"
-    instance.SettingsInputs["Enter"] = "Disable"
-    instance.Enable()
+RegisterMod(instance)

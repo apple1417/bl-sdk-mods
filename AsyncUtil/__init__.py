@@ -1,12 +1,14 @@
 import unrealsdk
 import traceback
 from datetime import datetime, timedelta
-from typing import Any, Callable, ClassVar, Dict, List
+from typing import Any, Callable, Dict, List
+
+from Mods.ModMenu import ModPriorities, ModTypes, SDKMod, RegisterMod
 
 from .SortedDict import SortedDict
 
 VersionMajor: int = 1
-VersionMinor: int = 1
+VersionMinor: int = 2
 
 Callback = Callable[[], Any]
 Condition = Callable[[], bool]
@@ -158,37 +160,19 @@ def CancelFutureCallbacks(key: str) -> bool:
 
 
 # Provide an entry in the mods list just so users can see that this is loaded
-class _AsyncUtil(unrealsdk.BL2MOD):
-    Name: ClassVar[str] = "AsyncUtil"
-    Author: ClassVar[str] = "apple1417"
-    Description: ClassVar[str] = (
+class _AsyncUtil(SDKMod):
+    Name: str = "AsyncUtil"
+    Author: str = "apple1417"
+    Description: str = (
         "Provides functionality for other mods, but does not do anything by itself."
     )
-    Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = f"{VersionMajor}.{VersionMinor}"
+    Version: str = f"{VersionMajor}.{VersionMinor}"
 
-    Status: str
-    SettingsInputs: Dict[str, str]
+    Types: ModTypes = ModTypes.Library
+    Priority = ModPriorities.Library
 
-    def __init__(self) -> None:
-        self.Author += "\nVersion: " + str(self.Version)  # type: ignore
-
-        self.Status = "Enabled"
-        self.SettingsInputs = {}
+    Status: str = "<font color=\"#00FF00\">Loaded</font>"
+    SettingsInputs: Dict[str, str] = {}
 
 
-# Only register the mod on main menu, just to try keep it at the end of the list
-def _OnMainMenu(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-    instance = _AsyncUtil()
-    unrealsdk.RegisterMod(instance)
-    if __name__ == "__main__":
-        for i in range(len(unrealsdk.Mods)):
-            if unrealsdk.Mods[i].Name == instance.Name:
-                unrealsdk.Mods.remove(instance)
-                unrealsdk.Mods[i] = instance
-                break
-    unrealsdk.RemoveHook("WillowGame.FrontendGFxMovie.Start", "AsyncUtil")
-    return True
-
-
-unrealsdk.RegisterHook("WillowGame.FrontendGFxMovie.Start", "AsyncUtil", _OnMainMenu)
+RegisterMod(_AsyncUtil())
