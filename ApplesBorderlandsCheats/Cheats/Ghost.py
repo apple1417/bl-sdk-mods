@@ -21,21 +21,21 @@ class Ghost(ABCToggleableCheat):
         self.IsInGhost = False
 
     def OnCycle(self) -> None:
-        PC = unrealsdk.GetEngine().GamePlayers[0].Actor
+        pc = unrealsdk.GetEngine().GamePlayers[0].Actor
 
         # Keeping track of ghost state seperatly incase you change it in a preset
         if self.IsOn and not self.IsInGhost:
             # We need to save the pawn so that we can possess the right one again later
-            self.Pawn = PC.Pawn
+            self.Pawn = pc.Pawn
 
-            PC.ServerSpectate()
-            PC.bCollideWorld = False
-            PC.SpectatorCameraSpeed = self.DefaultSpeed
+            pc.ServerSpectate()
+            pc.bCollideWorld = False
+            pc.SpectatorCameraSpeed = self.DefaultSpeed
 
             self.IsInGhost = True
         elif not self.IsOn and self.IsInGhost:
-            self.Pawn.Location = (PC.Location.X, PC.Location.Y, PC.Location.Z)
-            PC.Possess(self.Pawn, True)
+            self.Pawn.Location = (pc.Location.X, pc.Location.Y, pc.Location.Z)
+            pc.Possess(self.Pawn, True)
 
             self.IsInGhost = False
 
@@ -51,13 +51,13 @@ class Ghost(ABCToggleableCheat):
             if params.Event != 0:
                 return True
 
-            PC = unrealsdk.GetEngine().GamePlayers[0].Actor
-            speed = PC.SpectatorCameraSpeed
+            pc = unrealsdk.GetEngine().GamePlayers[0].Actor
+            speed = pc.SpectatorCameraSpeed
 
             if params.key == "MouseScrollUp":
-                PC.SpectatorCameraSpeed = min(speed * self.SpeedIncrement, self.MaxSpeed)
+                pc.SpectatorCameraSpeed = min(speed * self.SpeedIncrement, self.MaxSpeed)
             elif params.key == "MouseScrollDown":
-                PC.SpectatorCameraSpeed = max(speed / self.SpeedIncrement, self.MinSpeed)
+                pc.SpectatorCameraSpeed = max(speed / self.SpeedIncrement, self.MinSpeed)
 
             return True
 

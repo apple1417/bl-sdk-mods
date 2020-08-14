@@ -10,9 +10,9 @@ class OneShot(ABCToggleableCheat):
 
     def GetHooks(self) -> Dict[str, SDKHook]:
         def TakeDamage(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-            PC = unrealsdk.GetEngine().GamePlayers[0].Actor
+            pc = unrealsdk.GetEngine().GamePlayers[0].Actor
 
-            if params.InstigatedBy != PC:
+            if params.InstigatedBy != pc:
                 return True
 
             if not self.IsOn:
@@ -41,20 +41,20 @@ class KillAll(ABCCheat):
     KeybindName = "Kill All"
 
     def OnPress(self) -> None:
-        playerPawn = unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn
+        player_pawn = unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn
         game = unrealsdk.FindAll("WillowCoopGameInfo")[-1]
 
-        playerPools = []
+        player_pools = []
         # Unintuitively, `unrealsdk.GetEngine().GamePlayers` does not hold remote players
         for pawn in unrealsdk.FindAll("WillowPlayerPawn"):
             if pawn.HealthPool.Data is not None:
-                playerPools.append(pawn.HealthPool.Data)
+                player_pools.append(pawn.HealthPool.Data)
 
         for pool in unrealsdk.FindAll("HealthResourcePool"):
-            if pool in playerPools:
+            if pool in player_pools:
                 continue
             if pool.AssociatedProvider is None or pool.AssociatedProvider.Pawn is None:
                 continue
-            if game.IsFriendlyFire(pool.AssociatedProvider.Pawn, playerPawn):
+            if game.IsFriendlyFire(pool.AssociatedProvider.Pawn, player_pawn):
                 continue
             pool.CurrentValue = 0

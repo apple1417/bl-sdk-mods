@@ -1,5 +1,9 @@
 ## Changelog
 
+### Apple's Borderlands Cheats v1.9
+Updated to use some of the new features from SDK version 0.7.8.    
+Most notably, the enabled state is now saved over game launches.
+
 ### Apple's Borderlands Cheats v1.8
 Add preliminary support for upcoming sdk version.
 

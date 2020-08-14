@@ -1,21 +1,16 @@
 import html
 import json
-import sys
-from typing import ClassVar, Dict, List, Optional, Union
+import os
+from typing import ClassVar, Dict, List, Optional
 
-from Mods.ApplesBorderlandsCheats.Cheats import ABCCheat, ABCCycleableCheat
+from Mods.ModMenu import Options
+
+from .Cheats import ABCCheat, ABCCycleableCheat
 
 from Mods.UserFeedback import OptionBox
 from Mods.UserFeedback import OptionBoxButton
 from Mods.UserFeedback import ShowHUDMessage
 from Mods.UserFeedback import TextInputBox
-
-
-if sys.platform == "win32":
-    from os import startfile
-else:
-    def startfile(path: str) -> None:
-        pass
 
 
 class Preset:
@@ -62,7 +57,7 @@ class Preset:
         self._SaveBox.OnCancel = lambda: self._ConfigureBox.Show()  # type: ignore
 
         self._CheatConfigureBoxes = {}
-        cheatButtons: List[OptionBoxButton] = []
+        cheat_buttons: List[OptionBoxButton] = []
         for cheat in self.CheatList:
             tip: str
             box: OptionBox
@@ -88,10 +83,10 @@ class Preset:
                 if cheat.Name in self._NewSettings:
                     tip = f"Currently: {self._NewSettings[cheat.Name]}"
 
-                cheatOptions: List[OptionBoxButton] = []
+                cheat_options: List[OptionBoxButton] = []
                 for option in cheat.AllValues:
-                    cheatOptions.append(OptionBoxButton(option))
-                cheatOptions.append(self._IgnoreButton)
+                    cheat_options.append(OptionBoxButton(option))
+                cheat_options.append(self._IgnoreButton)
 
                 box = OptionBox(
                     Title=f"Configure '{cheat.Name}'",
@@ -100,7 +95,7 @@ class Preset:
                         " preset's keybind."
                     ),
                     Tooltip=OptionBox.CreateTooltipString(EscMessage="Back"),
-                    Buttons=cheatOptions,
+                    Buttons=cheat_options,
                 )
 
             box.OnPress = self._ChangeCheatValue  # type: ignore
@@ -108,13 +103,13 @@ class Preset:
 
             button = OptionBoxButton(cheat.Name, tip)
             self._CheatConfigureBoxes[cheat.Name] = box
-            cheatButtons.append(button)
+            cheat_buttons.append(button)
 
         self._ConfigureBox = OptionBox(
             Title=f"Configure '{self.Name}'",
             Caption="Choose a specific cheat to configure.",
             Tooltip=OptionBox.CreateTooltipString(EscMessage="Back"),
-            Buttons=cheatButtons,
+            Buttons=cheat_buttons,
         )
         self._ConfigureBox.OnPress = self._SelectSpecificCheat  # type: ignore
         self._ConfigureBox.OnCancel = lambda: self._SaveBox.Show()  # type: ignore
@@ -157,10 +152,10 @@ class Preset:
         self.IsBeingConfigured = True
 
         for idx, button in enumerate(self._ConfigureBox.Buttons):
-            newTip = "Currently: Ignore"
+            new_tip = "Currently: Ignore"
             if button.Name in self._NewSettings:
-                newTip = f"Currently: {self._NewSettings[button.Name]}"
-            button.Tip = newTip
+                new_tip = f"Currently: {self._NewSettings[button.Name]}"
+            button.Tip = new_tip
 
         self._ConfigureBox.Show()
 
@@ -186,24 +181,24 @@ class Preset:
         if self._SelectedCheat is None:
             raise RuntimeError("Selected cheat is None")
 
-        currentCheatButton: OptionBoxButton
-        for cheatButton in self._ConfigureBox.Buttons:
-            if cheatButton.Name == self._SelectedCheat.Name:
-                currentCheatButton = cheatButton
+        current_cheat_button: OptionBoxButton
+        for cheat_button in self._ConfigureBox.Buttons:
+            if cheat_button.Name == self._SelectedCheat.Name:
+                current_cheat_button = cheat_button
                 break
         else:
             raise RuntimeError("Could not find the button associated with the cheat just edited")
 
-        newTip = f"Currently: {button.Name}"
+        new_tip = f"Currently: {button.Name}"
 
         if button == self._IgnoreButton or button == self._DontRunButton:
             if self._SelectedCheat.Name in self._NewSettings:
                 del self._NewSettings[self._SelectedCheat.Name]
-            newTip = "Currently: Ignore"
+            new_tip = "Currently: Ignore"
         else:
             self._NewSettings[self._SelectedCheat.Name] = button.Name
 
-        currentCheatButton.Tip = newTip
+        current_cheat_button.Tip = new_tip
 
         self._SelectedCheat = None
         self._ConfigureBox.Update()
@@ -211,14 +206,16 @@ class Preset:
 
 
 class PresetManager:
-    FileName: str
+    Option: Options.Hidden
     PresetList: List[Preset]
     CheatList: List[ABCCheat]
 
     _NewPreset: ClassVar[OptionBoxButton] = OptionBoxButton("Create New Preset")
     _OpenPresetFile: ClassVar[OptionBoxButton] = OptionBoxButton(
-        "Open Preset File",
-        "Useful for reordering or sharing presets."
+        "Open Settings File", (
+            "Useful for reordering or sharing presets."
+            " The game will have to be restarted for changes to apply."
+        )
     )
     _EditPreset: ClassVar[OptionBoxButton] = OptionBoxButton("Configure")
     _RenamePreset: ClassVar[OptionBoxButton] = OptionBoxButton("Rename")
@@ -235,9 +232,22 @@ class PresetManager:
 
     _RenameBox: TextInputBox
 
-    def __init__(self, FileName: str, CheatList: List[ABCCheat]):
-        self.FileName = FileName
+    def __init__(self, Option: Options.Hidden, CheatList: List[ABCCheat]):
+        self.Option = Option
         self.CheatList = CheatList
+
+        # Move legacy presets into the option
+        legacy_path = os.path.join(os.path.dirname(__file__), "Presets.json")
+        try:
+            loaded_data = []
+            with open(legacy_path) as file:
+                loaded_data = json.load(file)
+            os.remove(legacy_path)
+            self.Option.CurrentValue = loaded_data
+        except (FileNotFoundError, json.JSONDecodeError):
+            pass
+
+        self.LoadPresets()
 
         self._ConfigureBox = OptionBox(
             Title="Configure Presets",
@@ -249,7 +259,6 @@ class PresetManager:
             ),
         )
         self._ConfigureBox.OnPress = self._SelectSpecificPreset  # type: ignore
-        self.LoadPresets()
         self._UpdateConfigureBox()
 
         self._CurrentPreset = None
@@ -284,24 +293,16 @@ class PresetManager:
         self._RenameBox.OnSubmit = self._OnPresetRename  # type: ignore
 
     def LoadPresets(self) -> None:
-        loadedData: List[Dict[str, Union[str, Dict[str, str]]]] = []
-        try:
-            with open(self.FileName) as file:
-                loadedData = json.load(file)
-        except (FileNotFoundError, json.JSONDecodeError):
-            pass
-
         self.PresetList = []
-        for i in range(len(loadedData)):
-            currentDict = loadedData[i]
-            name: str = f"Preset {i}"
+        for idx, current_dict in enumerate(self.Option.CurrentValue):
+            name: str = f"Preset {idx}"
             settings: Dict[str, str] = {}
 
-            if "Name" in currentDict:
-                name = html.escape(str(currentDict["Name"]))
+            if "Name" in current_dict:
+                name = html.escape(str(current_dict["Name"]))
 
-            if "Settings" in currentDict and isinstance(currentDict["Settings"], dict):
-                settings = currentDict["Settings"]
+            if "Settings" in current_dict and isinstance(current_dict["Settings"], dict):
+                settings = current_dict["Settings"]
                 # Sanity-check the data
                 for cheat in self.CheatList:
                     if cheat.Name in settings:
@@ -312,18 +313,15 @@ class PresetManager:
                             value = "Run"
                         settings[cheat.Name] = value
 
-            currentPreset = Preset(name, settings, self.CheatList)
-            currentPreset.OnFinishConfiguring = self._OnFinishConfiguringPreset  # type: ignore
-            self.PresetList.append(currentPreset)
+            current_preset = Preset(name, settings, self.CheatList)
+            current_preset.OnFinishConfiguring = self._OnFinishConfiguringPreset  # type: ignore
+            self.PresetList.append(current_preset)
 
         # If there are no valid presets then still add the first one
         if len(self.PresetList) == 0:
-            newPreset = Preset("Preset 1", {}, self.CheatList)
-            newPreset.OnFinishConfiguring = self._OnFinishConfiguringPreset  # type: ignore
-            self.PresetList.append(newPreset)
-
-        # Save the sanity-checked info
-        self.SavePresets()
+            new_preset = Preset("Preset 1", {}, self.CheatList)
+            new_preset.OnFinishConfiguring = self._OnFinishConfiguringPreset  # type: ignore
+            self.PresetList.append(new_preset)
 
     def SavePresets(self) -> None:
         data = []
@@ -333,15 +331,14 @@ class PresetManager:
                 "Settings": preset.GetSettings()
             })
 
-        with open(self.FileName, "w") as file:
-            json.dump(data, file, indent=2)
+        self.Option.CurrentValue = data
+        self.SaveOptions()
 
     def StartConfiguring(self) -> None:
-        self.LoadPresets()
         self._UpdateConfigureBox()
         self._ConfigureBox.Show()
 
-    # The next three functions should be overwritten by the main mod
+    # The next four functions should be overwritten by the main mod
     def AddKeybind(self, Name: str) -> None:
         raise NotImplementedError
 
@@ -351,24 +348,27 @@ class PresetManager:
     def RemoveKeybind(self, Name: str) -> None:
         raise NotImplementedError
 
+    def SaveOptions(self) -> None:
+        raise NotImplementedError
+
     def _OnFinishConfiguringPreset(self) -> None:
         self.SavePresets()
         self.StartConfiguring()
 
     def _UpdateConfigureBox(self) -> None:
-        buttonList = []
+        button_list = []
         self._ButtonPresetMap = {}
         for preset in self.PresetList:
             button = OptionBoxButton(html.unescape(preset.Name))
-            buttonList.append(button)
+            button_list.append(button)
             self._ButtonPresetMap[button.Name] = preset
 
-        buttonList += [
+        button_list += [
             self._NewPreset,
             self._OpenPresetFile,
         ]
 
-        self._ConfigureBox.Buttons = buttonList
+        self._ConfigureBox.Buttons = button_list
         self._ConfigureBox.Update()
 
     def _SelectSpecificPreset(self, button: OptionBoxButton) -> None:
@@ -376,26 +376,27 @@ class PresetManager:
             # Get a new default name that's at least the size of the list + 1, or the largest
             #  existing default name + 1
             # This makes renaming or deleting cheats still add a somewhat logical name
-            maxVal = len(self.PresetList)
+            max_val = len(self.PresetList)
             for preset in self.PresetList:
                 val: int
                 try:
                     val = int(preset.Name.split(" ")[-1])
                 except ValueError:
                     continue
-                if val > maxVal:
-                    maxVal = val
-            name = f"Preset {maxVal + 1}"
+                if val > max_val:
+                    max_val = val
+            name = f"Preset {max_val + 1}"
 
-            newPreset = Preset(name, {}, self.CheatList)
-            newPreset.OnFinishConfiguring = self._OnFinishConfiguringPreset  # type: ignore
-            self.PresetList.append(newPreset)
+            new_preset = Preset(name, {}, self.CheatList)
+            new_preset.OnFinishConfiguring = self._OnFinishConfiguringPreset  # type: ignore
+            self.PresetList.append(new_preset)
 
             self.AddKeybind(name)
 
             self.SavePresets()
         elif button == self._OpenPresetFile:
-            startfile(self.FileName)
+            settings_path = os.path.join(os.path.dirname(__file__), "settings.json")
+            os.startfile(settings_path)
 
         if button.Name in self._ButtonPresetMap:
             self._CurrentPreset = self._ButtonPresetMap[button.Name]
