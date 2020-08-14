@@ -44,7 +44,7 @@ class EquipLocker(SDKMod):
                 r_set.UsedOptions
             ))
             enabled = Options.Boolean(
-                "Enable",
+                "Enable " + r_set.Name,
                 "Should this restriction set be enabled.",
                 False
             )
