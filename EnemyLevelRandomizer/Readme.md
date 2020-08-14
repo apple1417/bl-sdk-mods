@@ -1,5 +1,9 @@
 ## Changelog
 
+### Enemy Level Randomizer v1.3
+Updated to use some of the new features from SDK version 0.7.8.    
+Most notably, the enabled state is now saved over game launches.
+
 ### Enemy Level Randomizer v1.2
 Fixed issues with level clamping that could cause enemies to keep their original level if their randomized one went below 0 or above 255.
 Removed the level 255 maximum.

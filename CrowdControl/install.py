@@ -5,7 +5,7 @@ import webbrowser
 
 if sys.version_info.major < 3 or (sys.version_info.major >= 3 and sys.version_info.minor < 7):
     print("Must be using at least Python 3.7!")
-    exit(1)
+    sys.exit(1)
 
 
 print("Installing requirements.\n")

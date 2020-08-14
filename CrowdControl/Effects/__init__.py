@@ -6,7 +6,8 @@ import sys
 from abc import ABC, abstractmethod
 from typing import Any, Callable, ClassVar, cast, Dict, List
 
-from Mods import AAA_OptionsWrapper as OptionsWrapper
+from Mods.ModMenu import Options
+
 from Mods import AsyncUtil
 from Mods.UserFeedback import ShowHUDMessage
 
@@ -31,7 +32,8 @@ class BaseCrowdControlEffect(ABC):
     Name: ClassVar[str]
     Description: ClassVar[str] = ""
     HasConfigMenu: ClassVar[bool] = False
-    Options: List[OptionsWrapper.Base]
+
+    Options: List[Options.Base]
 
     def __init__(self) -> None:
         """
@@ -98,7 +100,7 @@ class QueuedCrowdControlEffect(BaseCrowdControlEffect):
     """
     Interval: ClassVar[int] = 15
 
-    _IntervalOption: OptionsWrapper.Slider
+    _IntervalOption: Options.Slider
     _Queue: List[JSON]
 
     def __init__(self) -> None:
@@ -107,7 +109,7 @@ class QueuedCrowdControlEffect(BaseCrowdControlEffect):
         """
         super().__init__()
 
-        self._IntervalOption = OptionsWrapper.Slider(
+        self._IntervalOption = Options.Slider(
             Caption=f"{self.Name} Interval",
             Description=(
                 "The minimum interval between activations, in seconds."
@@ -178,16 +180,16 @@ class DurationCrowdControlEffect(QueuedCrowdControlEffect):
     """
     Duration: ClassVar[int] = 15
 
-    _DurationOption: OptionsWrapper.Slider
+    _DurationOption: Options.Slider
 
     def __init__(self) -> None:
         super().__init__()
 
-        self._DurationOption = OptionsWrapper.Slider(
+        self._DurationOption = Options.Slider(
             Caption=f"{self.Name} Duration",
             Description=(
                 "The duration of the effect."
-                " If the duration is longer than the interval, addtional redemptions will restart "
+                " If the duration is longer than the interval, additional redemptions will restart"
                 " the duration timer."
             ),
             StartingValue=self.Duration,

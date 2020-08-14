@@ -1,31 +1,31 @@
 import unrealsdk
 import random
-from typing import ClassVar, List, Union
+from typing import List
+
+from Mods.ModMenu import EnabledSaveType, Options, Mods, ModTypes, RegisterMod, SDKMod
 
 
-class EnemyLevelRandomizer(unrealsdk.BL2MOD):
-    Name: ClassVar[str] = "ELR"
-    Author: ClassVar[str] = "apple1417"
-    Description: ClassVar[str] = (
-        "<font size='24' color='#FFDEAD'>Enemy Level Randomizer</font>\n"
+class EnemyLevelRandomizer(SDKMod):
+    Name: str = "Enemy Level Randomizer"
+    Author: str = "apple1417"
+    Description: str = (
         "Randomizes the level of enemies a bit more.\n"
         "\n"
         "Probably a bad idea."
     )
-    Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Gameplay]
-    Version: ClassVar[str] = "1.2"
+    Version: str = "1.3"
 
-    Options: List[Union[unrealsdk.Options.Slider, unrealsdk.Options.Spinner, unrealsdk.Options.Boolean, unrealsdk.Options.Hidden]]
+    Types: ModTypes = ModTypes.Gameplay
+    SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
 
-    MinSlider: unrealsdk.Options.Slider
-    MaxSlider: unrealsdk.Options.Slider
-    OffsetSlider: unrealsdk.Options.Slider
+    MinSlider: Options.Slider
+    MaxSlider: Options.Slider
+    OffsetSlider: Options.Slider
+
+    Options: List[Options.Base]
 
     def __init__(self) -> None:
-        # Hopefully I can remove this in a future SDK update
-        self.Author += "\nVersion: " + str(self.Version)  # type: ignore
-
-        self.MinSlider = unrealsdk.Options.Slider(
+        self.MinSlider = Options.Slider(
             Description="The minimum below the intended level that an enemy can be",
             Caption="Min Level Difference",
             StartingValue=15,
@@ -33,7 +33,7 @@ class EnemyLevelRandomizer(unrealsdk.BL2MOD):
             MaxValue=255,
             Increment=1
         )
-        self.MaxSlider = unrealsdk.Options.Slider(
+        self.MaxSlider = Options.Slider(
             Description="The maximum above the intended level that an enemy can be",
             Caption="Max Level Difference",
             StartingValue=15,
@@ -41,7 +41,7 @@ class EnemyLevelRandomizer(unrealsdk.BL2MOD):
             MaxValue=255,
             Increment=1
         )
-        self.OffsetSlider = unrealsdk.Options.Slider(
+        self.OffsetSlider = Options.Slider(
             Description="An offset applied to the intended level before randomizing it",
             Caption="Level Offset",
             StartingValue=0,
@@ -75,25 +75,16 @@ class EnemyLevelRandomizer(unrealsdk.BL2MOD):
 
 
 instance = EnemyLevelRandomizer()
-if __name__ != "__main__":
-    unrealsdk.RegisterMod(instance)
-else:
+if __name__ == "__main__":
     unrealsdk.Log(f"[{instance.Name}] Manually loaded")
-    for i in range(len(unrealsdk.Mods)):
-        mod = unrealsdk.Mods[i]
-        if unrealsdk.Mods[i].Name == instance.Name:
-            unrealsdk.Mods[i].Disable()
+    for mod in Mods:
+        if mod.Name == instance.Name:
+            if mod.IsEnabled:
+                mod.Disable()
+            Mods.remove(mod)
+            unrealsdk.Log(f"[{instance.Name}] Removed last instance")
 
-            unrealsdk.RegisterMod(instance)
-            unrealsdk.Mods.remove(instance)
-            unrealsdk.Mods[i] = instance
-            unrealsdk.Log(f"[{instance.Name}] Disabled and removed last instance")
+            # Fixes inspect.getfile()
+            instance.__class__.__module__ = mod.__class__.__module__
             break
-    else:
-        unrealsdk.Log(f"[{instance.Name}] Could not find previous instance")
-        unrealsdk.RegisterMod(instance)
-
-    unrealsdk.Log(f"[{instance.Name}] Auto-enabling")
-    instance.Status = "Enabled"
-    instance.SettingsInputs["Enter"] = "Disable"
-    instance.Enable()
+RegisterMod(instance)

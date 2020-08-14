@@ -2,8 +2,9 @@ import unrealsdk
 from dataclasses import dataclass
 from typing import ClassVar, Dict, List, Optional, Tuple
 
-from . import BaseRestrictionSet, IS_BL2
-from Mods import AAA_OptionsWrapper as OptionsWrapper
+from Mods.ModMenu import Game, Options
+
+from . import BaseRestrictionSet
 
 
 @dataclass
@@ -11,76 +12,79 @@ class Manufacturer:
     Name: str
     FlashLabelName: str
     Artifact: Optional[str] = None
-    InBL2: bool = True
-    InTPS: bool = True
+    SupportedGames: Game = Game.BL2 | Game.TPS
 
 
 ALL_MANUFACTURERS: Tuple[Manufacturer, ...] = (
-    Manufacturer("Bandit", "s_and_s", Artifact="Artifact_AllegianceA", InTPS=False),
+    Manufacturer("Bandit", "s_and_s", Artifact="Artifact_AllegianceA", SupportedGames=Game.BL2),
     Manufacturer("Dahl", "dahl", Artifact="Artifact_AllegianceB"),
     Manufacturer("Hyperion", "hyperion", Artifact="Artifact_AllegianceC"),
     Manufacturer("Jakobs", "jakobs", Artifact="Artifact_AllegianceD"),
     Manufacturer("Maliwan", "maliwan", Artifact="Artifact_AllegianceE"),
-    Manufacturer("Scav", "s_and_s", InBL2=False),
+    Manufacturer("Scav", "s_and_s", SupportedGames=Game.TPS),
     Manufacturer("Tediore", "tediore", Artifact="Artifact_AllegianceF"),
     Manufacturer("Torgue", "torgue", Artifact="Artifact_AllegianceG"),
     Manufacturer("Vladof", "vladof", Artifact="Artifact_AllegianceH"),
     Manufacturer("Anshin", "anshin"),
     Manufacturer("Pangolin", "pangolin"),
-    Manufacturer("Eridan", "eridan", InTPS=False)
+    Manufacturer("Eridan", "eridan", SupportedGames=Game.BL2)
 )
 
 
 class Allegiance(BaseRestrictionSet):
     Name: ClassVar[str] = "Allegiance"
-    Options: List[OptionsWrapper.Base]
+    Description: ClassVar[str] = "Lock items based on their manufacturer."
 
-    ArtifactOptionMap: Dict[str, OptionsWrapper.Boolean]
-    FlashNameOptionMap: Dict[str, OptionsWrapper.Boolean]
+    UsedOptions: List[Options.Base]
 
-    AllegianceRelicsOption: OptionsWrapper.Boolean
-    ItemsOption: OptionsWrapper.Boolean
+    ArtifactOptionMap: Dict[str, Options.Boolean]
+    FlashNameOptionMap: Dict[str, Options.Boolean]
+
+    AllegianceRelicsOption: Options.Boolean
+    ItemsOption: Options.Boolean
 
     def __init__(self) -> None:
-        self.Options = []
+        self.UsedOptions = []
         self.ArtifactOptionMap = {}
         self.FlashNameOptionMap = {}
+
+        current_game = Game.GetCurrent()
         for manu in ALL_MANUFACTURERS:
-            canBeShown = (IS_BL2 and manu.InBL2) or (not IS_BL2 and manu.InTPS)
-            option = OptionsWrapper.Boolean(
+            can_be_shown = current_game in manu.SupportedGames
+            option = Options.Boolean(
                 Caption=manu.Name,
                 Description=f"Should you be able to equip {manu.Name} items.",
                 StartingValue=True,
-                IsHidden=not canBeShown,
+                IsHidden=not can_be_shown,
                 Choices=self.AllowChoices
             )
-            self.Options.append(option)
+            self.UsedOptions.append(option)
 
             # Just to prevent bandit and scav from overwriting each other
-            if canBeShown:
+            if can_be_shown:
                 if manu.Artifact is not None:
                     self.ArtifactOptionMap[manu.Artifact] = option
                 self.FlashNameOptionMap[manu.FlashLabelName] = option
 
-        self.AllegianceRelicsOption = OptionsWrapper.Boolean(
+        self.AllegianceRelicsOption = Options.Boolean(
             Caption="Allegiance Relics",
             Description=(
                 "Should you be able to equip allegiance relics. You will only be able to equip ones"
                 " that boost manufacturers you're already allowed to equip."
             ),
             StartingValue=False,
-            IsHidden=not IS_BL2,
+            IsHidden=current_game != Game.BL2,
             Choices=self.AllowChoices
         )
 
-        self.ItemsOption = OptionsWrapper.Boolean(
+        self.ItemsOption = Options.Boolean(
             Caption="Always Allow Items",
             Description="Let items be equipped regardless of manufacturer.",
             StartingValue=False
         )
 
-        self.Options.append(self.AllegianceRelicsOption)
-        self.Options.append(self.ItemsOption)
+        self.UsedOptions.append(self.AllegianceRelicsOption)
+        self.UsedOptions.append(self.ItemsOption)
 
     def CanItemBeEquipped(self, item: unrealsdk.UObject) -> bool:
         manu = item.GetManufacturer()
@@ -97,8 +101,8 @@ class Allegiance(BaseRestrictionSet):
 
         if self.AllegianceRelicsOption.CurrentValue:
             if item.Class.Name == "WillowArtifact":
-                itemDef = item.DefinitionData.ItemDefinition
-                if itemDef is not None and itemDef.Name in self.ArtifactOptionMap:
-                    return bool(self.ArtifactOptionMap[itemDef.Name].CurrentValue)
+                item_def = item.DefinitionData.ItemDefinition
+                if item_def is not None and item_def.Name in self.ArtifactOptionMap:
+                    return bool(self.ArtifactOptionMap[item_def.Name].CurrentValue)
 
         return bool(self.FlashNameOptionMap[flash].CurrentValue)

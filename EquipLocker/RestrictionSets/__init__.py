@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from typing import ClassVar, List, Tuple
 from types import ModuleType
 
-from Mods import AAA_OptionsWrapper as OptionsWrapper
+from Mods.ModMenu import Options
 
 
 class BaseRestrictionSet(ABC):
@@ -16,11 +16,16 @@ class BaseRestrictionSet(ABC):
 
     Attributes:
         Name: The name to use as a header in the options menu.
-        Options: A list of options used to configure the restrictions.
+        Description: The description to use when hoving over this set's header in the options menu.
+
+        UsedOptions: A list of options used to configure the restrictions.
+
         AllowChoices: A predefined tuple to use as the `Choices` value in boolean options.
     """
     Name: ClassVar[str]
-    Options: List[OptionsWrapper.Base]
+    Description: ClassVar[str]
+
+    UsedOptions: List[Options.Base]
 
     AllowChoices: ClassVar[Tuple[str, str]] = ("Not Allowed", "Allowed")
 
@@ -29,8 +34,6 @@ class BaseRestrictionSet(ABC):
         """ Takes a `WillowInventory`, returns if it can be equipped under current restrictions. """
         raise NotImplementedError
 
-
-IS_BL2: bool = unrealsdk.GetEngine().GetEngineVersion() == 8639
 
 ALL_RESTRICTION_SETS: List[BaseRestrictionSet] = []
 

@@ -16,12 +16,12 @@ class KillEnemies(QueuedCrowdControlEffect):
 
     def OnRun(self, msg: JSON) -> None:
         self.ShowRedemption(msg)
-        playerPools = []
+        player_pools = []
         # Unintuitively, `unrealsdk.GetEngine().GamePlayers` does not hold remote players
         for pawn in unrealsdk.FindAll("WillowPlayerPawn"):
             if pawn.HealthPool.Data is not None:
-                playerPools.append(pawn.HealthPool.Data)
+                player_pools.append(pawn.HealthPool.Data)
         for pool in unrealsdk.FindAll("HealthResourcePool"):
-            if pool in playerPools:
+            if pool in player_pools:
                 continue
             pool.CurrentValue = 0

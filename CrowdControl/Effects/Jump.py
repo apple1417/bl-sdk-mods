@@ -21,14 +21,14 @@ class Jump(QueuedCrowdControlEffect):
             self.ShowRedemption(msg)
             PC = unrealsdk.GetEngine().GamePlayers[0].Actor
 
-            wantedVel = max(self.MIN_VELOCITY, maths.sqrt(PC.Pawn.Velocity.X ** 2 + PC.Pawn.Velocity.Y ** 2))
+            wanted_vel = max(self.MIN_VELOCITY, maths.sqrt(PC.Pawn.Velocity.X ** 2 + PC.Pawn.Velocity.Y ** 2))
             conversion = maths.pi / 0x7fff
 
             PC.Pawn.DoJump(PC.bUpdating)
 
             PC.Pawn.Velocity = (
-                maths.cos(PC.Rotation.Yaw * conversion) * wantedVel,
-                maths.sin(PC.Rotation.Yaw * conversion) * wantedVel,
+                maths.cos(PC.Rotation.Yaw * conversion) * wanted_vel,
+                maths.sin(PC.Rotation.Yaw * conversion) * wanted_vel,
                 PC.Pawn.Velocity.Z  # This now includes jumping velocity
             )
 

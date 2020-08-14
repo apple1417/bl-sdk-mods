@@ -1,19 +1,13 @@
 import unrealsdk
-from typing import Any, ClassVar, List
+from typing import Any, ClassVar, Dict
 
-try:
-    from Mods import AAA_OptionsWrapper as OptionsWrapper
-except ImportError as ex:
-    import webbrowser
-    webbrowser.open("https://apple1417.github.io/bl2/didntread/?m=Equip%20Locker&ow")
-    raise ex
+from Mods.ModMenu import EnabledSaveType, Options, Mods, ModTypes, RegisterMod, SDKMod
 
-from Mods.EquipLocker import RestrictionSets
+from Mods.EquipLocker.RestrictionSets import ALL_RESTRICTION_SETS, BaseRestrictionSet
 
 if __name__ == "__main__":
     import importlib
     import sys
-    importlib.reload(sys.modules["Mods.AAA_OptionsWrapper"])
     importlib.reload(sys.modules["Mods.EquipLocker.RestrictionSets"])
 
     # See https://github.com/bl-sdk/PythonSDK/issues/68
@@ -23,42 +17,48 @@ if __name__ == "__main__":
         __file__ = sys.exc_info()[-1].tb_frame.f_code.co_filename  # type: ignore
 
 
-class EquipLocker(unrealsdk.BL2MOD):
-    Name: ClassVar[str] = "Equip Locker"
-    Author: ClassVar[str] = "apple1417"
-    Description: ClassVar[str] = (
+class EquipLocker(SDKMod):
+    Name: str = "Equip Locker"
+    Author: str = "apple1417"
+    Description: str = (
         "Adds various options that prevent you from equipping certain types of items.\n"
         "Useful for allegiance or single rarity or weapon type runs."
     )
-    Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.0"
+    Version: str = "1.1"
 
-    Options: List[OptionsWrapper.Base]
+    Types: ModTypes = ModTypes.Utility | ModTypes.Gameplay
+    SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
+
+    OptionRestrictionMap: Dict[Options.Boolean, BaseRestrictionSet]
 
     UnableToEquipMessage: ClassVar[str] = f"Locked by {Name}"
 
     def __init__(self) -> None:
-        self.Author += "\nVersion: " + str(self.Version)  # type: ignore
-
         self.Options = []
-        for rSet in RestrictionSets.ALL_RESTRICTION_SETS:
-            self.Options.append(OptionsWrapper.Slider(
-                Caption=rSet.Name,
-                Description="",
-                StartingValue=0,
-                MinValue=0,
-                MaxValue=0,
-                Increment=1
+        self.OptionRestrictionMap = {}
+
+        for r_set in ALL_RESTRICTION_SETS:
+            self.Options.append(Options.Nested(
+                r_set.Name,
+                r_set.Description,
+                r_set.UsedOptions
             ))
-            self.Options += rSet.Options
+            enabled = Options.Boolean(
+                "Enable",
+                "Should this restriction set be enabled.",
+                False
+            )
+            self.OptionRestrictionMap[enabled] = r_set
+            self.Options.append(enabled)
 
     def CanItemBeEquipped(self, item: unrealsdk.UObject) -> bool:
         if item is None:
             return True
 
-        for rSet in RestrictionSets.ALL_RESTRICTION_SETS:
-            if not rSet.CanItemBeEquipped(item):
-                return False
+        for option, r_set in self.OptionRestrictionMap.items():
+            if option.CurrentValue:
+                if not r_set.CanItemBeEquipped(item):
+                    return False
 
         return True
 
@@ -116,7 +116,7 @@ class EquipLocker(unrealsdk.BL2MOD):
         unrealsdk.RemoveHook("WillowGame.ItemCardGFxObject.SetItemCardEx", self.Name)
         unrealsdk.RemoveHook("WillowGame.WillowInventoryManager.InventoryShouldBeReadiedWhenEquipped", self.Name)
 
-    def ModOptionChanged(self, option: OptionsWrapper.Base, newValue: Any) -> None:
+    def ModOptionChanged(self, option: Options.Base, new_value: Any) -> None:
         pawn = unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn
         if pawn is None:
             return
@@ -124,32 +124,23 @@ class EquipLocker(unrealsdk.BL2MOD):
 
         for item in (inv.InventoryChain, inv.ItemChain):
             while item is not None:
-                next = item.Inventory
+                next_item = item.Inventory
                 if not item.CanBeUsedBy(pawn):
                     inv.InventoryUnreadied(item, True)
-                item = next
+                item = next_item
 
 
 instance = EquipLocker()
-if __name__ != "__main__":
-    unrealsdk.RegisterMod(instance)
-else:
+if __name__ == "__main__":
     unrealsdk.Log(f"[{instance.Name}] Manually loaded")
-    for i in range(len(unrealsdk.Mods)):
-        mod = unrealsdk.Mods[i]
-        if unrealsdk.Mods[i].Name == instance.Name:
-            unrealsdk.Mods[i].Disable()
+    for mod in Mods:
+        if mod.Name == instance.Name:
+            if mod.IsEnabled:
+                mod.Disable()
+            Mods.remove(mod)
+            unrealsdk.Log(f"[{instance.Name}] Removed last instance")
 
-            unrealsdk.RegisterMod(instance)
-            unrealsdk.Mods.remove(instance)
-            unrealsdk.Mods[i] = instance
-            unrealsdk.Log(f"[{instance.Name}] Disabled and removed last instance")
+            # Fixes inspect.getfile()
+            instance.__class__.__module__ = mod.__class__.__module__
             break
-    else:
-        unrealsdk.Log(f"[{instance.Name}] Could not find previous instance")
-        unrealsdk.RegisterMod(instance)
-
-    unrealsdk.Log(f"[{instance.Name}] Auto-enabling")
-    instance.Status = "Enabled"
-    instance.SettingsInputs["Enter"] = "Disable"
-    instance.Enable()
+RegisterMod(instance)

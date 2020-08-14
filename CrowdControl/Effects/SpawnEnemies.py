@@ -35,12 +35,12 @@ def PickRandomBalance() -> Optional[unrealsdk.UObject]:
             continue
 
         # OPINION_Enemy = 0
-        shouldAppend = alleg.DefaultOpinion == 0
+        should_append = alleg.DefaultOpinion == 0
         for op in alleg.MyOpinions:
             if str(op.Allegiance) == PLAYER_ALLEGIANCE:
-                shouldAppend = op.Opinion == 0
+                should_append = op.Opinion == 0
                 break
-        if shouldAppend:
+        if should_append:
             filtered.append(bal)
     if len(filtered) == 0:
         return None
@@ -93,8 +93,8 @@ class SpawnEnemy(QueuedCrowdControlEffect):
     LevelOffset: ClassVar[int] = 4
 
     def OnRun(self, msg: JSON) -> None:
-        balDef = PickRandomBalance()
-        if balDef is None:
+        bal_def = PickRandomBalance()
+        if bal_def is None:
             self.ShowFailedMessage(msg)
             return
 
@@ -104,7 +104,7 @@ class SpawnEnemy(QueuedCrowdControlEffect):
         level = PC.Pawn.GetGameStage() + PC.PlayerReplicationInfo.NumOverpowerLevelsUnlocked
         pos, rot = self.TranslatePos(PC.Pawn.Location, PC.Rotation, Direction.F)
 
-        SpawnEnemyAt(balDef, level + self.LevelOffset, pos, rot)
+        SpawnEnemyAt(bal_def, level + self.LevelOffset, pos, rot)
 
     def ShowFailedMessage(self, msg: JSON) -> None:
         def Internal() -> None:
@@ -122,16 +122,16 @@ class SpawnEnemy(QueuedCrowdControlEffect):
 
     def TranslatePos(self, pos: unrealsdk.FStruct, rot: unrealsdk.FStruct, dir: Direction) -> Tuple[Location, Rotation]:
         conversion = maths.pi / 0x7fff
-        xOffset = maths.cos(rot.Yaw * conversion - dir.value) * self.Distance
-        yOffset = maths.sin(rot.Yaw * conversion - dir.value) * self.Distance
-        yawOffset = int(dir.value / conversion)
+        x_offset = maths.cos(rot.Yaw * conversion - dir.value) * self.Distance
+        y_offset = maths.sin(rot.Yaw * conversion - dir.value) * self.Distance
+        yaw_offset = int(dir.value / conversion)
         return ((
-            pos.X + xOffset,
-            pos.Y + yOffset,
+            pos.X + x_offset,
+            pos.Y + y_offset,
             pos.Z
         ), (
             0,
-            rot.Yaw + yawOffset,
+            rot.Yaw + yaw_offset,
             0
         ))
 
@@ -158,9 +158,9 @@ class SpawnHorde(SpawnEnemy):
             if PC.Name.startswith("Default__"):
                 continue
 
-            balDef = PickRandomBalance()
+            bal_def = PickRandomBalance()
             level = PC.Pawn.GetGameStage() + PC.PlayerReplicationInfo.NumOverpowerLevelsUnlocked
 
             for dir in Direction:
                 pos, rot = self.TranslatePos(PC.Pawn.Location, PC.Rotation, dir)
-                SpawnEnemyAt(balDef, level + self.LevelOffset, pos, rot)
+                SpawnEnemyAt(bal_def, level + self.LevelOffset, pos, rot)

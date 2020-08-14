@@ -17,9 +17,9 @@ class Revive(QueuedCrowdControlEffect):
         self.ShowRedemption(msg)
 
     def OnRun(self, msg: JSON) -> None:
-        Pawn = unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn
-        Pawn.GoFromInjuredToHealthy()
-        Pawn.ClientOnRevived()
+        pawn = unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn
+        pawn.GoFromInjuredToHealthy()
+        pawn.ClientOnRevived()
 
     def Condition(self) -> bool:
         if not IsInGame():

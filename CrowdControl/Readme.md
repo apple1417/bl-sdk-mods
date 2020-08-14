@@ -72,6 +72,9 @@ All effects are loaded from this `Effects` folder. Any subclass of `BaseCrowdCon
 This mod already requires `AsyncUtil`, `OptionsWrapper`, and `UserFeedback`, you can safely use any of them as part of your effect. If you require any other libraries make sure to explain how to install them in your own instructions.
 
 ## Changelog
+### Borderlands Crowd Control v1.3
+Updated to use some of the new features from SDK version 0.7.8.    
+
 ### Borderlands Crowd Control v1.2
 Now also opens a webpage warning you when requirements are outdated.
 
