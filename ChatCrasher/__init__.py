@@ -21,10 +21,10 @@ class ChatCrasher(SDKMod):
 
     def __init__(self) -> None:
         # Convert from the legacy enabled file
-        ENABLED_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "ENABLED")
-        if os.path.exists(ENABLED_FILE):
+        enabled_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "ENABLED")
+        if os.path.exists(enabled_file):
             self.SettingsInputPressed("Enable")
-            os.remove(ENABLED_FILE)
+            os.remove(enabled_file)
 
     def Enable(self) -> None:
         def DoSparkAuthentication(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:

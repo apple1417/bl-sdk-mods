@@ -172,15 +172,15 @@ class AltUseVendors(SDKMod):
         # Incase you're re-execing the file and running a new instance
         self.HealthIcon = unrealsdk.FindObject("InteractionIconDefinition", f"GD_InteractionIcons.Default.{self.HEALTH_ICON_NAME}")
         self.AmmoIcon = unrealsdk.FindObject("InteractionIconDefinition", f"GD_InteractionIcons.Default.{self.AMMO_ICON_NAME}")
-        baseIcon = unrealsdk.FindObject("InteractionIconDefinition", "GD_InteractionIcons.Default.Icon_DefaultUse")
+        base_icon = unrealsdk.FindObject("InteractionIconDefinition", "GD_InteractionIcons.Default.Icon_DefaultUse")
         PC = unrealsdk.GetEngine().GamePlayers[0].Actor
 
         if self.HealthIcon is None:
             self.HealthIcon = unrealsdk.ConstructObject(
-                Class=baseIcon.Class,
-                Outer=baseIcon.Outer,
+                Class=base_icon.Class,
+                Outer=base_icon.Outer,
                 Name=self.HEALTH_ICON_NAME,
-                Template=baseIcon
+                Template=base_icon
             )
             unrealsdk.KeepAlive(self.HealthIcon)
 
@@ -193,10 +193,10 @@ class AltUseVendors(SDKMod):
 
         if self.AmmoIcon is None:
             self.AmmoIcon = unrealsdk.ConstructObject(
-                Class=baseIcon.Class,
-                Outer=baseIcon.Outer,
+                Class=base_icon.Class,
+                Outer=base_icon.Outer,
                 Name=self.AMMO_ICON_NAME,
-                Template=baseIcon
+                Template=base_icon
             )
             unrealsdk.KeepAlive(self.AmmoIcon)
 
@@ -206,26 +206,26 @@ class AltUseVendors(SDKMod):
 
     def OnUpdate(self) -> None:
         # Can't look for pawns directly due to the streaming ones, which will crash the game
-        allPawns = [PC.Pawn for PC in unrealsdk.FindAll("WillowPlayerController") if PC.Pawn is not None]
+        all_pawns = [PC.Pawn for PC in unrealsdk.FindAll("WillowPlayerController") if PC.Pawn is not None]
 
         for vendor in unrealsdk.FindAll("WillowVendingMachine"):
-            closetPawn = None
-            minDist = -1
-            for pawn in allPawns:
+            closet_pawn = None
+            min_dist = -1
+            for pawn in all_pawns:
                 dist = (
                     (vendor.Location.X - pawn.Location.X) ** 2
                     + (vendor.Location.Y - pawn.Location.Y) ** 2  # noqa
                     + (vendor.Location.Z - pawn.Location.Z) ** 2  # noqa
                 ) ** 0.5
-                if dist < minDist or minDist == -1:
-                    dist = minDist
-                    closetPawn = pawn
+                if dist < min_dist or min_dist == -1:
+                    dist = min_dist
+                    closet_pawn = pawn
 
             cost: int
             if vendor.ShopType == 2:
-                cost = self.GetHealthCost(closetPawn, vendor)
+                cost = self.GetHealthCost(closet_pawn, vendor)
             elif vendor.ShopType == 1:
-                cost = self.GetAmmoCost(closetPawn, vendor)
+                cost = self.GetAmmoCost(closet_pawn, vendor)
             else:
                 continue
 
@@ -250,10 +250,10 @@ class AltUseVendors(SDKMod):
             return 0
 
         # Again going to assume you haven't modded how much a vial heals
-        fullHealCost = 4 * Vendor.GetSellingPriceForInventory(vial, Pawn.Controller, 1)
-        missingHealth = 1 - (Pawn.GetHealth() / Pawn.GetMaxHealth())
+        full_heal_cost = 4 * Vendor.GetSellingPriceForInventory(vial, Pawn.Controller, 1)
+        missing_health = 1 - (Pawn.GetHealth() / Pawn.GetMaxHealth())
 
-        return max(1, int(fullHealCost * missingHealth))
+        return max(1, int(full_heal_cost * missing_health))
 
     def BuyHealth(self, Pawn: unrealsdk.UObject, Vendor: unrealsdk.UObject) -> None:
         Pawn.SetHealth(Pawn.GetMaxHealth())
@@ -261,22 +261,22 @@ class AltUseVendors(SDKMod):
     def GetAmmoCost(self, Pawn: unrealsdk.UObject, Vendor: unrealsdk.UObject) -> int:
         manager = Pawn.Controller.ResourcePoolManager
 
-        ammoNeeded = {}
+        ammo_needed = {}
         for pool in unrealsdk.FindAll("AmmoResourcePool"):
             if pool.Outer != manager:
                 continue
             name = pool.Definition.Resource.Name
-            ammoNeeded[name] = int(pool.GetMaxValue()) - int(pool.GetCurrentValue())
+            ammo_needed[name] = int(pool.GetMaxValue()) - int(pool.GetCurrentValue())
         # Of course there had to be one odd one out :|
         for pool in unrealsdk.FindAll("ResourcePool"):
             if pool.Outer != manager:
                 continue
             if pool.Definition.Resource.Name == "Ammo_Grenade_Protean":
                 name = pool.Definition.Resource.Name
-                ammoNeeded[name] = int(pool.GetMaxValue()) - int(pool.GetCurrentValue())
+                ammo_needed[name] = int(pool.GetMaxValue()) - int(pool.GetCurrentValue())
                 break
 
-        totalPrice = 0
+        total_price = 0
         for item in unrealsdk.FindAll("WillowUsableItem"):
             if item.Owner != Vendor:
                 continue
@@ -288,18 +288,18 @@ class AltUseVendors(SDKMod):
 
             amount = self.AMMO_MAP[name].AmountPerPurchase
             price = Vendor.GetSellingPriceForInventory(item, Pawn.Controller, 1) / amount
-            needed = ammoNeeded[self.AMMO_MAP[name].ResourceName]
+            needed = ammo_needed[self.AMMO_MAP[name].ResourceName]
 
             if needed != 0:
-                totalPrice += max(1, int(needed * price))
+                total_price += max(1, int(needed * price))
 
-        return totalPrice
+        return total_price
 
     def BuyAmmo(self, Pawn: unrealsdk.UObject, Vendor: unrealsdk.UObject) -> None:
         manager = Pawn.Controller.ResourcePoolManager
 
         # Don't want to refill nades/rockets in maps that don't sell them
-        validPools = []
+        valid_pools = []
         for item in unrealsdk.FindAll("WillowUsableItem"):
             if item.Owner != Vendor:
                 continue
@@ -308,14 +308,14 @@ class AltUseVendors(SDKMod):
             name = item.DefinitionData.ItemDefinition.Name
             if name not in self.AMMO_MAP:
                 continue
-            validPools.append(self.AMMO_MAP[name].ResourceName)
+            valid_pools.append(self.AMMO_MAP[name].ResourceName)
 
         for pool in unrealsdk.FindAll("AmmoResourcePool"):
             if pool.Outer != manager:
                 continue
-            if pool.Definition.Resource.Name in validPools:
+            if pool.Definition.Resource.Name in valid_pools:
                 pool.SetCurrentValue(pool.GetMaxValue())
-        if "Ammo_Grenade_Protean" in validPools:
+        if "Ammo_Grenade_Protean" in valid_pools:
             for pool in unrealsdk.FindAll("ResourcePool"):
                 if pool.Outer != manager:
                     continue

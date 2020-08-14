@@ -58,11 +58,11 @@ def RunIn(time: float, callbk: Callback, key: str = "") -> None:
     else:
         _CallbackMap[key] = [callbk]
 
-    runAt = datetime.now() + timedelta(seconds=time)
-    if runAt in _Callbacks:
-        _Callbacks[runAt].append(callbk)
+    run_at = datetime.now() + timedelta(seconds=time)
+    if run_at in _Callbacks:
+        _Callbacks[run_at].append(callbk)
     else:
-        _Callbacks[runAt] = [callbk]
+        _Callbacks[run_at] = [callbk]
 
 
 def RunEvery(time: float, callbk: Callback, key: str) -> None:
