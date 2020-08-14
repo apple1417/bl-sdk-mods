@@ -33,8 +33,7 @@ Next, actually install Crowd Control:
 
 1. Download the latest releases of:    
    [Crowd Control](https://github.com/apple1417/bl-sdk-mods/raw/master/CrowdControl/CrowdControl.zip)    
-   [AsyncUtil](https://github.com/apple1417/bl-sdk-mods/raw/master/AsyncUtil/AsyncUtil.zip)    
-   [OptionsWrapper](https://github.com/apple1417/bl-sdk-mods/raw/master/AAA_OptionsWrapper/OptionsWrapper.zip)    
+   [AsyncUtil](https://github.com/apple1417/bl-sdk-mods/raw/master/AsyncUtil/AsyncUtil.zip)      
    [UserFeedback](https://github.com/apple1417/bl-sdk-mods/raw/master/UserFeedback/UserFeedback.zip)    
 2. Back in the game folder, browse to `Binaries/Win32/Mods` - this should be one of the folders you extracted from the SDK.
 3. Copy all folders out of the various zip files into this Mods folder.
@@ -69,7 +68,7 @@ Effects are setup in such a way that other developers can easily create their ow
 ### For Devs
 All effects are loaded from this `Effects` folder. Any subclass of `BaseCrowdControlEffect` will be loaded. You can put multiple classes in a single file, or spread them all out, they'll be loaded all the same. In the `__init__.py` you can find docstrings explaining how exactly to use the class, as well as some helpful subclasses and methods.
 
-This mod already requires `AsyncUtil`, `OptionsWrapper`, and `UserFeedback`, you can safely use any of them as part of your effect. If you require any other libraries make sure to explain how to install them in your own instructions.
+This mod already requires `AsyncUtil` and `UserFeedback`, you can safely use any of them as part of your effect. If you require any other libraries make sure to explain how to install them in your own instructions.
 
 ## Changelog
 ### Borderlands Crowd Control v1.3
