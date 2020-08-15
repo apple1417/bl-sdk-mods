@@ -1,5 +1,5 @@
 import unrealsdk
-from typing import Any, ClassVar, Dict
+from typing import Any, ClassVar, Dict, Iterator
 
 from Mods.ModMenu import EnabledSaveType, Options, Mods, ModTypes, RegisterMod, SDKMod
 
@@ -24,7 +24,7 @@ class EquipLocker(SDKMod):
         "Adds various options that prevent you from equipping certain types of items.\n"
         "Useful for allegiance or single rarity or weapon type runs."
     )
-    Version: str = "1.1"
+    Version: str = "1.2"
 
     Types: ModTypes = ModTypes.Utility | ModTypes.Gameplay
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
@@ -50,17 +50,6 @@ class EquipLocker(SDKMod):
             )
             self.OptionRestrictionMap[enabled] = r_set
             self.Options.append(enabled)
-
-    def CanItemBeEquipped(self, item: unrealsdk.UObject) -> bool:
-        if item is None:
-            return True
-
-        for option, r_set in self.OptionRestrictionMap.items():
-            if option.CurrentValue:
-                if not r_set.CanItemBeEquipped(item):
-                    return False
-
-        return True
 
     def Enable(self) -> None:
         def GiveTo(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
@@ -120,14 +109,43 @@ class EquipLocker(SDKMod):
         pawn = unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn
         if pawn is None:
             return
-        inv = pawn.InvManager
 
-        for item in (inv.InventoryChain, inv.ItemChain):
+        for item in self.GetAllEquippedItems():
+            if not item.CanBeUsedBy(pawn):
+                pawn.InvManager.InventoryUnreadied(item, True)
+
+    def CanItemBeEquipped(self, item: unrealsdk.UObject) -> bool:
+        if item is None:
+            return True
+        if item not in self.GetAllItems():
+            return True
+
+        for option, r_set in self.OptionRestrictionMap.items():
+            if option.CurrentValue:
+                if not r_set.CanItemBeEquipped(item):
+                    return False
+
+        return True
+
+    def GetAllItems(self) -> Iterator[unrealsdk.UObject]:
+        pawn = unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn
+        if pawn is None:
+            return
+
+        for item in self.GetAllEquippedItems():
+            yield item
+        for item in pawn.InvManager.Backpack:
+            yield item
+
+    def GetAllEquippedItems(self) -> Iterator[unrealsdk.UObject]:
+        pawn = unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn
+        if pawn is None:
+            return
+
+        for item in (pawn.InvManager.InventoryChain, pawn.InvManager.ItemChain):
             while item is not None:
-                next_item = item.Inventory
-                if not item.CanBeUsedBy(pawn):
-                    inv.InventoryUnreadied(item, True)
-                item = next_item
+                yield item
+                item = item.Inventory
 
 
 instance = EquipLocker()
