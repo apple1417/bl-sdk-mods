@@ -137,12 +137,12 @@ class ApplesBorderlandsCheats(SDKMod):
     def Enable(self) -> None:
         for hook, func_list in ALL_HOOKS.items():
             for i, func in enumerate(func_list):
-                unrealsdk.RunHook(hook, f"ApplesBorderlandsCheats_{i}", func)
+                unrealsdk.RunHook(hook, f"{self.Name}{i}", func)
 
     def Disable(self) -> None:
         for hook, func_list in ALL_HOOKS.items():
             for i, func in enumerate(func_list):
-                unrealsdk.RemoveHook(hook, f"ApplesBorderlandsCheats_{i}")
+                unrealsdk.RemoveHook(hook, f"{self.Name}{i}")
 
 
 instance = ApplesBorderlandsCheats()
