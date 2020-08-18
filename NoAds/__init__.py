@@ -1,50 +1,37 @@
 import unrealsdk
 import os
-from typing import ClassVar, Dict, List
+
+from Mods.ModMenu import EnabledSaveType, ModTypes, RegisterMod, SDKMod
 
 
-class NoAds(unrealsdk.BL2MOD):
-    Name: ClassVar[str] = "No Ads"
-    Author: ClassVar[str] = "apple1417"
-    Description: ClassVar[str] = (
+class NoAds(SDKMod):
+    Name: str = "No Ads"
+    Author: str = "apple1417"
+    Description: str = (
         "Prevents ads from showing.\n"
         "Includes both the obnoxious BL3 ads as well as the small MoTD DLC ads."
     )
-    Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.2"
+    Version: str = "1.3"
 
-    # For some reason not defining these makes changing them overwrite *ALL* mods' values
-    Status: str = "Disabled"
-    SettingsInputs: Dict[str, str] = {"Enter": "Enable"}
-
-    ENABLED_FILE: ClassVar[str] = os.path.join(os.path.dirname(os.path.realpath(__file__)), "ENABLED")
+    Types: ModTypes = ModTypes.Utility
+    SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
 
     def __init__(self) -> None:
-        # Hopefully I can remove this in a future SDK update
-        self.Author += "\nVersion: " + str(self.Version)  # type: ignore
-
-        if os.path.exists(self.ENABLED_FILE):
-            self.Status = "Enabled"
-            self.SettingsInputs["Enter"] = "Disable"
-            self.Enable()
+        # Convert from the legacy enabled file
+        enabled_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "ENABLED")
+        if os.path.exists(enabled_file):
+            self.SettingsInputPressed("Enable")
+            os.remove(enabled_file)
 
     def Enable(self) -> None:
         def BlockCall(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
             return False
-
-        unrealsdk.RegisterHook("WillowGame.FrontendGFxMovie.ShowMOTD", "AdBlock", BlockCall)
-        unrealsdk.RegisterHook("WillowGame.WillowPlayerController.CanAcessOakUpsell", "AdBlock", BlockCall)
-
-        open(self.ENABLED_FILE, "a").close()
+        unrealsdk.RegisterHook("WillowGame.FrontendGFxMovie.ShowMOTD", self.Name, BlockCall)
+        unrealsdk.RegisterHook("WillowGame.WillowPlayerController.CanAcessOakUpsell", self.Name, BlockCall)
 
     def Disable(self) -> None:
-        try:
-            os.remove(self.ENABLED_FILE)
-        except FileNotFoundError:
-            pass
-
-        unrealsdk.RemoveHook("WillowGame.FrontendGFxMovie.ShowMOTD", "AdBlock")
-        unrealsdk.RemoveHook("WillowGame.WillowPlayerController.CanAcessOakUpsell", "AdBlock")
+        unrealsdk.RemoveHook("WillowGame.FrontendGFxMovie.ShowMOTD", self.Name)
+        unrealsdk.RemoveHook("WillowGame.WillowPlayerController.CanAcessOakUpsell", self.Name)
 
 
-unrealsdk.RegisterMod(NoAds())
+RegisterMod(NoAds())

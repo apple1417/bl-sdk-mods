@@ -1,5 +1,8 @@
 ## Changelog
 
+### No Ads v1.3
+Updated to use some of the new features from SDK version 0.7.8.
+
 ### No Ads v1.2
 Also remove the small MoTD DLC ads (thanks to mopioid).
 

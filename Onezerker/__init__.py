@@ -1,38 +1,31 @@
 import unrealsdk
-from typing import ClassVar, Dict, List, Optional
+from typing import Dict, Optional
+
+from Mods.ModMenu import EnabledSaveType, Game, Mods, ModTypes, RegisterMod, SDKMod
 
 
-class Onezerker(unrealsdk.BL2MOD):
-    Name: ClassVar[str] = "Onezerker"
-    Author: ClassVar[str] = "apple1417"
-    Description: ClassVar[str] = (
+class Onezerker(SDKMod):
+    Name: str = "Onezerker"
+    Author: str = "apple1417"
+    Description: str = (
         "Gunzerk with two copies of the same gun instead of two different ones."
     )
-    Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Gameplay]
-    Version: ClassVar[str] = "1.6"
+    Version: str = "1.7"
 
-    SettingsInputs: Dict[str, str]
+    SupportedGames: Game = Game.BL2
+    Types: ModTypes = ModTypes.Gameplay
+    SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadOnMainMenu
 
     NumWeapObj: Optional[unrealsdk.UObject]
     WeaponMap: Dict[unrealsdk.UObject, unrealsdk.UObject]
 
     def __init__(self) -> None:
-        # Hopefully I can remove this in a future SDK update
-        self.Author += "\nVersion: " + str(self.Version)  # type: ignore
-
         unrealsdk.LoadPackage("GD_Mercenary_Streaming_SF")
-        obj = unrealsdk.FindObject("NumberWeaponsEquippedExpressionEvaluator", "GD_Mercenary_Skills.ActionSkill.Skill_Gunzerking:ExpressionTree_0.NumberWeaponsEquippedExpressionEvaluator_0")
+        self.NumWeapObj = unrealsdk.FindObject("NumberWeaponsEquippedExpressionEvaluator", "GD_Mercenary_Skills.ActionSkill.Skill_Gunzerking:ExpressionTree_0.NumberWeaponsEquippedExpressionEvaluator_0")
+        unrealsdk.KeepAlive(self.NumWeapObj)
 
-        # Almost certainly because you tried to load this in TPS
-        if obj is None:
-            unrealsdk.Log(f"[{self.Name}] Unable to find NumberWeaponsEquiped object, assuming loaded in TPS")
-            self.Name = f"<font color='#ff0000'>{self.Name}</font>"  # type: ignore
-            self.Description += "\n<font color='#ff0000'>Incompatible with TPS</font>"  # type: ignore
-            self.SettingsInputs = {}
-            self.NumWeapObj = None
-        else:
-            unrealsdk.KeepAlive(obj)
-            self.NumWeapObj = obj
+        if self.NumWeapObj is None:
+            del self.SettingsInputs["Enter"]
 
         self.WeaponMap = {}
 
@@ -41,21 +34,20 @@ class Onezerker(unrealsdk.BL2MOD):
         if weapon in self.WeaponMap:
             return self.WeaponMap[weapon]
 
-        newWeapon = weapon.CreateClone()
-        newWeapon.AmmoPool.PoolManager = weapon.AmmoPool.PoolManager
-        newWeapon.AmmoPool.PoolIndexInManager = weapon.AmmoPool.PoolIndexInManager
-        newWeapon.AmmoPool.PoolGUID = weapon.AmmoPool.PoolGUID
-        newWeapon.AmmoPool.Data = weapon.AmmoPool.Data
-        newWeapon.InvManager = weapon.InvManager
+        new_weapon = weapon.CreateClone()
+        new_weapon.AmmoPool.PoolManager = weapon.AmmoPool.PoolManager
+        new_weapon.AmmoPool.PoolIndexInManager = weapon.AmmoPool.PoolIndexInManager
+        new_weapon.AmmoPool.PoolGUID = weapon.AmmoPool.PoolGUID
+        new_weapon.AmmoPool.Data = weapon.AmmoPool.Data
+        new_weapon.InvManager = weapon.InvManager
 
-        self.WeaponMap[weapon] = newWeapon
-        return newWeapon
+        self.WeaponMap[weapon] = new_weapon
+        return new_weapon
 
     def Enable(self) -> None:
         if self.NumWeapObj is None:
             unrealsdk.Log(f"[{self.Name}] Didn't load correctly, not enabling")
-            self.Status = "Disabled"
-            self.SettingsInputs = {}
+            self.SettingsInputPressed("Disable")
             return
 
         def OnActionSkillEnded(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
@@ -76,15 +68,15 @@ class Onezerker(unrealsdk.BL2MOD):
                 return False
 
             # This is the only real bit of the function we overwrite
-            weapAlt = self.DupeWeapon(weap)
-            caller.MyWillowPawn.OffHandWeapon = weapAlt
+            weap_alt = self.DupeWeapon(weap)
+            caller.MyWillowPawn.OffHandWeapon = weap_alt
 
             caller.MyWillowPawn.InvManager.SetCurrentWeapon(weap, False)
-            caller.MyWillowPawn.InvManager.SetCurrentWeapon(weapAlt, True)
+            caller.MyWillowPawn.InvManager.SetCurrentWeapon(weap_alt, True)
             weap.RefillClip()
-            weapAlt.RefillClip()
+            weap_alt.RefillClip()
             if caller.MyWillowPC.bInSprintState:
-                caller.SetTimer(min(weap.GetEquipTime(), weapAlt.GetEquipTime()), False, "SprintTransition")
+                caller.SetTimer(min(weap.GetEquipTime(), weap_alt.GetEquipTime()), False, "SprintTransition")
             caller.SetLeftSideControl()
 
             return False
@@ -106,31 +98,31 @@ class Onezerker(unrealsdk.BL2MOD):
             if pawn.MyActionSkill.Class.Name != "DualWieldActionSkill":
                 return True
 
-            weaponList = [None, None, None, None]
+            weapon_list = [None, None, None, None]
             weapon = pawn.InvManager.InventoryChain
             while weapon is not None:
-                weaponList[weapon.QuickSelectSlot - 1] = weapon
+                weapon_list[weapon.QuickSelectSlot - 1] = weapon
                 weapon = weapon.Inventory
 
             # Don't think this could actually happen but to be safe
-            if weaponList.count(None) >= 4:
+            if weapon_list.count(None) >= 4:
                 return True
 
             index = pawn.Weapon.QuickSelectSlot - 1
             if next:
                 index = (index + 1) % 4
-                while weaponList[index] is None:
+                while weapon_list[index] is None:
                     index = (index + 1) % 4
             else:
                 index = (index - 1) % 4
-                while weaponList[index] is None:
+                while weapon_list[index] is None:
                     index = (index - 1) % 4
-            weapon = weaponList[index]
+            weapon = weapon_list[index]
 
-            weapAlt = self.DupeWeapon(weapon)
+            weap_alt = self.DupeWeapon(weapon)
             pawn.InvManager.SetCurrentWeapon(weapon, False)
-            pawn.InvManager.SetCurrentWeapon(weapAlt, True)
-            pawn.MyActionSkill.SetOffHandCrosshair(weapAlt)
+            pawn.InvManager.SetCurrentWeapon(weap_alt, True)
+            pawn.MyActionSkill.SetOffHandCrosshair(weap_alt)
 
             return False
 
@@ -142,9 +134,9 @@ class Onezerker(unrealsdk.BL2MOD):
             if params.NewWeapon != caller.MyWillowPawn.Weapon:
                 caller.MyWillowPawn.InvManager.SetCurrentWeapon(params.NewWeapon, False)
 
-                weapAlt = self.DupeWeapon(params.NewWeapon)
-                caller.MyWillowPawn.InvManager.SetCurrentWeapon(weapAlt, True)
-                caller.SetOffHandCrosshair(weapAlt)
+                weap_alt = self.DupeWeapon(params.NewWeapon)
+                caller.MyWillowPawn.InvManager.SetCurrentWeapon(weap_alt, True)
+                caller.SetOffHandCrosshair(weap_alt)
 
             return False
 
@@ -280,25 +272,16 @@ class Onezerker(unrealsdk.BL2MOD):
 
 
 instance = Onezerker()
-if __name__ != "__main__":
-    unrealsdk.RegisterMod(instance)
-else:
+if __name__ == "__main__":
     unrealsdk.Log(f"[{instance.Name}] Manually loaded")
-    for i in range(len(unrealsdk.Mods)):
-        mod = unrealsdk.Mods[i]
-        if unrealsdk.Mods[i].Name == instance.Name:
-            unrealsdk.Mods[i].Disable()
+    for mod in Mods:
+        if mod.Name == instance.Name:
+            if mod.IsEnabled:
+                mod.Disable()
+            Mods.remove(mod)
+            unrealsdk.Log(f"[{instance.Name}] Removed last instance")
 
-            unrealsdk.RegisterMod(instance)
-            unrealsdk.Mods.remove(instance)
-            unrealsdk.Mods[i] = instance
-            unrealsdk.Log(f"[{instance.Name}] Disabled and removed last instance")
+            # Fixes inspect.getfile()
+            instance.__class__.__module__ = mod.__class__.__module__
             break
-    else:
-        unrealsdk.Log(f"[{instance.Name}] Could not find previous instance")
-        unrealsdk.RegisterMod(instance)
-
-    unrealsdk.Log(f"[{instance.Name}] Auto-enabling")
-    instance.Status = "Enabled"
-    instance.SettingsInputs["Enter"] = "Disable"
-    instance.Enable()
+RegisterMod(instance)

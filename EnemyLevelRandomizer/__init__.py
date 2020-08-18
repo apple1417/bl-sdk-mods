@@ -68,10 +68,10 @@ class EnemyLevelRandomizer(SDKMod):
             caller.SetGameStage(val)
             return False
 
-        unrealsdk.RegisterHook("WillowGame.WillowPawn.SetGameStage", "EnemyLevelRandomizer", SetGameStage)
+        unrealsdk.RegisterHook("WillowGame.WillowPawn.SetGameStage", self.Name, SetGameStage)
 
     def Disable(self) -> None:
-        unrealsdk.RemoveHook("WillowGame.WillowPawn.SetGameStage", "EnemyLevelRandomizer")
+        unrealsdk.RemoveHook("WillowGame.WillowPawn.SetGameStage", self.Name)
 
 
 instance = EnemyLevelRandomizer()

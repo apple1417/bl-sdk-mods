@@ -30,10 +30,10 @@ class ChatCrasher(SDKMod):
         def DoSparkAuthentication(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
             caller.ShouldStartSparkInitialization = False
             return True
-        unrealsdk.RegisterHook("WillowGame.WillowGFxMoviePressStart.DoSparkAuthentication", "AlwaysOffline", DoSparkAuthentication)
+        unrealsdk.RegisterHook("WillowGame.WillowGFxMoviePressStart.DoSparkAuthentication", self.Name, DoSparkAuthentication)
 
     def Disable(self) -> None:
-        unrealsdk.RemoveHook("WillowGame.WillowGFxMoviePressStart.DoSparkAuthentication", "AlwaysOffline")
+        unrealsdk.RemoveHook("WillowGame.WillowGFxMoviePressStart.DoSparkAuthentication", self.Name)
 
 
 RegisterMod(ChatCrasher())

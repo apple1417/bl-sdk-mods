@@ -224,17 +224,17 @@ class CrowdControl(SDKMod):
 
             return True
 
-        AsyncUtil.RunEveryTick(OnTick, "CrowdControl")
+        AsyncUtil.RunEveryTick(OnTick, self.Name)
 
         # TODO: better quit hook
-        unrealsdk.RegisterHook("WillowGame.FrontendGFxMovie.ConfirmQuit_Clicked", "CrowdControl", OnQuit)
+        unrealsdk.RegisterHook("WillowGame.FrontendGFxMovie.ConfirmQuit_Clicked", self.Name, OnQuit)
 
         for callback in Effects.ON_ENABLE:
             callback()
 
     def Disable(self) -> None:
-        AsyncUtil.CancelFutureCallbacks("CrowdControl")
-        unrealsdk.RemoveHook("WillowGame.FrontendGFxMovie.ConfirmQuit_Clicked", "CrowdControl")
+        AsyncUtil.CancelFutureCallbacks(self.Name)
+        unrealsdk.RemoveHook("WillowGame.FrontendGFxMovie.ConfirmQuit_Clicked", self.Name)
 
         if self._listener is not None:
             self._listener.kill()

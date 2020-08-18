@@ -1,5 +1,9 @@
 ## Changelog
 
+### Python Part Notifier v1.4
+Updated to use some of the new features from SDK version 0.7.8.    
+Most notably, the enabled state is now saved over game launches.
+
 ### Python Part Notifier v1.3
 Now opens a webpage listing requirements when you don't install them all.
 

@@ -1,5 +1,9 @@
 ## Changelog
 
+### Onezerker v1.7
+Updated to use some of the new features from SDK version 0.7.8.    
+Most notably, the enabled state is now saved over game launches.
+
 ### Onezerker v1.6
 Scrolling while gunzerking is now bidirectional.    
 Also contains all sorts of internal tweaks that should prevent this from affecting other player or enemies.

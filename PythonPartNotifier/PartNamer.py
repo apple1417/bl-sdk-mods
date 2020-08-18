@@ -51,24 +51,24 @@ def _getWeaponPartName(part: unrealsdk.UObject, full: bool) -> str:
 
     name = str(part).lower()
     # Messy way to find what weapon type this part belongs to
-    weapType = ""
+    weap_type = ""
     if "assaultrifle" in name:
-        weapType = "AR"
+        weap_type = "AR"
     elif "pistol" in name:
-        weapType = "Pistol"
+        weap_type = "Pistol"
     elif "launcher" in name:
-        weapType = "RL"
+        weap_type = "RL"
     elif "laser" in name:
-        weapType = "Laser"
+        weap_type = "Laser"
     elif "shotgun" in name:
-        weapType = "SG"
+        weap_type = "SG"
     elif "smg" in name:
-        weapType = "SMG"
+        weap_type = "SMG"
     elif "sniperrifle" in name:
-        weapType = "SR"
+        weap_type = "SR"
     # This might seem weird but it works out
     elif "moonstone" in name:
-        weapType = "Moonstone"
+        weap_type = "Moonstone"
 
     manufacturer = ""
     # Messy way to find what manufacturer this part has
@@ -95,12 +95,12 @@ def _getWeaponPartName(part: unrealsdk.UObject, full: bool) -> str:
     if ("accessory" in name or "accessories" in name) and "none" in name:
         if full:
             # This here is why moonstone is a valid weapon type
-            return f"'No Accessory' {weapType} Accessory"
+            return f"'No Accessory' {weap_type} Accessory"
         else:
             return "None"
     elif "sight" in name and "none" in name:
         if full:
-            return f"'No Sight' {weapType} Sight"
+            return f"'No Sight' {weap_type} Sight"
         else:
             return "None"
     # Element parts share a lot of meshes so it's easier to seperate them here
@@ -109,19 +109,19 @@ def _getWeaponPartName(part: unrealsdk.UObject, full: bool) -> str:
         if element is None and "egun" in name:
             element = "EGun"
         elif full and element == "None":
-            return f"'No Element' {weapType} Element"
+            return f"'No Element' {weap_type} Element"
         else:
-            return cast(str, element) + (f" {weapType} Element" if full else "")
+            return cast(str, element) + (f" {weap_type} Element" if full else "")
     # Glitch attachment parts share meshes again
     elif "glitch_attachment" in name:
         # Get the full proper name
-        splitName = part.PathName(part).split(".")[-1].split("_")
-        if len(splitName) == 3:
-            return f"{splitName[2]} Glitch" + (f" Attachment" if full else "")
-        return f"Glitch Attachment"
+        split_name = part.PathName(part).split(".")[-1].split("_")
+        if len(split_name) == 3:
+            return f"{split_name[2]} Glitch" + (" Attachment" if full else "")
+        return "Glitch Attachment"
     # Types don't really fit as a normal part, need their own processing too
     elif name.startswith("weapontypedefinition"):
-        return f"{manufacturer} {weapType}" + (" Weapon Type" if full else "")
+        return f"{manufacturer} {weap_type}" + (" Weapon Type" if full else "")
 
     # For everything else (materials) just return the object name
     return str(part.Name)
@@ -129,21 +129,21 @@ def _getWeaponPartName(part: unrealsdk.UObject, full: bool) -> str:
 
 def _getShieldPartName(part: unrealsdk.UObject, full: bool) -> str:
     # Despite widely different base packages, the 2nd last ones are mostly the sam
-    partType = part.Outer.Name
+    part_type = part.Outer.Name
     name = part.Name
-    nameSplit = name.split("_")
+    split_name = name.split("_")
 
     # Unfortantly there are a few DLC parts that need this
     if name in SHIELD_PART_TYPE_OVERRIDES:
-        partType = SHIELD_PART_TYPE_OVERRIDES[name]
+        part_type = SHIELD_PART_TYPE_OVERRIDES[name]
 
     # All of these can be done the same way
-    if partType in ("Accessory", "Battery", "Body", "Capacitor"):
+    if part_type in ("Accessory", "Battery", "Body", "Capacitor"):
         # Try work out the manufacturer from the mesh
         mesh = part.GestaltModeSkeletalMeshName
 
         if mesh in SHIELD_MESH_NAMES:
-            return SHIELD_MESH_NAMES[mesh] + (f" Shield {partType}" if full else "")
+            return SHIELD_MESH_NAMES[mesh] + (f" Shield {part_type}" if full else "")
 
         text = ""
         # Want to add Nova/Spike to the Torgue accessories
@@ -181,7 +181,7 @@ def _getShieldPartName(part: unrealsdk.UObject, full: bool) -> str:
                 text = "Pangolin"
         # Maliwan and Torgue capacitors both share a (non-existant) model, and have elements
         elif mesh == "Shield_Pickup_A-1":
-            text = nameSplit[1]
+            text = split_name[1]
             element = _getElement(name)
             if element != "":
                 text += f" {element} Res"
@@ -191,7 +191,7 @@ def _getShieldPartName(part: unrealsdk.UObject, full: bool) -> str:
             if text == "Anshin" and "RoidLegendary" in name:
                 text += " Roid"
 
-            return text + (f" Shield {partType}" if full else "")
+            return text + (f" Shield {part_type}" if full else "")
 
     elif str(part).startswith("ShieldDefinition"):
         # A few DLC parts don't follow the pattern
@@ -199,7 +199,7 @@ def _getShieldPartName(part: unrealsdk.UObject, full: bool) -> str:
             return SHIELD_TYPE_OVERRIDES[name] + (" Shield Type" if full else "")
 
         # This works suprisngly well
-        text = nameSplit[1]
+        text = split_name[1]
         # Just need to translate a few terms
         if text == "Chimera":
             text = "Adaptive"
@@ -221,14 +221,14 @@ def _getShieldPartName(part: unrealsdk.UObject, full: bool) -> str:
 
 def _getGrenadePartName(part: unrealsdk.UObject, full: bool) -> str:
     # Grenade parts split up nicely just like shield ones
-    partType = part.Outer.Name
+    part_type = part.Outer.Name
     name = part.Name
-    nameSplit = name.split("_")
+    split_name = name.split("_")
 
     if name in GRENADE_PART_TYPE_OVERRIDES:
-        partType = GRENADE_PART_TYPE_OVERRIDES[name]
+        part_type = GRENADE_PART_TYPE_OVERRIDES[name]
 
-    if partType == "Accessory":
+    if part_type == "Accessory":
         element = _getElement(name)
         if element is None or element == "None":
             element = "Non-Elemental"
@@ -242,40 +242,40 @@ def _getGrenadePartName(part: unrealsdk.UObject, full: bool) -> str:
 
         # All parts after grade 0 have a suffix "_Grade[n]"
         grade = "0"
-        if len(nameSplit) > 2:
+        if len(split_name) > 2:
             grade = name[-1]
 
         return f"{element} Grade {grade}" + (" Grenade Accessory" if full else "")
 
     # A lot of grenade parts just have the info we want as a suffix
-    elif partType == "ChildCount":
+    elif part_type == "ChildCount":
         return f"Grade {name[-1]}" + (" Grenade Child Count" if full else "")
-    elif partType == "Damage":
+    elif part_type == "Damage":
         return f"Grade {name[-1]}" + (" Grenade Damage" if full else "")
-    elif partType == "StatusDamage":
+    elif part_type == "StatusDamage":
         return f"Grade {name[-1]}" + (" Grenade Status Damage" if full else "")
-    elif partType == "Trigger":
+    elif part_type == "Trigger":
         return f"Grade {name[-1]}" + (" Grenade Trigger" if full else "")
-    elif partType == "DamageRadius":
-        size = cast(str, nameSplit[1])
+    elif part_type == "DamageRadius":
+        size = cast(str, split_name[1])
         # Just want to add a space :)
         if size == "ExtraLarge":
             size = "Extra Large"
         return size + (" Grenade Blast Radius" if full else "")
 
     # These parts are easier to just hardcode in a table
-    elif partType == "Delivery":
+    elif part_type == "Delivery":
         if name in GRENADE_DELIVERY_NAMES:
             return GRENADE_DELIVERY_NAMES[name] + (" Grenade Delivery" if full else "")
-    elif partType == "Payload":
+    elif part_type == "Payload":
         # Deal with shattering payloads - they all append "_AirMask" to an existing one
-        airMask = ""
+        air_mask = ""
         if name.endswith("AirMask"):
             name = name[:-8]
-            airMask = "Shattering "
+            air_mask = "Shattering "
 
         if name in GRENADE_PAYLOAD_NAMES:
-            return airMask + GRENADE_PAYLOAD_NAMES[name] + (" Grenade Payload" if full else "")
+            return air_mask + GRENADE_PAYLOAD_NAMES[name] + (" Grenade Payload" if full else "")
     elif str(part).startswith("GrenadeModDefinition"):
         if name in GRENADE_DEFINTION_NAMES:
             return GRENADE_DEFINTION_NAMES[name] + (" Grenade Type" if full else "")
@@ -284,87 +284,87 @@ def _getGrenadePartName(part: unrealsdk.UObject, full: bool) -> str:
 
 
 def _getCOMPartName(part: unrealsdk.UObject, full: bool) -> str:
-    partType = part.Outer.Name
+    part_type = part.Outer.Name
     name = part.Name
-    nameSplit = name.split("_")
+    split_name = name.split("_")
 
     # Can you belive that not a single object in either game messes up anything so we can actually
     #  do this entirely programtically
-    if partType == "Specialization":
+    if part_type == "Specialization":
         # While a little unclear, I think it's best to leave these with the proper name for people
         #  using gibbed, and instead let the stats explain what each part actually is
-        return "_".join(nameSplit[1:]) + (" COM Specialization" if full else "")
-    elif partType == "StatPrimary":
+        return "_".join(split_name[1:]) + (" COM Specialization" if full else "")
+    elif part_type == "StatPrimary":
         return f"Grade {name[-7]}" + (" COM Primary" if full else "")
-    elif partType == "StatPrimary02":
+    elif part_type == "StatPrimary02":
         return f"Grade {name[-4]}" + (" COM Secondary" if full else "")
-    elif partType == "StatPenalty":
+    elif part_type == "StatPenalty":
         return f"Grade {name[-1]}" + (" COM Penalty" if full else "")
 
     elif str(part).startswith("ClassModDefinition"):
         # Most COMs just have the full name as the last part after the last underscore
-        comName = cast(str, nameSplit[-1])
+        com_name = cast(str, split_name[-1])
 
         if name in COM_DEFINITION_OVERRIDES:
             return COM_DEFINITION_OVERRIDES[name] + (" COM Type" if full else "")
 
         # Deal with Tina COMs
-        if comName in ("CE", "CG", "CN", "LE", "LG", "LN", "NE", "NG"):
-            player = nameSplit[-2]
+        if com_name in ("CE", "CG", "CN", "LE", "LG", "LN", "NE", "NG"):
+            player = split_name[-2]
             # Need to convert two of the names
             if player == "Mechromancer":
                 player = "Necromancer"
             elif player == "Merc":
                 player == "Monk"
 
-            return f"{comName} {player}" + (" COM Type" if full else "")
+            return f"{com_name} {player}" + (" COM Type" if full else "")
 
         # These names have a COM for each character, so there's no sense in having 6 copies of each
         #  in the override list
-        if comName == "EridianVanquisher":
-            comName = "Eridian Vanquisher"
-        elif comName == "ChroniclerOfElpis":
-            comName = "Chronicler Of Elpis"
-        elif comName == "SlayerOfTerramorphous":
-            comName = "Slayer Of Terramorphous"
+        if com_name == "EridianVanquisher":
+            com_name = "Eridian Vanquisher"
+        elif com_name == "ChroniclerOfElpis":
+            com_name = "Chronicler Of Elpis"
+        elif com_name == "SlayerOfTerramorphous":
+            com_name = "Slayer Of Terramorphous"
 
         # Add a space into the Legendary/Celestial COM names
-        if comName.startswith("Legendary"):
-            comName = f"Legendary {comName[9:]}"
-        elif comName.startswith("Celestial"):
-            comName = f"Celestial {comName[9:]}"
+        if com_name.startswith("Legendary"):
+            com_name = f"Legendary {com_name[9:]}"
+        elif com_name.startswith("Celestial"):
+            com_name = f"Celestial {com_name[9:]}"
 
-        return comName + (" COM Type" if full else "")
+        return com_name + (" COM Type" if full else "")
 
     return str(part.Name)
 
 
 def _getArtifactPartName(part: unrealsdk.UObject, full: bool) -> str:
-    partType = part.Outer.Name
+    part_type = part.Outer.Name
     name = part.Name
-    nameSplit = name.split("_")
+    split_name = name.split("_")
 
     # Really there don't need to be 4 versions of these enable parts, they all act the same
-    if partType in ("Enable1st", "Enable2nd", "Enable3rd", "Enable4th"):
-        return f"Effect {name[-1]}" + (f" Relic Enable {partType[6:]}" if full else "")
+    if part_type in ("Enable1st", "Enable2nd", "Enable3rd", "Enable4th"):
+        return f"Effect {name[-1]}" + (f" Relic Enable {part_type[6:]}" if full else "")
     # Only the seraph blood relic gets this type, it behaves differently too so seperate it
-    elif partType == "Effects":
+    elif part_type == "Effects":
         return "Seraph Blood" + (" Relic Effect" if full else "")
 
     # Only in TPS
-    elif partType == "EnableSpecial":
+    elif part_type == "EnableSpecial":
         element = _getElement(ARTIFACT_SPECIAL_NAMES[name])
         if full:
             return f"{element} Oz Kit Element"
         return f"{element} Element"
 
     # Luckily all of the objects that get the type "Might" are upgrades
-    elif partType in ("Upgrade", "Might"):
-        text = f"Grade {nameSplit[-1][5:]}"
+    elif part_type in ("Upgrade", "Might"):
+        text = f"Grade {split_name[-1][5:]}"
         # The seraph relic upgrades don't boost as many effects as the others so let's explictly
         #  mention them
         # The seraph blood also doesn't have "Grade[n]" in it's name so we have to manually set it
-        if nameSplit[-1] == "SeraphBloodRelic":
+        if split_name[-1] == "SeraphBloodRelic":
             text = "Grade 15 Blood of the Seraphs"
         elif "SeraphShadow" in name:
             text += " Shadow of the Seraphs"
@@ -373,25 +373,25 @@ def _getArtifactPartName(part: unrealsdk.UObject, full: bool) -> str:
 
         return text + (" Relic Upgrade" if full else "")
 
-    elif partType == "Body":
-        text = nameSplit[-1]
+    elif part_type == "Body":
+        text = split_name[-1]
         if name in ARTIFACT_BODY_OVERRIDES:
             text = ARTIFACT_BODY_OVERRIDES[name]
         return text + (" Relic Body" if full else "")
 
     elif str(part).startswith("ArtifactDefinition"):
-        text = nameSplit[-1]
+        text = split_name[-1]
         if str(part) in ARTIFACT_DEFINITION_OVERRIDES:
             text = ARTIFACT_DEFINITION_OVERRIDES[str(part)]
 
         # A few definitions have multiple similar variants, just differing by the last char
-        for baseName in ARTIFACT_DEFINITION_VARIANTS:
-            if nameSplit[-1].startswith(baseName):
-                map = ARTIFACT_DEFINITION_VARIANTS[baseName]
+        for base_name in ARTIFACT_DEFINITION_VARIANTS:
+            if split_name[-1].startswith(base_name):
+                map = ARTIFACT_DEFINITION_VARIANTS[base_name]
                 text = map[name[-1]]
 
                 # Keep the element formatting in one place
-                if baseName == "TwoFace":
+                if base_name == "TwoFace":
                     text = ""
                     element = _getElement(text)
                     if element is not None and element != "None":

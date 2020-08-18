@@ -1,31 +1,26 @@
 import unrealsdk
 import os
-from typing import ClassVar, Dict, List
+
+from Mods.ModMenu import EnabledSaveType, ModTypes, RegisterMod, SDKMod
 
 
-class NoOfflineWarning(unrealsdk.BL2MOD):
-    Name: ClassVar[str] = "No Offline Warning"
-    Author: ClassVar[str] = "apple1417"
-    Description: ClassVar[str] = (
+class NoOfflineWarning(SDKMod):
+    Name: str = "No Offline Warning"
+    Author: str = "apple1417"
+    Description: str = (
         "Automatically closes the spammy dialog warning you that SHiFT is offline."
     )
-    Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.0"
+    Version: str = "1.1"
 
-    # For some reason not defining these makes changing them overwrite *ALL* mods' values
-    Status: str = "Disabled"
-    SettingsInputs: Dict[str, str] = {"Enter": "Enable"}
-
-    ENABLED_FILE: str = os.path.join(os.path.dirname(os.path.realpath(__file__)), "ENABLED")
+    Types: ModTypes = ModTypes.Utility
+    SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
 
     def __init__(self) -> None:
-        # Hopefully I can remove this in a future SDK update
-        self.Author += "\nVersion: " + str(self.Version)  # type: ignore
-
-        if os.path.exists(self.ENABLED_FILE):
-            self.Status = "Enabled"
-            self.SettingsInputs["Enter"] = "Disable"
-            self.Enable()
+        # Convert from the legacy enabled file
+        enabled_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "ENABLED")
+        if os.path.exists(enabled_file):
+            self.SettingsInputPressed("Enable")
+            os.remove(enabled_file)
 
     def Enable(self) -> None:
         def DisplayOkBoxTextFromSpark(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
@@ -34,17 +29,10 @@ class NoOfflineWarning(unrealsdk.BL2MOD):
                 return False
             return True
 
-        unrealsdk.RegisterHook("WillowGame.WillowGFxDialogBox.DisplayOkBoxTextFromSpark", "NoOfflineWarning", DisplayOkBoxTextFromSpark)
-
-        open(self.ENABLED_FILE, "a").close()
+        unrealsdk.RegisterHook("WillowGame.WillowGFxDialogBox.DisplayOkBoxTextFromSpark", self.Name, DisplayOkBoxTextFromSpark)
 
     def Disable(self) -> None:
-        try:
-            os.remove(self.ENABLED_FILE)
-        except FileNotFoundError:
-            pass
-
-        unrealsdk.RemoveHook("WillowGame.WillowGFxDialogBox.DisplayOkBoxTextFromSpark", "NoOfflineWarning")
+        unrealsdk.RemoveHook("WillowGame.WillowGFxDialogBox.DisplayOkBoxTextFromSpark", self.Name)
 
 
-unrealsdk.Mods.append(NoOfflineWarning())
+RegisterMod(NoOfflineWarning())
