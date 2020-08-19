@@ -5,6 +5,8 @@ from typing import ClassVar
 from . import BaseTask, JSON
 from Mods.UserFeedback import OptionBox, OptionBoxButton, TextInputBox
 
+from Mods.ModMenu import GetOrderedModList
+
 
 # This and SDKInput work similarly and could *probably* be subclasses, but there are just enough
 #  differences that I think it's better to keep them seperate
@@ -22,33 +24,37 @@ class SDKEnable(BaseTask):
             if mod.Name == self.ModName:
                 if mod.Status == "Enabled":
                     unrealsdk.Log(f"[{self.Name}] Mod '{self.ModName}' is already enabled!")
-                else:
-                    try:
-                        mod.SettingsInputPressed("Enable")
-                    except Exception:
-                        unrealsdk.Log(f"[{self.Name}] Mod '{self.ModName}' caused an exception while trying to enable:")
-                        for line in traceback.format_exc():
-                            unrealsdk.Log(line)
+                    break
+                if "Enable" not in mod.SettingsInputs.values():
+                    unrealsdk.Log(f"[{self.Name}] Mod '{self.ModName}' does not currently support an enable input!")
+                    break
+
+                try:
+                    mod.SettingsInputPressed("Enable")
+                except Exception:
+                    unrealsdk.Log(f"[{self.Name}] Mod '{self.ModName}' caused an exception while trying to enable:")
+                    for line in traceback.format_exc():
+                        unrealsdk.Log(line)
                 break
         else:
             unrealsdk.Log(f"[{self.Name}] Unable to find mod '{self.ModName}'!")
         self.OnFinishExecution()
 
     def ShowConfiguration(self) -> None:
-        customButton = OptionBoxButton("- Custom Mod Name -")
-        modButtons = [OptionBoxButton(mod.Name) for mod in unrealsdk.Mods] + [customButton]
+        custom_button = OptionBoxButton("- Custom Mod Name -")
+        mod_buttons = [OptionBoxButton(mod.Name) for mod in GetOrderedModList()] + [custom_button]
 
-        modBox = OptionBox(
+        mod_box = OptionBox(
             Title="Select SDK Mod",
             Caption="Select the mod to enable.",
-            Buttons=modButtons
+            Buttons=mod_buttons
         )
 
-        customBox = TextInputBox("Custom Mod Name", self.ModName)
+        custom_box = TextInputBox("Custom Mod Name", self.ModName)
 
         def OnModPick(button: OptionBoxButton) -> None:
-            if button == customButton:
-                customBox.Show()
+            if button == custom_button:
+                custom_box.Show()
             else:
                 self.ModName = button.Name
                 self.OnFinishConfiguration()
@@ -58,13 +64,13 @@ class SDKEnable(BaseTask):
                 self.ModName = msg
                 self.OnFinishConfiguration()
             else:
-                modBox.Show(customButton)
+                mod_box.Show(custom_button)
 
-        modBox.OnPress = OnModPick  # type:ignore
-        modBox.OnCancel = self.OnFinishConfiguration  # type: ignore
-        customBox.OnSubmit = OnCustomSubmit  # type: ignore
+        mod_box.OnPress = OnModPick  # type:ignore
+        mod_box.OnCancel = self.OnFinishConfiguration  # type: ignore
+        custom_box.OnSubmit = OnCustomSubmit  # type: ignore
 
-        modBox.Show()
+        mod_box.Show()
 
     def ToJSONSerializable(self) -> JSON:
         return self.ModName

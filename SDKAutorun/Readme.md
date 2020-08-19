@@ -1,5 +1,8 @@
 ## Changelog
 
+### SDK Autorun v1.5
+Updated to use some of the new features from SDK version 0.7.8.
+
 ### SDK Autorun v1.4
 Now also opens a webpage warning you when requirements are outdated.
 
