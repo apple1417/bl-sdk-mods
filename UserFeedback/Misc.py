@@ -21,13 +21,13 @@ def ShowHUDMessage(Title: str, Message: str, Duration: float = 2, MenuHint: int 
              same order as the game: Missions; Map; Inventory; Skills; BAR. Defaults to 0.
     """
     PC = unrealsdk.GetEngine().GamePlayers[0].Actor
-    HUDMovie = PC.GetHUDMovie()
+    hud_movie = PC.GetHUDMovie()
 
-    if HUDMovie is None:
+    if hud_movie is None:
         return
 
-    HUDMovie.ClearTrainingText()
-    HUDMovie.AddTrainingText(
+    hud_movie.ClearTrainingText()
+    hud_movie.AddTrainingText(
         Message,
         Title,
         Duration,
@@ -51,7 +51,7 @@ def ShowChatMessage(
     time_str = Timestap.strftime(("[%H:%M:%S]", "[%I:%M:%S%p]")[is12h]).lower()
 
     if ShowTimestamp:
-        User = f"{User} {time_str}"
+        User = f"{User} {time_str}"  # noqa N806
 
-    ChatMovie = unrealsdk.GetEngine().GamePlayers[0].Actor.GetTextChatMovie()
-    ChatMovie.AddChatMessageInternal(User, Message)
+    chat_movie = unrealsdk.GetEngine().GamePlayers[0].Actor.GetTextChatMovie()
+    chat_movie.AddChatMessageInternal(User, Message)

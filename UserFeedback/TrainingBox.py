@@ -99,10 +99,10 @@ class TrainingBox(GFxMovie):
                 # We don't have a good function to hook for when this exits so we have to decode it
                 #  from the key presses
                 if self._TrainingBox is not None and self._TrainingBox.DelayUntilShowOk < 0 and params.uevent == 1:
-                    useKey = "FAKE"
+                    use_key = "FAKE"
                     if caller.GetPC().PlayerInput is not None:
-                        useKey = caller.GetPC().PlayerInput.GetKeyForAction("Use", True)
-                    if params.ukey in self._ExitKeys or params.ukey == useKey:
+                        use_key = caller.GetPC().PlayerInput.GetKeyForAction("Use", True)
+                    if params.ukey in self._ExitKeys or params.ukey == use_key:
                         unrealsdk.RemoveHook("WillowGame.WillowGFxTrainingDialogBox.HandleInputKey", "CustomTrainingBox")
                         self._TrainingBox = None
                         self.OnExit()

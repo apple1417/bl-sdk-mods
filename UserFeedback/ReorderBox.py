@@ -159,48 +159,48 @@ class ReorderBox(OptionBox):
 
     def _InternalOnInput(self, key: str, event: int) -> None:
         if event == 0:
-            currentIndex = self.Buttons.index(self.GetSelectedButton())
-            newIndex = currentIndex
+            current_index = self.Buttons.index(self.GetSelectedButton())
+            new_index = current_index
             if key in self._UP_KEYS:
-                newIndex = max(currentIndex - 1, 0)
+                new_index = max(current_index - 1, 0)
             elif key in self._DOWN_KEYS:
-                newIndex = min(currentIndex + 1, len(self.Buttons) - 1)
+                new_index = min(current_index + 1, len(self.Buttons) - 1)
 
             elif key == "PageUp":
                 if len(self._Pages) <= 1 or self._CurrentPageIndex == 0:
-                    newIndex = 0
+                    new_index = 0
                 else:
                     # This is a neat bit of maths that works out perfectly
                     # Because we're moving upwards we only need to be careful about the extra button in
                     #  the first group - which we can ignore by pretending this is one-indexed
-                    newIndex = self._CurrentPageIndex * 3
+                    new_index = self._CurrentPageIndex * 3
             elif key == "PageDown":
                 if len(self._Pages) <= 1 or self._CurrentPageIndex == len(self._Pages) - 1:
-                    newIndex = len(self.Buttons) - 1
+                    new_index = len(self.Buttons) - 1
                 else:
                     # Same sort of concept as above, messier formula
-                    newIndex = 3 * (self._CurrentPageIndex + 1) + 1
+                    new_index = 3 * (self._CurrentPageIndex + 1) + 1
             elif key == "Home":
                 if self._CurrentPageIndex == 0:
-                    newIndex = 0
+                    new_index = 0
                 else:
-                    newIndex = self._CurrentPageIndex * 3 + 1
+                    new_index = self._CurrentPageIndex * 3 + 1
             elif key == "End":
                 if self._CurrentPageIndex == len(self._Pages) - 1:
-                    newIndex = len(self.Buttons) - 1
+                    new_index = len(self.Buttons) - 1
                 else:
-                    newIndex = 3 * (self._CurrentPageIndex + 1)
+                    new_index = 3 * (self._CurrentPageIndex + 1)
 
-            if newIndex != currentIndex:
+            if new_index != current_index:
                 self.Hide()
 
                 if self._IsCurrentlyMoving:
-                    self.Buttons.insert(newIndex, self.Buttons.pop(currentIndex))
+                    self.Buttons.insert(new_index, self.Buttons.pop(current_index))
                     self.Update()
 
-                oldPage = self._CurrentPageIndex
-                self.Show(self.Buttons[newIndex])
-                if self._CurrentPageIndex != oldPage:
+                old_page = self._CurrentPageIndex
+                self.Show(self.Buttons[new_index])
+                if self._CurrentPageIndex != old_page:
                     self.OnPageChange()
 
         self.OnInput(key, event)

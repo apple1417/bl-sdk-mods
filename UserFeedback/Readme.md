@@ -1,5 +1,8 @@
 ## Changelog
 
+### User Feedback v1.5
+Updated to use some of the new features from SDK version 0.7.8.
+
 ### User Feedback v1.4
 Removed the `unsafe_hash = True` tag from `OptionsBoxButton`. This is a breaking change, but putting these objects in a dict was very precarious to begin with.    
 

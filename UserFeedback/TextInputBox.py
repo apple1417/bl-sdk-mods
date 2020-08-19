@@ -150,10 +150,10 @@ class TextInputBox(GFxMovie):
                     self.OnSubmit("")
 
             # Normally the use key causes exits too, block it
-            useKey = "FAKE"
+            use_key = "FAKE"
             if caller.GetPC().PlayerInput is not None:
-                useKey = caller.GetPC().PlayerInput.GetKeyForAction("Use", True)
-            return str(params.ukey) != useKey
+                use_key = caller.GetPC().PlayerInput.GetKeyForAction("Use", True)
+            return str(params.ukey) != use_key
 
         unrealsdk.RegisterHook("WillowGame.WillowGFxTrainingDialogBox.HandleInputKey", "CustomTextInputBox", HandleInputKey)
 

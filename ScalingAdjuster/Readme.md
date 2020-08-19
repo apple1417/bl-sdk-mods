@@ -1,5 +1,9 @@
 ## Changelog
 
+### Scaling Adjuster v1.6
+Updated to use some of the new features from SDK version 0.7.8.    
+Most notably, the enabled state is now saved over game launches.
+
 ### Scaling Adjuster v1.5
 Fixed that saved custom scaling would be applied with 100x the effect when you just enabled the mod, without changing the value.
 

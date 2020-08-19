@@ -1,5 +1,9 @@
 ## Changelog
 
+### Rounds Per Minute v1.2
+Updated to use some of the new features from SDK version 0.7.8.    
+Most notably, the enabled state is now saved over game launches.
+
 ### Rounds Per Minute v1.1
 Updated for SDK versions 0.7.4-0.7.6.
 

@@ -8,6 +8,10 @@ There are a few enemies which are not multiplied because doing so will cause sof
 
 ## Changelog
 
+### Spawn Multiplier v1.5
+Updated to use some of the new features from SDK version 0.7.8.    
+Most notably, the enabled state is now saved over game launches.
+
 ### Spawn Multiplier v1.4
 Fixed a few places where enemy spawns had an additional cap, which will now be increased along with the others.    
 Blacklisted a few enemies that would cause softlocks if multiplied.    

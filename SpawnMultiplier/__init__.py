@@ -1,16 +1,10 @@
 import unrealsdk
-from enum import Enum, unique
-from typing import Any, cast, ClassVar, List, Optional, Set
+from enum import Enum
+from typing import Any, cast, ClassVar, Optional, Set
 
-try:
-    from Mods import AAA_OptionsWrapper as OptionsWrapper
-except ImportError as ex:
-    import webbrowser
-    webbrowser.open("https://apple1417.github.io/bl2/didntread/?m=Spawn%20Multiplier&ow")
-    raise ex
+from Mods.ModMenu import EnabledSaveType, Mods, ModTypes, Options, RegisterMod, SDKMod
 
 
-@unique
 class SpawnLimitType(Enum):
     Standard: str = "Standard"
     Linear: str = "Linear"
@@ -26,24 +20,24 @@ class SpawnLimitType(Enum):
         return str(self.value)
 
 
-class SpawnMultiplier(unrealsdk.BL2MOD):
-    Name: ClassVar[str] = "Spawn Multiplier"
-    Author: ClassVar[str] = "apple1417"
-    Description: ClassVar[str] = (
+class SpawnMultiplier(SDKMod):
+    Name: str = "Spawn Multiplier"
+    Author: str = "apple1417"
+    Description: str = (
         "Adds an option to let you easily multiply the amount of spawns you're getting.\n"
         "Make sure to go to settings to configure what the multiplier is."
     )
-    Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Gameplay]
-    Version: ClassVar[str] = "1.4"
+    Version: str = "1.5"
 
-    Options: List[OptionsWrapper.Base]
+    Types: ModTypes = ModTypes.Utility
+    SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadOnMainMenu
 
-    MultiplierSlider: OptionsWrapper.Slider
-    SpawnLimitSpinner: OptionsWrapper.Spinner
+    MultiplierSlider: Options.Slider
+    SpawnLimitSpinner: Options.Spinner
     OldMultiplier: int
 
     CurrentPopMaster: Optional[unrealsdk.UObject]
-    OriginalLimit: Optional[int]
+    OriginalLimit: int
 
     Blacklist: ClassVar[Set[str]] = {
         "Grass_Cliffs_Combat.TheWorld:PersistentLevel.PopulationOpportunityDen_16",
@@ -53,10 +47,7 @@ class SpawnMultiplier(unrealsdk.BL2MOD):
     }
 
     def __init__(self) -> None:
-        # Hopefully I can remove this in a future SDK update
-        self.Author += "\nVersion: " + str(self.Version)  # type: ignore
-
-        self.MultiplierSlider = OptionsWrapper.Slider(
+        self.MultiplierSlider = Options.Slider(
             Caption="Multiplier",
             Description="The amount to multiply spawns by.",
             StartingValue=1,
@@ -64,7 +55,7 @@ class SpawnMultiplier(unrealsdk.BL2MOD):
             MaxValue=25,
             Increment=1
         )
-        self.SpawnLimitSpinner = OptionsWrapper.Spinner(
+        self.SpawnLimitSpinner = Options.Spinner(
             Caption="Spawn Limit",
             Description=(
                 "How to handle the spawn limit."
@@ -72,7 +63,7 @@ class SpawnMultiplier(unrealsdk.BL2MOD):
                 f" {SpawnLimitType.Linear}: Increase linearly with the multiplier;"
                 f" {SpawnLimitType.Unlimited}: Remove it."
             ),
-            StartingChoice=SpawnLimitType.Linear.value,
+            StartingValue=SpawnLimitType.Linear.value,
             Choices=[t.value for t in SpawnLimitType],
         )
         self.OldMultiplier = self.MultiplierSlider.CurrentValue
@@ -80,7 +71,7 @@ class SpawnMultiplier(unrealsdk.BL2MOD):
         self.Options = [self.MultiplierSlider, self.SpawnLimitSpinner]
 
         self.CurrentPopMaster = None
-        self.OriginalLimit = None
+        self.OriginalLimit = 100
 
     def Enable(self) -> None:
         def UpdateOpportunityEnabledStates(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
@@ -137,11 +128,7 @@ class SpawnMultiplier(unrealsdk.BL2MOD):
         if unrealsdk.FindAll("WillowPopulationMaster")[-1] == self.CurrentPopMaster:
             self.CurrentPopMaster.MaxActorCost = self.OriginalLimit
 
-    def ModOptionChanged(
-        self,
-        option: OptionsWrapper.Base,
-        new_value: Any
-    ) -> None:
+    def ModOptionChanged(self, option: Options.Base, new_value: Any) -> None:
         if option not in self.Options:
             return
 
@@ -165,8 +152,7 @@ class SpawnMultiplier(unrealsdk.BL2MOD):
             self.CurrentPopMaster = pop_master
             self.OriginalLimit = pop_master.MaxActorCost
 
-        # This doesn't matter right now, but in a future sdk version this function is called before
-        #  the option is changed, so we need to make sure we have the new version
+        # Make sure we have the new value
         spawn_limit = self.SpawnLimitSpinner.CurrentValue
         if option == self.SpawnLimitSpinner:
             spawn_limit = cast(str, new_value)
@@ -230,25 +216,16 @@ class SpawnMultiplier(unrealsdk.BL2MOD):
 
 
 instance = SpawnMultiplier()
-if __name__ != "__main__":
-    unrealsdk.RegisterMod(instance)
-else:
+if __name__ == "__main__":
     unrealsdk.Log(f"[{instance.Name}] Manually loaded")
-    for i in range(len(unrealsdk.Mods)):
-        mod = unrealsdk.Mods[i]
-        if unrealsdk.Mods[i].Name == instance.Name:
-            unrealsdk.Mods[i].Disable()
+    for mod in Mods:
+        if mod.Name == instance.Name:
+            if mod.IsEnabled:
+                mod.Disable()
+            Mods.remove(mod)
+            unrealsdk.Log(f"[{instance.Name}] Removed last instance")
 
-            unrealsdk.RegisterMod(instance)
-            unrealsdk.Mods.remove(instance)
-            unrealsdk.Mods[i] = instance
-            unrealsdk.Log(f"[{instance.Name}] Disabled and removed last instance")
+            # Fixes inspect.getfile()
+            instance.__class__.__module__ = mod.__class__.__module__
             break
-    else:
-        unrealsdk.Log(f"[{instance.Name}] Could not find previous instance")
-        unrealsdk.RegisterMod(instance)
-
-    unrealsdk.Log(f"[{instance.Name}] Auto-enabling")
-    instance.Status = "Enabled"
-    instance.SettingsInputs["Enter"] = "Disable"
-    instance.Enable()
+RegisterMod(instance)
