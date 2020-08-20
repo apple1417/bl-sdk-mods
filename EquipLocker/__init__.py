@@ -24,7 +24,7 @@ class EquipLocker(SDKMod):
         "Adds various options that prevent you from equipping certain types of items.\n"
         "Useful for allegiance or single rarity or weapon type runs."
     )
-    Version: str = "1.2"
+    Version: str = "1.3"
 
     Types: ModTypes = ModTypes.Utility | ModTypes.Gameplay
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
@@ -110,14 +110,14 @@ class EquipLocker(SDKMod):
         if pawn is None:
             return
 
-        for item in self.GetAllEquippedItems():
+        for item in self.GetEquippedItems():
             if not item.CanBeUsedBy(pawn):
                 pawn.InvManager.InventoryUnreadied(item, True)
 
     def CanItemBeEquipped(self, item: unrealsdk.UObject) -> bool:
         if item is None:
             return True
-        if item not in self.GetAllItems():
+        if item.Class.Name == "WillowVehicleWeapon":
             return True
 
         for option, r_set in self.OptionRestrictionMap.items():
@@ -127,17 +127,7 @@ class EquipLocker(SDKMod):
 
         return True
 
-    def GetAllItems(self) -> Iterator[unrealsdk.UObject]:
-        pawn = unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn
-        if pawn is None:
-            return
-
-        for item in self.GetAllEquippedItems():
-            yield item
-        for item in pawn.InvManager.Backpack:
-            yield item
-
-    def GetAllEquippedItems(self) -> Iterator[unrealsdk.UObject]:
+    def GetEquippedItems(self) -> Iterator[unrealsdk.UObject]:
         pawn = unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn
         if pawn is None:
             return

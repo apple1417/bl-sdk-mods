@@ -52,8 +52,8 @@ class Rarity(BaseRestrictionSet):
                 Caption=rarity.Name,
                 Description=f"Should you be able to equip {rarity.Name} items.",
                 StartingValue=True,
-                IsHidden=not can_be_shown,
-                Choices=self.AllowChoices
+                Choices=self.AllowChoices,
+                IsHidden=not can_be_shown
             )
             self.UsedOptions.append(option)
 

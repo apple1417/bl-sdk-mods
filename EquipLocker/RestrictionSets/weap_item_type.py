@@ -61,8 +61,8 @@ class WeapItemType(BaseRestrictionSet):
                 Caption=item_type.Name,
                 Description=f"Should you be able to equip {item_type.Name}.",
                 StartingValue=True,
-                IsHidden=not can_be_shown,
-                Choices=self.AllowChoices
+                Choices=self.AllowChoices,
+                IsHidden=not can_be_shown
             )
             self.UsedOptions.append(option)
 

@@ -1,5 +1,9 @@
 # Equip Locker
 
+### Equip Locker v1.3
+Added an option to allegiance to enable usable items - fixing that serveral items such as health vials could get restricted.
+Removed the last fix for turrets, and instead expliclity excluded vehicles. This fixes that health vials would go into your inventory if they were restricted.
+
 ### Equip Locker v1.2
 Fixed that it was possible for the mod to lock you out of using items that weren't in your inventory - usually when using turrets.
 

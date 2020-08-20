@@ -13,7 +13,7 @@ class EnemyLevelRandomizer(SDKMod):
         "\n"
         "Probably a bad idea."
     )
-    Version: str = "1.3"
+    Version: str = "1.4"
 
     Types: ModTypes = ModTypes.Gameplay
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
@@ -25,32 +25,37 @@ class EnemyLevelRandomizer(SDKMod):
     Options: List[Options.Base]
 
     def __init__(self) -> None:
+        self.OffsetSlider = Options.Slider(
+            Caption="Level Offset",
+            Description=(
+                "A constant offset applied to the intended enemy levels, before any randomization."
+            ),
+            StartingValue=0,
+            MinValue=-50,
+            MaxValue=50,
+            Increment=1
+        )
         self.MinSlider = Options.Slider(
-            Description="The minimum below the intended level that an enemy can be",
-            Caption="Min Level Difference",
-            StartingValue=15,
+            Caption="Max Decrease",
+            Description=(
+                "The maximum amount an enemy's level can be randomly decreased."
+                " Note that a level cannot be decreased below 0."
+            ),
+            StartingValue=5,
             MinValue=0,
-            MaxValue=255,
+            MaxValue=50,
             Increment=1
         )
         self.MaxSlider = Options.Slider(
-            Description="The maximum above the intended level that an enemy can be",
-            Caption="Max Level Difference",
-            StartingValue=15,
+            Caption="Max Increase",
+            Description="The maximum amount an enemy's level can be randomly increased.",
+            StartingValue=5,
             MinValue=0,
-            MaxValue=255,
-            Increment=1
-        )
-        self.OffsetSlider = Options.Slider(
-            Description="An offset applied to the intended level before randomizing it",
-            Caption="Level Offset",
-            StartingValue=0,
-            MinValue=-255,
-            MaxValue=255,
+            MaxValue=50,
             Increment=1
         )
 
-        self.Options = [self.MinSlider, self.MaxSlider, self.OffsetSlider]
+        self.Options = [self.OffsetSlider, self.MinSlider, self.MaxSlider]
 
     def Enable(self) -> None:
         def SetGameStage(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:

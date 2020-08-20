@@ -40,8 +40,9 @@ class Allegiance(BaseRestrictionSet):
     ArtifactOptionMap: Dict[str, Options.Boolean]
     FlashNameOptionMap: Dict[str, Options.Boolean]
 
-    AllegianceRelicsOption: Options.Boolean
-    ItemsOption: Options.Boolean
+    AllegianceRelics: Options.Boolean
+    UseableItems: Options.Boolean
+    WeaponsOnly: Options.Boolean
 
     def __init__(self) -> None:
         self.UsedOptions = []
@@ -55,8 +56,8 @@ class Allegiance(BaseRestrictionSet):
                 Caption=manu.Name,
                 Description=f"Should you be able to equip {manu.Name} items.",
                 StartingValue=True,
-                IsHidden=not can_be_shown,
-                Choices=self.AllowChoices
+                Choices=self.AllowChoices,
+                IsHidden=not can_be_shown
             )
             self.UsedOptions.append(option)
 
@@ -66,25 +67,35 @@ class Allegiance(BaseRestrictionSet):
                     self.ArtifactOptionMap[manu.Artifact] = option
                 self.FlashNameOptionMap[manu.FlashLabelName] = option
 
-        self.AllegianceRelicsOption = Options.Boolean(
+        self.AllegianceRelics = Options.Boolean(
             Caption="Allegiance Relics",
             Description=(
                 "Should you be able to equip allegiance relics. You will only be able to equip ones"
                 " that boost manufacturers you're already allowed to equip."
             ),
             StartingValue=False,
-            IsHidden=current_game != Game.BL2,
-            Choices=self.AllowChoices
+            Choices=self.AllowChoices,
+            IsHidden=current_game != Game.BL2
         )
 
-        self.ItemsOption = Options.Boolean(
-            Caption="Always Allow Items",
-            Description="Let items be equipped regardless of manufacturer.",
+        self.UseableItems = Options.Boolean(
+            Caption="Ignore Usable Items",
+            Description=(
+                "Should you be able to use useable items regardless of their manufacturer. This"
+                " includes things such as health vials, oxygen, SDUs, shield boosters, and more."
+            ),
+            StartingValue=True
+        )
+
+        self.WeaponsOnly = Options.Boolean(
+            Caption="Weapons Only",
+            Description="Only prevent equipping weapons. This overwrites the previous two options.",
             StartingValue=False
         )
 
-        self.UsedOptions.append(self.AllegianceRelicsOption)
-        self.UsedOptions.append(self.ItemsOption)
+        self.UsedOptions.append(self.AllegianceRelics)
+        self.UsedOptions.append(self.UseableItems)
+        self.UsedOptions.append(self.WeaponsOnly)
 
     def CanItemBeEquipped(self, item: unrealsdk.UObject) -> bool:
         manu = item.GetManufacturer()
@@ -95,11 +106,15 @@ class Allegiance(BaseRestrictionSet):
         if flash not in self.FlashNameOptionMap:
             return True
 
-        if self.ItemsOption.CurrentValue:
+        if self.WeaponsOnly.CurrentValue:
             if item.Class.Name != "WillowWeapon":
                 return True
 
-        if self.AllegianceRelicsOption.CurrentValue:
+        if self.UseableItems.CurrentValue:
+            if item.Class.Name == "WillowUsableItem":
+                return True
+
+        if self.AllegianceRelics.CurrentValue:
             if item.Class.Name == "WillowArtifact":
                 item_def = item.DefinitionData.ItemDefinition
                 if item_def is not None and item_def.Name in self.ArtifactOptionMap:
