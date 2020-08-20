@@ -17,16 +17,16 @@ class OPLevel(ABCCheat):
     KeybindName = "Add OP Level"
 
     def OnPress(self) -> None:
-        PC = unrealsdk.GetEngine().GamePlayers[0].Actor
-        rep = PC.PlayerReplicationInfo
-        if rep.NumOverpowerLevelsUnlocked == PC.GetMaximumPossibleOverpowerModifier():
+        pc = unrealsdk.GetEngine().GamePlayers[0].Actor
+        pri = pc.PlayerReplicationInfo
+        if pri.NumOverpowerLevelsUnlocked == pc.GetMaximumPossibleOverpowerModifier():
             ShowHUDMessage(
                 self.Name,
                 "You are already at the maximum OP level"
             )
         else:
-            rep.NumOverpowerLevelsUnlocked += 1
+            pri.NumOverpowerLevelsUnlocked += 1
             ShowHUDMessage(
                 self.Name,
-                f"You have now unlocked OP {rep.NumOverpowerLevelsUnlocked}"
+                f"You have now unlocked OP {pri.NumOverpowerLevelsUnlocked}"
             )

@@ -18,40 +18,40 @@ class DelayTask(BaseTask):
         AsyncUtil.RunIn(self.Delay, self.OnFinishExecution)
 
     def ShowConfiguration(self) -> None:
-        plusOne = OptionBoxButton("+1")
-        plusTenth = OptionBoxButton("+0.1")
-        minusTenth = OptionBoxButton("-0.1")
-        minusOne = OptionBoxButton("-1")
-        directEdit = OptionBoxButton("Direct Edit")
+        plus_one = OptionBoxButton("+1")
+        plus_tenth = OptionBoxButton("+0.1")
+        minus_tenth = OptionBoxButton("-0.1")
+        minus_one = OptionBoxButton("-1")
+        direct_edit = OptionBoxButton("Direct Edit")
 
-        mainBox = OptionBox(
+        main_box = OptionBox(
             Title="Configure Delay",
             Caption=f"Current Delay: {self.Delay:.02f}s",
             Tooltip=OptionBox.CreateTooltipString(EscMessage="Back"),
-            Buttons=(plusOne, plusTenth, minusTenth, minusOne, directEdit)
+            Buttons=(plus_one, plus_tenth, minus_tenth, minus_one, direct_edit)
         )
-        directBox = TextInputBox("Configure Delay", f"{self.Delay:.02f}")
+        direct_box = TextInputBox("Configure Delay", f"{self.Delay:.02f}")
 
         def OnMainBoxPress(button: OptionBoxButton) -> None:
-            if button == directEdit:
-                directBox.Show()
+            if button == direct_edit:
+                direct_box.Show()
                 return
 
-            if button == plusOne:
+            if button == plus_one:
                 self.Delay += 1
-            elif button == plusTenth:
+            elif button == plus_tenth:
                 self.Delay += 0.1
-            elif button == minusTenth:
+            elif button == minus_tenth:
                 self.Delay = max(self.Delay - 0.1, 0)
-            elif button == minusOne:
+            elif button == minus_one:
                 self.Delay = max(self.Delay - 1, 0)
-            directBox.DefaultMessage = f"{self.Delay:.02f}"
-            mainBox.Caption = f"Current Delay: {self.Delay:.02f}s"
-            mainBox.Update()
-            mainBox.Show(button)
+            direct_box.DefaultMessage = f"{self.Delay:.02f}"
+            main_box.Caption = f"Current Delay: {self.Delay:.02f}s"
+            main_box.Update()
+            main_box.Show(button)
 
-        mainBox.OnPress = OnMainBoxPress  # type: ignore
-        mainBox.OnCancel = self.OnFinishConfiguration  # type: ignore
+        main_box.OnPress = OnMainBoxPress  # type: ignore
+        main_box.OnCancel = self.OnFinishConfiguration  # type: ignore
 
         def WriteFloatFilter(char: str, message: str, pos: int) -> bool:
             if char in "0123456789":
@@ -63,14 +63,14 @@ class DelayTask(BaseTask):
         def OnDirectBoxSubmit(msg: str) -> None:
             if msg != "":
                 self.Delay = round(float(msg), 2)
-                mainBox.Caption = f"Current Delay: {self.Delay:.02f}s"
-            mainBox.Update()
-            mainBox.Show()
+                main_box.Caption = f"Current Delay: {self.Delay:.02f}s"
+            main_box.Update()
+            main_box.Show()
 
-        directBox.IsAllowedToWrite = WriteFloatFilter  # type: ignore
-        directBox.OnSubmit = OnDirectBoxSubmit  # type: ignore
+        direct_box.IsAllowedToWrite = WriteFloatFilter  # type: ignore
+        direct_box.OnSubmit = OnDirectBoxSubmit  # type: ignore
 
-        mainBox.Show()
+        main_box.Show()
 
     def ToJSONSerializable(self) -> JSON:
         return self.Delay

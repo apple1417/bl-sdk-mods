@@ -26,16 +26,16 @@ class FreeShops(ABCToggleableCheat):
                 return True
 
             # Otherwise temporarily give all the money you'd need to purcahse it and check again
-            PRI = params.WPC.PlayerReplicationInfo
+            pri = params.WPC.PlayerReplicationInfo
             currency = caller.GetCurrencyTypeInventoryIsSoldIn(params.Item)
-            wallet = PRI.GetCurrencyOnHand(currency)
+            wallet = pri.GetCurrencyOnHand(currency)
 
-            PRI.SetCurrencyOnHand(currency, params.ItemPrice)
+            pri.SetCurrencyOnHand(currency, params.ItemPrice)
             unrealsdk.DoInjectedCallNext()
             status = caller.GetItemStatus(params.Item, params.WPC, params.ItemPrice)
 
             # Revert your money back
-            PRI.SetCurrencyOnHand(currency, wallet)
+            pri.SetCurrencyOnHand(currency, wallet)
 
             # If the status now is SIS_ItemCanBePurchased (0) then we were just missing money, and
             #  we want the actual status to be ignore that
@@ -69,13 +69,13 @@ class FreeShops(ABCToggleableCheat):
                 caller,
                 params.Quantity
             )
-            PRI = caller.PlayerReplicationInfo
+            pri = caller.PlayerReplicationInfo
 
             # Save your wallet beforehand
-            wallet = PRI.GetCurrencyOnHand(currency)
+            wallet = pri.GetCurrencyOnHand(currency)
 
             # Make sure you can afford the item + buy it
-            PRI.SetCurrencyOnHand(currency, price)
+            pri.SetCurrencyOnHand(currency, price)
             unrealsdk.DoInjectedCallNext()
             caller.ServerPlayerBoughtItem(
                 params.InventoryObject,
@@ -85,7 +85,7 @@ class FreeShops(ABCToggleableCheat):
                 params.bWasItemOfTheDay
             )
 
-            PRI.SetCurrencyOnHand(currency, wallet)
+            pri.SetCurrencyOnHand(currency, wallet)
             return False
 
         def PlayerBuyBackInventory(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
@@ -95,12 +95,12 @@ class FreeShops(ABCToggleableCheat):
                 return True
 
             # Exact same logic as above
-            PRI = caller.PlayerReplicationInfo
-            wallet = PRI.GetCurrencyOnHand(params.FormOfCurrency)
-            PRI.SetCurrencyOnHand(params.FormOfCurrency, params.Price)
+            pri = caller.PlayerReplicationInfo
+            wallet = pri.GetCurrencyOnHand(params.FormOfCurrency)
+            pri.SetCurrencyOnHand(params.FormOfCurrency, params.Price)
             unrealsdk.DoInjectedCallNext()
             caller.PlayerBuyBackInventory(params.FormOfCurrency, params.Price, params.Quantity)
-            PRI.SetCurrencyOnHand(params.FormOfCurrency, wallet)
+            pri.SetCurrencyOnHand(params.FormOfCurrency, wallet)
 
             return False
 
@@ -111,16 +111,16 @@ class FreeShops(ABCToggleableCheat):
                 return True
 
             # This is a static method so any black market will do
-            BM = unrealsdk.FindAll("WillowVendingMachineBlackMarket")[-1]
-            price = BM.StaticGetSellingPriceForBlackMarketInventory(params.BalanceDef, caller)
+            market = unrealsdk.FindAll("WillowVendingMachineBlackMarket")[-1]
+            price = market.StaticGetSellingPriceForBlackMarketInventory(params.BalanceDef, caller)
 
             # And the same logic once again - this time we know currency is CURRENCY_Eridium, aka 1
-            PRI = caller.PlayerReplicationInfo
-            wallet = PRI.GetCurrencyOnHand(1)
-            PRI.SetCurrencyOnHand(1, price)
+            pri = caller.PlayerReplicationInfo
+            wallet = pri.GetCurrencyOnHand(1)
+            pri.SetCurrencyOnHand(1, price)
             unrealsdk.DoInjectedCallNext()
             caller.ServerPurchaseBlackMarketUpgrade(params.BalanceDef)
-            PRI.SetCurrencyOnHand(1, wallet)
+            pri.SetCurrencyOnHand(1, wallet)
 
             return False
 

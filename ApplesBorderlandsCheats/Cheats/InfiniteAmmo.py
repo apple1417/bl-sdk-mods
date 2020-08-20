@@ -16,8 +16,8 @@ class InfiniteAmmo(ABCCycleableCheat):
     def GetHooks(self) -> Dict[str, SDKHook]:
         # For weapons
         def ConsumeAmmo(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-            PC = unrealsdk.GetEngine().GamePlayers[0].Actor
-            if PC is None or PC.Pawn is None or caller != PC.Pawn.Weapon:
+            pc = unrealsdk.GetEngine().GamePlayers[0].Actor
+            if pc is None or pc.Pawn is None or caller != pc.Pawn.Weapon:
                 return True
 
             if self.CurrentValue == InfiniteAmmo.FULL:

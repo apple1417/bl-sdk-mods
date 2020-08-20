@@ -5,6 +5,8 @@ from typing import Any, cast, ClassVar, Dict
 from . import BaseTask, JSON
 from Mods.UserFeedback import OptionBox, OptionBoxButton, TextInputBox, TrainingBox
 
+from Mods.ModMenu import GetOrderedModList
+
 
 # This and SDKEnable work similarly and could *probably* be subclasses, but there are just enough
 #  differences that I think it's better to keep them seperate
@@ -39,66 +41,66 @@ class SDKInput(BaseTask):
         self.OnFinishExecution()
 
     def ShowConfiguration(self) -> None:
-        modButton = OptionBoxButton("Mod", f"Currently: '{self.ModName}'")
-        inputButton = OptionBoxButton("Input", f"Currently: '{self.Input}'")
-        customButton = OptionBoxButton("- Custom Mod Name -")
-        modButtons = [OptionBoxButton(mod.Name) for mod in unrealsdk.Mods] + [customButton]
+        mod_button = OptionBoxButton("Mod", f"Currently: '{self.ModName}'")
+        input_button = OptionBoxButton("Input", f"Currently: '{self.Input}'")
+        custom_button = OptionBoxButton("- Custom Mod Name -")
+        mod_buttons = [OptionBoxButton(mod.Name) for mod in GetOrderedModList()] + [custom_button]
 
-        mainBox = OptionBox(
+        main_box = OptionBox(
             Title="Configure SDK Mod Input",
             Caption="Select which part you want to configure.",
-            Buttons=(modButton, inputButton)
+            Buttons=(mod_button, input_button)
         )
 
-        modBox = OptionBox(
+        mod_box = OptionBox(
             Title="Select SDK Mod",
             Caption="Select which mod to send inputs to.",
-            Buttons=modButtons
+            Buttons=mod_buttons
         )
 
-        customBox = TextInputBox("Custom Mod Name", self.ModName)
+        custom_box = TextInputBox("Custom Mod Name", self.ModName)
 
-        inputBox = TrainingBox("Set Input", "Press any key to set the input.")
+        input_box = TrainingBox("Set Input", "Press any key to set the input.")
 
         def OnMainPress(button: OptionBoxButton) -> None:
-            if button == modButton:
-                modBox.Show()
-            elif button == inputButton:
-                inputBox.Show()
+            if button == mod_button:
+                mod_box.Show()
+            elif button == input_button:
+                input_box.Show()
 
         def OnModPick(button: OptionBoxButton) -> None:
-            if button == customButton:
-                customBox.Show()
+            if button == custom_button:
+                custom_box.Show()
             else:
                 self.ModName = button.Name
-                modButton.Tip = f"Currently: '{self.ModName}'"
-                mainBox.Show(modButton)
+                mod_button.Tip = f"Currently: '{self.ModName}'"
+                main_box.Show(mod_button)
 
         def OnCustomSubmit(msg: str) -> None:
             if len(msg) != 0:
                 self.ModName = msg
-                modButton.Tip = f"Currently: '{self.ModName}'"
-                mainBox.Show(modButton)
+                mod_button.Tip = f"Currently: '{self.ModName}'"
+                main_box.Show(mod_button)
             else:
-                modBox.Show(customButton)
+                mod_box.Show(custom_button)
 
         def OnInput(key: str, event: int) -> None:
             if event != 1:
                 return
             self.Input = key
-            inputButton.Tip = f"Currently: '{self.Input}''"
-            if inputBox.IsShowing():
-                inputBox.Hide()
-            mainBox.Show(inputButton)
+            input_button.Tip = f"Currently: '{self.Input}''"
+            if input_box.IsShowing():
+                input_box.Hide()
+            main_box.Show(input_button)
 
-        mainBox.OnPress = OnMainPress  # type: ignore
-        mainBox.OnCancel = self.OnFinishConfiguration  # type: ignore
-        modBox.OnPress = OnModPick  # type:ignore
-        modBox.OnCancel = lambda: modButton.Show()  # type: ignore
-        customBox.OnSubmit = OnCustomSubmit  # type: ignore
-        inputBox.OnInput = OnInput  # type: ignore
+        main_box.OnPress = OnMainPress  # type: ignore
+        main_box.OnCancel = self.OnFinishConfiguration  # type: ignore
+        mod_box.OnPress = OnModPick  # type:ignore
+        mod_box.OnCancel = lambda: mod_button.Show()  # type: ignore
+        custom_box.OnSubmit = OnCustomSubmit  # type: ignore
+        input_box.OnInput = OnInput  # type: ignore
 
-        mainBox.Show()
+        main_box.Show()
 
     def ToJSONSerializable(self) -> JSON:
         return {

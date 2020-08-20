@@ -19,17 +19,17 @@ class TPFastTravel(ABCCheat):
 
     def OnPress(self) -> None:
         # Get the list of all station names in the world
-        currentTravels = []
+        current_travels = []
         for obj in unrealsdk.FindAll(self.TPClass):
             if obj.TravelDefinition is None:
                 continue
-            currentTravels.append(obj.TravelDefinition.Name)
+            current_travels.append(obj.TravelDefinition.Name)
 
         # If the current station is not in the list then we must have changed worlds
-        if self.AllTravels[self.LastTravelIndex] not in currentTravels:
+        if self.AllTravels[self.LastTravelIndex] not in current_travels:
             # Set to -1 so that it advances to the first one
             self.LastTravelIndex = -1
-            self.AllTravels = currentTravels
+            self.AllTravels = current_travels
 
         if len(self.AllTravels) == 0:
             return

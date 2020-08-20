@@ -19,15 +19,15 @@ class ConsoleTask(BaseTask):
         self.OnFinishExecution()
 
     def ShowConfiguration(self) -> None:
-        inputBox = TextInputBox("Configure Console Command", self.Command)
+        input_box = TextInputBox("Configure Console Command", self.Command)
 
         def OnSubmit(msg: str) -> None:
             if len(msg) != 0:
                 self.Command = msg
             self.OnFinishConfiguration()
 
-        inputBox.OnSubmit = OnSubmit  # type: ignore
-        inputBox.Show()
+        input_box.OnSubmit = OnSubmit  # type: ignore
+        input_box.Show()
 
     def ToJSONSerializable(self) -> JSON:
         return self.Command
@@ -37,9 +37,9 @@ class ConsoleTask(BaseTask):
         return True
 
     def __str__(self) -> str:
-        commandStr: str
+        command_str: str
         if len(self.Command) > 40:
-            commandStr = self.Command[:40] + "..."
+            command_str = self.Command[:40] + "..."
         else:
-            commandStr = self.Command
-        return f"Console Command: '{commandStr}'"
+            command_str = self.Command
+        return f"Console Command: '{command_str}'"

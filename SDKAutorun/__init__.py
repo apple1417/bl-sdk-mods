@@ -1,10 +1,12 @@
 import unrealsdk
 import json
-from os import path
-from typing import Any, cast, ClassVar, Dict, List, Type
+import os
+from typing import cast, Dict, List, Type
+
+from Mods.ModMenu import EnabledSaveType, GetSettingsFilePath, Mods, ModTypes, Options, RegisterMod, SDKMod, LoadModSettings, SaveModSettings
 
 try:
-    from Mods import AsyncUtil  # noqa  # Unused in this file but better to check in one place
+    from Mods import AsyncUtil  # noqa F401  # Unused in this file but better to check in one place
     from Mods import UserFeedback
 
     if UserFeedback.VersionMajor < 1:
@@ -37,116 +39,29 @@ if __name__ == "__main__":
         __file__ = sys.exc_info()[-1].tb_frame.f_code.co_filename  # type: ignore
 
 
-class SDKAutorun(unrealsdk.BL2MOD):
-    Name: ClassVar[str] = "SDK Autorun"
-    Author: ClassVar[str] = "apple1417"
-    Description: ClassVar[str] = (
+class SDKAutorun(SDKMod):
+    Name: str = "SDK Autorun"
+    Author: str = "apple1417"
+    Description: str = (
         "Automatically runs SDK mods or console commands on game launch."
     )
-    Types: ClassVar[List[unrealsdk.ModTypes]] = [unrealsdk.ModTypes.Utility]
-    Version: ClassVar[str] = "1.4"
+    Version: str = "1.5"
 
-    @property
-    def IsEnabled(self) -> bool:
-        return self.Status == "Enabled"
-
-    @IsEnabled.setter
-    def IsEnabled(self, val: bool) -> None:
-        if val:
-            self.Status = "Enabled"
-            self.SettingsInputs["Enter"] = "Disable"
-        else:
-            self.Status = "Disabled"
-            self.SettingsInputs["Enter"] = "Enable"
+    Types: ModTypes = ModTypes.Utility
+    SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
 
     SettingsInputs: Dict[str, str] = {
         "Enter": "Enable",
         "T": "Edit Tasks"
     }
 
-    CONFIG_FILE: ClassVar[str] = path.join(path.dirname(path.realpath(__file__)), "config.json")
+    TaskOption: Options.Hidden
 
     LaunchTasks: List[Tasks.BaseTask]
     MainMenuTasks: List[Tasks.BaseTask]
 
     def __init__(self) -> None:
-        # Hopefully I can remove this in a future SDK update
-        self.Author += "\nVersion: " + str(self.Version)  # type: ignore
-
-        self.IsEnabled = False
-
-        forceOff = self.LoadTasks()
-        self.SaveTasks()
-
-        if self.IsEnabled and not forceOff:
-            self.Execute(self.LaunchTasks)
-
-            def OnMainMenu(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-                self.Execute(self.MainMenuTasks)
-                unrealsdk.RemoveHook("WillowGame.FrontendGFxMovie.Start", "SDKAutorun")
-                return True
-
-            unrealsdk.RegisterHook("WillowGame.FrontendGFxMovie.Start", "SDKAutorun", OnMainMenu)
-
-    def LoadTasks(self) -> bool:
-        self.LaunchTasks = []
-        self.MainMenuTasks = []
-
-        launchTasksJSON = []
-        mainMenuTasksJSON = []
-
-        try:
-            with open(self.CONFIG_FILE) as file:
-                loadedSettings = json.load(file)
-
-                launchTasksJSON = loadedSettings["OnLaunch"]["Tasks"]
-                mainMenuTasksJSON = loadedSettings["OnMainMenu"]["Tasks"]
-
-                self.IsEnabled = loadedSettings["IsEnabled"]
-        except FileNotFoundError:
-            self.IsEnabled = False
-            return True
-        except (KeyError, json.JSONDecodeError):
-            self.IsEnabled = False
-            UserFeedback.TrainingBox(
-                "SDK Autorun Error",
-                "Unable to parse config file, unable to run."
-            ).Show()
-            return True
-
-        anyErrors = False
-        for task in launchTasksJSON:
-            try:
-                taskObj = Tasks.NAME_TASK_MAP[task["Type"]]()  # type: ignore
-                success = taskObj.FromJSONSerializable(task["Value"])
-                if not success:
-                    anyErrors = True
-                    continue
-                self.LaunchTasks.append(taskObj)
-            except KeyError:
-                anyErrors = True
-
-        for task in mainMenuTasksJSON:
-            try:
-                taskObj = Tasks.NAME_TASK_MAP[task["Type"]]()  # type: ignore
-                success = taskObj.FromJSONSerializable(task["Value"])
-                if not success:
-                    anyErrors = True
-                    continue
-                self.MainMenuTasks.append(taskObj)
-            except KeyError:
-                anyErrors = True
-
-        if anyErrors:
-            UserFeedback.TrainingBox(
-                "SDK Autorun Error",
-                "One or more tasks was unable to be parsed and thus will be skipped."
-            ).Show()
-        return False
-
-    def SaveTasks(self) -> None:
-        settingsDict: Dict[str, Any] = {
-            "IsEnabled": self.IsEnabled,
+        self.TaskOption = Options.Hidden("Tasks", StartingValue={
             "OnMainMenu": {
                 "Tasks": []
             },
@@ -158,33 +73,100 @@ class SDKAutorun(unrealsdk.BL2MOD):
                 ],
                 "Tasks": []
             }
-        }
+        })
+        self.Options = [self.TaskOption]
+        LoadModSettings(self)
 
-        for task in self.LaunchTasks:
-            settingsDict["OnLaunch"]["Tasks"].append({
-                "Type": task.Name,
-                "Value": task.ToJSONSerializable()
-            })
-        for task in self.MainMenuTasks:
-            settingsDict["OnMainMenu"]["Tasks"].append({
-                "Type": task.Name,
-                "Value": task.ToJSONSerializable()
-            })
+        # Load from the legacy settings file
+        config_file = os.path.join(os.path.dirname(GetSettingsFilePath(self)), "config.json")
+        try:
+            with open(config_file) as file:
+                loaded_settings = json.load(file)
 
-        with open(self.CONFIG_FILE, "w") as file:
-            json.dump(settingsDict, file, indent=4)
+                try:
+                    if loaded_settings["IsEnabled"]:
+                        self.SettingsInputPressed("Enable")
+                except KeyError:
+                    pass
 
-    def SettingsInputPressed(self, name: str) -> None:
-        if name == "Enable":
-            self.IsEnabled = True
-            self.SaveTasks()
-        elif name == "Disable":
-            self.IsEnabled = False
-            self.SaveTasks()
-        elif name == "Edit Tasks":
+                try:
+                    self.TaskOption.CurrentValue["OnMainMenu"]["Tasks"] = loaded_settings["OnMainMenu"]["Tasks"]
+                    self.TaskOption.CurrentValue["OnLaunch"]["Tasks"] = loaded_settings["OnLaunch"]["Tasks"]
+                except KeyError:
+                    pass
+            SaveModSettings(self)
+            os.remove(config_file)
+        except json.JSONDecodeError:
+            os.remove(config_file)
+        except FileNotFoundError:
+            pass
+
+        self.LaunchTasks = []
+        self.MainMenuTasks = []
+
+        any_errors = False
+        for task in self.TaskOption.CurrentValue["OnMainMenu"]["Tasks"]:
+            try:
+                task_obj = Tasks.NAME_TASK_MAP[task["Type"]]()  # type: ignore
+                success = task_obj.FromJSONSerializable(task["Value"])
+                if not success:
+                    any_errors = True
+                    continue
+                self.MainMenuTasks.append(task_obj)
+            except KeyError:
+                any_errors = True
+
+        for task in self.TaskOption.CurrentValue["OnLaunch"]["Tasks"]:
+            try:
+                task_obj = Tasks.NAME_TASK_MAP[task["Type"]]()  # type: ignore
+                success = task_obj.FromJSONSerializable(task["Value"])
+                if not success:
+                    any_errors = True
+                    continue
+                self.LaunchTasks.append(task_obj)
+            except KeyError:
+                any_errors = True
+
+        if any_errors:
+            UserFeedback.TrainingBox(
+                "SDK Autorun Error",
+                "One or more tasks was unable to be parsed and thus will be skipped."
+            ).Show()
+
+        if self.IsEnabled and not any_errors:
+            self.Execute(self.LaunchTasks)
+
+            def OnMainMenu(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+                self.Execute(self.MainMenuTasks)
+                unrealsdk.RemoveHook("WillowGame.FrontendGFxMovie.Start", self.Name)
+                return True
+
+            unrealsdk.RegisterHook("WillowGame.FrontendGFxMovie.Start", self.Name, OnMainMenu)
+
+    def SettingsInputPressed(self, action: str) -> None:
+        if action == "Edit Tasks":
             self.Configure()
+        else:
+            super().SettingsInputPressed(action)
 
     def Configure(self) -> None:
+        def SaveTasks() -> None:
+            self.TaskOption.CurrentValue["OnMainMenu"]["Tasks"] = []
+            self.TaskOption.CurrentValue["OnLaunch"]["Tasks"] = []
+
+            for task in self.MainMenuTasks:
+                self.TaskOption.CurrentValue["OnMainMenu"]["Tasks"].append({
+                    "Type": task.Name,
+                    "Value": task.ToJSONSerializable()
+                })
+            for task in self.LaunchTasks:
+                self.TaskOption.CurrentValue["OnLaunch"]["Tasks"].append({
+                    "Type": task.Name,
+                    "Value": task.ToJSONSerializable()
+                })
+
+            SaveModSettings(self)
+
         class _TaskButton(UserFeedback.OptionBoxButton):
             Task: Tasks.BaseTask
 
@@ -207,161 +189,161 @@ class SDKAutorun(unrealsdk.BL2MOD):
                 super().__init__(cls.Name, cls.Description)
                 self.TaskClass = cls
 
-        taskButtons: List[UserFeedback.OptionBoxButton]
+        task_buttons: List[UserFeedback.OptionBoxButton]
         if len(self.MainMenuTasks) == 0:
             # Need a dummy button to be able to create all these `OptionBox`s
-            taskButtons = [UserFeedback.OptionBoxButton(
+            task_buttons = [UserFeedback.OptionBoxButton(
                 "DUMMY", "If you can see this something has gone pretty wrong."
             )]
         else:
-            taskButtons = [_TaskButton(task) for task in self.MainMenuTasks]
-        taskClassButtons = [_TaskClassButton(cls) for cls in Tasks.NAME_TASK_MAP.values()]  # type: ignore
-        taskClassButtons.sort(key=lambda b: b.Name)
+            task_buttons = [_TaskButton(task) for task in self.MainMenuTasks]
+        task_class_buttons = [_TaskClassButton(cls) for cls in Tasks.NAME_TASK_MAP.values()]  # type: ignore
+        task_class_buttons.sort(key=lambda b: b.Name)
 
-        configureButton = UserFeedback.OptionBoxButton(
+        configure_button = UserFeedback.OptionBoxButton(
             "Configure Tasks", "View the list of all tasks, and configure them individually."
         )
-        reorderButton = UserFeedback.OptionBoxButton(
+        reorder_button = UserFeedback.OptionBoxButton(
             "Reorder Tasks", "Change the order in which tasks get executed."
         )
-        newButton = UserFeedback.OptionBoxButton(
+        new_button = UserFeedback.OptionBoxButton(
             "New Task", "Add a new task to the list."
         )
-        deleteButton = UserFeedback.OptionBoxButton(
+        delete_button = UserFeedback.OptionBoxButton(
             "Remove Task", "Remove a task from the list."
         )
 
-        mainButtonsNoTask = (newButton,)
-        mainButtonsOneTask = (configureButton, newButton, deleteButton)
-        mainButtonsNormal = (configureButton, reorderButton, newButton, deleteButton)
-        mainBox = UserFeedback.OptionBox(
+        main_buttons_no_task = (new_button,)
+        main_buttons_one_task = (configure_button, new_button, delete_button)
+        main_buttons_normal = (configure_button, reorder_button, new_button, delete_button)
+        main_box = UserFeedback.OptionBox(
             Title="Edit Tasks",
             Caption="Edit the tasks that are executed upon reaching the main menu.",
-            Buttons=mainButtonsNormal
+            Buttons=main_buttons_normal
         )
         if len(self.MainMenuTasks) == 0:
-            mainBox.Buttons = mainButtonsNoTask
-            mainBox.Update()
+            main_box.Buttons = main_buttons_no_task
+            main_box.Update()
         elif len(self.MainMenuTasks) == 1:
-            mainBox.Buttons = mainButtonsOneTask
-            mainBox.Update()
+            main_box.Buttons = main_buttons_one_task
+            main_box.Update()
 
-        configureBox = UserFeedback.OptionBox(
+        configure_box = UserFeedback.OptionBox(
             Title="Configure Tasks",
             Caption="Select the task to configure.",
-            Buttons=taskButtons
+            Buttons=task_buttons
         )
 
-        reorderBox = UserFeedback.ReorderBox(
+        reorder_box = UserFeedback.ReorderBox(
             Title="Reorder Tasks",
             Caption="Change the order in which tasks get executed.",
-            Buttons=taskButtons
+            Buttons=task_buttons
         )
 
-        newBox = UserFeedback.OptionBox(
+        new_box = UserFeedback.OptionBox(
             Title="New Task",
             Caption="Select which type of task to create.",
-            Buttons=taskClassButtons
+            Buttons=task_class_buttons
         )
 
-        deleteBox = UserFeedback.OptionBox(
+        delete_box = UserFeedback.OptionBox(
             Title="Remove Task",
             Caption="Select the task to remove.",
-            Buttons=taskButtons
+            Buttons=task_buttons
         )
 
         def MainOnPress(button: UserFeedback.OptionBoxButton) -> None:
-            if button == configureButton:
-                configureBox.Show()
-            elif button == reorderButton:
-                reorderBox.Show()
-            elif button == newButton:
-                newBox.Show()
-            elif button == deleteButton:
-                deleteBox.Show()
+            if button == configure_button:
+                configure_box.Show()
+            elif button == reorder_button:
+                reorder_box.Show()
+            elif button == new_button:
+                new_box.Show()
+            elif button == delete_button:
+                delete_box.Show()
 
-        mainBox.OnPress = MainOnPress  # type: ignore
-        mainBox.OnCancel = self.SaveTasks  # type: ignore
+        main_box.OnPress = MainOnPress  # type: ignore
+        main_box.OnCancel = SaveTasks  # type: ignore
 
         def ConfigureOnPress(button: UserFeedback.OptionBoxButton) -> None:
             if not isinstance(button, _TaskButton):
                 raise ValueError("Recieved button was not a task button")
-            button.Task.OnFinishConfiguration = lambda: configureBox.Show(button)  # type: ignore
+            button.Task.OnFinishConfiguration = lambda: configure_box.Show(button)  # type: ignore
             button.Task.ShowConfiguration()
 
-        configureBox.OnPress = ConfigureOnPress  # type: ignore
-        configureBox.OnCancel = lambda: mainBox.Show(configureButton)  # type: ignore
+        configure_box.OnPress = ConfigureOnPress  # type: ignore
+        configure_box.OnCancel = lambda: main_box.Show(configure_button)  # type: ignore
 
         def ReorderOnExit() -> None:
-            self.MainMenuTasks = [cast(_TaskButton, button).Task for button in reorderBox.Buttons]
-            configureBox.Buttons = reorderBox.Buttons
-            configureBox.Update()
-            deleteBox.Buttons = reorderBox.Buttons
-            deleteBox.Update()
-            mainBox.Show(reorderButton)
+            self.MainMenuTasks = [cast(_TaskButton, button).Task for button in reorder_box.Buttons]
+            configure_box.Buttons = reorder_box.Buttons
+            configure_box.Update()
+            delete_box.Buttons = reorder_box.Buttons
+            delete_box.Update()
+            main_box.Show(reorder_button)
 
-        reorderBox.OnCancel = ReorderOnExit  # type: ignore
+        reorder_box.OnCancel = ReorderOnExit  # type: ignore
 
         def NewOnPress(button: UserFeedback.OptionBoxButton) -> None:
             if not isinstance(button, _TaskClassButton):
                 raise ValueError("Recieved button was not a task class button")
 
-            newTask = button.TaskClass()
-            newTaskButton = _TaskButton(newTask)
+            new_task = button.TaskClass()
+            new_task_button = _TaskButton(new_task)
 
-            self.MainMenuTasks.append(newTask)
+            self.MainMenuTasks.append(new_task)
             # If we just added the first task
             if len(self.MainMenuTasks) == 1:
-                mainBox.Buttons = mainButtonsOneTask
-                mainBox.Update()
+                main_box.Buttons = main_buttons_one_task
+                main_box.Update()
                 # Remove the dummy button
-                reorderBox.Buttons = []
+                reorder_box.Buttons = []
 
             elif len(self.MainMenuTasks) == 2:
-                mainBox.Buttons = mainButtonsNormal
-                mainBox.Update()
+                main_box.Buttons = main_buttons_normal
+                main_box.Update()
 
-            reorderBox.Buttons.append(newTaskButton)
-            reorderBox.Update()
-            configureBox.Buttons = reorderBox.Buttons
-            configureBox.Update()
-            deleteBox.Buttons = reorderBox.Buttons
-            deleteBox.Update()
+            reorder_box.Buttons.append(new_task_button)
+            reorder_box.Update()
+            configure_box.Buttons = reorder_box.Buttons
+            configure_box.Update()
+            delete_box.Buttons = reorder_box.Buttons
+            delete_box.Update()
 
-            newTask.OnFinishConfiguration = lambda: configureBox.Show(newTaskButton)  # type: ignore
-            newTask.ShowConfiguration()
+            new_task.OnFinishConfiguration = lambda: configure_box.Show(new_task_button)  # type: ignore
+            new_task.ShowConfiguration()
 
-        newBox.OnPress = NewOnPress  # type: ignore
-        newBox.OnCancel = lambda: mainBox.Show(newButton)  # type: ignore
+        new_box.OnPress = NewOnPress  # type: ignore
+        new_box.OnCancel = lambda: main_box.Show(new_button)  # type: ignore
 
         def DeleteOnPress(button: UserFeedback.OptionBoxButton) -> None:
             if not isinstance(button, _TaskButton):
                 raise ValueError("Recieved button was not a task button")
 
             self.MainMenuTasks.remove(button.Task)
-            reorderBox.Buttons.remove(button)
-            configureBox.Buttons = reorderBox.Buttons
-            deleteBox.Buttons = reorderBox.Buttons
+            reorder_box.Buttons.remove(button)
+            configure_box.Buttons = reorder_box.Buttons
+            delete_box.Buttons = reorder_box.Buttons
 
             if len(self.MainMenuTasks) == 1:
-                mainBox.Buttons = mainButtonsOneTask
-                mainBox.Update()
+                main_box.Buttons = main_buttons_one_task
+                main_box.Update()
 
             if len(self.MainMenuTasks) == 0:
-                mainBox.Buttons = mainButtonsNoTask
-                mainBox.Update()
-                mainBox.Show()
+                main_box.Buttons = main_buttons_no_task
+                main_box.Update()
+                main_box.Show()
             else:
-                reorderBox.Update()
-                configureBox.Update()
-                deleteBox.Update()
+                reorder_box.Update()
+                configure_box.Update()
+                delete_box.Update()
 
-                mainBox.Show(deleteButton)
+                main_box.Show(delete_button)
 
-        deleteBox.OnPress = DeleteOnPress  # type: ignore
-        deleteBox.OnCancel = lambda: mainBox.Show(deleteButton)  # type: ignore
+        delete_box.OnPress = DeleteOnPress  # type: ignore
+        delete_box.OnCancel = lambda: main_box.Show(delete_button)  # type: ignore
 
-        mainBox.Show()
+        main_box.Show()
 
     def Execute(self, TaskList: List[Tasks.BaseTask]) -> None:
         if len(TaskList) == 0:
@@ -377,24 +359,16 @@ class SDKAutorun(unrealsdk.BL2MOD):
 
 
 instance = SDKAutorun()
-if __name__ != "__main__":
-    unrealsdk.RegisterMod(instance)
-else:
+if __name__ == "__main__":
     unrealsdk.Log(f"[{instance.Name}] Manually loaded")
-    for i in range(len(unrealsdk.Mods)):
-        if unrealsdk.Mods[i].Name == instance.Name:
-            unrealsdk.Mods[i].Disable()
+    for mod in Mods:
+        if mod.Name == instance.Name:
+            if mod.IsEnabled:
+                mod.Disable()
+            Mods.remove(mod)
+            unrealsdk.Log(f"[{instance.Name}] Removed last instance")
 
-            unrealsdk.RegisterMod(instance)
-            unrealsdk.Mods.remove(instance)
-            unrealsdk.Mods[i] = instance
-            unrealsdk.Log(f"[{instance.Name}] Disabled and removed last instance")
+            # Fixes inspect.getfile()
+            instance.__class__.__module__ = mod.__class__.__module__
             break
-    else:
-        unrealsdk.Log(f"[{instance.Name}] Could not find previous instance")
-        unrealsdk.RegisterMod(instance)
-
-    unrealsdk.Log(f"[{instance.Name}] Auto-enabling")
-    instance.Status = "Enabled"
-    instance.SettingsInputs["Enter"] = "Disable"
-    instance.Enable()
+RegisterMod(instance)
