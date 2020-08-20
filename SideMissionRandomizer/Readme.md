@@ -1,8 +1,7 @@
 ## Changelog
 
 ### Side Mission Randomizer v1.4
-Increased the amount of missions that are unlocked by default.
-Added a section to the start of the progression dump showing these missions.
+Updated to use some of the new features from SDK version 0.7.8.
 
 ### Side Mission Randomizer v1.3
 Increased the amount of missions that are unlocked by default.
