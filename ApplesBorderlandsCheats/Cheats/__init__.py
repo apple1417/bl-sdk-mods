@@ -9,6 +9,7 @@ from typing import Callable, ClassVar, Dict, List, Tuple
 from types import ModuleType
 
 from Mods.UserFeedback import ShowHUDMessage
+from Mods.ModMenu import Options
 
 SDKHook = Callable[[unrealsdk.UObject, unrealsdk.UFunction, unrealsdk.FStruct], bool]
 
@@ -20,20 +21,25 @@ class ABCCheat(ABC):
     Attributes:
         Name: The name of the cheat, mostly used in the presets menu.
         KeybindName: The name of the cheat's keybind.
+        CheatOptions:
+            A list of options to configure the cheat with. Use of this should generally be avoided,
+             in favour of extra cycleable cheat values.
     """
     Name: ClassVar[str]
     KeybindName: ClassVar[str]
+
+    CheatOptions: List[Options.Base] = []
 
     @abstractmethod
     def OnPress(self) -> None:
         """ Callback method for when the cheat's keybind is pressed. """
         raise NotImplementedError
 
-    # Returns a dict of the hooks the cheat needs, bound to that particular cheat - i.e. the hooks'
-    #  behavior should only change if you modify the attributes on the cheat you created it on
     def GetHooks(self) -> Dict[str, SDKHook]:
         """
-        Gets the hooks the cheat needs to function.
+        Gets the hooks the cheat needs to function. These should be bound to your particular
+         instance - the hook's behavior should only change if the attributes on the instance it was
+         created on are changed.
 
         Returns:
             A dict mapping unrealscript function names to their hook functions.
@@ -105,6 +111,7 @@ class ABCToggleableCheat(ABCCycleableCheat):
 
 ALL_CHEATS: List[ABCCheat] = []
 ALL_HOOKS: Dict[str, List[SDKHook]] = {}
+ALL_OPTIONS: List[Options.Base] = []
 
 
 _CURRENT_MODULE = "Mods.ApplesBorderlandsCheats.Cheats"
@@ -134,6 +141,7 @@ for file in os.listdir(_dir):
             if c.__name__ == ABCCheat.__name__:
                 cheat_instance = cls()
                 ALL_CHEATS.append(cheat_instance)
+                ALL_OPTIONS += cheat_instance.CheatOptions
                 for hook, function in cheat_instance.GetHooks().items():
                     if hook in ALL_HOOKS:
                         ALL_HOOKS[hook].append(function)

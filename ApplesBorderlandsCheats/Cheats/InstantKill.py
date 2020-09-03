@@ -2,13 +2,20 @@ import unrealsdk
 from typing import Dict
 
 from . import ABCCheat, ABCToggleableCheat, SDKHook
+from Mods.ModMenu import Game, Options
 
 
 class OneShot(ABCToggleableCheat):
     Name = "One Shot Mode"
     KeybindName = "Toggle One Shot Mode"
 
+    def __init__(self) -> None:
+        self.CheatOptions = [Options.Hidden("Disable One Shot Mode in TPS", StartingValue=False)]
+
     def GetHooks(self) -> Dict[str, SDKHook]:
+        if Game.GetCurrent() == Game.TPS and self.CheatOptions[0].CurrentValue:  # type: ignore
+            return {}
+
         def TakeDamage(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
             pc = unrealsdk.GetEngine().GamePlayers[0].Actor
 
@@ -33,7 +40,10 @@ class OneShot(ABCToggleableCheat):
 
             return True
 
-        return {"Engine.Pawn.TakeDamage": TakeDamage}
+        return {
+            "WillowGame.WillowAIPawn.TakeDamage": TakeDamage,
+            "WillowGame.WillowVehicle.TakeDamage": TakeDamage
+        }
 
 
 class KillAll(ABCCheat):

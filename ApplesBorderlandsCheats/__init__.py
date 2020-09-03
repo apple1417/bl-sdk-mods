@@ -37,7 +37,7 @@ if __name__ == "__main__":
         __file__ = sys.exc_info()[-1].tb_frame.f_code.co_filename  # type: ignore
 
 
-from Mods.ApplesBorderlandsCheats.Cheats import ALL_CHEATS, ALL_HOOKS
+from Mods.ApplesBorderlandsCheats.Cheats import ALL_CHEATS, ALL_HOOKS, ALL_OPTIONS
 from Mods.ApplesBorderlandsCheats.Presets import PresetManager
 
 
@@ -47,7 +47,7 @@ class ApplesBorderlandsCheats(SDKMod):
     Description: str = (
         "Adds keybinds performing various cheaty things"
     )
-    Version: str = "1.9"
+    Version: str = "1.10"
 
     Types: ModTypes = ModTypes.Utility
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
@@ -76,7 +76,8 @@ class ApplesBorderlandsCheats(SDKMod):
 
     def __init__(self) -> None:
         preset_option = Options.Hidden("Presets", StartingValue=[])
-        self.Options = [preset_option]
+        self.Options = [preset_option] + ALL_OPTIONS  # type: ignore
+
         # Load settings once for the set of presets
         LoadModSettings(self)
 

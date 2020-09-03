@@ -1,5 +1,8 @@
 ## Changelog
 
+### Apple's Borderlands Cheats v1.10
+Added hidden option to disable one shot mode in tps - it can sometimes cause crashes simply by existing.
+
 ### Apple's Borderlands Cheats v1.9
 Updated to use some of the new features from SDK version 0.7.8.    
 Most notably, the enabled state is now saved over game launches.
