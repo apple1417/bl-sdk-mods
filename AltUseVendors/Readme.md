@@ -1,5 +1,9 @@
 ## Changelog
 
+### Alt Use Vendors v1.5
+Optimized a lot of the code - should help anyone who was having stutters.    
+As the description mentions (and has for a bit), if you're still having stutters, disable the updating costs option.
+
 ### Alt Use Vendors v1.4
 Updated to use some of the new features from SDK version 0.7.8.    
 Most notably, the enabled state is now saved over game launches.    

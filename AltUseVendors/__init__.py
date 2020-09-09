@@ -1,6 +1,6 @@
 import unrealsdk
 from dataclasses import dataclass
-from typing import ClassVar, Dict, List, Set
+from typing import ClassVar, Dict, Set
 
 from Mods.ModMenu import EnabledSaveType, Options, Mods, ModTypes, RegisterMod, SDKMod
 
@@ -20,28 +20,34 @@ class AltUseVendors(SDKMod):
         "\n"
         "If you have issues with stuttering, disable updating costs in settings."
     )
-    Version: str = "1.4"
+    Version: str = "1.5"
 
     Types: ModTypes = ModTypes.Utility
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
 
     UpdatingOption: Options.Boolean
-    Options: List[Options.Base]
 
     HealthIcon: unrealsdk.UObject
     AmmoIcon: unrealsdk.UObject
 
-    TouchingActors: Set[unrealsdk.UObject]
+    # Dict[<vendor>, Set[<pawn>]]
+    TouchingActors: Dict[unrealsdk.UObject, Set[unrealsdk.UObject]]
+    # Dict[<vendor>, <cost>]
+    VialCosts: Dict[unrealsdk.UObject, int]
+    # Dict[<vendor>, Dict[<pool name>, <cost>]]
+    AmmoCosts: Dict[unrealsdk.UObject, Dict[str, float]]
+    # Dict[<pawn>, Set[<pool>]]
+    PlayerAmmoPools: Dict[unrealsdk.UObject, Set[unrealsdk.UObject]]
 
     @dataclass
     class _AmmoInfo:
-        ResourceName: str
-        AmountPerPurchase: int
+        ResourcePoolName: str
+        BulletsPerItem: int
 
     # Going to assume you haven't modded ammo amounts
     # The UCP does edit it to let you refill in one purchage, BUT it also doesn't change the price,
     #  so I think it's more worth sticking with the default amounts
-    AMMO_MAP: ClassVar[Dict[str, _AmmoInfo]] = {
+    AMMO_COUNTS: ClassVar[Dict[str, _AmmoInfo]] = {
         "AmmoShop_Assault_Rifle_Bullets": _AmmoInfo("Ammo_Combat_Rifle", 54),
         "AmmoShop_Grenade_Protean": _AmmoInfo("Ammo_Grenade_Protean", 3),
         "AmmoShop_Laser_Cells": _AmmoInfo("Ammo_Combat_Laser", 68),
@@ -52,7 +58,7 @@ class AltUseVendors(SDKMod):
         "AmmoShop_Sniper_Rifle_Cartridges": _AmmoInfo("Ammo_Sniper_Rifle", 18)
     }
 
-    UPDATE_DELAY: ClassVar[float] = 0.5
+    UPDATE_DELAY: ClassVar[float] = 0.25
 
     HEALTH_ICON_NAME: ClassVar[str] = "Icon_RefillHealth"
     AMMO_ICON_NAME: ClassVar[str] = "Icon_RefillAmmo"
@@ -69,47 +75,65 @@ class AltUseVendors(SDKMod):
         self.HealthIcon = None
         self.AmmoIcon = None
 
-        self.TouchingActors = set()
+        self.TouchingActors = {}
+        self.VialCosts = {}
+        self.AmmoCosts = {}
+        self.PlayerAmmoPools = {}
 
     def Enable(self) -> None:
         self.CreateIcons()
 
         def ConditionalReactToUse(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+            if caller.Class.Name != "WillowVendingMachine":
+                return True
             if params.UsedType != 1:
                 return True
-            if str(caller).split(" ")[0] != "WillowVendingMachine":
+            if params.User is None:
                 return True
 
-            # If you have updating costs off we have to take the off money ourselves
-            if not self.UpdatingOption.CurrentValue:
-                PC = params.User.Controller
-                PRI = PC.PlayerReplicationInfo
+            PC = params.User.Controller
+            PRI = PC.PlayerReplicationInfo
 
-                wallet = PRI.GetCurrencyOnHand(0)
-                cost = 0
-                if caller.ShopType == 2:
-                    cost = self.GetHealthCost(params.User, caller)
-                elif caller.ShopType == 1:
-                    cost = self.GetAmmoCost(params.User, caller)
-                else:
-                    return True
+            wallet = PRI.GetCurrencyOnHand(0)
+            cost = 0
+            if caller.ShopType == 2:
+                cost = self.GetHealthCost(params.User, caller)
+            elif caller.ShopType == 1:
+                cost = self.GetAmmoCost(params.User, caller)
+            else:
+                return True
 
-                if cost == 0 or wallet < cost:
-                    PC.NotifyUnableToAffordUsableObject(1)
-                    return True
+            if cost == 0 or wallet < cost:
+                PC.NotifyUnableToAffordUsableObject(1)
+                return True
 
-                PRI.AddCurrencyOnHand(0, -cost)
-                PC.SetPendingTransactionStatus(1)
+            # If you have updating costs on, block payment so we can do it manually
+            # This ensures that it always costs the right amount, even if it's displaying wrong
+            #  (e.g. if in coop a different player is closer to the vendor)
+            if self.UpdatingOption.CurrentValue:
+                vendor = caller
+
+                def PayForUsedObject(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+                    if params.UsedObject.ObjectPointer == vendor and params.UsabilityType == 1:
+                        unrealsdk.RemoveHook("WillowGame.WillowPlayerController.PayForUsedObject", self.Name)
+                        return False
+                    else:
+                        return True
+
+                unrealsdk.RegisterHook("WillowGame.WillowPlayerController.PayForUsedObject", self.Name, PayForUsedObject)
+
+            PRI.AddCurrencyOnHand(0, -cost)
+            PC.SetPendingTransactionStatus(1)
 
             if caller.ShopType == 2:
-                self.BuyHealth(params.user, caller)
+                self.BuyHealth(params.User, caller)
             elif caller.ShopType == 1:
-                self.BuyAmmo(params.user, caller)
+                self.BuyAmmo(params.User, caller)
 
             return True
 
         def InitializeFromDefinition(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-            if str(caller).split(" ")[0] != "WillowVendingMachine":
+            if caller.Class.Name != "WillowVendingMachine":
                 return True
 
             if caller.ShopType == 2:
@@ -121,25 +145,37 @@ class AltUseVendors(SDKMod):
 
             return True
 
+        # Touch and UnTouch are called whenever a player gets close to an interactive object
+        # We use them to disable the update loop when we don't need it, to reduce lag
+        # Process it even if updating costs are off so that it switches seamlessly on option change
         def Touch(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-            if not self.UpdatingOption.CurrentValue:
+            if caller.Class.Name != "WillowVendingMachine":
                 return True
-            if str(caller).split(" ")[0] != "WillowVendingMachine":
+            if params.Other.Class.Name != "WillowPlayerPawn":
                 return True
 
-            self.TouchingActors.add(params.Other)
-            if self.UpdatingOption.CurrentValue and len(self.TouchingActors) == 1:
+            # If no one's currently near a vendor, but is about to be, and if updating costs are on,
+            #  start the update loop
+            if self.UpdatingOption.CurrentValue and len(self.TouchingActors) == 0:
                 AsyncUtil.RunEvery(self.UPDATE_DELAY, self.OnUpdate, self.Name)
+
+            if caller not in self.TouchingActors:
+                self.TouchingActors[caller] = set()
+            self.TouchingActors[caller].add(params.Other)
 
             return True
 
         def UnTouch(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-            if str(caller).split(" ")[0] != "WillowVendingMachine":
+            if caller.Class.Name != "WillowVendingMachine":
+                return True
+            if params.Other.Class.Name != "WillowPlayerPawn":
                 return True
 
             try:
-                self.TouchingActors.remove(params.Other)
-            except KeyError:  # If the player is not already in the set
+                self.TouchingActors[caller].remove(params.Other)
+                if len(self.TouchingActors[caller]) == 0:
+                    del self.TouchingActors[caller]
+            except (KeyError, ValueError):  # If the player or vendor aren't in the dict
                 pass
 
             if self.UpdatingOption.CurrentValue and len(self.TouchingActors) == 0:
@@ -148,14 +184,54 @@ class AltUseVendors(SDKMod):
             return True
 
         def WillowClientDisableLoadingMovie(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-            self.TouchingActors.clear()
+            # On level change reset all our caching
+            self.TouchingActors = {}
+            self.VialCosts = {}
+            self.AmmoCosts = {}
+            self.PlayerAmmoPools = {}
+            AsyncUtil.CancelFutureCallbacks(self.Name)
             return True
+
+        def GenerateInventory(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+            # Whenever a vendor inventory is generated, update our cached costs
+            # Unfortuantly ShopInventory is a fixed array, which we can't iterate though, so we have
+            #  to do a findall to find the items
+            unrealsdk.DoInjectedCallNext()
+            caller.GenerateInventory()
+
+            PC = unrealsdk.GetEngine().GamePlayers[0].Actor
+
+            if caller.ShopType == 1:
+                self.AmmoCosts[caller] = {}
+
+            for item in unrealsdk.FindAll("WillowUsableItem"):
+                if item.Owner != caller:
+                    continue
+                if item.DefinitionData is None or item.DefinitionData.ItemDefinition is None:
+                    continue
+
+                if caller.ShopType == 2:
+                    if item.DefinitionData.ItemDefinition.Name == "BuffDrink_HealingInstant":
+                        self.VialCosts[caller] = caller.GetSellingPriceForInventory(item, PC, 1)
+                        break
+
+                elif caller.ShopType == 1:
+                    name = item.DefinitionData.ItemDefinition.Name
+                    if name not in self.AMMO_COUNTS:
+                        continue
+
+                    info = self.AMMO_COUNTS[name]
+                    price = caller.GetSellingPriceForInventory(item, PC, 1) / info.BulletsPerItem
+                    self.AmmoCosts[caller][info.ResourcePoolName] = price
+
+            return False
 
         unrealsdk.RunHook("WillowGame.WillowInteractiveObject.ConditionalReactToUse", self.Name, ConditionalReactToUse)
         unrealsdk.RunHook("WillowGame.WillowInteractiveObject.InitializeFromDefinition", self.Name, InitializeFromDefinition)
         unrealsdk.RunHook("WillowGame.WillowInteractiveObject.Touch", self.Name, Touch)
         unrealsdk.RunHook("WillowGame.WillowInteractiveObject.UnTouch", self.Name, UnTouch)
         unrealsdk.RunHook("WillowGame.WillowPlayerController.WillowClientDisableLoadingMovie", self.Name, WillowClientDisableLoadingMovie)
+        unrealsdk.RunHook("WillowGame.WillowVendingMachine.GenerateInventory", self.Name, GenerateInventory)
 
     def Disable(self) -> None:
         AsyncUtil.CancelFutureCallbacks(self.Name)
@@ -164,6 +240,8 @@ class AltUseVendors(SDKMod):
         unrealsdk.RemoveHook("WillowGame.WillowInteractiveObject.Touch", self.Name)
         unrealsdk.RemoveHook("WillowGame.WillowInteractiveObject.UnTouch", self.Name)
         unrealsdk.RemoveHook("WillowGame.WillowPlayerController.WillowClientDisableLoadingMovie", self.Name)
+        unrealsdk.RemoveHook("WillowGame.WillowVendingMachine.GenerateInventory", self.Name)
+        unrealsdk.RemoveHook("WillowGame.WillowPlayerController.PayForUsedObject", self.Name)
 
     def CreateIcons(self) -> None:
         if self.HealthIcon is not None and self.AmmoIcon is not None:
@@ -205,21 +283,23 @@ class AltUseVendors(SDKMod):
             PC.ServerRCon(f"set {PC.PathName(self.AmmoIcon)} Text REFILL AMMO")
 
     def OnUpdate(self) -> None:
-        # Can't look for pawns directly due to the streaming ones, which will crash the game
-        all_pawns = [PC.Pawn for PC in unrealsdk.FindAll("WillowPlayerController") if PC.Pawn is not None]
-
-        for vendor in unrealsdk.FindAll("WillowVendingMachine"):
+        for vendor, pawns in self.TouchingActors.items():
+            # Displayed price is based on closest player
             closet_pawn = None
             min_dist = -1
-            for pawn in all_pawns:
+            for pawn in pawns:
                 dist = (
                     (vendor.Location.X - pawn.Location.X) ** 2
                     + (vendor.Location.Y - pawn.Location.Y) ** 2  # noqa
                     + (vendor.Location.Z - pawn.Location.Z) ** 2  # noqa
                 ) ** 0.5
+
                 if dist < min_dist or min_dist == -1:
                     dist = min_dist
                     closet_pawn = pawn
+
+            if closet_pawn is None:
+                continue
 
             cost: int
             if vendor.ShopType == 2:
@@ -232,103 +312,86 @@ class AltUseVendors(SDKMod):
             vendor.SetUsability(cost != 0, 1)
             vendor.Behavior_ChangeUsabilityCost(1, 0, cost, 1)
 
-    def GetHealthCost(self, Pawn: unrealsdk.UObject, Vendor: unrealsdk.UObject) -> int:
-        if Pawn.GetHealth() == Pawn.GetMaxHealth():
+    def GetHealthCost(self, pawn: unrealsdk.UObject, vendor: unrealsdk.UObject) -> int:
+        if pawn.GetHealth() == pawn.GetMaxHealth():
             return 0
 
-        vial = None
-        for item in unrealsdk.FindAll("WillowUsableItem"):
-            if item.Owner != Vendor:
-                continue
-            if item.DefinitionData is None or item.DefinitionData.ItemDefinition is None:
-                continue
-            name = item.DefinitionData.ItemDefinition.Name
-            if name == "BuffDrink_HealingInstant":
-                vial = item
-                break
-        else:
+        # Not sure how this'd happen but just in case
+        if vendor not in self.VialCosts:
             return 0
 
         # Again going to assume you haven't modded how much a vial heals
-        full_heal_cost = 4 * Vendor.GetSellingPriceForInventory(vial, Pawn.Controller, 1)
-        missing_health = 1 - (Pawn.GetHealth() / Pawn.GetMaxHealth())
+        full_heal_cost = 4 * self.VialCosts[vendor]
+        missing_health = 1 - (pawn.GetHealth() / pawn.GetMaxHealth())
 
         return max(1, int(full_heal_cost * missing_health))
 
-    def BuyHealth(self, Pawn: unrealsdk.UObject, Vendor: unrealsdk.UObject) -> None:
-        Pawn.SetHealth(Pawn.GetMaxHealth())
+    def BuyHealth(self, pawn: unrealsdk.UObject, vendor: unrealsdk.UObject) -> None:
+        pawn.SetHealth(pawn.GetMaxHealth())
 
-    def GetAmmoCost(self, Pawn: unrealsdk.UObject, Vendor: unrealsdk.UObject) -> int:
-        manager = Pawn.Controller.ResourcePoolManager
+    def LoadPlayerPools(self, pawn: unrealsdk.UObject) -> None:
+        if pawn in self.PlayerAmmoPools:
+            return
 
-        ammo_needed = {}
+        self.PlayerAmmoPools[pawn] = set()
+
+        # Unfortuantly manager.ResourcePools is another fixed array, we need another findall
+        manager = pawn.Controller.ResourcePoolManager
+
         for pool in unrealsdk.FindAll("AmmoResourcePool"):
             if pool.Outer != manager:
                 continue
-            name = pool.Definition.Resource.Name
-            ammo_needed[name] = int(pool.GetMaxValue()) - int(pool.GetCurrentValue())
-        # Of course there had to be one odd one out :|
+            self.PlayerAmmoPools[pawn].add(pool)
+        # Of course there had to be one odd one out, leading to yet another findall :|
         for pool in unrealsdk.FindAll("ResourcePool"):
             if pool.Outer != manager:
                 continue
             if pool.Definition.Resource.Name == "Ammo_Grenade_Protean":
-                name = pool.Definition.Resource.Name
-                ammo_needed[name] = int(pool.GetMaxValue()) - int(pool.GetCurrentValue())
-                break
+                self.PlayerAmmoPools[pawn].add(pool)
+                return
 
-        total_price = 0
-        for item in unrealsdk.FindAll("WillowUsableItem"):
-            if item.Owner != Vendor:
+    def GetAmmoCost(self, pawn: unrealsdk.UObject, vendor: unrealsdk.UObject) -> int:
+        self.LoadPlayerPools(pawn)
+
+        if vendor not in self.AmmoCosts:
+            return 0
+        if pawn not in self.PlayerAmmoPools:
+            return 0
+
+        total_cost = 0
+        for pool in self.PlayerAmmoPools[pawn]:
+            ammo_needed = pool.GetMaxValue() - pool.GetCurrentValue()
+            if ammo_needed == 0:
                 continue
-            if item.DefinitionData is None or item.DefinitionData.ItemDefinition is None:
+
+            name = pool.Definition.Resource.Name
+            if name in self.AmmoCosts[vendor]:
+                total_cost += max(1, int(ammo_needed * self.AmmoCosts[vendor][name]))
+
+        return total_cost
+
+    def BuyAmmo(self, pawn: unrealsdk.UObject, vendor: unrealsdk.UObject) -> None:
+        self.LoadPlayerPools(pawn)
+
+        if vendor not in self.AmmoCosts:
+            return
+        if pawn not in self.PlayerAmmoPools:
+            return
+
+        for pool in self.PlayerAmmoPools[pawn]:
+            # Don't want to refill nades/rockets at vendors that don't sell them
+            name = pool.Definition.Resource.Name
+            if name not in self.AmmoCosts[vendor]:
                 continue
-            name = item.DefinitionData.ItemDefinition.Name
-            if name not in self.AMMO_MAP:
-                continue
 
-            amount = self.AMMO_MAP[name].AmountPerPurchase
-            price = Vendor.GetSellingPriceForInventory(item, Pawn.Controller, 1) / amount
-            needed = ammo_needed[self.AMMO_MAP[name].ResourceName]
+            pool.SetCurrentValue(pool.GetMaxValue())
 
-            if needed != 0:
-                total_price += max(1, int(needed * price))
-
-        return total_price
-
-    def BuyAmmo(self, Pawn: unrealsdk.UObject, Vendor: unrealsdk.UObject) -> None:
-        manager = Pawn.Controller.ResourcePoolManager
-
-        # Don't want to refill nades/rockets in maps that don't sell them
-        valid_pools = []
-        for item in unrealsdk.FindAll("WillowUsableItem"):
-            if item.Owner != Vendor:
-                continue
-            if item.DefinitionData is None or item.DefinitionData.ItemDefinition is None:
-                continue
-            name = item.DefinitionData.ItemDefinition.Name
-            if name not in self.AMMO_MAP:
-                continue
-            valid_pools.append(self.AMMO_MAP[name].ResourceName)
-
-        for pool in unrealsdk.FindAll("AmmoResourcePool"):
-            if pool.Outer != manager:
-                continue
-            if pool.Definition.Resource.Name in valid_pools:
-                pool.SetCurrentValue(pool.GetMaxValue())
-        if "Ammo_Grenade_Protean" in valid_pools:
-            for pool in unrealsdk.FindAll("ResourcePool"):
-                if pool.Outer != manager:
-                    continue
-                if pool.Definition.Resource.Name == "Ammo_Grenade_Protean":
-                    pool.SetCurrentValue(pool.GetMaxValue())
-                    break
-
-    def ModOptionChanged(self, Option: unrealsdk.Options.Boolean, newValue: bool) -> None:
-        if Option != self.UpdatingOption:
+    def ModOptionChanged(self, option: unrealsdk.Options.Boolean, new_value: bool) -> None:
+        if option != self.UpdatingOption:
             return
 
         # If you turn on updating and there are people close to vendors, start updating
-        if newValue:
+        if new_value:
             if len(self.TouchingActors) > 0:
                 AsyncUtil.RunEvery(self.UPDATE_DELAY, self.OnUpdate, self.Name)
         # If you turn off updating, stop updating and make sure all vendors are usable at no cost
