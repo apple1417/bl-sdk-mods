@@ -1,9 +1,9 @@
 import unrealsdk
 from typing import Any, ClassVar, Dict, Iterator
 
-from Mods.ModMenu import EnabledSaveType, Options, Mods, ModTypes, RegisterMod, SDKMod
+from Mods.ModMenu import EnabledSaveType, Mods, ModTypes, Options, RegisterMod, SDKMod
 
-from Mods.EquipLocker.RestrictionSets import ALL_RESTRICTION_SETS, BaseRestrictionSet
+from .RestrictionSets import ALL_RESTRICTION_SETS, BaseRestrictionSet
 
 if __name__ == "__main__":
     import importlib

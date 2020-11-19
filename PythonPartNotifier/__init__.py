@@ -1,7 +1,8 @@
 import unrealsdk
-from typing import cast, Dict, Sequence, Tuple
+from typing import Dict, Sequence, Tuple, cast
 
-from Mods.ModMenu import EnabledSaveType, Game, Mods, ModTypes, Options, RegisterMod, SaveModSettings, SDKMod
+from Mods.ModMenu import (EnabledSaveType, Game, Mods, ModTypes, Options, RegisterMod,
+                          SaveModSettings, SDKMod)
 from Mods.PythonPartNotifier.PartNamer import GetPartName
 
 

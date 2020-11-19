@@ -4,8 +4,8 @@ import inspect
 import os
 import sys
 from abc import ABC, abstractmethod
-from typing import ClassVar, List, Tuple
 from types import ModuleType
+from typing import ClassVar, List, Tuple
 
 from Mods.ModMenu import Options
 

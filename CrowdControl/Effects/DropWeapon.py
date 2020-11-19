@@ -2,8 +2,9 @@ import unrealsdk
 import random
 from typing import ClassVar
 
-from . import JSON, QueuedCrowdControlEffect
 from Mods import AsyncUtil
+
+from . import JSON, QueuedCrowdControlEffect
 
 
 class DropWeapon(QueuedCrowdControlEffect):

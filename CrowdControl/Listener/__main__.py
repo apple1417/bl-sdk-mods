@@ -5,16 +5,15 @@ import logging
 import random
 import sys
 import traceback
-
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
 from os import path
 from socket import gaierror
-from requests.exceptions import ConnectionError
 from typing import ClassVar, List, Optional
 
-from .TwitchConnection import TwitchConnection, TwitchError, TwitchReconnect
+from requests.exceptions import ConnectionError
 
+from .TwitchConnection import TwitchConnection, TwitchError, TwitchReconnect
 
 handler = RotatingFileHandler(path.join(path.dirname(__file__), "listener.log"), "a", 1000000, 2)
 logging.basicConfig(

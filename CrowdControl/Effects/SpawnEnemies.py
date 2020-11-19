@@ -4,9 +4,10 @@ import random
 from enum import Enum
 from typing import ClassVar, Optional, Tuple
 
-from . import JSON, QueuedCrowdControlEffect
 from Mods import AsyncUtil
 from Mods.UserFeedback import ShowHUDMessage
+
+from . import JSON, QueuedCrowdControlEffect
 
 Location = Tuple[float, float, float]
 Rotation = Tuple[int, int, int]

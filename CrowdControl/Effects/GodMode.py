@@ -1,9 +1,10 @@
 import unrealsdk
 from typing import ClassVar
 
-from . import DurationCrowdControlEffect, JSON, QueuedCrowdControlEffect
 from Mods import AsyncUtil
 from Mods.UserFeedback import ShowHUDMessage
+
+from . import JSON, DurationCrowdControlEffect, QueuedCrowdControlEffect
 
 
 class GodMode(DurationCrowdControlEffect):

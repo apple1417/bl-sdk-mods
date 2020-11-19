@@ -1,11 +1,11 @@
 import unrealsdk
 import traceback
-from typing import Any, cast, ClassVar, Dict
-
-from . import BaseTask, JSON
-from Mods.UserFeedback import OptionBox, OptionBoxButton, TextInputBox, TrainingBox
+from typing import Any, ClassVar, Dict, cast
 
 from Mods.ModMenu import GetOrderedModList
+from Mods.UserFeedback import OptionBox, OptionBoxButton, TextInputBox, TrainingBox
+
+from . import JSON, BaseTask
 
 
 # This and SDKEnable work similarly and could *probably* be subclasses, but there are just enough

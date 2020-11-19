@@ -1,8 +1,9 @@
 import unrealsdk
 from typing import Dict
 
-from . import ABCCheat, ABCToggleableCheat, SDKHook
 from Mods.UserFeedback import ShowHUDMessage
+
+from . import ABCCheat, ABCToggleableCheat, SDKHook
 
 
 class FreeShops(ABCToggleableCheat):

@@ -2,8 +2,9 @@ import unrealsdk
 import math as maths
 from typing import ClassVar
 
-from . import JSON, QueuedCrowdControlEffect
 from Mods import AsyncUtil
+
+from . import JSON, QueuedCrowdControlEffect
 
 
 class Jump(QueuedCrowdControlEffect):

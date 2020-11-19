@@ -4,13 +4,9 @@ import os
 from typing import ClassVar, Dict, List, Optional
 
 from Mods.ModMenu import Options
+from Mods.UserFeedback import OptionBox, OptionBoxButton, ShowHUDMessage, TextInputBox
 
 from .Cheats import ABCCheat, ABCCycleableCheat
-
-from Mods.UserFeedback import OptionBox
-from Mods.UserFeedback import OptionBoxButton
-from Mods.UserFeedback import ShowHUDMessage
-from Mods.UserFeedback import TextInputBox
 
 
 class Preset:

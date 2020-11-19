@@ -3,8 +3,8 @@ import inspect
 import os
 import sys
 from abc import ABC, abstractmethod
-from typing import Any, ClassVar, Dict, List, Union
 from types import ModuleType
+from typing import Any, ClassVar, Dict, List, Union
 
 JSON = Union[str, int, float, bool, None, Dict[str, Any], List[Any]]
 

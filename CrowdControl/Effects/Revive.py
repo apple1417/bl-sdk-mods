@@ -1,7 +1,7 @@
 import unrealsdk
 from typing import ClassVar
 
-from . import IsInGame, JSON, QueuedCrowdControlEffect
+from . import JSON, IsInGame, QueuedCrowdControlEffect
 
 
 class Revive(QueuedCrowdControlEffect):

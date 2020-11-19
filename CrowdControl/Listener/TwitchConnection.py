@@ -2,10 +2,11 @@ import asyncio
 import json
 import logging
 import random
-import requests
 import sys
-import websockets
 from typing import Any, ClassVar, List, TextIO, Union
+
+import requests
+import websockets
 
 _log = logging.getLogger("CrowdControlListener.Connection")
 

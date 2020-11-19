@@ -2,10 +2,8 @@ import unrealsdk
 import html
 from typing import Dict, List
 
-from Mods.ModMenu import Options
-from Mods.ModMenu.KeybindManager import InputEvent, Keybind
-from Mods.ModMenu.ModObjects import EnabledSaveType, Mods, ModTypes, SDKMod
-from Mods.ModMenu.SettingsManager import LoadModSettings, SaveModSettings
+from Mods.ModMenu import (EnabledSaveType, InputEvent, Keybind, LoadModSettings, Mods, ModTypes,
+                          Options, SaveModSettings, SDKMod)
 
 try:
     from Mods import UserFeedback
@@ -37,8 +35,8 @@ if __name__ == "__main__":
         __file__ = sys.exc_info()[-1].tb_frame.f_code.co_filename  # type: ignore
 
 
-from Mods.ApplesBorderlandsCheats.Cheats import ALL_CHEATS, ALL_HOOKS, ALL_OPTIONS
-from Mods.ApplesBorderlandsCheats.Presets import PresetManager
+from .Cheats import ALL_CHEATS, ALL_HOOKS, ALL_OPTIONS
+from .Presets import PresetManager
 
 
 class ApplesBorderlandsCheats(SDKMod):

@@ -1,8 +1,9 @@
 import unrealsdk
 from typing import ClassVar
 
-from . import DurationCrowdControlEffect, IsInGame, JSON
 from Mods.UserFeedback import ShowHUDMessage
+
+from . import JSON, DurationCrowdControlEffect, IsInGame
 
 
 class SuperSpeed(DurationCrowdControlEffect):

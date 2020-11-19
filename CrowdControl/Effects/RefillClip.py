@@ -1,7 +1,7 @@
 import unrealsdk
 from typing import ClassVar, cast
 
-from . import IsInGame, JSON, QueuedCrowdControlEffect
+from . import JSON, IsInGame, QueuedCrowdControlEffect
 
 
 class RefillClip(QueuedCrowdControlEffect):

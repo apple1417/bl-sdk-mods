@@ -1,9 +1,10 @@
 import unrealsdk
 import json
 import os
-from typing import cast, Dict, List, Type
+from typing import Dict, List, Type, cast
 
-from Mods.ModMenu import EnabledSaveType, GetSettingsFilePath, Mods, ModTypes, Options, RegisterMod, SDKMod, LoadModSettings, SaveModSettings
+from Mods.ModMenu import (EnabledSaveType, GetSettingsFilePath, LoadModSettings, Mods, ModTypes,
+                          Options, RegisterMod, SaveModSettings, SDKMod)
 
 try:
     from Mods import AsyncUtil  # noqa F401  # Unused in this file but better to check in one place
@@ -23,7 +24,7 @@ except (ImportError, RuntimeError, NameError) as ex:
     raise ex
 
 
-from Mods.SDKAutorun import Tasks
+from . import Tasks
 
 if __name__ == "__main__":
     import importlib

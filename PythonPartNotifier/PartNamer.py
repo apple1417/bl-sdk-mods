@@ -1,5 +1,5 @@
 import unrealsdk
-from typing import cast, Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, cast
 
 
 # Easier to split out the different item types to different functions

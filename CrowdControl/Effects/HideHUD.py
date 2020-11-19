@@ -1,9 +1,10 @@
 import unrealsdk
 from typing import ClassVar
 
-from . import DurationCrowdControlEffect, JSON
 from Mods import AsyncUtil
 from Mods.UserFeedback import ShowChatMessage
+
+from . import JSON, DurationCrowdControlEffect
 
 
 class ManualReloads(DurationCrowdControlEffect):

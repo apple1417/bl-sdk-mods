@@ -1,6 +1,6 @@
 from typing import Dict
 
-from Mods.ModMenu import ModPriorities, ModTypes, SDKMod, RegisterMod
+from Mods.ModMenu import ModPriorities, ModTypes, RegisterMod, SDKMod
 
 # Export everything from the other files
 from .GFxMovie import GFxMovie as GFxMovie  # noqa F401

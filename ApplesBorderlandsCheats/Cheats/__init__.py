@@ -5,11 +5,11 @@ import os
 import sys
 from abc import ABC, abstractmethod
 from functools import cmp_to_key
-from typing import Callable, ClassVar, Dict, List, Tuple
 from types import ModuleType
+from typing import Callable, ClassVar, Dict, List, Tuple
 
-from Mods.UserFeedback import ShowHUDMessage
 from Mods.ModMenu import Options
+from Mods.UserFeedback import ShowHUDMessage
 
 SDKHook = Callable[[unrealsdk.UObject, unrealsdk.UFunction, unrealsdk.FStruct], bool]
 

@@ -1,7 +1,7 @@
-from os import path
 import subprocess
 import sys
 import webbrowser
+from os import path
 
 if sys.version_info.major < 3 or (sys.version_info.major >= 3 and sys.version_info.minor < 7):
     print("Must be using at least Python 3.7!")

@@ -1,8 +1,9 @@
 import unrealsdk
 from typing import ClassVar
 
-from . import BaseTask, JSON
 from Mods.UserFeedback import TextInputBox
+
+from . import JSON, BaseTask
 
 
 class ConsoleTask(BaseTask):

@@ -2,7 +2,7 @@ import unrealsdk
 from dataclasses import dataclass
 from typing import ClassVar, Dict, Set
 
-from Mods.ModMenu import EnabledSaveType, Options, Mods, ModTypes, RegisterMod, SDKMod
+from Mods.ModMenu import EnabledSaveType, Mods, ModTypes, Options, RegisterMod, SDKMod
 
 try:
     from Mods import AsyncUtil

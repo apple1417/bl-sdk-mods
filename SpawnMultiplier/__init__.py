@@ -1,6 +1,6 @@
 import unrealsdk
 from enum import Enum
-from typing import Any, cast, ClassVar, Optional, Set
+from typing import Any, ClassVar, Optional, Set, cast
 
 from Mods.ModMenu import EnabledSaveType, Mods, ModTypes, Options, RegisterMod, SDKMod
 

@@ -3,7 +3,7 @@ import traceback
 from datetime import datetime, timedelta
 from typing import Any, Callable, Dict, List
 
-from Mods.ModMenu import ModPriorities, ModTypes, SDKMod, RegisterMod
+from Mods.ModMenu import ModPriorities, ModTypes, RegisterMod, SDKMod
 
 from .SortedDict import SortedDict
 

@@ -25,7 +25,10 @@ class Onezerker(SDKMod):
         unrealsdk.KeepAlive(self.NumWeapObj)
 
         if self.NumWeapObj is None:
-            del self.SettingsInputs["Enter"]
+            try:
+                del self.SettingsInputs["Enter"]
+            except KeyError:
+                pass
 
         self.WeaponMap = {}
 

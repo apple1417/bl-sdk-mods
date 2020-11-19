@@ -1,8 +1,9 @@
 from datetime import datetime
 from typing import ClassVar
 
-from . import JSON, BaseCrowdControlEffect
 from Mods.UserFeedback import ShowChatMessage
+
+from . import JSON, BaseCrowdControlEffect
 
 
 class Chat(BaseCrowdControlEffect):

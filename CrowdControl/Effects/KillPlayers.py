@@ -1,8 +1,9 @@
 import unrealsdk
 from typing import ClassVar
 
-from . import IsInGame, JSON, QueuedCrowdControlEffect
 from Mods import AsyncUtil
+
+from . import JSON, IsInGame, QueuedCrowdControlEffect
 
 
 class FFYL(QueuedCrowdControlEffect):

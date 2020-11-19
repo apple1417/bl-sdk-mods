@@ -9,12 +9,13 @@ from os import path, startfile
 from typing import Any, ClassVar, Dict, IO, List, Optional
 
 from Mods.ModMenu import EnabledSaveType, Mods, ModTypes, Options, RegisterMod, SDKMod
-from Mods.CrowdControl import Effects
+
+from . import Effects
 
 try:
-    from Mods import AsyncUtil
-    from Mods import UserFeedback
-    from Mods.UserFeedback import ShowHUDMessage, OptionBox, OptionBoxButton, TextInputBox, TrainingBox
+    from Mods import AsyncUtil, UserFeedback
+    from Mods.UserFeedback import (OptionBox, OptionBoxButton, ShowHUDMessage, TextInputBox,
+                                   TrainingBox)
 
     if UserFeedback.VersionMajor < 1:
         raise RuntimeError("UserFeedback version is too old, need at least v1.3!")
@@ -44,7 +45,7 @@ _native_path = path.join(path.dirname(__file__), "Native")
 if _native_path not in sys.path:
     sys.path.append(_native_path)
 
-from ctypes import byref, GetLastError, windll, WinError  # noqa E402
+from ctypes import GetLastError, WinError, byref, windll  # noqa E402
 from ctypes.wintypes import BYTE, DWORD  # noqa E402
 
 ERROR_BROKEN_PIPE = 109

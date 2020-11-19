@@ -4,10 +4,9 @@ import inspect
 import os
 import sys
 from abc import ABC, abstractmethod
-from typing import Any, Callable, ClassVar, cast, Dict, List
+from typing import Any, Callable, ClassVar, Dict, List, cast
 
 from Mods.ModMenu import Options
-
 from Mods import AsyncUtil
 from Mods.UserFeedback import ShowHUDMessage
 

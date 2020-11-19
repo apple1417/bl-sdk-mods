@@ -2,10 +2,10 @@ import unrealsdk
 import traceback
 from typing import ClassVar
 
-from . import BaseTask, JSON
+from Mods.ModMenu import GetOrderedModList
 from Mods.UserFeedback import OptionBox, OptionBoxButton, TextInputBox
 
-from Mods.ModMenu import GetOrderedModList
+from . import JSON, BaseTask
 
 
 # This and SDKInput work similarly and could *probably* be subclasses, but there are just enough

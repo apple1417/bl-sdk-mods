@@ -1,5 +1,6 @@
 import unrealsdk
-from typing import ClassVar, Tuple, Optional
+from typing import ClassVar, Optional, Tuple
+
 from .GFxMovie import GFxMovie
 
 

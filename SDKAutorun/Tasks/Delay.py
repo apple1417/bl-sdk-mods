@@ -1,8 +1,9 @@
 from typing import ClassVar
 
-from . import BaseTask, JSON
 from Mods import AsyncUtil
 from Mods.UserFeedback import OptionBox, OptionBoxButton, TextInputBox
+
+from . import JSON, BaseTask
 
 
 class DelayTask(BaseTask):

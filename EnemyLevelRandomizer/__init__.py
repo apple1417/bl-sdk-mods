@@ -2,7 +2,7 @@ import unrealsdk
 import random
 from typing import List
 
-from Mods.ModMenu import EnabledSaveType, Options, Mods, ModTypes, RegisterMod, SDKMod
+from Mods.ModMenu import EnabledSaveType, Mods, ModTypes, Options, RegisterMod, SDKMod
 
 
 class EnemyLevelRandomizer(SDKMod):

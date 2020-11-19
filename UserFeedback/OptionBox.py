@@ -2,9 +2,10 @@ import unrealsdk
 from dataclasses import dataclass
 from enum import Enum, auto
 from typing import List, Optional, Sequence, Tuple
-from .GFxMovie import GFxMovie
 
 from Mods.ModMenu import DeprecationHelper as dh
+
+from .GFxMovie import GFxMovie
 
 
 @dataclass

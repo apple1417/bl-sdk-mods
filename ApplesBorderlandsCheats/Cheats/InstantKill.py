@@ -1,8 +1,9 @@
 import unrealsdk
 from typing import Dict
 
-from . import ABCCheat, ABCToggleableCheat, SDKHook
 from Mods.ModMenu import Game, Options
+
+from . import ABCCheat, ABCToggleableCheat, SDKHook
 
 
 class OneShot(ABCToggleableCheat):
