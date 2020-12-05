@@ -8,6 +8,11 @@ class InstantCooldown(ABCToggleableCheat):
     Name = "Instant Cooldown"
     KeybindName = "Toggle Instant Cooldown"
 
+    def OnCycle(self) -> None:
+        if self.IsOn:
+            unrealsdk.GetEngine().GamePlayers[0].Actor.ResetSkillCooldown()
+            unrealsdk.GetEngine().GamePlayers[0].Actor.ResetMeleeSkillCooldown()
+
     def GetHooks(self) -> Dict[str, SDKHook]:
         # We can use the same simple function for both action and melee skills
         def StartActiveMeleeSkillCooldown(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:

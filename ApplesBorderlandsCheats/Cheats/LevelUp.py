@@ -10,7 +10,17 @@ class LevelUp(ABCCheat):
     KeybindName = "Level Up"
 
     def OnPress(self) -> None:
-        unrealsdk.GetEngine().GamePlayers[0].Actor.ExpLevelUp(True)
+        PC = unrealsdk.GetEngine().GamePlayers[0].Actor
+        if PC.IsResourcePoolValid((
+            PC.ExpPool.PoolManager,
+            PC.ExpPool.PoolIndexInManager,
+            PC.ExpPool.PoolGUID,
+            PC.ExpPool.Data
+        )):
+            PC.ExpPool.Data.SetCurrentValue(0)
+        PC.OnExpLevelChange(True, False)
+        PC.ExpEarn(PC.GetExpPointsRequiredForLevel(PC.PlayerReplicationInfo.ExpLevel + 1), 0)
+        PC.ExpPool.Data.ApplyExpPointsToExpLevel(True)
 
 
 class OPLevel(ABCCheat):
