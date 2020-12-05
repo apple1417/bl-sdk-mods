@@ -1,0 +1,61 @@
+{
+	"SDKMod": {
+		"prefix": "SDKMod",
+		"scope": "python",
+		"body": [
+			"import unrealsdk",
+			"",
+			"from Mods.ModMenu import EnabledSaveType, Mods, ModTypes, RegisterMod, SDKMod",
+			"",
+			"",
+			"class ${1:${TM_DIRECTORY/.+\\\\(.+?)$/$1/}}(SDKMod):",
+			"    Name: str = \"${1:${TM_DIRECTORY/.+\\\\(.+?)$/$1/}}\"",
+			"    Author: str = \"apple1417\"",
+			"    Description: str = (",
+			"        \"${2:Mod Description.}\"",
+			"    )",
+			"    Version: str = \"1.0\"",
+			"",
+			"    Types: ModTypes = ModTypes.${3:Utility}",
+			"    SaveEnabledState: EnabledSaveType = EnabledSaveType.${4:LoadOnMainMenu}",
+			"",
+			"    def __init__(self) -> None:",
+			"        pass",
+			"",
+			"    def Enable(self) -> None:",
+			"        pass",
+			"",
+			"    def Disable(self) -> None:",
+			"        pass",
+			"",
+			"",
+			"instance = ${1:${TM_DIRECTORY/.+\\\\(.+?)$/$1/}}()",
+			"if __name__ == \"__main__\":",
+			"    unrealsdk.Log(f\"[{instance.Name}] Manually loaded\")",
+			"    for mod in Mods:",
+			"        if mod.Name == instance.Name:",
+			"            if mod.IsEnabled:",
+			"                mod.Disable()",
+			"            Mods.remove(mod)",
+			"            unrealsdk.Log(f\"[{instance.Name}] Removed last instance\")",
+			"",
+			"            # Fixes inspect.getfile()",
+			"            instance.__class__.__module__ = mod.__class__.__module__",
+			"            break",
+			"RegisterMod(instance)",
+		]
+	},
+	"PlayerController": {
+		"prefix": "PC",
+		"scope": "python",
+		"body": "unrealsdk.GetEngine().GamePlayers[0].Actor"
+	},
+	"Hook": {
+		"prefix": "Hook",
+		"scope": "python",
+		"body": [
+			"def ${1:Hook}(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:",
+			"    pass"
+		]
+	}
+}
