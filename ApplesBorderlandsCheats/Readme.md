@@ -1,5 +1,8 @@
 ## Changelog
 
+### Apple's Borderlands Cheats v1.12
+Fixed `Infinite Ammo` not applying to offhand weapons.
+
 ### Apple's Borderlands Cheats v1.11
 Fixed `Level Up` not syncing your exp points.
 Made `Instant Cooldown` remove any currently active cooldown when you enable it.
