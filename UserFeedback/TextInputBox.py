@@ -219,7 +219,7 @@ class TextInputBox(GFxMovie):
                 https://docs.unrealengine.com/en-US/API/Runtime/Engine/Engine/EInputEvent/index.html
         """
 
-        if key == "LeftShift" or key == "RightShift":
+        if key in ("LeftShift", "RightShift"):
             if event == 0:
                 self._IsShiftPressed = True
             elif event == 1:

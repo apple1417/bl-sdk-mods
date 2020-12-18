@@ -147,7 +147,7 @@ class Preset:
             raise RuntimeError("Tried to re-configure a preset that is currently being configured")
         self.IsBeingConfigured = True
 
-        for idx, button in enumerate(self._ConfigureBox.Buttons):
+        for button in self._ConfigureBox.Buttons:
             new_tip = "Currently: Ignore"
             if button.Name in self._NewSettings:
                 new_tip = f"Currently: {self._NewSettings[button.Name]}"
@@ -187,7 +187,7 @@ class Preset:
 
         new_tip = f"Currently: {button.Name}"
 
-        if button == self._IgnoreButton or button == self._DontRunButton:
+        if button in (self._IgnoreButton, self._DontRunButton):
             if self._SelectedCheat.Name in self._NewSettings:
                 del self._NewSettings[self._SelectedCheat.Name]
             new_tip = "Currently: Ignore"

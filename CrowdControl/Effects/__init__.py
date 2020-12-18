@@ -249,7 +249,7 @@ for file in os.listdir(_dir):
     effect = importlib.import_module(f".{name}", "Mods.CrowdControl.Effects")
     if f"Mods.CrowdControl.Effects.{name}" in sys.modules:
         importlib.reload(effect)
-    for name, cls in inspect.getmembers(effect, inspect.isclass):
+    for _, cls in inspect.getmembers(effect, inspect.isclass):
         # Filter out classes imported from other modules
         if inspect.getmodule(cls) != effect:
             continue

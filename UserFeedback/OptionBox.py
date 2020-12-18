@@ -398,9 +398,11 @@ class OptionBox(GFxMovie):
         if button is None:
             current_page.DefaultButtonIndex = 0
             # Don't select the previous page button if we use hover scrolling
-            if self.ScrollType in (OptionScrollType.BIDIRECTIONAL_HOVER, OptionScrollType.BIDIRECTIONAL_INFINITE_HOVER):
-                if current_page.Buttons[0] == self._PreviousPageButton:
-                    current_page.DefaultButtonIndex = 1
+            if self.ScrollType in (
+                OptionScrollType.BIDIRECTIONAL_HOVER,
+                OptionScrollType.BIDIRECTIONAL_INFINITE_HOVER
+            ) and current_page.Buttons[0] == self._PreviousPageButton:
+                current_page.DefaultButtonIndex = 1
         elif button in current_page.Buttons:
             current_page.DefaultButtonIndex = current_page.Buttons.index(button)
         else:

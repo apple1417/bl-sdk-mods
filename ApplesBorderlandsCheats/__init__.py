@@ -140,7 +140,7 @@ class ApplesBorderlandsCheats(SDKMod):
 
     def Disable(self) -> None:
         for hook, func_list in ALL_HOOKS.items():
-            for i, func in enumerate(func_list):
+            for i, _ in enumerate(func_list):
                 unrealsdk.RemoveHook(hook, f"{self.Name}{i}")
 
 

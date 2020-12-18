@@ -26,11 +26,13 @@ _log.info("Starting up")
 
 
 class Program:
-    reconnect_times: ClassVar[List[float]] = [
+    RECONNECT_TIMES: ClassVar[List[float]] = [
         0, 1, 2, 5, 10, 15, 30, 60
     ]
-    reconnect_range: ClassVar[float] = 1
-    reconnect_reset: ClassVar[float] = 120
+    RECONNECT_VARIANCE_RANGE: ClassVar[float] = 1
+    RECONNECT_ERROR_RESET_TIME: ClassVar[float] = 120
+    MAX_DUPLICATE_ERRORS: ClassVar[int] = 3
+
     _reconnect_stage: int
     _last_reconnect: Optional[datetime]
 
@@ -39,7 +41,6 @@ class Program:
     _conn: TwitchConnection
     _loop: asyncio.AbstractEventLoop
 
-    max_duplicate_errors: ClassVar[int] = 3
     _last_error: Optional[Exception]
     _error_count: int
 
@@ -94,18 +95,19 @@ class Program:
     async def _handle_exception(self, ex: BaseException) -> bool:
         # If enough time has passed between the last error and this, reset the counters
         if self._last_reconnect is not None:
-            if (datetime.now() - self._last_reconnect).seconds > self.reconnect_reset:
+            time_since_last_reconnect = (datetime.now() - self._last_reconnect).total_seconds()
+            if time_since_last_reconnect > self.RECONNECT_ERROR_RESET_TIME:
                 self._reconnect_stage = 0
                 self._error_count = 0
 
-        if self._reconnect_stage == len(self.reconnect_times):
+        if self._reconnect_stage == len(self.RECONNECT_TIMES):
             self._print_fatal("Unable to reconnect to Twitch!")
             return True
         time = max(0, random.uniform(
-            self.reconnect_times[self._reconnect_stage] - self.reconnect_range,
-            self.reconnect_times[self._reconnect_stage] + self.reconnect_range
+            self.RECONNECT_TIMES[self._reconnect_stage] - self.RECONNECT_VARIANCE_RANGE,
+            self.RECONNECT_TIMES[self._reconnect_stage] + self.RECONNECT_VARIANCE_RANGE
         ))
-        reconnect_str = f"in {self.reconnect_times[self._reconnect_stage]} seconds."
+        reconnect_str = f"in {self.RECONNECT_TIMES[self._reconnect_stage]} seconds."
         if self._reconnect_stage == 0:
             time = 0
             reconnect_str = "now."
@@ -132,12 +134,12 @@ class Program:
                 self._error_count += 1
             else:
                 self._error_count = 0
-            if self._error_count >= self.max_duplicate_errors:
+            if self._error_count >= self.MAX_DUPLICATE_ERRORS:
                 self._print_fatal("Could not recover from internal errors!")
                 return True
             else:
                 self._print_msg(f"Internal error, reconnecting {reconnect_str}")
-        elif isinstance(ex, TwitchReconnect) or isinstance(ex, ConnectionError) or isinstance(ex, gaierror):
+        elif isinstance(ex, (TwitchReconnect, ConnectionError, gaierror)):
             self._print_msg(f"Lost connection, reconnecting {reconnect_str}")
         else:
             self._print_fatal(f"Unexpected Exception!\n{ex}\n{tb}")

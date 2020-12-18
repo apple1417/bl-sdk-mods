@@ -1,5 +1,6 @@
 import unrealsdk
 from datetime import datetime
+from typing import Optional
 
 
 def ShowHUDMessage(Title: str, Message: str, Duration: float = 2, MenuHint: int = 0) -> None:
@@ -44,14 +45,16 @@ def ShowHUDMessage(Title: str, Message: str, Duration: float = 2, MenuHint: int 
 def ShowChatMessage(
     User: str,
     Message: str,
-    Timestap: datetime = datetime.now(),
+    Timestamp: Optional[datetime] = None,
     ShowTimestamp: bool = True
 ) -> None:
-    is12h = unrealsdk.FindAll("WillowSaveGameManager")[0].TimeFormat == "12"
-    time_str = Timestap.strftime(("[%H:%M:%S]", "[%I:%M:%S%p]")[is12h]).lower()
+    if Timestamp is None:
+        Timestamp = datetime.now()  # noqa N806
 
-    if ShowTimestamp:
-        User = f"{User} {time_str}"  # noqa N806
+    is12h = unrealsdk.FindAll("WillowSaveGameManager")[0].TimeFormat == "12"
+    time_str = Timestamp.strftime(("[%H:%M:%S]", "[%I:%M:%S%p]")[is12h]).lower()
+
+    user_str = f"{User} {time_str}" if ShowTimestamp else User
 
     chat_movie = unrealsdk.GetEngine().GamePlayers[0].Actor.GetTextChatMovie()
-    chat_movie.AddChatMessageInternal(User, Message)
+    chat_movie.AddChatMessageInternal(user_str, Message)

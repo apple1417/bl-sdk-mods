@@ -1,5 +1,5 @@
 from collections.abc import MutableMapping
-from typing import Dict, Iterator, List, Mapping, Tuple, TypeVar
+from typing import Dict, Iterator, List, Mapping, Optional, Tuple, TypeVar
 
 K = TypeVar("K")
 V = TypeVar("V")
@@ -8,10 +8,10 @@ V = TypeVar("V")
 class SortedDict(MutableMapping, Mapping[K, V]):  # type: ignore
     _items: List[Tuple[K, V]]
 
-    def __init__(self, defaults: Dict[K, V] = {}) -> None:
+    def __init__(self, defaults: Optional[Dict[K, V]] = None) -> None:
         self._items = []
 
-        for k, v in defaults.items():
+        for k, v in (defaults or {}).items():
             self[k] = v
 
     def __contains__(self, key: object) -> bool:

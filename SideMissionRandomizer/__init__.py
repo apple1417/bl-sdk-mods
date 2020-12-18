@@ -106,14 +106,14 @@ class SideMissionRandomizerChild(SideMissionRandomizerBase):
         unlock_map: Dict[str, List[str]] = {}
         defaults: List[str] = []
         for mission in self.NewDependencies:
-            count = 0
+            is_empty = True
             for dep in self.NewDependencies[mission]:
                 if dep.MissionName in unlock_map:
                     unlock_map[dep.MissionName].append(mission.MissionName)
                 else:
                     unlock_map[dep.MissionName] = [mission.MissionName]
-                count += 1
-            if count == 0:
+                is_empty = False
+            if is_empty:
                 defaults.append(mission.MissionName)
 
         with open(self.DUMP_PATH, "w") as file:

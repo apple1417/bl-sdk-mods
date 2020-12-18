@@ -172,11 +172,10 @@ class ItemLevelUncapper(SDKMod):
     def FixCAID(self, obj: unrealsdk.UObject, indexes: Set[int]) -> None:
         if not obj.ConsolidatedAttributeInitData:
             return
-        # I can't call len() on these arrays (for now), so I need to manually count it
-        index = 0
+
         change_amount = 0
-        for bvc in obj.ConsolidatedAttributeInitData:
-            if index in indexes:
+        for idx, bvc in enumerate(obj.ConsolidatedAttributeInitData):
+            if idx in indexes:
                 # I don't really think anything uses a scale but just in case
                 bvc.BaseValueConstant = self.NEW_LEVEL
                 bvc.BaseValueScaleConstant = 1
@@ -184,7 +183,6 @@ class ItemLevelUncapper(SDKMod):
                 change_amount += 1
                 if change_amount >= len(indexes):
                     return
-            index += 1
 
     def HandleInvBalance(self, obj: unrealsdk.UObject) -> None:
         if "WillowGame.Default__" in str(obj):

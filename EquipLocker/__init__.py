@@ -121,10 +121,8 @@ class EquipLocker(SDKMod):
             return True
 
         for option, r_set in self.OptionRestrictionMap.items():
-            if option.CurrentValue:
-                if not r_set.CanItemBeEquipped(item):
-                    return False
-
+            if option.CurrentValue and not r_set.CanItemBeEquipped(item):
+                return False
         return True
 
     def GetEquippedItems(self) -> Iterator[unrealsdk.UObject]:

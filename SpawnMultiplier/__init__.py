@@ -174,7 +174,7 @@ class SpawnMultiplier(SDKMod):
         pop_def = den.PopulationDef
         if pop_def is None:
             return False
-        count = 0
+        is_empty = True
         for actor in pop_def.ActorArchetypeList:
             factory = actor.SpawnFactory
             if factory is None:
@@ -185,8 +185,8 @@ class SpawnMultiplier(SDKMod):
                 "PopulationFactoryVendingMachine"
             ):
                 return False
-            count += 1
-        if count == 0:
+            is_empty = False
+        if is_empty:
             return False
 
         return True

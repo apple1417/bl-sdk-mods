@@ -106,18 +106,15 @@ class Allegiance(BaseRestrictionSet):
         if flash not in self.FlashNameOptionMap:
             return True
 
-        if self.WeaponsOnly.CurrentValue:
-            if item.Class.Name != "WillowWeapon":
-                return True
+        if self.WeaponsOnly.CurrentValue and item.Class.Name != "WillowWeapon":
+            return True
 
-        if self.UseableItems.CurrentValue:
-            if item.Class.Name == "WillowUsableItem":
-                return True
+        if self.UseableItems.CurrentValue and item.Class.Name == "WillowUsableItem":
+            return True
 
-        if self.AllegianceRelics.CurrentValue:
-            if item.Class.Name == "WillowArtifact":
-                item_def = item.DefinitionData.ItemDefinition
-                if item_def is not None and item_def.Name in self.ArtifactOptionMap:
-                    return bool(self.ArtifactOptionMap[item_def.Name].CurrentValue)
+        if self.AllegianceRelics.CurrentValue and item.Class.Name == "WillowArtifact":
+            item_def = item.DefinitionData.ItemDefinition
+            if item_def is not None and item_def.Name in self.ArtifactOptionMap:
+                return bool(self.ArtifactOptionMap[item_def.Name].CurrentValue)
 
         return bool(self.FlashNameOptionMap[flash].CurrentValue)

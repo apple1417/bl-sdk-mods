@@ -55,7 +55,7 @@ for file in os.listdir(_dir):
     else:
         task = importlib.import_module(f".{name}", _CURRENT_MODULE)
     # Check all classes in the file - technically you can define more than one
-    for name, cls in inspect.getmembers(task, inspect.isclass):
+    for _, cls in inspect.getmembers(task, inspect.isclass):
         # Filter out classes imported from other modules
         if inspect.getmodule(cls) != task:
             continue

@@ -209,9 +209,9 @@ def _getShieldPartName(part: unrealsdk.UObject, full: bool) -> str:
             text = "Turtle"
 
         # Add the element if applicable
-        if text == "Nova" or text == "Spike":
+        if text in ("Nova", "Spike"):
             element = _getElement(name)
-            if not element == "":
+            if element != "":
                 text = f"{element} {text}"
 
         return text + (" Shield Type" if full else "")
@@ -276,9 +276,8 @@ def _getGrenadePartName(part: unrealsdk.UObject, full: bool) -> str:
 
         if name in GRENADE_PAYLOAD_NAMES:
             return air_mask + GRENADE_PAYLOAD_NAMES[name] + (" Grenade Payload" if full else "")
-    elif str(part).startswith("GrenadeModDefinition"):
-        if name in GRENADE_DEFINTION_NAMES:
-            return GRENADE_DEFINTION_NAMES[name] + (" Grenade Type" if full else "")
+    elif str(part).startswith("GrenadeModDefinition") and name in GRENADE_DEFINTION_NAMES:
+        return GRENADE_DEFINTION_NAMES[name] + (" Grenade Type" if full else "")
 
     return str(part.Name)
 
@@ -315,7 +314,7 @@ def _getCOMPartName(part: unrealsdk.UObject, full: bool) -> str:
             if player == "Mechromancer":
                 player = "Necromancer"
             elif player == "Merc":
-                player == "Monk"
+                player = "Monk"
 
             return f"{com_name} {player}" + (" COM Type" if full else "")
 

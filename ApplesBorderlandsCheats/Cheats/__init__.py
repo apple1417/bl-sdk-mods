@@ -132,7 +132,7 @@ for file in os.listdir(_dir):
     else:
         cheat_module = importlib.import_module(f".{name}", _CURRENT_MODULE)
 
-    for name, cls in inspect.getmembers(cheat_module, inspect.isclass):
+    for _, cls in inspect.getmembers(cheat_module, inspect.isclass):
         # Filter out classes imported from other modules - incase of inheritence
         if inspect.getmodule(cls) != cheat_module:
             continue

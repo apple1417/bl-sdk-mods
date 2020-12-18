@@ -1,0 +1,8 @@
+#!/bin/sh
+python zipper.py --git-staged
+code=$?
+if [ $code != 0]; then
+    exit $code
+fi
+git add .
+exit $?

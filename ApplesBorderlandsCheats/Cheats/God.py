@@ -28,7 +28,7 @@ class GodMode(ABCCycleableCheat):
             if self.CurrentValue == GodMode.FULL:
                 # The previous function should prevent getting here, but just in case
                 return False
-            elif self.CurrentValue == GodMode.ALLOWDAMAGE:
+            elif self.CurrentValue == GodMode.ALLOWDAMAGE:  # noqa: SIM102
                 if params.NewHealth < 1:
                     unrealsdk.DoInjectedCallNext()
                     caller.SetHealth(1)

@@ -209,15 +209,13 @@ class CrowdControl(SDKMod):
                 self.HandleChildQuit()
                 return
 
-            if self._listener.stdout is not None:
-                if GetPipeAvailableLen(self._listener.stdout) > 0:
-                    line = self._listener.stdout.readline()
-                    self.HandleStdout(line.decode("utf8").replace("\\n", "\n")[:-2])
+            if self._listener.stdout is not None and GetPipeAvailableLen(self._listener.stdout) > 0:
+                line = self._listener.stdout.readline()
+                self.HandleStdout(line.decode("utf8").replace("\\n", "\n")[:-2])
 
-            if self._listener.stderr is not None:
-                if GetPipeAvailableLen(self._listener.stderr) > 0:
-                    line = self._listener.stderr.readline()
-                    self.HandleStderr(line.decode("utf8").replace("\\n", "\n")[:-2])
+            if self._listener.stderr is not None and GetPipeAvailableLen(self._listener.stderr) > 0:
+                line = self._listener.stderr.readline()
+                self.HandleStderr(line.decode("utf8").replace("\\n", "\n")[:-2])
 
         def OnQuit(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
             if self._listener is not None:
