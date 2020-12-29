@@ -48,7 +48,7 @@ class PythonPartNotifier(SDKMod):
         "\n"
         "Make sure to check out the options menu to customize what exactly is shown."
     )
-    Version: str = "1.5"
+    Version: str = "1.6"
 
     Types: ModTypes = ModTypes.Utility
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
@@ -65,7 +65,13 @@ class PythonPartNotifier(SDKMod):
     # The SDK doesn't support unicode yet (even though the game does), so some characters need to be
     #  replaced to keep everything readable
     UNICODE_REPLACEMENTS: Dict[str, str] = {
-        "•": "*"  # The bullet point at the start of every line
+        # The bullet point at the start of every line
+        "•": "*",
+        # Exodus contains a curly quote, but they render the same in game anywaw
+        "‘": "'",
+        "’": "'",
+        "“": "\"",
+        "”": "\"",
     }
 
     # Some terms should be changed in TPS
