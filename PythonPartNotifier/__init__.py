@@ -48,7 +48,7 @@ class PythonPartNotifier(SDKMod):
         "\n"
         "Make sure to check out the options menu to customize what exactly is shown."
     )
-    Version: str = "1.4"
+    Version: str = "1.5"
 
     Types: ModTypes = ModTypes.Utility
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
@@ -59,6 +59,7 @@ class PythonPartNotifier(SDKMod):
     }
 
     DetailedOption: Options.Boolean
+    FontSizeOption: Options.Slider
     RemoveOption: Options.Boolean
 
     # The SDK doesn't support unicode yet (even though the game does), so some characters need to be
@@ -85,17 +86,27 @@ class PythonPartNotifier(SDKMod):
             super().SettingsInputPressed(action)
 
     def SetDefaultOptions(self) -> None:
-        self.DetailedOption = Options.Boolean("Detailed Part Names", (
+        self.DetailedOption = Options.Boolean(
+            "Detailed Part Names",
             "Should part names include the weapon and part type they're for rather than just"
-            " the manufacturer."
-        ), False)
-        self.RemoveOption = Options.Boolean("Remove Descriptions", (
+            " the manufacturer.",
+            False
+        )
+        self.FontSizeOption = Options.Slider(
+            "Font Size",
+            "What font size should the parts text use. Decrease this if text is getting cut off.",
+            14, 8, 24, 1
+        )
+        self.RemoveOption = Options.Boolean(
+            "Remove Descriptions",
             "Should the default descriptions be removed to create more space for the part"
-            " descriptions."
-        ), False)
+            " descriptions.",
+            False
+        )
 
         self.Options = [
             self.DetailedOption,
+            self.FontSizeOption,
             self.RemoveOption,
             ItemClassOption(
                 "Weapons", "WillowWeapon", (
@@ -242,7 +253,9 @@ class PythonPartNotifier(SDKMod):
             if len(part_text) == 0:
                 return True
 
+            text += f"<font size=\"{self.FontSizeOption.CurrentValue}\" color=\"#FFFFFF\">"
             text += self.translateTPS(part_text)
+            text += "</font>"
 
             # This function is actually quite complex, so rather than replicate it we'll write out
             #  our text, then let the regular function run but block it from overwriting the text

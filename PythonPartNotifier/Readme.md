@@ -1,7 +1,11 @@
 ## Changelog
 
+### Python Part Notifier v1.5
+Now provides a font size option, to make the parts text smaller to reduce the chance that information gets cut off.
+Fixed a case where the part headers would get coloured on certain items if gearbox forgot to add a closing tag somewhere.
+
 ### Python Part Notifier v1.4
-Updated to use some of the new features from SDK version 0.7.8.    
+Updated to use some of the new features from SDK version 0.7.8.
 Most notably, the enabled state is now saved over game launches.
 
 ### Python Part Notifier v1.3
