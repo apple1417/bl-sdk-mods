@@ -2,3 +2,12 @@ __pycache__
 .env
 .mypy_cache
 .vscode
+
+CrowdControl/config.json
+CrowdControl/token.txt
+CrowdControl/listener.log
+
+SanitySaver/Saves
+
+SideMissionRandomizer/seeds.json
+SideMissionRandomizer/*.txt
