@@ -3,6 +3,8 @@ Disables sanity check, and also saves items which don't serialize, which would h
 even with it off.
 
 ## Save Editing
+[Also see this video.](https://youtu.be/wfLRjE9m1XQ)
+
 This mod only saves parts which the game does not save itself. This means you can keep using any
 regular save editor in most cases. If you want to edit one of these parts which the game doesn't
 save though, you'll have to delve into the custom save format.
