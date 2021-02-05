@@ -1,5 +1,8 @@
 ## Changelog
 
+### Python Part Notifier v1.7
+Remove the unicode replacements when running on sdk version >=0.7.9, where it's fixed.
+
 ### Python Part Notifier v1.6
 Adds curly single and double quotes to the unicode replacements, fixing a few cases it broke in Exodus.
 

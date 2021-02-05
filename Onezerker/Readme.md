@@ -1,5 +1,8 @@
 ## Changelog
 
+### Onezerker v1.8
+Made launching the game slightly quicker when this mod is disabled, by only loading required packages on enable.
+
 ### Onezerker v1.7
 Updated to use some of the new features from SDK version 0.7.8.    
 Most notably, the enabled state is now saved over game launches.

@@ -48,7 +48,7 @@ class PythonPartNotifier(SDKMod):
         "\n"
         "Make sure to check out the options menu to customize what exactly is shown."
     )
-    Version: str = "1.6"
+    Version: str = "1.7"
 
     Types: ModTypes = ModTypes.Utility
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
@@ -62,12 +62,12 @@ class PythonPartNotifier(SDKMod):
     FontSizeOption: Options.Slider
     RemoveOption: Options.Boolean
 
-    # The SDK doesn't support unicode yet (even though the game does), so some characters need to be
-    #  replaced to keep everything readable
+    # Old versions of the SDK don't support unicode (even though the game does), so some characters
+    #  need to be replaced to keep everything readable
     UNICODE_REPLACEMENTS: Dict[str, str] = {
         # The bullet point at the start of every line
         "•": "*",
-        # Exodus contains a curly quote, but they render the same in game anywaw
+        # Exodus contains a curly quote, but they render the same in game anyway
         "‘": "'",
         "’": "'",
         "“": "\"",
@@ -232,7 +232,8 @@ class PythonPartNotifier(SDKMod):
             text = item.GenerateFunStatsText()
             if text is None or self.RemoveOption.CurrentValue:
                 text = ""
-            else:
+            # 0.7.9 onwards properly supports unicode
+            elif unrealsdk.GetVersion() < (0, 7, 9):
                 for rep in self.UNICODE_REPLACEMENTS:
                     text = text.replace(rep, self.UNICODE_REPLACEMENTS[rep])
 

@@ -10,7 +10,7 @@ class Onezerker(SDKMod):
     Description: str = (
         "Gunzerk with two copies of the same gun instead of two different ones."
     )
-    Version: str = "1.7"
+    Version: str = "1.8"
 
     SupportedGames: Game = Game.BL2
     Types: ModTypes = ModTypes.Gameplay
@@ -20,16 +20,6 @@ class Onezerker(SDKMod):
     WeaponMap: Dict[unrealsdk.UObject, unrealsdk.UObject]
 
     def __init__(self) -> None:
-        unrealsdk.LoadPackage("GD_Mercenary_Streaming_SF")
-        self.NumWeapObj = unrealsdk.FindObject("NumberWeaponsEquippedExpressionEvaluator", "GD_Mercenary_Skills.ActionSkill.Skill_Gunzerking:ExpressionTree_0.NumberWeaponsEquippedExpressionEvaluator_0")
-        unrealsdk.KeepAlive(self.NumWeapObj)
-
-        if self.NumWeapObj is None:
-            try:
-                del self.SettingsInputs["Enter"]
-            except KeyError:
-                pass
-
         self.WeaponMap = {}
 
     def DupeWeapon(self, weapon: unrealsdk.UObject) -> unrealsdk.UObject:
@@ -48,10 +38,19 @@ class Onezerker(SDKMod):
         return new_weapon
 
     def Enable(self) -> None:
+        unrealsdk.LoadPackage("GD_Mercenary_Streaming_SF")
+        self.NumWeapObj = unrealsdk.FindObject(
+            "NumberWeaponsEquippedExpressionEvaluator",
+            "GD_Mercenary_Skills.ActionSkill.Skill_Gunzerking:ExpressionTree_0.NumberWeaponsEquippedExpressionEvaluator_0"
+        )
+        unrealsdk.KeepAlive(self.NumWeapObj)
+
         if self.NumWeapObj is None:
             unrealsdk.Log(f"[{self.Name}] Didn't load correctly, not enabling")
             self.SettingsInputPressed("Disable")
             return
+
+        self.NumWeapObj.NumberOfWeapons = 1
 
         def OnActionSkillEnded(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
             if caller.MyWillowPC != unrealsdk.GetEngine().GamePlayers[0].Actor:
@@ -256,8 +255,6 @@ class Onezerker(SDKMod):
         unrealsdk.RegisterHook("WillowGame.WillowPlayerPawn.EndClimbLadder", self.Name, EndClimbLadder)
         unrealsdk.RegisterHook("Engine.Weapon.ClientGivenTo", self.Name, ClientGivenTo)
 
-        self.NumWeapObj.NumberOfWeapons = 1
-
     def Disable(self) -> None:
         unrealsdk.RemoveHook("WillowGame.DualWieldActionSkill.OnActionSkillEnded", self.Name)
         unrealsdk.RemoveHook("WillowGame.DualWieldActionSkill.EquipInitialWeapons", self.Name)
@@ -272,6 +269,9 @@ class Onezerker(SDKMod):
 
         if self.NumWeapObj is not None:
             self.NumWeapObj.NumberOfWeapons = 2
+            # Let it unload again
+            self.NumWeapObj.ObjectFlags.A &= ~0x4000
+            self.NumWeapObj = None
 
 
 instance = Onezerker()
