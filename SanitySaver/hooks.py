@@ -322,9 +322,11 @@ def Open(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrea
         save_manager = SaveManager(PC.SaveGameName, True)
     elif caller == inv_manager.TheStash:
         save_manager = SaveManager(STASH_NAME)
+    elif caller in (inv_manager.TheGrinder, inv_manager.TheMailBox):
+        return True
     else:
         unrealsdk.Log("[SanitySaver] Could not identify opened container!")
-        return False
+        return True
     save_manager.load()
 
     PC.OnChestOpened(caller)
@@ -396,6 +398,8 @@ def Close(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unre
     elif caller == inv_manager.TheStash:
         save_name = STASH_NAME
         is_bank = False
+    elif caller in (inv_manager.TheGrinder, inv_manager.TheMailBox):
+        return True
     else:
         unrealsdk.Log("[SanitySaver] Could not identify opened container!")
         return True

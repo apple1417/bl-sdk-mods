@@ -229,7 +229,7 @@ class SaveManager:
     def _add_description(self, item: unrealsdk.FStruct, is_weapon: bool, item_data: ItemData) -> None:
         description = []
         if item.ManufacturerGradeIndex is not None:
-            description.append(f"Level {item.ManufacturerGradeIndex }")
+            description.append(f"Level {item.ManufacturerGradeIndex}")
         if is_weapon:
             if item.PrefixPartDefinition is not None:
                 description.append(item.PrefixPartDefinition.PartName)
@@ -241,4 +241,4 @@ class SaveManager:
             if item.TitleItemNamePartDefinition is not None:
                 description.append(item.TitleItemNamePartDefinition.PartName)
         if len(description) > 0:
-            item_data["_description"] = " ".join(description)
+            item_data["_description"] = " ".join(x for x in description if x is not None)

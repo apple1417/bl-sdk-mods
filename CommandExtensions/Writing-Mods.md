@@ -1,9 +1,12 @@
 # Table of Contents
 - [Table of Contents](#table-of-contents)
 - [Built-in Custom Commands](#built-in-custom-commands)
+  - [`CE_Debug`](#ce_debug)
   - [`clone`](#clone)
+  - [`clone_bpd`](#clone_bpd)
   - [`load_package`](#load_package)
   - [`keep_alive`](#keep_alive)
+  - [`set_material`](#set_material)
   - [`suppress_next_chat`](#suppress_next_chat)
 - [Writing Text Mods](#writing-text-mods)
   - [Parsing Intricacies](#parsing-intricacies)
@@ -12,14 +15,45 @@
 
 # Built-in Custom Commands
 
+## `CE_Debug`
+usage: `CE_Debug [-h] {Enable,Disable}`
+
+Enables/disables Command Extension debug logging. This logs a copy of each command to be run, useful
+for checking that your blcm files are being handled correctly.
+
+| positional arguments: | |
+|:---|:---|
+| `{Enable,Disable}` | |
+
+| optional arguments | |
+|:---|:---|
+| `-h, --help` | show this help message and exit |
+
+
 ## `clone`
 usage: `clone [-h] base clone`
 
 Creates a clone of an existing object.
 
-|positional arguments | |
+| positional arguments | |
 |:---|:---|
 | `base`  | The object to create a copy of. |
+| `clone` | The name of the clone to create. |
+
+| optional arguments | |
+|:---|:---|
+| `-h, --help` | show this help message and exit |
+
+## `clone_bpd`
+usage: `clone [-h] base clone`
+
+Creates a clone of a BehaviourProvidierDefinition, as well as recursively cloning some of the
+objects making it up. This may not match the exact layout of the original objects, dump them
+manually to check what their new names are.
+
+| positional arguments | |
+|:---|:---|
+| `base`  | The bpd to create a copy of. |
 | `clone` | The name of the clone to create. |
 
 | optional arguments | |
@@ -50,6 +84,21 @@ game.
 | positional arguments | |
 |:---|:---|
 | `object` | The object to keep alive. |
+
+| optional arguments | |
+|:---|:---|
+| `-h, --help` | show this help message and exit |
+
+## `set_material`
+usage: `set_material [-h] part material`
+
+Sets a parts's material, without causing crashes if it's a cloned one. Practically, this creates new
+materials and copies the fields from the provided one as a template.
+
+| positional arguments | |
+|:---|:---|
+| part     | The part to set the material on. |
+| material | The MaterialInstanceConstant to set. |
 
 | optional arguments | |
 |:---|:---|

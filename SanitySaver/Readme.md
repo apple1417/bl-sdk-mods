@@ -66,5 +66,10 @@ the bank/stash to update them.
 
 ## Changelog
 
+### Sanity Saver v1.1
+Fixed that the grinder and the SHiFT mailbox in tps would incorrectly be forced empty.    
+Fixed that items with name parts that didn't have a name defined could cause custom saving to fail
+entirely.
+
 ### Sanity Saver v1.0
 Inital Release.

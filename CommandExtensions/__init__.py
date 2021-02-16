@@ -8,23 +8,33 @@ import traceback
 import xml.etree.ElementTree as et
 from enum import Enum, auto
 from os import path
-from typing import Any, Callable, Dict, IO, List, NoReturn, Optional, Set, Tuple
+from typing import Any, Callable, Dict, IO, List, NoReturn, Optional, Set, Tuple, cast
 
 from Mods.ModMenu import ModPriorities, ModTypes, RegisterMod, SDKMod
 
+__all__: Tuple[str, ...] = (
+    "VersionMajor",
+    "VersionMinor",
+    "CommandCallback",
+    "SplitterFunction",
+    "RegisterConsoleCommand",
+    "UnregisterConsoleCommand"
+)
+
 VersionMajor: int = 1
-VersionMinor: int = 0
+VersionMinor: int = 1
 
 CommandCallback = Callable[[argparse.Namespace], None]
 SplitterFunction = Callable[[str], List[str]]
 
+DEBUG_LOGGING: bool = False
 
-_native_path = path.join(path.dirname(__file__), "Native")
-if _native_path not in sys.path:
-    sys.path.append(_native_path)
+native_path = path.join(path.dirname(__file__), "Native")
+if native_path not in sys.path:
+    sys.path.append(native_path)
 
 
-class _ConsoleArgParser(argparse.ArgumentParser):
+class ConsoleArgParser(argparse.ArgumentParser):
     """
     A small ArgumentParser wrapper.
 
@@ -48,15 +58,15 @@ class _ConsoleArgParser(argparse.ArgumentParser):
             super()._print_message(message, file)
 
     def error(self, message: str) -> NoReturn:
-        raise _ParsingFailedError(self, message)
+        raise ParsingFailedError(self, message)
 
 
-class _ParsingFailedError(Exception):
+class ParsingFailedError(Exception):
     """ Small helper exception we use to detect failed parsing. """
-    parser: _ConsoleArgParser
+    parser: ConsoleArgParser
     message: str
 
-    def __init__(self, parser: _ConsoleArgParser, message: str) -> None:
+    def __init__(self, parser: ConsoleArgParser, message: str) -> None:
         super().__init__(message)
         self.parser = parser
         self.message = message
@@ -67,7 +77,7 @@ class _ParsingFailedError(Exception):
         unrealsdk.Log(f"{self.parser.prog}: error: {self.message}\n")
 
 
-class _EnableStrategy(Enum):
+class EnableStrategy(Enum):
     """ The various enable strategies we might use when parsing BLCMM files. """
     All = auto()
     Any = auto()
@@ -75,7 +85,7 @@ class _EnableStrategy(Enum):
     Next = auto()
 
 
-_parser_callback_map: Dict[str, Tuple[_ConsoleArgParser, CommandCallback, SplitterFunction]] = {}
+parser_callback_map: Dict[str, Tuple[ConsoleArgParser, CommandCallback, SplitterFunction]] = {}
 
 
 def RegisterConsoleCommand(
@@ -107,15 +117,17 @@ def RegisterConsoleCommand(
         kwargs["prog"] = name
 
     name = name.lower()
-    if name in _parser_callback_map:
+    if name in parser_callback_map:
         raise KeyError(f"A command with name '{name}' already exists!")
-    if name == "exec":
-        raise KeyError("You cannot overwrite the 'exec' command!")
     if " " in name:
         raise ValueError(f"Command name '{name}' cannot include spaces!")
+    # We need to do custom exec handling, can't let people overwrite it
+    # Technically overwriting set would work, but only from console, in blcmm files it's different
+    if name in ("exec", "set"):
+        raise KeyError(f"You cannot overwrite the '{name}' command!")
 
-    parser = _ConsoleArgParser(**kwargs)
-    _parser_callback_map[name] = (parser, callback, splitter)
+    parser = ConsoleArgParser(**kwargs)
+    parser_callback_map[name] = (parser, callback, splitter)
 
     return parser
 
@@ -128,23 +140,54 @@ def UnregisterConsoleCommand(name: str, *, allow_missing: bool = False) -> None:
         name: The name of the console command to remove.
         allow_missing: Don't throw an exception if the command hasn't been registed yet.
     """
-    if name not in _parser_callback_map:
+    name = name.lower()
+
+    # Seeing as we use a custom parser for this anyway
+    if name in ("ce_enableon",):
+        raise KeyError(f"You cannot unregister the '{name}' command.")
+
+    if name not in parser_callback_map:
         if allow_missing:
             return
         else:
             raise KeyError(f"No command with name '{name}' has been registered.")
 
-    del _parser_callback_map[name]
+    del parser_callback_map[name]
+
+
+def debug_handler(args: argparse.Namespace) -> None:
+    global DEBUG_LOGGING
+    if args.value == "Enable":
+        DEBUG_LOGGING = True
+    elif args.value == "Disable":
+        DEBUG_LOGGING = False
+    else:
+        unrealsdk.Log(f"Unrecognised value '{args.value}'")
+
+
+debug_parser = RegisterConsoleCommand(
+    "CE_Debug",
+    debug_handler,
+    description=(
+        "Enables/disables Command Extension debug logging. This logs a copy of each command to be"
+        " run, useful for checking that your blcm files are being handled correctly."
+    )
+)
+debug_parser.add_argument(
+    "value",
+    type=str.title,
+    choices=("Enable", "Disable")
+)
 
 
 # Keep exec seperate so we can give it different behaviour
-_exec_parser = _ConsoleArgParser()
-_exec_parser.add_argument("file")
+exec_parser = ConsoleArgParser()
+exec_parser.add_argument("file")
 
 
-_enable_on_parser = RegisterConsoleCommand(
+enable_on_parser = RegisterConsoleCommand(
     "CE_EnableOn",
-    lambda args: unrealsdk.Log("ERROR: 'CE_EnableOn' can only be used in BLCMM files."),  # type: ignore
+    lambda args: unrealsdk.Log("ERROR: 'CE_EnableOn' can only be used in BLCMM files."),
     description="""
 Can only be used in BLCMM files.
 
@@ -159,14 +202,14 @@ Next:  The next regular command after it (in the same category) is enabled.
 """[1:-1],
     formatter_class=argparse.RawDescriptionHelpFormatter
 )
-_enable_on_parser.add_argument(
+enable_on_parser.add_argument(
     "strategy",
     type=str.title,
-    choices=_EnableStrategy.__members__
+    choices=EnableStrategy.__members__
 )
 
 
-def _try_parse_strategy(cmd: Optional[str]) -> Optional[_EnableStrategy]:
+def try_parse_strategy(cmd: Optional[str]) -> Optional[EnableStrategy]:
     """
     Takes in a string, and, if it's a 'CE_EnableOn' command, returns the new enable strategy.
     This is a special command only using during parsing blcmm files, so the callback just returns an
@@ -178,9 +221,9 @@ def _try_parse_strategy(cmd: Optional[str]) -> Optional[_EnableStrategy]:
     name, _, cmd_args = cmd.partition(" ")
     if name.lower() == "ce_enableon":
         try:
-            args = _enable_on_parser.parse_args(shlex.split(cmd_args))
-            return _EnableStrategy.__members__.get(args.strategy)
-        except (_ParsingFailedError, SystemExit):
+            args = enable_on_parser.parse_args(shlex.split(cmd_args))
+            return EnableStrategy.__members__.get(args.strategy)
+        except (ParsingFailedError, SystemExit):
             pass
     return None
 
@@ -188,7 +231,7 @@ def _try_parse_strategy(cmd: Optional[str]) -> Optional[_EnableStrategy]:
 # For some bizzare reason blcmm basically doesn't escape text anywhere
 # The closest thing is that quotes in attributes are escaped using `\"`
 # A few regexes and some manual html escaping fix this for us
-_blcm_escape_patterns: Set[re.Pattern] = {  # type: ignore
+blcm_escape_patterns: Set[re.Pattern] = {  # type: ignore
     re.compile(
         r"((?P<code><code profiles=\".*?\">)|<comment>)(?P<escape>.*?)(?(code)</code>|</comment>)",
         flags=re.I
@@ -200,7 +243,7 @@ _blcm_escape_patterns: Set[re.Pattern] = {  # type: ignore
 }
 
 
-def _parse_blcmm_file(file: IO[str]) -> et.Element:
+def parse_blcmm_file(file: IO[str]) -> et.Element:
     """ Parses an open blcmm file object and returns an ET Element (roughly) containing it. """
     parser = et.XMLParser()
     for line in file:
@@ -212,7 +255,7 @@ def _parse_blcmm_file(file: IO[str]) -> et.Element:
         if line.startswith("#<!!!"):
             continue
         # Deal with the lack of escaping
-        for pattern in _blcm_escape_patterns:
+        for pattern in blcm_escape_patterns:
             match = re.search(pattern, line)
             if match is None:
                 continue
@@ -220,12 +263,12 @@ def _parse_blcmm_file(file: IO[str]) -> et.Element:
             escaped = html.escape(base)
             line = line.replace(base, escaped, 1)
         parser.feed(line)
-    return parser.close()
+    return cast(et.Element, parser.close())
 
 
-def _handle_blcmm_file(file: IO[str]) -> None:
+def handle_blcmm_file(file: IO[str]) -> None:
     """ Handles any custom commands within the provided blcmm file object. """
-    root = _parse_blcmm_file(file)
+    root = parse_blcmm_file(file)
 
     profile = root.find("./head/profiles/profile[@name][@current='true']")
     profile_name = "default" if profile is None else profile.get("name")
@@ -234,10 +277,10 @@ def _handle_blcmm_file(file: IO[str]) -> None:
         """ Returns if an xml code element is enabled. """
         return profile_name in code.get("profiles", "").split(",")
 
-    def handle_category(category: et.Element, strategy: _EnableStrategy) -> None:
+    def handle_category(category: et.Element, strategy: EnableStrategy) -> None:
         """ Recursively handles all custom commands in a category. """
         # Split all children into groups based on the enable strategy we're using for them
-        strategy_groups: List[Tuple[List[et.Element], _EnableStrategy]] = []
+        strategy_groups: List[Tuple[List[et.Element], EnableStrategy]] = []
 
         last_strategy = strategy
         last_change_idx = 0
@@ -247,7 +290,7 @@ def _handle_blcmm_file(file: IO[str]) -> None:
                 all_children[idx + 1:idx + 1] = list(child)
                 continue
             elif child.tag == "comment":
-                new_strategy = _try_parse_strategy(child.text)
+                new_strategy = try_parse_strategy(child.text)
                 if new_strategy is None:
                     continue
                 strategy_groups.append((
@@ -263,13 +306,13 @@ def _handle_blcmm_file(file: IO[str]) -> None:
         ))
 
         for group, strategy in strategy_groups:
-            if strategy is _EnableStrategy.All:
+            if strategy is EnableStrategy.All:
                 handle_group_all(group)
-            elif strategy is _EnableStrategy.Any:
+            elif strategy is EnableStrategy.Any:
                 handle_group_any(group)
-            elif strategy is _EnableStrategy.Force:
+            elif strategy is EnableStrategy.Force:
                 handle_group_force(group)
-            elif strategy is _EnableStrategy.Next:
+            elif strategy is EnableStrategy.Next:
                 handle_group_next(group)
 
     def handle_group_all(group: List[et.Element]) -> None:
@@ -277,7 +320,7 @@ def _handle_blcmm_file(file: IO[str]) -> None:
         comments: List[str] = []
         for child in group:
             if child.tag == "category":
-                handle_category(child, _EnableStrategy.All)
+                handle_category(child, EnableStrategy.All)
 
             elif child.tag == "code" and not is_enabled(child):
                 enabled = False
@@ -287,39 +330,39 @@ def _handle_blcmm_file(file: IO[str]) -> None:
                 comments.append(child.text)
 
         for comment in comments:
-            _try_handle_command(comment)
+            try_handle_command(comment)
 
     def handle_group_any(group: List[et.Element]) -> None:
         enabled = False
         inital_comments: List[str] = []
         for child in group:
             if child.tag == "category":
-                handle_category(child, _EnableStrategy.Any)
+                handle_category(child, EnableStrategy.Any)
 
             elif not enabled and child.tag == "code" and is_enabled(child):
                 enabled = True
                 for comment in inital_comments:
-                    _try_handle_command(comment)
+                    try_handle_command(comment)
 
             elif child.tag == "comment" and child.text is not None:
                 if enabled:
-                    _try_handle_command(child.text)
+                    try_handle_command(child.text)
                 else:
                     inital_comments.append(child.text)
 
     def handle_group_force(group: List[et.Element]) -> None:
         for child in group:
             if child.tag == "category":
-                handle_category(child, _EnableStrategy.Force)
+                handle_category(child, EnableStrategy.Force)
 
             elif child.tag == "comment" and child.text is not None:
-                _try_handle_command(child.text)
+                try_handle_command(child.text)
 
     def handle_group_next(group: List[et.Element]) -> None:
         cached_comments: List[str] = []
         for child in group:
             if child.tag == "category":
-                handle_category(child, _EnableStrategy.Next)
+                handle_category(child, EnableStrategy.Next)
 
             elif child.tag == "comment" and child.text is not None:
                 cached_comments.append(child.text)
@@ -328,15 +371,15 @@ def _handle_blcmm_file(file: IO[str]) -> None:
             elif child.tag == "code":
                 if is_enabled(child):
                     for comment in cached_comments:
-                        _try_handle_command(comment)
+                        try_handle_command(comment)
                 cached_comments = []
 
     root_category = root.find("./body/category")
     if root_category is not None:
-        handle_category(root_category, _EnableStrategy.Any)
+        handle_category(root_category, EnableStrategy.Any)
 
 
-def _try_handle_command(cmd: str) -> bool:
+def try_handle_command(cmd: str) -> bool:
     """
     Takes in a command string `cmd` and tries to handle it.
 
@@ -348,7 +391,7 @@ def _try_handle_command(cmd: str) -> bool:
 
     if name == "exec":
         try:
-            parsed_args = _exec_parser.parse_args(shlex.split(args))
+            parsed_args = exec_parser.parse_args(shlex.split(args))
             file_path = path.abspath(path.join(path.dirname(sys.executable), "..", parsed_args.file))
             if not path.isfile(file_path):
                 return False
@@ -359,24 +402,27 @@ def _try_handle_command(cmd: str) -> bool:
 
                 # Handle it as a blcm file if we can
                 if firstline.startswith("<BLCMM"):
-                    _handle_blcmm_file(file)
+                    handle_blcmm_file(file)
                     return False
 
                 # Otherwise treat each line as it's own command
                 for line in file:
-                    _try_handle_command(line)
+                    try_handle_command(line)
 
-        except (_ParsingFailedError, SystemExit):
+        except (ParsingFailedError, SystemExit):
             pass
         return False
 
-    if name not in _parser_callback_map:
+    if name not in parser_callback_map:
         return False
 
-    parser, callback, splitter = _parser_callback_map[name]
+    if DEBUG_LOGGING:
+        unrealsdk.Log("[CE]: " + cmd)
+
+    parser, callback, splitter = parser_callback_map[name]
     try:
         callback(parser.parse_args(splitter(args)))
-    except _ParsingFailedError as ex:
+    except ParsingFailedError as ex:
         ex.log()
     except SystemExit:
         pass
@@ -386,11 +432,11 @@ def _try_handle_command(cmd: str) -> bool:
     return True
 
 
-def _console_command_hook(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-    return not _try_handle_command(params.Command)
+def console_command_hook(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+    return not try_handle_command(params.Command)
 
 
-unrealsdk.RegisterHook("Engine.PlayerController.ConsoleCommand", __name__, _console_command_hook)
+unrealsdk.RegisterHook("Engine.PlayerController.ConsoleCommand", __name__, console_command_hook)
 
 
 # load our builtin commands
@@ -398,7 +444,7 @@ from . import builtins  # noqa: F401, E402
 
 
 # Provide an entry in the mods list just so users can see that this is loaded
-class _CommandExtensions(SDKMod):
+class CommandExtensions(SDKMod):
     Name: str = "Command Extensions"
     Author: str = "apple1417"
     Description: str = (
@@ -413,4 +459,4 @@ class _CommandExtensions(SDKMod):
     SettingsInputs: Dict[str, str] = {}
 
 
-RegisterMod(_CommandExtensions())
+RegisterMod(CommandExtensions())
