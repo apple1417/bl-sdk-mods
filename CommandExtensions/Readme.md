@@ -19,6 +19,9 @@ A more optimized file parser is being worked on, but it will never remove all th
 
 ## Changelog
 
+### Command Extensions v1.2
+Added the `set_early` command.
+
 ### Command Extensions v1.1
 Added the `CE_Debug`, `clone_bpd`, and `set_material` commands.    
 Explicitly raise errors when a mod tries to register `set` or unregister `CE_EnableOn` - neither of

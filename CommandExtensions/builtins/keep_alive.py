@@ -2,18 +2,11 @@ import unrealsdk
 import argparse
 
 from .. import RegisterConsoleCommand
-from . import obj_name_splitter, re_obj_name
+from . import obj_name_splitter, parse_object
 
 
 def handler(args: argparse.Namespace) -> None:
-    match = re_obj_name.match(args.object)
-    if match is None:
-        unrealsdk.Log(f"Unable to parse object name {args.object}")
-        return
-
-    klass = match.group("class") or "Object"
-    name = match.group("fullname")
-    obj = unrealsdk.FindObject(klass, name)
+    obj = parse_object(args.object)
     if obj is None:
         unrealsdk.Log(f"Unable to find object {args.object}")
         return

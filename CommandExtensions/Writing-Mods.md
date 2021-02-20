@@ -6,6 +6,7 @@
   - [`clone_bpd`](#clone_bpd)
   - [`load_package`](#load_package)
   - [`keep_alive`](#keep_alive)
+  - [`set_early`](#set_early)
   - [`set_material`](#set_material)
   - [`suppress_next_chat`](#suppress_next_chat)
 - [Writing Text Mods](#writing-text-mods)
@@ -84,6 +85,20 @@ game.
 | positional arguments | |
 |:---|:---|
 | `object` | The object to keep alive. |
+
+| optional arguments | |
+|:---|:---|
+| `-h, --help` | show this help message and exit |
+
+## `set_early`
+usage: `set_early [-h] args [args ...]`
+
+Behaves exactly like a set command. Only useful in files, as it's run during custom command parsing
+instead of afterwards.
+
+| positional arguments | |
+|:---|:---|
+| args | Standard set command arguments |
 
 | optional arguments | |
 |:---|:---|
