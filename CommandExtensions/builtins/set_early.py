@@ -5,7 +5,7 @@ from .. import RegisterConsoleCommand
 
 
 def handler(args: argparse.Namespace) -> None:
-    unrealsdk.GetEngine().GamePlayers[0].Actor.ConsoleCommand("set " + args.args)
+    unrealsdk.GetEngine().GamePlayers[0].Actor.ConsoleCommand("set " + " ".join(args.args))
 
 
 parser = RegisterConsoleCommand(
