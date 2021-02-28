@@ -107,8 +107,10 @@ instead of afterwards.
 ## `set_material`
 usage: `set_material [-h] part material`
 
-Sets a parts's material, without causing crashes if it's a cloned one. Practically, this creates new
-materials and copies the fields from the provided one as a template.
+Sets a parts's material, without causing crashes if it's a cloned from an existing one. Note that
+cloning `Engine.Default__MaterialInstanceConstant` will not cause crashes, this command is most
+useful when only making a small edit. Practically, this creates a new material and copies the fields
+from the provided one as a template.
 
 | positional arguments | |
 |:---|:---|
