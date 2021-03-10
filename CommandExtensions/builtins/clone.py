@@ -28,7 +28,8 @@ def clone_object(
 
 def parse_clone_target(
     name: str,
-    src_class: str
+    src_class: str,
+    suppress_exists: bool
 ) -> Tuple[Optional[unrealsdk.UObject], Optional[str]]:
     dst_match = re_obj_name.match(name)
     if dst_match is None:
@@ -38,6 +39,12 @@ def parse_clone_target(
     dst_class = dst_match.group("class") or "Object"
     if dst_class != "Object" and dst_class != src_class:
         unrealsdk.Log(f"Cannot clone object of class {src_class} as class {dst_class}")
+        return None, None
+
+    dst_obj = unrealsdk.FindObject(dst_class, dst_match.group("fullname"))
+    if dst_obj is not None:
+        if not suppress_exists:
+            unrealsdk.Log(f"Object '{dst_obj.PathName(dst_obj)}' already exists")
         return None, None
 
     dst_outer = dst_match.group("outer")
@@ -55,7 +62,7 @@ def handler(args: argparse.Namespace) -> None:
     src = parse_object(args.base)
     if src is None:
         return
-    outer, name = parse_clone_target(args.clone, src.Class.Name)
+    outer, name = parse_clone_target(args.clone, src.Class.Name, args.suppress_exists)
     if name is None:
         return
 
@@ -70,3 +77,8 @@ parser = RegisterConsoleCommand(
 )
 parser.add_argument("base", help="The object to create a copy of.")
 parser.add_argument("clone", help="The name of the clone to create.")
+parser.add_argument(
+    "-x", "--suppress-exists",
+    action="store_true",
+    help="Suppress the error message when an object already exists."
+)

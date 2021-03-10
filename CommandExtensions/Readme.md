@@ -19,7 +19,16 @@ A more optimized file parser is being worked on, but it will never remove all th
 
 ## Changelog
 
-### Command Extensions v1.2
+### Command Extensions v1.4
+The `clone` and `clone_bpd` commands now output an error if the target already exists, and don't try
+to clone it again. This error message can be suppressed with an optional argument.    
+Fixed handling of `exec` commands when using files outside of Binaries.    
+Add support for the sdk's builtin `py` and `pyexec` commands to blcmm files. Also explicitly raise
+errors when a mod tries to unregister these, which never worked properly in the first place.    
+Cleanup handling of subclasses so they're less likely to break if you start trying to create custom
+classes.
+
+### Command Extensions v1.2 + v1.3
 Added the `set_early` command.
 
 ### Command Extensions v1.1

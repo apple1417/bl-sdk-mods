@@ -3,27 +3,11 @@ import argparse
 from typing import Tuple
 
 from .. import RegisterConsoleCommand
-from . import obj_name_splitter, parse_object
-
-INV_PART_CLASSES: Tuple[str, ...] = (
-    "WillowInventoryPartDefinition",
-    "ArtifactPartDefinition",
-    "ClassModPartDefinition",
-    "EquipableItemPartDefinition",
-    "GrenadeModPartDefinition",
-    "ItemNamePartDefinition",
-    "ItemPartDefinition",
-    "MissionItemPartDefinition",
-    "ShieldPartDefinition",
-    "UsableItemPartDefinition",
-    "WeaponNamePartDefinition",
-    "WeaponPartDefinition",
-)
+from . import is_obj_instance, obj_name_splitter, parse_object
 
 OVERRIDE_MATERIAL_CLASSES: Tuple[str, ...] = (
     "ArtifactDefinition",
     "ClassModDefinition",
-    "CrossDLCClassModDefinition",
 )
 
 
@@ -38,7 +22,7 @@ def handler(args: argparse.Namespace) -> None:
     part = parse_object(args.part)
     if part is None:
         return
-    if part.Class.Name not in INV_PART_CLASSES:
+    if not is_obj_instance(part, "WillowInventoryPartDefinition"):
         unrealsdk.Log(
             f"Object {part.PathName(part)} must be a subclass of 'WillowInventoryPartDefinition'!"
         )
@@ -47,15 +31,17 @@ def handler(args: argparse.Namespace) -> None:
     template = parse_object(args.material)
     if template is None:
         return
-    if template.Class.Name != "MaterialInstanceConstant":
+    if not is_obj_instance(template, "MaterialInstanceConstant"):
         unrealsdk.Log(f"Object {template.PathName(template)} must be a 'MaterialInstanceConstant'!")
         return
 
     material = MESH.CreateAndSetMaterialInstanceConstant(0)
     unrealsdk.KeepAlive(material)
 
-    if part.Class.Name in OVERRIDE_MATERIAL_CLASSES:
-        part.OverrideMaterial = material
+    for cls in OVERRIDE_MATERIAL_CLASSES:
+        if is_obj_instance(part, cls):
+            part.OverrideMaterial = material
+            break
     else:
         part.Material = material
 

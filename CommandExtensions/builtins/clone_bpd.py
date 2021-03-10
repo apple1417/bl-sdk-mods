@@ -4,7 +4,7 @@ import functools
 from typing import Callable, Dict
 
 from .. import RegisterConsoleCommand
-from . import obj_name_splitter, parse_object
+from . import is_obj_instance, obj_name_splitter, parse_object
 from .clone import clone_object, parse_clone_target
 
 """
@@ -88,20 +88,20 @@ def fixup_bpd(cloned: unrealsdk.UObject, known_clones: ClonesDict) -> None:
 
             data.Behavior = cloned_behavior
 
-            extra_fixup = extra_behaviour_fixups.get(cloned_behavior.Class.Name, None)
-            if extra_fixup is not None:
-                extra_fixup(cloned_behavior, known_clones)
+            for cls, fixup in extra_behaviour_fixups.items():
+                if is_obj_instance(cloned_behavior, cls):
+                    fixup(cloned_behavior, known_clones)
 
 
 def handler(args: argparse.Namespace) -> None:
     src = parse_object(args.base)
     if src is None:
         return
-    if src.Class.Name != "BehaviorProviderDefinition":
+    if not is_obj_instance(src, "BehaviorProviderDefinition"):
         unrealsdk.Log(f"Object {src.PathName(src)} must be a 'BehaviorProviderDefinition'!")
         return
 
-    outer, name = parse_clone_target(args.clone, src.Class.Name)
+    outer, name = parse_clone_target(args.clone, src.Class.Name, args.suppress_exists)
     if name is None:
         return
 
@@ -123,3 +123,8 @@ parser = RegisterConsoleCommand(
 )
 parser.add_argument("base", help="The bpd to create a copy of.")
 parser.add_argument("clone", help="The name of the clone to create.")
+parser.add_argument(
+    "-x", "--suppress-exists",
+    action="store_true",
+    help="Suppress the error message when an object already exists."
+)

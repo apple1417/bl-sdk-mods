@@ -32,7 +32,7 @@ for checking that your blcm files are being handled correctly.
 
 
 ## `clone`
-usage: `clone [-h] base clone`
+usage: `clone [-h] [-x] base clone`
 
 Creates a clone of an existing object.
 
@@ -44,9 +44,10 @@ Creates a clone of an existing object.
 | optional arguments | |
 |:---|:---|
 | `-h, --help` | show this help message and exit |
+| `-x, --suppress-exists` | Suppress the error message when an object already exists. |
 
 ## `clone_bpd`
-usage: `clone [-h] base clone`
+usage: `clone_bpd [-h] [-x] base clone`
 
 Creates a clone of a BehaviourProvidierDefinition, as well as recursively cloning some of the
 objects making it up. This may not match the exact layout of the original objects, dump them
@@ -60,6 +61,7 @@ manually to check what their new names are.
 | optional arguments | |
 |:---|:---|
 | `-h, --help` | show this help message and exit |
+| `-x, --suppress-exists` | Suppress the error message when an object already exists. |
 
 ## `load_package`
 usage: `load_package [-h] package`

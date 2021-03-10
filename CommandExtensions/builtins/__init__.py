@@ -3,7 +3,15 @@ import importlib
 import os
 import re
 import shlex
-from typing import List, Optional
+from typing import List, Optional, Tuple
+
+__all__: Tuple[str, ...] = (
+    "is_obj_instance",
+    "obj_name_splitter",
+    "parse_object",
+    "re_object_name",
+)
+
 
 re_obj_name = re.compile(
     r"^((?P<class>[\w?+!,'\"\\\-]+?)')?(?P<fullname>((?P<outer>[\w.:?+!,'\"\\\-]+)[.:])?(?P<name>[\w?+!,'\"\\\-]+))(?(class)'|)$",
@@ -41,6 +49,15 @@ def parse_object(name: str) -> Optional[unrealsdk.UObject]:
         unrealsdk.Log(f"Unable to find object {name}")
         return None
     return obj
+
+
+def is_obj_instance(obj: unrealsdk.UObject, cls: str) -> bool:
+    current = obj.Class
+    while current is not None:
+        if current.Name == cls:
+            return True
+        current = current.SuperField
+    return False
 
 
 # Import all files in this director - we want the side effects (which register everything)

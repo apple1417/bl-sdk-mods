@@ -11,6 +11,7 @@
 			<comment>This is a demo mod for Command Extensions, which adds an extra skill to Zero.</comment>
 			<category name="Requirements Notification">
 				<comment>CE_EnableOn Force</comment>
+				<comment>py unrealsdk.GetEngine().GamePlayers[0].Actor.GetTextChatMovie().AddChatMessageInternal("[Sanic]", "Wow you also have ABC installed") if hasattr(Mods, "ApplesBorderlandsCheats") else None</comment>
 				<comment>suppress_next_chat "Error: This mod requires Command Extensions"</comment>
 				<comment>say Error: This mod requires Command Extensions</comment>
 			</category>
@@ -18,8 +19,8 @@
 				<comment>load_package GD_Assassin_Streaming_SF</comment>
 				<comment>load_package GD_Siren_Streaming_SF</comment>
 				<comment>keep_alive SwfMovie'SharedSkillIcons_Siren.SkillIcon-Fleet'</comment>
-				<comment>clone SkillDefinition'GD_Siren_Skills.Motion.Fleet' SkillDefinition'GD_Assassin_Skills.Cunning.Sanic'</comment>
-				<comment>clone AttributePresentationDefinition'GD_Siren_Skills.Motion.Fleet:AttributePresentationDefinition_77' AttributePresentationDefinition'GD_Assassin_Skills.Cunning.Sanic:APD'</comment>
+				<comment>clone -x SkillDefinition'GD_Siren_Skills.Motion.Fleet' SkillDefinition'GD_Assassin_Skills.Cunning.Sanic'</comment>
+				<comment>clone -x AttributePresentationDefinition'GD_Siren_Skills.Motion.Fleet:AttributePresentationDefinition_77' AttributePresentationDefinition'GD_Assassin_Skills.Cunning.Sanic:APD'</comment>
 				<code profiles="default">set SkillDefinition'GD_Assassin_Skills.Cunning.Sanic' SkillName Sanic</code>
 				<code profiles="default">set SkillDefinition'GD_Assassin_Skills.Cunning.Sanic' SkillDescription Gotta [skill]go fast[-skill].</code>
 				<code profiles="default">set SkillDefinition'GD_Assassin_Skills.Cunning.Sanic' TrackedSkillType TRACKEDSKILL_Untracked</code>

@@ -11,18 +11,19 @@ from os import path
 from typing import Any, Callable, Dict, IO, List, NoReturn, Optional, Set, Tuple, cast
 
 from Mods.ModMenu import ModPriorities, ModTypes, RegisterMod, SDKMod
+import Mods
 
 __all__: Tuple[str, ...] = (
+    "CommandCallback",
+    "RegisterConsoleCommand",
+    "SplitterFunction",
+    "UnregisterConsoleCommand"
     "VersionMajor",
     "VersionMinor",
-    "CommandCallback",
-    "SplitterFunction",
-    "RegisterConsoleCommand",
-    "UnregisterConsoleCommand"
 )
 
 VersionMajor: int = 1
-VersionMinor: int = 3
+VersionMinor: int = 4
 
 CommandCallback = Callable[[argparse.Namespace], None]
 SplitterFunction = Callable[[str], List[str]]
@@ -121,6 +122,7 @@ def RegisterConsoleCommand(
         raise KeyError(f"A command with name '{name}' already exists!")
     if " " in name:
         raise ValueError(f"Command name '{name}' cannot include spaces!")
+
     # We need to do custom exec handling, can't let people overwrite it
     # Technically overwriting set would work, but only from console, in blcmm files it's different
     if name in ("exec", "set"):
@@ -142,8 +144,9 @@ def UnregisterConsoleCommand(name: str, *, allow_missing: bool = False) -> None:
     """
     name = name.lower()
 
-    # Seeing as we use a custom parser for this anyway
-    if name in ("ce_enableon",):
+    # We use a custom parser for enableon anyway
+    # The sdk py commands use a different hook we can't affect
+    if name in ("ce_enableon", "py", "pyexec"):
         raise KeyError(f"You cannot unregister the '{name}' command.")
 
     if name not in parser_callback_map:
@@ -178,11 +181,6 @@ debug_parser.add_argument(
     type=str.title,
     choices=("Enable", "Disable")
 )
-
-
-# Keep exec seperate so we can give it different behaviour
-exec_parser = ConsoleArgParser()
-exec_parser.add_argument("file")
 
 
 enable_on_parser = RegisterConsoleCommand(
@@ -379,6 +377,9 @@ def handle_blcmm_file(file: IO[str]) -> None:
         handle_category(root_category, EnableStrategy.Any)
 
 
+exec_globals = {"unrealsdk": unrealsdk, "Mods": Mods}
+
+
 def try_handle_command(cmd: str) -> bool:
     """
     Takes in a command string `cmd` and tries to handle it.
@@ -391,12 +392,14 @@ def try_handle_command(cmd: str) -> bool:
 
     if name == "exec":
         try:
-            parsed_args = exec_parser.parse_args(shlex.split(args))
-            file_path = path.abspath(path.join(path.dirname(sys.executable), "..", parsed_args.file))
-            if not path.isfile(file_path):
+            file_path = args.strip()
+            if file_path[0] == "\"" and file_path[-1] == "\"":
+                file_path = file_path[1:-1]
+            full_path = path.abspath(path.join(path.dirname(sys.executable), "..", file_path))
+            if not path.isfile(full_path):
                 return False
 
-            with open(file_path) as file:
+            with open(full_path) as file:
                 firstline = file.readline().strip()
                 file.seek(0)
 
@@ -412,12 +415,27 @@ def try_handle_command(cmd: str) -> bool:
         except (ParsingFailedError, SystemExit):
             pass
         return False
-
-    if name not in parser_callback_map:
+    elif name not in parser_callback_map:
         return False
 
     if DEBUG_LOGGING:
         unrealsdk.Log("[CE]: " + cmd)
+
+    # The sdk hooks an earlier function than we do for these commands, so we'll only fall into these
+    #  when running from file
+    if name == "py":
+        try:
+            exec(args, exec_globals)
+        except Exception:
+            unrealsdk.Log(traceback.format_exc())
+        return True
+    elif name == "pyexec":
+        with open(path.abspath(path.join(path.dirname(sys.executable), args))) as file:
+            try:
+                exec(file.read(), exec_globals)
+            except Exception:
+                unrealsdk.Log(traceback.format_exc())
+        return True
 
     parser, callback, splitter = parser_callback_map[name]
     try:
