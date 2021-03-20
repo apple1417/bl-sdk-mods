@@ -8,10 +8,12 @@ from . import obj_name_splitter, parse_object
 def handler(args: argparse.Namespace) -> None:
     obj = parse_object(args.object)
     if obj is None:
-        unrealsdk.Log(f"Unable to find object {args.object}")
         return
 
-    unrealsdk.KeepAlive(obj)
+    if args.undo:
+        obj.ObjectFlags.A &= ~0x4000
+    else:
+        unrealsdk.KeepAlive(obj)
 
 
 parser = RegisterConsoleCommand(
@@ -24,3 +26,11 @@ parser = RegisterConsoleCommand(
     )
 )
 parser.add_argument("object", help="The object to keep alive.")
+parser.add_argument(
+    "-u", "--undo",
+    action="store_true",
+    help=(
+        "Undo a previous keep alive call. Note that this only affects the specific provided object,"
+        " a normal keep alive command might also have affected a parent object."
+    )
+)

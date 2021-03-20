@@ -9,6 +9,7 @@
   - [`set_early`](#set_early)
   - [`set_material`](#set_material)
   - [`suppress_next_chat`](#suppress_next_chat)
+  - [`unlock_package`](#unlock_package)
 - [Writing Text Mods](#writing-text-mods)
   - [Parsing Intricacies](#parsing-intricacies)
     - [`CE_EnableOn`](#ce_enableon)
@@ -79,7 +80,7 @@ explicit should still be prefered.
 | `-h, --help` | show this help message and exit |
 
 ## `keep_alive`
-usage: `keep_alive [-h] object`
+usage: `keep_alive [-h] [-u] object`
 
 Prevents an object from being garbaged collected, it will always be loaded until you restart the
 game.
@@ -91,6 +92,7 @@ game.
 | optional arguments | |
 |:---|:---|
 | `-h, --help` | show this help message and exit |
+| `-u, --undo` | Undo a previous keep alive call. Note that this only affects the specific provided object, a normal keep alive command might also have affected a parent object. |
 
 ## `set_early`
 usage: `set_early [-h] args [args ...]`
@@ -139,6 +141,20 @@ tries to `exec` your file without running Command Extensions.
 | optional arguments | |
 |:---|:---|
 | `-h, --help` | show this help message and exit |
+
+## `unlock_package`
+usage: `unlock_package [-h] [-u] object`
+
+Unlocks an object allowing it to be referenced cross-package.
+
+| positional arguments | |
+|:---|:---|
+| object |The object to unlock. |
+
+| optional arguments | |
+|:---|:---|
+| `-h, --help` | show this help message and exit |
+| `-u, --undo` | Undo a previous unlock package call. |
 
 
 # Writing Text Mods

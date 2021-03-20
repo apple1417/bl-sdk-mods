@@ -23,7 +23,7 @@ __all__: Tuple[str, ...] = (
 )
 
 VersionMajor: int = 1
-VersionMinor: int = 4
+VersionMinor: int = 5
 
 CommandCallback = Callable[[argparse.Namespace], None]
 SplitterFunction = Callable[[str], List[str]]

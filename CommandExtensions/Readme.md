@@ -19,6 +19,12 @@ A more optimized file parser is being worked on, but it will never remove all th
 
 ## Changelog
 
+### Command Extensions v1.5
+Added the `unlock_package` command.    
+Added the `--undo` optional argument to `keep_alive`.    
+The `clone` and `clone_bpd` commands now set the `ObjectArchetype` field to whatever the source
+object used, rather than having it regernce the source object directly.
+
 ### Command Extensions v1.4
 The `clone` and `clone_bpd` commands now output an error if the target already exists, and don't try
 to clone it again. This error message can be suppressed with an optional argument.    

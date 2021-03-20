@@ -21,6 +21,7 @@ def clone_object(
         return None
 
     unrealsdk.KeepAlive(cloned)
+    cloned.ObjectArchetype = src.ObjectArchetype
     # Don't ask me what on earth this means
     cloned.ObjectFlags.B |= 4
     return cloned
