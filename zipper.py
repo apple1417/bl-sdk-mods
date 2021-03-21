@@ -80,6 +80,9 @@ for dir_entry in os.scandir():
 
         zip_file = ZipFile(zip_path, "w", ZIP_DEFLATED, compresslevel=9)
 
+        license_path = os.path.join(os.path.basename(dir_entry.path), "LICENSE")
+        zip_file.write("LICENSE", license_path)
+
     for dir_path, _, file_names in os.walk(dir_entry.path):
         if os.path.basename(dir_path) == "__pycache__":
             shutil.rmtree(dir_path)
