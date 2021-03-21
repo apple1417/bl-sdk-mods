@@ -29,7 +29,7 @@ class SpawnMultiplier(SDKMod):
     )
     Version: str = "1.5"
 
-    Types: ModTypes = ModTypes.Utility
+    Types: ModTypes = ModTypes.Gameplay
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadOnMainMenu
 
     MultiplierSlider: Options.Slider
