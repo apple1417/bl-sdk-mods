@@ -176,7 +176,7 @@
         "Fixes the level cap of most items so that they continue spawning past level 100.\n",
         "\n",
         "Note that past level 127, items cannot be serialized corrently, and will revert to a",
-        " lower level on SQ. Use [Sanity Saver](SanitySaver) to fix this.    \n",
+        " lower level on SQ. Use [Sanity Saver](/mods/SanitySaver) to fix this.    \n",
         "Also note that there may still be various other issues with an increased level cap, this",
         " only fixes that most items stop spawning."
       ],
