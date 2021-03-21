@@ -4,5 +4,5 @@ code=$?
 if [ $code != 0 ]; then
     exit $code
 fi
-git add .
+git add */*.zip
 exit $?

@@ -1,0 +1,505 @@
+{
+  "mods": [
+    {
+      "name": "Alt Use Vendors",
+      "authors": "apple1417",
+      "description": [
+        "Adds alt use binds to quickly refill health and ammo at their vendors, like in BL3."
+      ],
+      "tagline": [
+        "Adds alt use binds to quickly refill health and ammo at their vendors, like in BL3."
+      ],
+      "types": ["Utility"],
+      "supports": ["BL2", "TPS"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.5",
+      "versions": {
+        "1.5": "https://github.com/apple1417/bl-sdk-mods/raw/master/AltUseVendors/AltUseVendors.zip"
+      },
+      "requirements": {
+        "AsyncUtil": ">=1.0"
+      },
+      "license": "GNU GPLv3"
+    },
+    {
+      "name": "Apple's Borderlands Cheats",
+      "authors": "apple1417",
+      "description": [
+        "Adds keybinds performing various cheaty things.\n",
+        "\n",
+        "Features include (but are not limited to):\n",
+        "- Infinite Ammo\n",
+        "- God Mode\n",
+        "- One Shot Mode\n",
+        "- Ghost Mode\n",
+        "- Kill All\n",
+        "- Revive Self\n",
+        "\n",
+        "Once enabled, visit your keybinds menu to configure binds for all these. You can also",
+        " configure presets by pressing `P` when the mod is selected, which will allow you to bind",
+        " multiple cheats to a single key."
+      ],
+      "tagline": "Adds keybinds performing various cheaty things.",
+      "types": ["Utility"],
+      "supports": ["BL2", "TPS"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.12",
+      "versions": {
+        "1.12": "https://github.com/apple1417/bl-sdk-mods/raw/master/ApplesBorderlandsCheats/ApplesBorderlandsCheats.zip"
+      },
+      "requirements": {
+        "UserFeedback": ">=1.3"
+      },
+      "license": "GNU GPLv3"
+    },
+    {
+      "name": "AsyncUtil",
+      "authors": "apple1417",
+      "description": [
+        "Adds a few simple functions to let you easily run callbacks in the future without hanging",
+        " the game."
+      ],
+      "tagline": [
+        "A library which adds a few simple functions to let you easily run callbacks in the future",
+        " without hanging the game."
+      ],
+      "types": ["Library"],
+      "supports": ["BL2", "TPS"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.2",
+      "versions": {
+        "1.2": "https://github.com/apple1417/bl-sdk-mods/raw/master/AsyncUtil/AsyncUtil.zip"
+      },
+      "requirements": {},
+      "license": "GNU GPLv3"
+    },
+    {
+      "name": "Borderlands Crowd Control",
+      "authors": "apple1417",
+      "description": [
+        "Lets viewers on Twitch spend channel points to affect your game.\n",
+        "\n",
+        "Installation is more involved than other mods, please refer to the",
+        " [readme](https://github.com/apple1417/bl-sdk-mods/blob/master/CrowdControl/Readme.md).\n",
+        "These instructions are included in the download, and are thus not duplicated here to",
+        " prevent two copies getting out of sync.\n",
+        "\n",
+        "A list of the default effects is available",
+        " [here](https://github.com/apple1417/bl-sdk-mods/blob/master/CrowdControl/Effects.md)."
+      ],
+      "tagline": "Lets viewers on Twitch spend channel points to affect your game.",
+      "types": ["Gameplay", "Utility"],
+      "supports": ["BL2", "TPS"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.3",
+      "versions": {
+        "1.3": "https://github.com/apple1417/bl-sdk-mods/blob/master/CrowdControl/Readme.md"
+      },
+      "requirements": {},
+      "license": "GNU GPLv3"
+    },
+    {
+      "name": "Command Extensions",
+      "authors": "apple1417",
+      "description": [
+        "Adds a few new console commands, and provides functionality for other mods to do the\n",
+        "same. All these commands are fully compatible with blcmm files, you can just put them\n",
+        "in your mod and have users merge it with other files and enable/disable various\n",
+        "categories and it all just keeps working fine.\n",
+        "\n",
+        "[See here for info on the builtin commands and how to write mods using them.]",
+        "(https://github.com/apple1417/bl-sdk-mods/blob/master/CommandExtensions/Writing-Mods.md)"
+      ],
+      "tagline": "Adds a few new console commands, which are fully compatible with blcmm files.",
+      "types": ["Library"],
+      "supports": ["BL2", "TPS"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.5",
+      "versions": {
+        "1.5": "https://github.com/apple1417/bl-sdk-mods/raw/master/CommandExtensions/CommandExtensions.zip"
+      },
+      "requirements": {},
+      "license": "GNU GPLv3"
+    },
+    {
+      "name": "Enemy Level Randomizer",
+      "authors": "apple1417",
+      "description": [
+        "As the name might suggest, randomizes enemy levels. Probably a bad idea.\n",
+        "\n",
+        "Note that this has a few options to let you customize the randomization. You can for",
+        " example just turn randomization off and only add a pre-defined offset onto enemies'",
+        " levels."
+      ],
+      "tagline": "As the name might suggest, randomizes enemy levels. Probably a bad idea.",
+      "types": ["Gameplay"],
+      "supports": ["BL2", "TPS"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.4",
+      "versions": {
+        "1.4": "https://github.com/apple1417/bl-sdk-mods/raw/master/EnemyLevelRandomizer/EnemyLevelRandomizer.zip"
+      },
+      "requirements": {},
+      "license": "GNU GPLv3"
+    },
+    {
+      "name": "Equip Locker",
+      "authors": "apple1417",
+      "description": [
+        "Adds various options that prevent you from equipping certain types of items/weapons.\n",
+        "\n",
+        "Useful for allegiance or single rarity or weapon type runs.\n",
+        "\n",
+        "Currently includes options for:\n",
+        "- Allegiance\n",
+        "  - Manufacturer\n",
+        "  - Override for allegiance relics\n",
+        "  - Override for usable items (health vials, sdus, etc)\n",
+        "  - Weapons Only\n",
+        "- Rarity\n",
+        "- Weapon/Item Type\n",
+        "\n",
+        "Yes pearlescent rarity is missing, no I can't fix it, gearbox just set them to",
+        " `RARITY_UNKNOWN`.\n"
+      ],
+      "tagline": [
+        "Adds various options that prevent you from equipping certain types of items/weapons."
+      ],
+      "types": ["Gameplay", "Utility"],
+      "supports": ["BL2", "TPS"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.3",
+      "versions": {
+        "1.3": "https://github.com/apple1417/bl-sdk-mods/raw/master/EquipLocker/EquipLocker.zip"
+      },
+      "requirements": {},
+      "license": "GNU GPLv3"
+    },
+    {
+      "name": "Hide Undiscovered Missions",
+      "authors": "apple1417",
+      "description": [
+        "A super simple mod that hides undiscovered missions in your mission log.\n\n![Demo Image]",
+        "(https://cdn.discordapp.com/attachments/294502426302742529/628085298760384522/unknown.png)"
+      ],
+      "tagline": "A super simple mod that hides undiscovered missions in your mission log.",
+      "types": ["Utility"],
+      "supports": ["BL2", "TPS"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.2",
+      "versions": {
+        "1.2": "https://github.com/apple1417/bl-sdk-mods/raw/master/HideUndiscoveredMissions/HideUndiscoveredMissions.zip"
+      },
+      "requirements": {},
+      "license": "GNU GPLv3"
+    },
+    {
+      "name": "Item Level Uncapper",
+      "authors": "apple1417",
+      "description": [
+        "This mod is useless by itself, it should be used alongside the hexedit to increase the",
+        " player level cap.\n",
+        "\n",
+        "Fixes the level cap of most items so that they continue spawning past level 100.\n",
+        "\n",
+        "Note that past level 127, items cannot be serialized corrently, and will revert to a",
+        " lower level on SQ. Use [Sanity Saver](Sanity-Saver) to fix this.    \n",
+        "Also note that there may still be various other issues with an increased level cap, this",
+        " only fixes that most items stop spawning."
+      ],
+      "tagline": "Fixes the level cap of most items so that they continue spawning past level 100.",
+      "types": ["Utility"],
+      "supports": ["BL2", "TPS"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.3",
+      "versions": {
+        "1.3": "https://github.com/apple1417/bl-sdk-mods/raw/master/ItemLevelUncapper/ItemLevelUncapper.zip"
+      },
+      "requirements": {},
+      "license": "GNU GPLv3"
+    },
+    {
+      "name": "No Ads",
+      "authors": "apple1417",
+      "description": [
+        "Prevents ads from showing. Includes both the obnoxious BL3 ads as well as the small MoTD",
+        " DLC ads.\n",
+        "\n",
+        "![Demo Image](https://cdn.discordapp.com/attachments/294502426302742529/685460934101434384/49520_20200306135906_1.png)"
+      ],
+      "tagline": "Prevents ads from showing.",
+      "types": ["Utility"],
+      "supports": ["BL2", "TPS"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.3",
+      "versions": {
+        "1.3": "https://github.com/apple1417/bl-sdk-mods/raw/master/NoAds/NoAds.zip"
+      },
+      "requirements": {},
+      "license": "GNU GPLv3"
+    },
+    {
+      "name": "Offline Helpers",
+      "authors": "apple1417",
+      "description": [
+        "Adds several small features useful when playing offline.\n",
+        "- Fixes a crash when trying to chat while not connected to SHiFT.\n",
+        "- Adds an option to force your game to never connect to SHiFT.\n",
+        "- Adds an option to automatically hide the offline warning.\n",
+        "\n",
+        "Note that this will cause issues when running offline mod files - you need to manually",
+        " open your mod file in a text editor, search for `GearboxAccountData_1` and change the",
+        " `1` to a `0`. You will need to do this every time you re-save the file in BLCMM."
+      ],
+      "tagline": "Adds several small features useful when playing offline.",
+      "types": ["Utility"],
+      "supports": ["BL2", "TPS"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.3",
+      "versions": {
+        "1.3": "https://github.com/apple1417/bl-sdk-mods/raw/master/OfflineHelpers/OfflineHelpers.zip"
+      },
+      "requirements": {},
+      "license": "GNU GPLv3"
+    },
+    {
+      "name": "Onezerker",
+      "authors": "apple1417",
+      "description": [
+        "Ever felt gunzerking with two different guns was too complicated? No? Well too bad. Makes",
+        " you gunzerk with two copies of the same gun instead of two different ones.\n",
+        "\n",
+        "Thanks to FromDarkHell for finding the object which lets you gunzerk with only one",
+        " equipped gun."
+      ],
+      "tagline": "Makes you gunzerk with two copies of the same gun instead of two different ones.",
+      "types": ["Gameplay"],
+      "supports": ["BL2"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.8",
+      "versions": {
+        "1.8": "https://github.com/apple1417/bl-sdk-mods/raw/master/Onezerker/Onezerker.zip"
+      },
+      "requirements": {},
+      "license": "GNU GPLv3"
+    },
+    {
+      "name": "Python Part Notifier",
+      "authors": "apple1417",
+      "description": [
+        "Shows the parts making up all of your items and weapons on their cards. Yes this even",
+        " includes Grenades, COMs, and Relics/Oz Kits. Has full mod support, so if a mod adds",
+        " extra parts to a weapon or changes a part's mesh it will properly update. Unique part",
+        " support is limited, they may just show the same as the base part with the same mesh.\n",
+        "\n",
+        "![Demo Image](https://cdn.discordapp.com/attachments/294502426302742529/614303846256082945/unknown.png)\n",
+        "\n",
+        "What exactly is shown on the card is very customizable through the options menu. Don't",
+        " care about a part slot? You can turn it off. Running out of space with all the parts you",
+        " want to show? You can remove the original description or turn the font size down. Or",
+        " playing Randomizer and want to know what weapons each part comes from? Why not use",
+        " detailed part names.\n",
+        "\n",
+        "Note that there are thousands of parts, so it's not impossible that the mod gets",
+        " something wrong, don't be afraid to double check. If you do find an issue please report",
+        " it alongside a gibbed code for the item."
+      ],
+      "tagline": "Shows the parts making up all of your items and weapons on their cards.",
+      "types": ["Utility"],
+      "supports": ["BL2", "TPS"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.7",
+      "versions": {
+        "1.7": "https://github.com/apple1417/bl-sdk-mods/raw/master/PythonPartNotifier/PythonPartNotifier.zip"
+      },
+      "requirements": {},
+      "license": "GNU GPLv3"
+    },
+    {
+      "name": "Rounds Per Minute",
+      "authors": "apple1417",
+      "description": [
+        "Makes item cards display rounds per minute rather than per second.\n",
+        "\n",
+        "![Demo Image](https://cdn.discordapp.com/attachments/288382606288879629/666536469766340640/unknown.png)\n",
+        "\n",
+        "Note that the firerate shown when comparing against a weapon on the ground will still be",
+        " in rounds per second, this is impossible to fix."
+      ],
+      "tagline": "Makes item cards display rounds per minute rather than per second.",
+      "types": ["Utility"],
+      "supports": ["BL2", "TPS"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.2",
+      "versions": {
+        "1.2": "https://github.com/apple1417/bl-sdk-mods/raw/master/RoundsPerMinute/RoundsPerMinute.zip"
+      },
+      "requirements": {},
+      "license": "GNU GPLv3"
+    },
+    {
+      "name": "Sanity Saver",
+      "authors": "apple1417",
+      "description": [
+        "Disables sanity check, and also saves items which don't serialize, which would have parts",
+        " deleted even with it off.\n",
+        "\n",
+        "See the",
+        " [readme](https://github.com/apple1417/bl-sdk-mods/tree/master/SanitySaver#save-editing)",
+        " for some extra information on how to save edit while using this."
+      ],
+      "tagline": [
+        "Disables sanity check, and also saves items which don't serialize, which would have parts",
+        " deleted even with it off"
+      ],
+      "types": ["Utility"],
+      "supports": ["BL2", "TPS"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.1",
+      "versions": {
+        "1.1": "https://github.com/apple1417/bl-sdk-mods/raw/master/SanitySaver/SanitySaver.zip"
+      },
+      "requirements": {},
+      "license": "GNU GPLv3"
+    },
+    {
+      "name": "Scaling Adjuster",
+      "authors": "apple1417",
+      "description": [
+        "Adds an option to change the game's base scaling value. Note that you may have to save",
+        " quit for values to update."
+      ],
+      "tagline": "Adds an option to change the game's base scaling value.",
+      "types": ["Utility"],
+      "supports": ["BL2", "TPS"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.6",
+      "versions": {
+        "1.6": "https://github.com/apple1417/bl-sdk-mods/raw/master/ScalingAdjuster/ScalingAdjuster.zip"
+      },
+      "requirements": {},
+      "license": "GNU GPLv3"
+    },
+    {
+      "name": "SDK Autorun",
+      "authors": "apple1417",
+      "description": [
+        "Automatically runs console commands/SDK mods for you when you reach the main menu.",
+        " Configurable entirely through an in game menu.\n",
+        "\n",
+        "Note that if you get stuck in a crash loop, you can disable this by deleting the",
+        " `settings.json` that gets created in the mod directory."
+      ],
+      "tagline": [
+        "Automatically runs console commands/SDK mods for you when you reach the main menu."
+      ],
+      "types": ["Utility"],
+      "supports": ["BL2", "TPS"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.5",
+      "versions": {
+        "1.5": "https://github.com/apple1417/bl-sdk-mods/raw/master/SDKAutorun/SDKAutorun.zip"
+      },
+      "requirements": {
+        "AsyncUtil": ">=1.0",
+        "UserFeedback": ">=1.3"
+      },
+      "license": "GNU GPLv3"
+    },
+    {
+      "name": "Side Mission Randomizer",
+      "authors": "apple1417",
+      "description": [
+        "Ever felt it was too easy to unlock all your favourite side missions? This mod randomizes",
+        " their progression order (it doesn't affect what's in the missions). Turns the lovely",
+        " (mostly) linear progression graph into a spaghetti nightmare.\n",
+        "\n",
+        "This mod will create other mods in the sdk mod menu for each seed you generate, only one",
+        " of which can be active at a time. If you want to share a seed with friends, select the",
+        " main mod, open the settings file, and copy paste it over into their settings file.\n",
+        "\n",
+        "If you want to spoil yourself you can also generate a dump of the exact mission",
+        " progression."
+      ],
+      "tagline": "Randomizes the Side Mission progression order.",
+      "types": ["Gameplay"],
+      "supports": ["BL2", "TPS"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.4",
+      "versions": {
+        "1.4": "https://github.com/apple1417/bl-sdk-mods/raw/master/SideMissionRandomizer/SideMissionRandomizer.zip"
+      },
+      "requirements": {},
+      "license": "GNU GPLv3"
+    },
+    {
+      "name": "Spawn Multiplier",
+      "authors": "apple1417",
+      "description": [
+        "Adds an option to let you easily multiply the amount of spawns you're getting. Updates",
+        " live, and has a few different ways to handle the spawn limit."
+      ],
+      "tagline": "Adds an option to let you easily multiply the amount of spawns you're getting.",
+      "types": ["Gameplay"],
+      "supports": ["BL2", "TPS"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.5",
+      "versions": {
+        "1.5": "https://github.com/apple1417/bl-sdk-mods/raw/master/SpawnMultiplier/SpawnMultiplier.zip"
+      },
+      "requirements": {},
+      "license": "GNU GPLv3"
+    },
+    {
+      "name": "True Damage Logger",
+      "authors": "apple1417",
+      "description": [
+        "Prints the actual amount of damage you deal to console, bypassing visual damage cap.\n",
+        "\n",
+        "Has a configurable minimum damage before logging, in case you don't want to spam your",
+        " console."
+      ],
+      "tagline": [
+        "Prints the actual amount of damage you deal to console, bypassing visual damage cap."
+      ],
+      "types": ["Utility"],
+      "supports": ["BL2", "TPS"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.3",
+      "versions": {
+        "1.3": "https://github.com/apple1417/bl-sdk-mods/raw/master/TrueDamageLogger/TrueDamageLogger.zip"
+      },
+      "requirements": {},
+      "license": "GNU GPLv3"
+    },
+    {
+      "name": "UserFeedback",
+      "authors": "apple1417",
+      "description": [
+        "Adds several functions/classes to let you show various types of feedback to and get input",
+        " from your users.\n",
+        "\n",
+        "Features include:\n",
+        "- Small messages on the left of the HUD, like those used for respawn cost or all players",
+        "  must be present messages.\n",
+        "- Chat messages.\n",
+        "- Training dialog boxes in the middle of the screen, like those used for most training",
+        "  messages or the special edition item message.\n",
+        "- Options boxes where the user can select from multiple different options, like those",
+        "  used to select playthrough or to confirm quitting.\n",
+        "- A custom training box that takes text input.\n",
+        "- A custom options box that lets the user reorder entries."
+      ],
+      "tagline": "A library adding several ways to show feedback to and get input from your users.",
+      "types": ["Library"],
+      "supports": ["BL2", "TPS"],
+      "source": "https://github.com/apple1417/bl-sdk-mods/",
+      "latest": "1.5",
+      "versions": {
+        "1.5": "https://github.com/apple1417/bl-sdk-mods/raw/master/UserFeedback/UserFeedback.zip"
+      },
+      "requirements": {},
+      "license": "GNU GPLv3"
+    }
+  ]
+}
