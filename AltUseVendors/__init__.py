@@ -8,7 +8,7 @@ try:
     from Mods import AsyncUtil
 except ImportError as ex:
     import webbrowser
-    webbrowser.open("https://apple1417.github.io/bl2/didntread/?m=Alt%20Use%20Vendors&au")
+    webbrowser.open("https://apple1417.dev/bl2/didntread/?m=Alt%20Use%20Vendors&au")
     raise ex
 
 

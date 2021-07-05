@@ -27,7 +27,7 @@ input((
     "Press enter to continue.\n"
 ))
 
-webbrowser.open("https://apple1417.github.io/bl2/crowdcontrol/")
+webbrowser.open("https://apple1417.dev/bl2/crowdcontrol/")
 
 token = input("Paste the token here:\n")
 open(path.join(path.dirname(__file__), "token.txt"), "w").write(token)

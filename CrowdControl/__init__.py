@@ -23,7 +23,7 @@ try:
         raise RuntimeError("UserFeedback version is too old, need at least v1.3!")
 # UF 1.0 didn't have version fields, hence the `NameError`
 except (ImportError, RuntimeError, NameError) as ex:
-    url = "https://apple1417.github.io/bl2/didntread/?m=Borderlands%20Crowd%20Control&au=v1.0&uf=v1.3"
+    url = "https://apple1417.dev/bl2/didntread/?m=Borderlands%20Crowd%20Control&au=v1.0&uf=v1.3"
     if isinstance(ex, (RuntimeError, NameError)):
         url += "&update"
     webbrowser.open(url)
@@ -94,7 +94,7 @@ class CrowdControl(SDKMod):
     SettingsInputs: Dict[str, str]
     Options: List[Options.Base]
 
-    TOKEN_URL: ClassVar[str] = "https://apple1417.github.io/bl2/crowdcontrol/"
+    TOKEN_URL: ClassVar[str] = "https://apple1417.dev/bl2/crowdcontrol/"
 
     BASE_PATH: ClassVar[str] = path.dirname(path.realpath(__file__))
     TOKEN_FILE: ClassVar[str] = path.join(BASE_PATH, "token.txt")

@@ -17,7 +17,7 @@ try:
 # UF 1.0 didn't have version fields, hence the `NameError`
 except (ImportError, RuntimeError, NameError) as ex:
     import webbrowser
-    url = "https://apple1417.github.io/bl2/didntread/?m=SDK%20Autorun&au=v1.0&uf=v1.3"
+    url = "https://apple1417.dev/bl2/didntread/?m=SDK%20Autorun&au=v1.0&uf=v1.3"
     if isinstance(ex, (RuntimeError, NameError)):
         url += "&update"
     webbrowser.open(url)
