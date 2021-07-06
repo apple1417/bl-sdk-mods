@@ -7,14 +7,13 @@ from Mods.ModMenu import (EnabledSaveType, InputEvent, Keybind, LoadModSettings,
 
 try:
     from Mods import UserFeedback
-    if UserFeedback.VersionMajor < 1:
-        raise RuntimeError("UserFeedback version is too old, need at least v1.3!")
-    if UserFeedback.VersionMajor == 1 and UserFeedback.VersionMinor < 3:
+
+    if (UserFeedback.VersionMajor, UserFeedback.VersionMinor) < (1, 3):
         raise RuntimeError("UserFeedback version is too old, need at least v1.3!")
 # UF 1.0 didn't have version fields, hence the `NameError`
 except (ImportError, RuntimeError, NameError) as ex:
     import webbrowser
-    url = "https://apple1417.dev/bl2/didntread/?m=Apple%27s%20Borderlands%20Cheats&uf=v1.3"
+    url = "https://bl-sdk.github.io/requirements/?mod=Apple%27s%20Borderlands%20Cheats&all"
     if isinstance(ex, (RuntimeError, NameError)):
         url += "&update"
     webbrowser.open(url)
@@ -36,7 +35,7 @@ if __name__ == "__main__":
 
 
 from .Cheats import ALL_CHEATS, ALL_HOOKS, ALL_OPTIONS
-from .Presets import PresetManager
+from .Presets import PresetData, PresetManager
 
 
 class ApplesBorderlandsCheats(SDKMod):
@@ -73,7 +72,7 @@ class ApplesBorderlandsCheats(SDKMod):
             SaveModSettings(self)
 
     def __init__(self) -> None:
-        preset_option = Options.Hidden("Presets", StartingValue=[])
+        preset_option: Options.Hidden[PresetData] = Options.Hidden("Presets", StartingValue=[])
         self.Options = [preset_option] + ALL_OPTIONS  # type: ignore
 
         # Load settings once for the set of presets

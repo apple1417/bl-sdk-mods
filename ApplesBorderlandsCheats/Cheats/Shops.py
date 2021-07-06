@@ -142,7 +142,7 @@ class ResetShops(ABCCheat):
         for obj in unrealsdk.FindAll("WillowVendingMachine"):
             if obj.Name == "Default__WillowVendingMachine":
                 continue
-            count += 1  # noqa: SIM113
+            count += 1
             obj.ResetInventory()
 
         ShowHUDMessage(

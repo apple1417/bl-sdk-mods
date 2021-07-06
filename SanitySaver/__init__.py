@@ -26,7 +26,7 @@ class SanitySaver(SDKMod):
         "C": "Clear Cache"
     }
 
-    CompressOption: Options.Hidden
+    CompressOption: Options.Hidden[bool]
 
     def __init__(self) -> None:
         self.CompressOption = Options.Hidden("CompressSaves", StartingValue=True)

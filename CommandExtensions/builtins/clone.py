@@ -22,7 +22,7 @@ def clone_object(
 
     unrealsdk.KeepAlive(cloned)
     cloned.ObjectArchetype = src.ObjectArchetype
-    # Don't ask me what on earth this means
+    # Don't ask me what on earth this means, but it lets you reference objects cross package
     cloned.ObjectFlags.B |= 4
     return cloned
 

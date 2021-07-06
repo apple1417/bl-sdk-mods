@@ -185,7 +185,7 @@ debug_parser.add_argument(
 
 enable_on_parser = RegisterConsoleCommand(
     "CE_EnableOn",
-    lambda args: unrealsdk.Log("ERROR: 'CE_EnableOn' can only be used in BLCMM files."),
+    lambda args: unrealsdk.Log("ERROR: 'CE_EnableOn' can only be used in BLCMM files."),  # type: ignore
     description="""
 Can only be used in BLCMM files.
 

@@ -30,7 +30,7 @@ input((
 webbrowser.open("https://apple1417.dev/bl2/crowdcontrol/")
 
 token = input("Paste the token here:\n")
-open(path.join(path.dirname(__file__), "token.txt"), "w").write(token)
+open(path.join(path.dirname(__file__), "token.txt"), "w").write(token)  # noqa: SIM115
 
 print((
     "\nRunning test program."

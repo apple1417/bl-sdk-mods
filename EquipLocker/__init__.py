@@ -120,10 +120,10 @@ class EquipLocker(SDKMod):
         if item.Class.Name == "WillowVehicleWeapon":
             return True
 
-        for option, r_set in self.OptionRestrictionMap.items():
-            if option.CurrentValue and not r_set.CanItemBeEquipped(item):
-                return False
-        return True
+        return not any(
+            option.CurrentValue and not r_set.CanItemBeEquipped(item)
+            for option, r_set in self.OptionRestrictionMap.items()
+        )
 
     def GetEquippedItems(self) -> Iterator[unrealsdk.UObject]:
         pawn = unrealsdk.GetEngine().GamePlayers[0].Actor.Pawn

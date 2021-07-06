@@ -8,7 +8,7 @@ try:
     from Mods import AsyncUtil
 except ImportError as ex:
     import webbrowser
-    webbrowser.open("https://apple1417.dev/bl2/didntread/?m=Alt%20Use%20Vendors&au")
+    webbrowser.open("https://bl-sdk.github.io/requirements/?mod=Alt%20Use%20Vendors&all")
     raise ex
 
 
@@ -64,7 +64,7 @@ class AltUseVendors(SDKMod):
     AMMO_ICON_NAME: ClassVar[str] = "Icon_RefillAmmo"
 
     def __init__(self) -> None:
-        self.UpdatingOption = unrealsdk.Options.Boolean(
+        self.UpdatingOption = Options.Boolean(
             "Updating Costs",
             "Should the costs of quick buying update live while you're in game. Disabling this"
             " won't show the costs of quick buying anymore, but may help reduce lag.",
@@ -386,7 +386,7 @@ class AltUseVendors(SDKMod):
 
             pool.SetCurrentValue(pool.GetMaxValue())
 
-    def ModOptionChanged(self, option: unrealsdk.Options.Boolean, new_value: bool) -> None:
+    def ModOptionChanged(self, option: Options.Base, new_value: bool) -> None:
         if option != self.UpdatingOption:
             return
 

@@ -17,13 +17,11 @@ try:
     from Mods.UserFeedback import (OptionBox, OptionBoxButton, ShowHUDMessage, TextInputBox,
                                    TrainingBox)
 
-    if UserFeedback.VersionMajor < 1:
-        raise RuntimeError("UserFeedback version is too old, need at least v1.3!")
-    if UserFeedback.VersionMajor == 1 and UserFeedback.VersionMinor < 3:
+    if (UserFeedback.VersionMajor, UserFeedback.VersionMinor) < (1, 3):
         raise RuntimeError("UserFeedback version is too old, need at least v1.3!")
 # UF 1.0 didn't have version fields, hence the `NameError`
 except (ImportError, RuntimeError, NameError) as ex:
-    url = "https://apple1417.dev/bl2/didntread/?m=Borderlands%20Crowd%20Control&au=v1.0&uf=v1.3"
+    url = "https://bl-sdk.github.io/requirements/?mod=Borderlands%20Crowd%20Control&AsyncUtil=>=1.0&UserFeedback=>=1.3"
     if isinstance(ex, (RuntimeError, NameError)):
         url += "&update"
     webbrowser.open(url)
@@ -45,8 +43,8 @@ _native_path = path.join(path.dirname(__file__), "Native")
 if _native_path not in sys.path:
     sys.path.append(_native_path)
 
-from ctypes import GetLastError, WinError, byref, windll  # noqa E402
-from ctypes.wintypes import BYTE, DWORD  # noqa E402
+from ctypes import GetLastError, WinError, byref, windll  # noqa: E402
+from ctypes.wintypes import BYTE, DWORD  # noqa: E402
 
 ERROR_BROKEN_PIPE = 109
 STARTF_USESHOWWINDOW = 1
@@ -121,7 +119,7 @@ class CrowdControl(SDKMod):
         }
 
         try:
-            self.Token = open(self.TOKEN_FILE).read().strip()
+            self.Token = open(self.TOKEN_FILE).read().strip()  # noqa: SIM115
         except FileNotFoundError:
             self.Token = None
 
@@ -412,7 +410,7 @@ class CrowdControl(SDKMod):
         )
 
         def ReloadToken() -> None:
-            self.Token = open(self.TOKEN_FILE).read().strip()
+            self.Token = open(self.TOKEN_FILE).read().strip()  # noqa: SIM115
 
         def OnStart(button: OptionBoxButton) -> None:
             startfile(self.TOKEN_FILE)

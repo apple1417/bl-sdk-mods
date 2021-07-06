@@ -7,17 +7,15 @@ from Mods.ModMenu import (EnabledSaveType, GetSettingsFilePath, LoadModSettings,
                           Options, RegisterMod, SaveModSettings, SDKMod)
 
 try:
-    from Mods import AsyncUtil  # noqa F401  # Unused in this file but better to check in one place
+    from Mods import AsyncUtil  # noqa: F401  # Unused in this file but better to check in one place
     from Mods import UserFeedback
 
-    if UserFeedback.VersionMajor < 1:
-        raise RuntimeError("UserFeedback version is too old, need at least v1.3!")
-    if UserFeedback.VersionMajor == 1 and UserFeedback.VersionMinor < 3:
+    if (UserFeedback.VersionMajor, UserFeedback.VersionMinor) < (1, 3):
         raise RuntimeError("UserFeedback version is too old, need at least v1.3!")
 # UF 1.0 didn't have version fields, hence the `NameError`
 except (ImportError, RuntimeError, NameError) as ex:
     import webbrowser
-    url = "https://apple1417.dev/bl2/didntread/?m=SDK%20Autorun&au=v1.0&uf=v1.3"
+    url = "https://bl-sdk.github.io/requirements/?mod=SDK%20Autorun&all"
     if isinstance(ex, (RuntimeError, NameError)):
         url += "&update"
     webbrowser.open(url)
@@ -56,7 +54,7 @@ class SDKAutorun(SDKMod):
         "T": "Edit Tasks"
     }
 
-    TaskOption: Options.Hidden
+    TaskOption: Options.Hidden[Dict[str, Dict[str, List[Dict[str, Tasks.JSON]]]]]
 
     LaunchTasks: List[Tasks.BaseTask]
     MainMenuTasks: List[Tasks.BaseTask]
@@ -68,9 +66,9 @@ class SDKAutorun(SDKMod):
             },
             "OnLaunch": {
                 "Comment": [
-                    "Congratulations, you found the secret file where you can setup tasks to run on launch.",
-                    " This is not editable ingame because exec-ing mods before the main menu tends to cause",
-                    " a crash, but if you really want you can edit the `Tasks` array here at your own risk."
+                    "Congratulations, you found the secret file where you can setup tasks to run on launch.",  # type: ignore
+                    " This is not editable ingame because exec-ing mods before the main menu tends to cause",  # type: ignore
+                    " a crash, but if you really want you can edit the `Tasks` array here at your own risk."  # type: ignore
                 ],
                 "Tasks": []
             }

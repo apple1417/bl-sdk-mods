@@ -49,9 +49,9 @@ def ShowChatMessage(
     ShowTimestamp: bool = True
 ) -> None:
     if Timestamp is None:
-        Timestamp = datetime.now()  # noqa N806
+        Timestamp = datetime.now()  # noqa: N806
 
-    is12h = unrealsdk.FindAll("WillowSaveGameManager")[0].TimeFormat == "12"
+    is12h = unrealsdk.FindAll("WillowSaveGameManager")[-1].TimeFormat == "12"
     time_str = Timestamp.strftime(("[%H:%M:%S]", "[%I:%M:%S%p]")[is12h]).lower()
 
     user_str = f"{User} {time_str}" if ShowTimestamp else User

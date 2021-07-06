@@ -1,12 +1,15 @@
 import html
 import json
 import os
-from typing import ClassVar, Dict, List, Optional
+from typing import ClassVar, Collection, Dict, List, Optional
 
 from Mods.ModMenu import Options
 from Mods.UserFeedback import OptionBox, OptionBoxButton, ShowHUDMessage, TextInputBox
 
 from .Cheats import ABCCheat, ABCCycleableCheat
+
+# This doesn't seem right but it's what mypy reads the var as
+PresetData = List[Dict[str, Collection[str]]]
 
 
 class Preset:
@@ -202,7 +205,7 @@ class Preset:
 
 
 class PresetManager:
-    Option: Options.Hidden
+    Option: Options.Hidden[PresetData]
     PresetList: List[Preset]
     CheatList: List[ABCCheat]
 
@@ -228,7 +231,7 @@ class PresetManager:
 
     _RenameBox: TextInputBox
 
-    def __init__(self, Option: Options.Hidden, CheatList: List[ABCCheat]):
+    def __init__(self, Option: Options.Hidden[PresetData], CheatList: List[ABCCheat]):
         self.Option = Option
         self.CheatList = CheatList
 

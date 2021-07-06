@@ -43,7 +43,7 @@ def update_compression(should_compress: bool) -> None:
             suffixes.pop()
         base_file = file.parent / (file.stem.split(".")[0] + "".join(suffixes))
 
-        with open(base_file.with_suffix(".json"), json_mode) as js:
+        with open(base_file.with_suffix(".json"), json_mode) as js:  # noqa: SIM117
             with gzip.open(base_file.with_suffix(".json.gz"), gz_mode) as gz:
                 if should_compress:
                     shutil.copyfileobj(js, gz)
@@ -90,7 +90,7 @@ class SaveManager:
             if _COMPRESS:
                 file = gzip.open(self.file_path, "rt", encoding="utf8")
             else:
-                file = open(self.file_path)
+                file = open(self.file_path)  # noqa: SIM115
 
             data = json.load(file)
             # JSON doesn't allow int keys, dumping converts them to strings, we need to convert back
@@ -101,6 +101,7 @@ class SaveManager:
                 int(unique_id): val for unique_id, val in data.get("new_items", {}).items()
             }
             file.close()
+
         # In this version of python, gzip throws base `OSError`s, which also catches file not founds
         except (OSError, json.JSONDecodeError):
             self.replacements = {}
@@ -121,12 +122,13 @@ class SaveManager:
         if _COMPRESS:
             file = gzip.open(self.file_path, "wt", encoding="utf8")
         else:
-            file = open(self.file_path, "w")
+            file = open(self.file_path, "w")  # noqa: SIM115
 
         json.dump({
             "replacements": self.replacements,
             "new_items": self.new_items
         }, file, indent=None if _COMPRESS else 4)
+
         file.close()
 
     def add_item(self, item: unrealsdk.FStruct, is_weapon: bool, existing_save: SaveManager) -> None:
