@@ -4,6 +4,10 @@ Adds several small features useful when playing offline.
 - Adds an option to force your game to never connect to SHiFT.    
 - Adds an option to automatically hide the offline warning.    
 
+Note that this will cause issues when running offline mod files - you need to manually open your mod
+file in a text editor, search for `GearboxAccountData_1` and change the `1` to a `0`. You will need
+to do this every time you re-save the file in BLCMM.
+
 ## Changelog
 
 ### Offline Helpers v1.3

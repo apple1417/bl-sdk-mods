@@ -23,8 +23,11 @@ class OfflineHelpers(SDKMod):
 
     def __init__(self) -> None:
         self.ForceOption = Options.Boolean(
-            "Force Offline Mode",
-            "Forces your game to never connect to SHiFT.",
+            "Force Offline Mode (ADVANCED)", (
+                "Forces your game to never connect to SHiFT. Note you will need to manually edit"
+                " offline blcmm files to use them with this - check the Readme / Mod Database"
+                " description."
+            ),
             False
         )
         self.WarningOption = Options.Boolean(
@@ -32,7 +35,7 @@ class OfflineHelpers(SDKMod):
             "Automatically hides the offline mode warning.",
             True
         )
-        self.Options = [self.ForceOption, self.WarningOption]
+        self.Options = [self.WarningOption, self.ForceOption]
 
     def Enable(self) -> None:
         def AddChatMessage(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
