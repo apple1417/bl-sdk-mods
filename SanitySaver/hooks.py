@@ -21,6 +21,11 @@ def Block(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unre
     return False
 
 
+_memento_save_manager = SaveManager("_mementos")
+
+
+# region Remove sanity check
+
 """
 So at it's most basic, to remove sanity check all we really want to do is force
 `WPC.ValidateWeaponDefinition` and `WPC.ValidateItemDefinition` to always return True.
@@ -220,6 +225,9 @@ def ServerSetWeaponSaveGameData(caller: unrealsdk.UObject, idx: int, def_data: u
     inv_pawn.InvManager.PendingQuickSlot = slot
     weap.GiveTo(inv_pawn, slot != 0)
 
+# endregion
+# region Unserializable backpack items
+
 
 """
 We also want to save items that don't serialize, and we want the game to save these items as best it
@@ -240,11 +248,35 @@ def GeneratePlayerSaveGame(caller: unrealsdk.UObject, function: unrealsdk.UFunct
     for item in get_all_items_and_weapons(caller.GetPawnInventoryManager()):
         if item.Class.Name == "WillowWeapon" and not item.CanBeSaved():
             continue
-        new_save.add_item(item.DefinitionData, item.Class.Name == "WillowWeapon", existing_save)
+        new_save.add_existing_item(item, existing_save)
 
     new_save.write()
 
     return True
+
+
+# Fixes the data in a `PlayerSaveGame` object - we need this logic in a few places
+def fix_playersavegame_data(save_name: str, savegame: unrealsdk.UObject) -> None:
+    new_save = SaveManager(save_name)
+    existing_save = SaveManager(save_name)
+    existing_save.load()
+
+    for item in savegame.ItemData:
+        if item is None or item.DefinitionData is None:
+            continue
+        new_save.update_item(item.DefinitionData, False, existing_save)
+        item.DefinitionData = existing_save.fix_definition_data(item.DefinitionData, False)
+
+    for weap in savegame.WeaponData:
+        if weap is None or weap.WeaponDefinitionData is None:
+            continue
+        new_save.update_item(weap.WeaponDefinitionData, True, existing_save)
+        weap.WeaponDefinitionData = existing_save.fix_definition_data(
+            weap.WeaponDefinitionData,
+            True
+        )
+
+    new_save.write()
 
 
 # We can't hook LoadPlayerSaveGame itself because the item objects don't exist yet
@@ -255,20 +287,27 @@ def ApplyPlayerSaveGameData(caller: unrealsdk.UObject, function: unrealsdk.UFunc
     if save_name is None:
         return True
 
-    save_manager = SaveManager(save_name)
-    save_manager.load()
+    fix_playersavegame_data(save_name, params.SaveGame)
 
-    for item in params.SaveGame.ItemData:
-        if item is None or item.DefinitionData is None:
-            continue
-        item.DefinitionData = save_manager.apply_replacements(item.DefinitionData, False)
+    return True
 
-    for weap in params.SaveGame.WeaponData:
-        if weap is None or weap.WeaponDefinitionData is None:
-            continue
-        weap.WeaponDefinitionData = save_manager.apply_replacements(weap.WeaponDefinitionData, True)
 
-    save_manager.write()
+# Fixup the items that appear on your character on the main menu
+@hook("WillowGame.WillowPlayerPawnDataManager.LoadPlayerPawnDataAsync")
+def LoadPlayerPawnDataAsync(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+    if unrealsdk.GetEngine().GetCurrentWorldInfo().GetStreamingPersistentMapName() != "menumap":
+        return True
+
+    # Since we know you're on the main menu here, clear map save data
+    _memento_save_manager.clear()
+
+    save_name = unrealsdk.GetEngine().GamePlayers[0].Actor.GetSaveGameNameFromid(
+        params.Payload.SaveGame.SaveGameId
+    )
+    if save_name is None:
+        return True
+
+    fix_playersavegame_data(save_name, params.Payload.SaveGame)
 
     return True
 
@@ -279,7 +318,7 @@ One complication to our custom save system is that in some situations some parts
 
 This is indistingishable from there not being a part in that slot, so as a workaround we force load
 parts as the items are created. This will not get the game to save these for us though, we still
-need to do that outselves.
+need to do that ourselves.
 """
 
 
@@ -296,6 +335,9 @@ def OnCreate(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: u
             continue
         unrealsdk.KeepAlive(part)
     return True
+
+# endregion
+# region Unserializable bank items
 
 
 """
@@ -317,17 +359,23 @@ def Open(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrea
         return False
     inv_manager = PC.GetPawnInventoryManager()
 
-    save_manager: SaveManager
+    save_name: str
+    is_bank: bool
     if caller == inv_manager.TheBank:
-        save_manager = SaveManager(PC.SaveGameName, True)
+        save_name = PC.SaveGameName
+        is_bank = True
     elif caller == inv_manager.TheStash:
-        save_manager = SaveManager(STASH_NAME)
+        save_name = STASH_NAME
+        is_bank = False
     elif caller in (inv_manager.TheGrinder, inv_manager.TheMailBox):
         return True
     else:
         unrealsdk.Log("[SanitySaver] Could not identify opened container!")
         return True
-    save_manager.load()
+
+    new_save = SaveManager(save_name, is_bank)
+    existing_save = SaveManager(save_name, is_bank)
+    existing_save.load()
 
     PC.OnChestOpened(caller)
 
@@ -346,15 +394,17 @@ def Open(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrea
 
     The only way we can actually extract item references is by hooking the sanity check functions.
     Hooking them means we have to force all items to get sanity checked and be destroyed, but
-    luckily there's handy functions to recreate them  from the definition with our changes.
+    luckily there's handy functions to recreate them from the definition with our changes.
     """
 
     inv_list = []
 
     def ValidateItemWeaponDefinition(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
         is_weapon = function.Name == "ValidateWeaponDefinition"
+
+        new_save.update_item(params.DefinitionData, is_weapon, existing_save)
         inv_list.append(
-            (save_manager.apply_replacements(params.DefinitionData, is_weapon), is_weapon)
+            (existing_save.fix_definition_data(params.DefinitionData, is_weapon), is_weapon)
         )
         return False
 
@@ -368,7 +418,8 @@ def Open(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrea
     unrealsdk.RemoveHook("WillowGame.WillowPlayerController.ValidateItemDefinition", __name__)
     unrealsdk.RemoveHook("WillowGame.WillowPlayerController.ValidateWeaponDefinition", __name__)
 
-    save_manager.write()
+    new_save.write()
+
     caller.ChestIsOpen = True
 
     for def_data, is_weapon in inv_list:
@@ -410,15 +461,124 @@ def Close(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unre
 
     for chest_data in caller.TheChest:
         item = chest_data.Inventory
-        if item is None or item.DefinitionData is None:
+        if item is None:
             continue
-
-        new_save.add_item(
-            item.DefinitionData,
-            chest_data.InventoryClass.Name == "WillowWeapon",
-            existing_save
-        )
+        new_save.add_existing_item(item, existing_save)
 
     new_save.write()
 
     return True
+
+# endregion
+# region Unserializable item mementos
+
+
+"""
+Item Mementos are the system used to save items in the world. These serialize the items, so we need
+to overwrite things again.
+
+Mementos get converted back to items (and thus definition data structs) via these two functions:
+```
+WillowGame.WillowItem.CreateItemFromMemento
+WillowGame.WillowWeapon.CreateWeaponFromMemento
+```
+
+These functions don't decompile, and we of course can't overwrite the return value, so we need to
+overwrite everything calling them again. What complicates things is that, like with stored items, we
+can't actually call these functions ourselves, cause we can't reconstruct a serial number struct.
+"""
+
+
+@hook("WillowGame.WillowItem.GetMemento")
+@hook("WillowGame.WillowWeapon.GetMemento")
+def GetMemento(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+    _memento_save_manager.add_new_item(caller)
+    return True
+
+
+@hook("WillowGame.WillowPickup.CreatePickupFromMemento")
+def CreatePickupFromMemento(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+    """
+    We actually want to overwrite this function:
+    `WillowGame.PopulationFactoryWillowInventory.CreateInventoryPickup`
+
+    This function gets called directly by that one, passing the item reference in. It also happens
+    to be the only thing calling this, so we're safe to hook this unconditionally.
+    """
+    item = params.InventoryThisPickupIsFor
+
+    item.InitializeFromDefinitionData(
+        _memento_save_manager.fix_definition_data(
+            item.DefinitionData,
+            item.Class.Name == "WillowWeapon"
+        ),
+        None,
+        False
+    )
+    _memento_save_manager.remove_item(item)
+
+    return True
+
+
+@hook("WillowGame.PopulationFactoryWillowAIPawn.CreateSavedInventory")
+def CreateSavedInventory(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+    """
+    Again we can't call the create from memento functions directly, so next best thing is to hook a
+    function where we can grab the item reference from directly.
+
+    We also can't re-call this function ourselves to do the traditional form of temporary hooks -
+    the `PopulatedAIPawnMemento` arg eventually references an item serial - so instead we hook a
+    third function that's called later, after all our calls are done.
+    """
+    def GiveTo(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+        caller.InitializeFromDefinitionData(
+            _memento_save_manager.fix_definition_data(
+                caller.DefinitionData,
+                caller.Class.Name == "WillowWeapon"
+            ),
+            None,
+            False
+        )
+        _memento_save_manager.remove_item(caller)
+
+        return True
+
+    def SavedInventoryAddedFromPopulationSystem(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+        unrealsdk.RemoveHook("Engine.Inventory.GiveTo", __file__)
+        unrealsdk.RemoveHook("WillowGame.WillowAIPawn.SavedInventoryAddedFromPopulationSystem", __file__)
+        return True
+
+    unrealsdk.RunHook("Engine.Inventory.GiveTo", __file__, GiveTo)
+    unrealsdk.RunHook("WillowGame.WillowAIPawn.SavedInventoryAddedFromPopulationSystem", __file__, SavedInventoryAddedFromPopulationSystem)
+
+    return True
+
+
+# endregion
+# region Vendor rerolling
+
+_SHOULD_VENDORS_REROLL: bool = False
+_ignore_next_featured_item: bool = False
+
+
+def update_vendor_rerolling(should_reroll: bool) -> None:
+    global _SHOULD_VENDORS_REROLL
+    _SHOULD_VENDORS_REROLL = should_reroll
+
+
+@hook("WillowGame.WillowVendingMachine.SetFeaturedItem")
+def SetFeaturedItem(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+    global _ignore_next_featured_item
+
+    if not _SHOULD_VENDORS_REROLL or _ignore_next_featured_item:
+        return True
+
+    # Technically, this wastefully rerolls the vendor the very first time you visit the region
+    # In practice it doesn't really make a difference
+
+    _ignore_next_featured_item = True
+    caller.ResetInventory()
+    _ignore_next_featured_item = False
+    return False
+
+# endregion

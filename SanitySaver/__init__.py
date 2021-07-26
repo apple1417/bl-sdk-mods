@@ -1,12 +1,14 @@
 import unrealsdk
 import importlib
-from typing import Dict
+from typing import Any, Dict
 
 from Mods.ModMenu import EnabledSaveType, Mods, ModTypes, Options, RegisterMod, SDKMod
 
-from .helpers import obj_cache
-from .hooks import AllHooks
-from .save_manager import update_compression
+from .compression_handler import update_compression
+from .helpers import cached_obj_find
+from .hooks import AllHooks, update_vendor_rerolling
+from .migrations import migrate_all
+from .save_manager import SAVE_VERSION
 
 
 class SanitySaver(SDKMod):
@@ -16,7 +18,7 @@ class SanitySaver(SDKMod):
         "Disables sanity check, and also saves items which don't serialize, which would have parts"
         " deleted even with it off."
     )
-    Version: str = "1.1"
+    Version: str = f"{SAVE_VERSION}.0"
 
     Types: ModTypes = ModTypes.Utility
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
@@ -26,14 +28,31 @@ class SanitySaver(SDKMod):
         "C": "Clear Cache"
     }
 
-    CompressOption: Options.Hidden[bool]
+    CompressOption: Options.Boolean
+    VendorsOption: Options.Boolean
 
     def __init__(self) -> None:
-        self.CompressOption = Options.Hidden("CompressSaves", StartingValue=True)
-        self.Options = [self.CompressOption]
+        self.CompressOption = Options.Boolean(
+            "Compress Saves", (
+                "Compress saves so that they take up less disk space. If you frequently save edit,"
+                " you may want to turn this off to make doing so easier."
+            ), True
+        )
+        self.VendorsOption = Options.Boolean(
+            "Reroll Vendors on Level Transitions", (
+                "Vendors containing unserializable items will get broken if you switch levels."
+                " Turning this on rerolls vendors on transitions to preventing you from finding"
+                " such items."
+            ), False
+        )
+        self.Options = [self.CompressOption, self.VendorsOption]
 
     def Enable(self) -> None:
         update_compression(self.CompressOption.CurrentValue)
+        update_vendor_rerolling(self.VendorsOption.CurrentValue)
+
+        migrate_all()
+
         for func, hook in AllHooks.items():
             unrealsdk.RunHook(func, self.Name, hook)
 
@@ -43,9 +62,15 @@ class SanitySaver(SDKMod):
 
     def SettingsInputPressed(self, action: str) -> None:
         if action == "Clear Part Cache":
-            obj_cache.clear()
+            cached_obj_find.cache_clear()
         else:
             super().SettingsInputPressed(action)
+
+    def ModOptionChanged(self, option: Options.Base, new_value: Any) -> None:
+        if option == self.CompressOption:
+            update_compression(new_value)
+        elif option == self.VendorsOption:
+            update_vendor_rerolling(new_value)
 
 
 instance = SanitySaver()

@@ -15,9 +15,10 @@
         "Adds alt use binds to quickly refill health and ammo at their vendors, like in BL3."
       ],
       "types": ["Utility"],
-      "latest": "1.5",
+      "latest": "1.6",
       "versions": {
-        "1.5": "https://github.com/apple1417/bl-sdk-mods/raw/master/AltUseVendors/AltUseVendors.zip"
+        "1.5": "https://github.com/apple1417/bl-sdk-mods/raw/a45fde7c5edc2224c15ac0a775076aacd3d40a0a/AltUseVendors/AltUseVendors.zip",
+        "1.6": "https://github.com/apple1417/bl-sdk-mods/raw/master/AltUseVendors/AltUseVendors.zip"
       },
       "requirements": {
         "AsyncUtil": ">=1.0"
@@ -304,9 +305,10 @@
         " deleted even with it off"
       ],
       "types": ["Utility"],
-      "latest": "1.1",
+      "latest": "2.0",
       "versions": {
-        "1.1": "https://github.com/apple1417/bl-sdk-mods/raw/master/SanitySaver/SanitySaver.zip"
+        "1.1": "https://github.com/apple1417/bl-sdk-mods/raw/a45fde7c5edc2224c15ac0a775076aacd3d40a0a/SanitySaver/SanitySaver.zip",
+        "2.0": "https://github.com/apple1417/bl-sdk-mods/raw/master/SanitySaver/SanitySaver.zip"
       },
       "requirements": {}
     },

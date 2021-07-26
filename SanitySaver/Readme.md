@@ -4,30 +4,27 @@ even with it off.
 
 ## Save Editing
 This mod only saves parts which the game does not save itself. This means you can keep using any
-regular save editor in most cases. If you want to edit one of these parts which the game doesn't
-save though, it gets a little more complex.
+regular save editor, for most cases. If you want to edit one of these parts which the game doesn't
+save, and which get replaced by this, it gets a little more complex.
 
-Using [Juso's Inventory Editor](https://bl-sdk.github.io/mods/InventoryEditor/) is the easiest way
-to save edit in this case.
-
-Alternatively, you can edit the custom save files manually.
-
-[See this video.](https://youtu.be/wfLRjE9m1XQ)
+[See this video.](https://youtu.be/2p635l5C_KU)
 
 ### Opening Saves
 All custom saves will be stored in the `Saves` folder within the mod's folder. The files here will
 use the same numbers as in your normal saves folder, though the bank and stash are stored in
 seperate files. To save on disk space, all files are compressed using gzip by default. You will
-either need disable this, or download something which can compress/decompress them (e.g. 
-[7zip](https://www.7-zip.org/)). To disable compression, find the `settings.json` in the main mod
-folder, set `CompressSaves` to `true`, and re-launch the game.
+either need disable this in the mod options menu, or download something which can
+compress/decompress them (e.g. [7zip](https://www.7-zip.org/)).
 
 ### Editing Items
-Once you have your save file open, you should just be able to `Ctrl+F` the name of the weapon you
-want to edit. The level/name of every item you have is always stored, even if the mod doesn't
-replace any of the parts on it. To change what parts the mod replaces you simply need to add new
-keys to the JSON object for your item. They key should be the full name of the part slot, and the
-value should be the full path to the part (or a number for the level).
+Once you have your save file open, you should just be able to `Ctrl+F` the name of the item you want
+to edit. A short description of every item you have is always stored, even if the mod doesn't
+replace any of the parts on it. This description isn't modified after first being created, so you 
+can edit it to be more clear if you want.
+
+To change what parts the mod replaces you simply need to add new entries to the JSON object for your
+item. The key should be the full name of the part slot, and the value should be the full path to the
+part (or a number for the level).
 
 The part slot names are:
 
@@ -57,8 +54,7 @@ the base item is, so if you want to replace every single slot you can just give 
 or item. You cannot however turn an item into a weapon, or vice versa.
 
 ### Why do some items have so many more slots listed than others?
-Because you haven't loaded back into the game after a sq since obtaining them, or because you
-haven't re-opened the bank/stash.
+Because the game's only tried to save them once.
 
 The first time the mod comes across an item, it stores every single part slot. When the game loads
 the item again, it then checks which parts saved properly. The mod doesn't need to deal with any
@@ -70,6 +66,11 @@ or if you just want a cleaner item list, you can always quickly load back into t
 the bank/stash to update them.
 
 ## Changelog
+
+### Sanity Saver v2.0
+Changed the save file format a bit. Saves should automatically be migrated where possible.    
+Made unserializable dropped items and items equipped by NPCs save over level transitions.    
+Added option to reroll vendors on level transitions, to avoid unserialzable items breaking.    
 
 ### Sanity Saver v1.1
 Fixed that the grinder and the SHiFT mailbox in tps would incorrectly be forced empty.    

@@ -1,55 +1,27 @@
 from __future__ import annotations
 
 import unrealsdk
-import gzip
 import json
-import shutil
+import random
 from pathlib import Path
-from typing import Dict, IO, List, Union, cast
+from typing import ClassVar, Dict, Union, cast
 
+from .compression_handler import convert_path, dump, load
 from .helpers import (DefDataTuple, expand_item_definition_data, expand_weapon_definition_data,
                       pack_item_definition_data, pack_weapon_definition_data,
                       unpack_item_definition_data, unpack_weapon_definition_data)
 
-STASH_NAME = "Stash"
-
-_COMPRESS = True
+SAVE_VERSION: int = 2
+SAVE_VERSION_KEY: str = "save_version"
 
 _SAVES_DIR = Path(__file__).parent / "Saves"
 _SAVES_DIR.mkdir(exist_ok=True)
 
+STASH_NAME: str = "Stash"
+
 
 ItemData = Dict[str, Union[str, int, None]]
-ItemDataDict = Dict[int, List[ItemData]]
-
-
-def update_compression(should_compress: bool) -> None:
-    """
-    Changes if the save managers will gzip their files, and updates any existing files to the
-    correct format.
-    """
-    global _COMPRESS
-    _COMPRESS = should_compress
-
-    for file in _SAVES_DIR.glob("*.json" if should_compress else "*.json.gz"):
-        json_mode = "rb" if should_compress else "wb"
-        gz_mode = "wb" if should_compress else "rb"
-
-        # Hacky way to remove just the suffixes we care about
-        suffixes = list(file.suffixes)
-        if suffixes[-1] == ".gz":
-            suffixes.pop()
-        if suffixes[-1] == ".json":
-            suffixes.pop()
-        base_file = file.parent / (file.stem.split(".")[0] + "".join(suffixes))
-
-        with open(base_file.with_suffix(".json"), json_mode) as js:  # noqa: SIM117
-            with gzip.open(base_file.with_suffix(".json.gz"), gz_mode) as gz:
-                if should_compress:
-                    shutil.copyfileobj(js, gz)
-                else:
-                    shutil.copyfileobj(gz, js)
-        file.unlink()
+ItemDataDict = Dict[int, ItemData]
 
 
 class SaveManager:
@@ -58,27 +30,20 @@ class SaveManager:
     first to load from file (if it exists).
 
     All items have a `UniqueId` field, which we use to uniquely identify them. In the rare case
-    there's a conflict, we'll go in the order they're stored. Gibbed's editor changes unique id on
-    import so this should be exceedingly .
-
-    We split our custom save format into two parts:
-    1. A dict mapping unique ids to parts to replace. Replacements are minimal, only what the game
-    won't save for us (allowing changing the rest with a normal save editor).
-    2. A dict mapping unique idsto full dumps of the parts for new weapons - ones we haven't seen go
-       through a sq yet, so we don't know what the minimal replacements are.
+    there's a conflict, we can just change the id. There's an issue in gibbed's editor which means
+    this isn't quite a 1/2^32 we can ignore:
+    https://github.com/gibbed/Gibbed.Borderlands2/issues/154
     """
     file_path: Path
 
-    replacements: ItemDataDict
-    new_items: ItemDataDict
+    items: ItemDataDict
+    ITEMS_KEY: ClassVar[str] = "items"
 
     def __init__(self, save_name: str, is_bank: bool = False) -> None:
-        file_name = Path(save_name).stem + ("_Bank" if is_bank else "")
-        extension = ".json" + (".gz" if _COMPRESS else "")
-        self.file_path = _SAVES_DIR / Path(file_name).with_suffix(extension)
+        file_name = Path(save_name).stem + ("_Bank" if is_bank else "") + ".json"
+        self.file_path = _SAVES_DIR / Path(file_name)
 
-        self.replacements = {}
-        self.new_items = {}
+        self.items = {}
 
     def load(self) -> None:
         """
@@ -86,161 +51,151 @@ class SaveManager:
         malformed.
         """
         try:
-            file: IO[str]
-            if _COMPRESS:
-                file = gzip.open(self.file_path, "rt", encoding="utf8")
-            else:
-                file = open(self.file_path)  # noqa: SIM115
-
-            data = json.load(file)
+            data = load(self.file_path)
             # JSON doesn't allow int keys, dumping converts them to strings, we need to convert back
-            self.replacements = {
-                int(unique_id): val for unique_id, val in data.get("replacements", {}).items()
+            self.items = {
+                int(unique_id): val for unique_id, val in data.get(self.ITEMS_KEY, {}).items()
             }
-            self.new_items = {
-                int(unique_id): val for unique_id, val in data.get("new_items", {}).items()
-            }
-            file.close()
 
         # In this version of python, gzip throws base `OSError`s, which also catches file not founds
         except (OSError, json.JSONDecodeError):
-            self.replacements = {}
-            self.new_items = {}
+            self.items = {}
 
     def write(self) -> None:
-        """ Writes all save data to disk, overwriting existing files. """
-        # Clear out empty categories first
-        for item_dict in (self.new_items, self.replacements):
-            to_remove = set()
-            for unique_id, val in item_dict.items():
-                if len(val) <= 0:
-                    to_remove.add(unique_id)
-            for unique_id in to_remove:
-                item_dict.pop(unique_id)
-
-        file: IO[str]
-        if _COMPRESS:
-            file = gzip.open(self.file_path, "wt", encoding="utf8")
+        """ Writes all save data to disk, overwriting existing files. May delete files if empty. """
+        if len(self.items) == 0:
+            try:
+                # The `missing_ok` arg was only added in python 3.8
+                convert_path(self.file_path).unlink()
+            except (FileNotFoundError, PermissionError):
+                pass
         else:
-            file = open(self.file_path, "w")  # noqa: SIM115
+            dump({
+                SAVE_VERSION_KEY: SAVE_VERSION,
+                self.ITEMS_KEY: self.items
+            }, self.file_path)
 
-        json.dump({
-            "replacements": self.replacements,
-            "new_items": self.new_items
-        }, file, indent=None if _COMPRESS else 4)
+    def clear(self) -> None:
+        """ Clears all save data. """
+        self.items.clear()
 
-        file.close()
+    def _add_new_item_from_def(self, def_data: unrealsdk.FStruct, is_weapon: bool) -> None:
+        while def_data.UniqueId in self.items:
+            def_data.UniqueId = random.randrange(-0x80000000, 0x80000000)
 
-    def add_item(self, item: unrealsdk.FStruct, is_weapon: bool, existing_save: SaveManager) -> None:
-        """
-        Adds a new item from it's definition data struct.
-
-        To update the stored items, you're expected to use two `SaveManager` objects. One to load
-        the existing save, and one to write the new one into. This function expects to be run on the
-        new object and have the the existing one be passed into it.
-        """
-        replacements = existing_save.replacements.get(item.UniqueId, [])
-        if len(replacements) > 0:
-            if item.UniqueId not in self.replacements:
-                self.replacements[item.UniqueId] = []
-            self.replacements[item.UniqueId].append(replacements.pop(0))
-            return
-
-        # If an item is already in new on the existing save, this just puts it back in there
-        self._add_new_item(item, is_weapon)
-
-    def apply_replacements(self, item: unrealsdk.FStruct, is_weapon: bool) -> DefDataTuple:
-        """
-        Takes a definition data struct and returns a tuple of it with any replacements applied. Also
-        updates our internal representation of the save the information about what parts get deleted
-        that we learn.
-        """
-        # Prefer reading items out of replacements if possible
-        replacements = self.replacements.get(item.UniqueId, [])
-        if len(replacements) > 0:
-            current_parts: ItemData
-            if is_weapon:
-                current_parts = pack_weapon_definition_data(item)
-            else:
-                current_parts = pack_item_definition_data(item)
-
-            """
-            Move the replacement we're using to the end of the list, so the next call with the same
-            unique id gets the next replacement.
-            We can't just pop it like everywhere else cause we still need to save it.
-            """
-            first_replacement = replacements.pop(0)
-            replacements.append(first_replacement)
-
-            current_parts.update(first_replacement)
-            if is_weapon:
-                return unpack_weapon_definition_data(current_parts)
-            else:
-                return unpack_item_definition_data(current_parts)
-
-        # Next check if it's in new items instead, and convert it into a replacement
-        new_items = self.new_items.get(item.UniqueId, [])
-        if len(new_items) > 0:
-            known_parts = new_items.pop(0)
-            self._create_replacement_from_new(item, is_weapon, known_parts)
-
-            # Return our complete stored dict
-            known_parts["UniqueId"] = item.UniqueId
-            if is_weapon:
-                return unpack_weapon_definition_data(known_parts)
-            else:
-                return unpack_item_definition_data(known_parts)
-
-        # If we haven't seen an item before, don't change anything, and add it to our save if needed
-        self._add_new_item(item, is_weapon)
+        packed: ItemData = {
+            "_description": self._get_description(def_data, is_weapon),
+            "_inital": True
+        }
         if is_weapon:
-            return expand_weapon_definition_data(item)
+            packed.update(pack_weapon_definition_data(def_data))
         else:
-            return expand_item_definition_data(item)
-
-    def _add_new_item(self, item: unrealsdk.FStruct, is_weapon: bool) -> None:
-        # Doing this a little weird to try coerce the description to the top of the json dumps
-        packed: ItemData = {}
-        self._add_description(item, is_weapon, packed)
-        if is_weapon:
-            packed.update(pack_weapon_definition_data(item))
-        else:
-            packed.update(pack_item_definition_data(item))
-
+            packed.update(pack_item_definition_data(def_data))
         unique_id = cast(int, packed.pop("UniqueId"))
-        if unique_id not in self.new_items:
-            self.new_items[unique_id] = []
-        self.new_items[unique_id].append(packed)
 
-    def _create_replacement_from_new(self, item: unrealsdk.FStruct, is_weapon: bool, known_parts: ItemData) -> None:
-        engine = unrealsdk.GetEngine()
+        self.items[unique_id] = packed
 
-        replacements: ItemData = {}
-        self._add_description(item, is_weapon, replacements)
-        for field, val in known_parts.items():
-            actual_val = getattr(item, field)
-            if isinstance(actual_val, unrealsdk.UObject):
-                actual_val = engine.PathName(actual_val)
-            if actual_val != val:
-                replacements[field] = val
+    def add_new_item(self, item: unrealsdk.UObject) -> None:
+        """
+        Adds a new item to the save, rerolling it's unique id if needed.
+        """
+        self._add_new_item_from_def(item.DefinitionData, item.Class.Name == "WillowWeapon")
 
-        if item.UniqueId not in self.replacements:
-            self.replacements[item.UniqueId] = []
-        self.replacements[item.UniqueId].append(replacements)
+    def add_existing_item(self, item: unrealsdk.UObject, existing_save: SaveManager) -> None:
+        """
+        Adds an item to the save, using existing save data if we've seen it before.
 
-    def _add_description(self, item: unrealsdk.FStruct, is_weapon: bool, item_data: ItemData) -> None:
-        description = []
-        if item.ManufacturerGradeIndex is not None:
-            description.append(f"Level {item.ManufacturerGradeIndex}")
-        if is_weapon:
-            if item.PrefixPartDefinition is not None:
-                description.append(item.PrefixPartDefinition.PartName)
-            if item.TitlePartDefinition is not None:
-                description.append(item.TitlePartDefinition.PartName)
+        Intended to be used after loading into a save.
+        """
+        unique_id = item.DefinitionData.UniqueId
+        known_parts = existing_save.items.get(unique_id, None)
+
+        # TODO: this probably doesn't properly handle the case where you pick up a new item with the
+        #       same unique id as an existing one - kind of depends on what order this is called in
+        if known_parts is None or unique_id in self.items:
+            self.add_new_item(item)
         else:
-            if item.PrefixItemNamePartDefinition is not None:
-                description.append(item.PrefixItemNamePartDefinition.PartName)
-            if item.TitleItemNamePartDefinition is not None:
-                description.append(item.TitleItemNamePartDefinition.PartName)
-        if len(description) > 0:
-            item_data["_description"] = " ".join(x for x in description if x is not None)
+            self.items[unique_id] = known_parts
+
+    def update_item(
+        self,
+        def_data: unrealsdk.FStruct,
+        is_weapon: bool,
+        existing_save: SaveManager
+    ) -> None:
+        """
+        Adds an item to the save, and if we've seen it before updates our representation of it to
+        use minimal replacements.
+
+        Intended to be used after loading into a save.
+        """
+        unique_id = def_data.UniqueId
+        known_parts = existing_save.items.get(unique_id, None)
+
+        if known_parts is None or unique_id in self.items:
+            self._add_new_item_from_def(def_data, is_weapon)
+        elif "_inital" not in known_parts:
+            self.items[unique_id] = known_parts
+        else:
+            replacements: ItemData = {
+                "_description": known_parts["_description"]
+            }
+
+            obj = unrealsdk.GetEngine()  # Just need an arbitrary object
+
+            for field, val in known_parts.items():
+                if field[0] == "_":
+                    continue
+                actual_val = getattr(def_data, field)
+
+                if isinstance(actual_val, unrealsdk.UObject):
+                    actual_val = obj.PathName(actual_val)
+                if actual_val != val:
+                    replacements[field] = val
+
+            self.items[unique_id] = replacements
+
+    def fix_definition_data(self, def_data: unrealsdk.FStruct, is_weapon: bool) -> DefDataTuple:
+        """
+        Looks up an item in the save, and returns what it's definition data tuple should be.
+        """
+        if def_data.UniqueId not in self.items:
+            if is_weapon:
+                return expand_weapon_definition_data(def_data)
+            else:
+                return expand_item_definition_data(def_data)
+
+        if is_weapon:
+            parts = pack_weapon_definition_data(def_data)
+            parts.update(self.items[def_data.UniqueId])
+            return unpack_weapon_definition_data(parts)
+        else:
+            parts = pack_item_definition_data(def_data)
+            parts.update(self.items[def_data.UniqueId])
+            return unpack_item_definition_data(parts)
+
+    def remove_item(self, item: unrealsdk.UObject) -> None:
+        """
+        Removes an item from the save, if we're currently saving it.
+        """
+        try:
+            del self.items[item.DefinitionData.UniqueId]
+        except KeyError:
+            pass
+
+    @staticmethod
+    def _get_description(def_data: unrealsdk.FStruct, is_weapon: bool) -> str:
+        description_parts = [f"Level {def_data.ManufacturerGradeIndex}"]
+
+        if is_weapon:
+            if def_data.PrefixPartDefinition is not None:
+                description_parts.append(def_data.PrefixPartDefinition.PartName)
+            if def_data.TitlePartDefinition is not None:
+                description_parts.append(def_data.TitlePartDefinition.PartName)
+        else:
+            if def_data.PrefixItemNamePartDefinition is not None:
+                description_parts.append(def_data.PrefixItemNamePartDefinition.PartName)
+            if def_data.TitleItemNamePartDefinition is not None:
+                description_parts.append(def_data.TitleItemNamePartDefinition.PartName)
+
+        return " ".join(x for x in description_parts if x is not None)

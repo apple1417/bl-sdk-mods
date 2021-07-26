@@ -1,6 +1,6 @@
 import unrealsdk
 from dataclasses import dataclass
-from typing import ClassVar, Dict, Set
+from typing import ClassVar, Dict, List, Set
 
 from Mods.ModMenu import EnabledSaveType, Mods, ModTypes, Options, RegisterMod, SDKMod
 
@@ -20,7 +20,7 @@ class AltUseVendors(SDKMod):
         "\n"
         "If you have issues with stuttering, disable updating costs in settings."
     )
-    Version: str = "1.5"
+    Version: str = "1.6"
 
     Types: ModTypes = ModTypes.Utility
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
@@ -194,8 +194,6 @@ class AltUseVendors(SDKMod):
 
         def GenerateInventory(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
             # Whenever a vendor inventory is generated, update our cached costs
-            # Unfortuantly ShopInventory is a fixed array, which we can't iterate though, so we have
-            #  to do a findall to find the items
             unrealsdk.DoInjectedCallNext()
             caller.GenerateInventory()
 
@@ -204,9 +202,24 @@ class AltUseVendors(SDKMod):
             if caller.ShopType == 1:
                 self.AmmoCosts[caller] = {}
 
-            for item in unrealsdk.FindAll("WillowUsableItem"):
-                if item.Owner != caller:
-                    continue
+            all_items: List[unrealsdk.UObject]
+            if unrealsdk.GetVersion() >= (0, 7, 10):
+                # This is a static array, which is only got implementedin sdk 0.7.10
+                all_items = [
+                    item
+                    for item in caller.ShopInventory
+                    if item is not None
+                ]
+            else:
+                # On older versions we can recover the contents by checking item.Owner, though the
+                #  findall makes it much slower
+                all_items = [
+                    item
+                    for item in unrealsdk.FindAll("WillowUsableItem")
+                    if item.Owner == caller
+                ]
+
+            for item in all_items:
                 if item.DefinitionData is None or item.DefinitionData.ItemDefinition is None:
                     continue
 
@@ -333,22 +346,34 @@ class AltUseVendors(SDKMod):
         if pawn in self.PlayerAmmoPools:
             return
 
-        self.PlayerAmmoPools[pawn] = set()
-
-        # Unfortuantly manager.ResourcePools is another fixed array, we need another findall
         manager = pawn.Controller.ResourcePoolManager
 
-        for pool in unrealsdk.FindAll("AmmoResourcePool"):
-            if pool.Outer != manager:
-                continue
-            self.PlayerAmmoPools[pawn].add(pool)
-        # Of course there had to be one odd one out, leading to yet another findall :|
-        for pool in unrealsdk.FindAll("ResourcePool"):
-            if pool.Outer != manager:
-                continue
-            if pool.Definition.Resource.Name == "Ammo_Grenade_Protean":
-                self.PlayerAmmoPools[pawn].add(pool)
-                return
+        if unrealsdk.GetVersion() >= (0, 7, 10):
+            # `manager.ResourcePools` is a static array again
+            self.PlayerAmmoPools[pawn] = {
+                pool
+                for pool in manager.ResourcePools
+                if (
+                    pool is not None
+                    and (
+                        pool.Class.Name == "AmmoResourcePool"
+                        or pool.Definition.Resource.Name == "Ammo_Grenade_Protean"
+                    )
+                )
+            }
+        else:
+            self.PlayerAmmoPools[pawn] = {
+                pool
+                for pool in unrealsdk.FindAll("AmmoResourcePool")
+                if pool.Outer == manager
+            }
+            # Of course there had to be one odd one out, leading to yet another findall :|
+            for pool in unrealsdk.FindAll("ResourcePool"):
+                if pool.Outer != manager:
+                    continue
+                if pool.Definition.Resource.Name == "Ammo_Grenade_Protean":
+                    self.PlayerAmmoPools[pawn].add(pool)
+                    break
 
     def GetAmmoCost(self, pawn: unrealsdk.UObject, vendor: unrealsdk.UObject) -> int:
         self.LoadPlayerPools(pawn)

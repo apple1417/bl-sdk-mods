@@ -91,9 +91,10 @@ for dir_entry in os.scandir():
             if file == zip_name:
                 continue
             file_path = os.path.join(dir_path, file)
+            rel_path = os.path.relpath(file_path, dir_entry.path)
 
             for ig in ignores:
-                if file == ig or fnmatch(file_path, ig):
+                if file == ig or fnmatch(rel_path, ig):
                     os.remove(file_path)
                     break
             else:

@@ -1,5 +1,9 @@
 ## Changelog
 
+
+### Alt Use Vendors v1.6
+Added more optimization in anticipation of sdk version 0.7.10. Will fall back to current implementation when running on older versions.
+
 ### Alt Use Vendors v1.5
 Optimized a lot of the code - should help anyone who was having stutters.    
 As the description mentions (and has for a bit), if you're still having stutters, disable the updating costs option.

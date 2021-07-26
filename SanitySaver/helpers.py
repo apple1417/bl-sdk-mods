@@ -1,24 +1,39 @@
 import unrealsdk
-from typing import Any, Dict, Iterator, Optional, Tuple, Union
+import functools
+from typing import Any, Dict, Iterator, Optional, Tuple
 
 JSON = Dict[str, Any]
-DefDataTuple = Tuple[Union[int, unrealsdk.UObject], ...]
+DefDataTuple = Tuple[
+    unrealsdk.UObject,
+    unrealsdk.UObject,
+    unrealsdk.UObject,
+    int,
+    unrealsdk.UObject,
+    unrealsdk.UObject,
+    unrealsdk.UObject,
+    unrealsdk.UObject,
+    unrealsdk.UObject,
+    unrealsdk.UObject,
+    unrealsdk.UObject,
+    unrealsdk.UObject,
+    unrealsdk.UObject,
+    unrealsdk.UObject,
+    unrealsdk.UObject,
+    int,
+    int
+]
 
-obj_cache: Dict[str, unrealsdk.UObject] = {}
 
-
+@functools.lru_cache(maxsize=None)
 def cached_obj_find(klass: str, name: str) -> unrealsdk.UObject:
     if name is None or name == "None":
         return None
-    if name in obj_cache:
-        return obj_cache[name]
     obj = unrealsdk.FindObject(klass, name)
 
-    # Warn about missing objects but still cache them
+    # Warn about missing objects but still return/cache them
     if obj is None:
         unrealsdk.Log(f"[SanitySaver] Couldn't find {klass}'{name}'")
 
-    obj_cache[name] = obj
     return obj
 
 
