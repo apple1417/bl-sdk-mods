@@ -292,9 +292,19 @@ def ApplyPlayerSaveGameData(caller: unrealsdk.UObject, function: unrealsdk.UFunc
     return True
 
 
+_inital_launch: bool = True
+
+
 # Fixup the items that appear on your character on the main menu
 @hook("WillowGame.WillowPlayerPawnDataManager.LoadPlayerPawnDataAsync")
 def LoadPlayerPawnDataAsync(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+    # Don't do anything on first launch, before modded parts get created - don't want to cache them
+    # as not existing if we're auto enabled
+    global _inital_launch
+    if _inital_launch:
+        _inital_launch = False
+        return True
+
     if unrealsdk.GetEngine().GetCurrentWorldInfo().GetStreamingPersistentMapName() != "menumap":
         return True
 
@@ -310,6 +320,19 @@ def LoadPlayerPawnDataAsync(caller: unrealsdk.UObject, function: unrealsdk.UFunc
     fix_playersavegame_data(save_name, params.Payload.SaveGame)
 
     return True
+
+
+def LaunchNewSaveGame(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+    global _inital_launch
+    _inital_launch = False
+
+    unrealsdk.RemoveHook("WillowGame.FrontendGFxMovie.LaunchNewGame", __file__)
+    unrealsdk.RemoveHook("WillowGame.FrontendGFxMovie.LaunchSaveGame", __file__)
+    return True
+
+
+unrealsdk.RunHook("WillowGame.FrontendGFxMovie.LaunchNewGame", __file__, LaunchNewSaveGame)
+unrealsdk.RunHook("WillowGame.FrontendGFxMovie.LaunchSaveGame", __file__, LaunchNewSaveGame)
 
 
 """

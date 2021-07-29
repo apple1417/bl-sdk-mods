@@ -6,7 +6,7 @@ import random
 from pathlib import Path
 from typing import ClassVar, Dict, Union, cast
 
-from .compression_handler import convert_path, dump, load
+from .compression_handler import delete, dump, load
 from .helpers import (DefDataTuple, expand_item_definition_data, expand_weapon_definition_data,
                       pack_item_definition_data, pack_weapon_definition_data,
                       unpack_item_definition_data, unpack_weapon_definition_data)
@@ -64,11 +64,7 @@ class SaveManager:
     def write(self) -> None:
         """ Writes all save data to disk, overwriting existing files. May delete files if empty. """
         if len(self.items) == 0:
-            try:
-                # The `missing_ok` arg was only added in python 3.8
-                convert_path(self.file_path).unlink()
-            except (FileNotFoundError, PermissionError):
-                pass
+            delete(self.file_path)
         else:
             dump({
                 SAVE_VERSION_KEY: SAVE_VERSION,

@@ -1,5 +1,6 @@
 import unrealsdk
 import functools
+import traceback
 from typing import Any, Dict, Iterator, Optional, Tuple
 
 JSON = Dict[str, Any]
@@ -24,6 +25,9 @@ DefDataTuple = Tuple[
 ]
 
 
+_any_missing: bool = False
+
+
 @functools.lru_cache(maxsize=None)
 def cached_obj_find(klass: str, name: str) -> unrealsdk.UObject:
     if name is None or name == "None":
@@ -33,12 +37,34 @@ def cached_obj_find(klass: str, name: str) -> unrealsdk.UObject:
     # Warn about missing objects but still return/cache them
     if obj is None:
         unrealsdk.Log(f"[SanitySaver] Couldn't find {klass}'{name}'")
+        global _any_missing
+        _any_missing = True
 
     return obj
 
 
+_old_cache_clear = cached_obj_find.cache_clear
+
+
+def _new_cache_clear() -> None:
+    global _any_missing
+    if _any_missing:
+        unrealsdk.Log("[SanitySaver] Cleared Part Cache")
+    _any_missing = False
+
+    _old_cache_clear()
+
+
+cached_obj_find.cache_clear = _new_cache_clear  # type: ignore
+
+
 def safe_pathname(obj: unrealsdk.UObject) -> Optional[str]:
     return None if obj is None else obj.PathName(obj)
+
+
+def log_traceback() -> None:
+    for line in traceback.format_exc().split('\n'):
+        unrealsdk.Log(line)
 
 
 def get_all_items_and_weapons(

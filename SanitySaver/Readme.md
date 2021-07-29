@@ -2,6 +2,18 @@
 Disables sanity check, and also saves items which don't serialize, which would have parts deleted
 even with it off.
 
+### I forgot to enable my mods before loading into the game, what breaks?
+Generally, nothing, just sq and actually run them.
+
+If your mods just change what parts can spawn on what items, this will just replace them exactly as
+before, even if you're not running your mods.
+
+If your mods create completely new parts, there's an extra step you need to do. Since this deals
+with the same parts a lot, part lookups are cached. If you load into the game without creating these
+new parts, it won't find them, and will cache them as not existing. An error message is printed in
+console when this happens if you want to double check. You can clear the cache by pressing `c` when
+Sanity Saver's selected in the mods menu.
+
 ## Save Editing
 This mod only saves parts which the game does not save itself. This means you can keep using any
 regular save editor, for most cases. If you want to edit one of these parts which the game doesn't
@@ -66,6 +78,14 @@ or if you just want a cleaner item list, you can always quickly load back into t
 the bank/stash to update them.
 
 ## Changelog
+
+### Sanity Saver v2.1
+Added a little bit of info on the part caching system to the readme.    
+Fixed that the "Clear Cache" option in the mods menu did nothing.    
+Fixed that if the character you first loaded onto the main menu with had modded parts, those parts
+would temporarily get broken until you cleared the cache, or restarted the game with a different 
+character.    
+Made the compressed saves system a little more robust.
 
 ### Sanity Saver v2.0
 Changed the save file format a bit. Saves should automatically be migrated where possible.    

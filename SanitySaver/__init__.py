@@ -1,6 +1,6 @@
 import unrealsdk
 import importlib
-from typing import Any, Dict
+from typing import Any, ClassVar, Dict
 
 from Mods.ModMenu import EnabledSaveType, Mods, ModTypes, Options, RegisterMod, SDKMod
 
@@ -18,14 +18,16 @@ class SanitySaver(SDKMod):
         "Disables sanity check, and also saves items which don't serialize, which would have parts"
         " deleted even with it off."
     )
-    Version: str = f"{SAVE_VERSION}.0"
+    Version: str = f"{SAVE_VERSION}.1"
 
     Types: ModTypes = ModTypes.Utility
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
 
+    CLEAR_CACHE: ClassVar[str] = "Clear Cache"
+
     SettingsInputs: Dict[str, str] = {
         "Enter": "Enable",
-        "C": "Clear Cache"
+        "C": CLEAR_CACHE
     }
 
     CompressOption: Options.Boolean
@@ -48,6 +50,7 @@ class SanitySaver(SDKMod):
         self.Options = [self.CompressOption, self.VendorsOption]
 
     def Enable(self) -> None:
+        cached_obj_find.cache_clear()
         update_compression(self.CompressOption.CurrentValue)
         update_vendor_rerolling(self.VendorsOption.CurrentValue)
 
@@ -61,7 +64,7 @@ class SanitySaver(SDKMod):
             unrealsdk.RemoveHook(func, self.Name)
 
     def SettingsInputPressed(self, action: str) -> None:
-        if action == "Clear Part Cache":
+        if action == self.CLEAR_CACHE:
             cached_obj_find.cache_clear()
         else:
             super().SettingsInputPressed(action)

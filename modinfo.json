@@ -305,10 +305,11 @@
         " deleted even with it off"
       ],
       "types": ["Utility"],
-      "latest": "2.0",
+      "latest": "2.1",
       "versions": {
         "1.1": "https://github.com/apple1417/bl-sdk-mods/raw/a45fde7c5edc2224c15ac0a775076aacd3d40a0a/SanitySaver/SanitySaver.zip",
-        "2.0": "https://github.com/apple1417/bl-sdk-mods/raw/master/SanitySaver/SanitySaver.zip"
+        "2.0": "https://github.com/apple1417/bl-sdk-mods/raw/dad0cbc6bb500ae0d6b2a2305e51a85a4bb4d6ec/SanitySaver/SanitySaver.zip",
+        "2.1": "https://github.com/apple1417/bl-sdk-mods/raw/master/SanitySaver/SanitySaver.zip"
       },
       "requirements": {}
     },
