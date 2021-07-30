@@ -57,6 +57,7 @@ def _update_single_file_compression(path: Path, compress: bool) -> None:
                 _dump_file(data, file_map["wt"], compress)
 
         path.unlink()
+    # In this version of python, gzip throws base `OSError`s, which also catches file not founds
     except OSError:
         log_traceback()
 
@@ -78,11 +79,8 @@ def load(path: Union[str, Path]) -> Any:
 
     open_func = gzip.open if _COMPRESS else open
 
-    try:
-        with open_func(correct_file, "rt", encoding="utf8") as file:  # type: ignore
-            return json.load(file)
-    except OSError:
-        log_traceback()
+    with open_func(correct_file, "rt", encoding="utf8") as file:  # type: ignore
+        return json.load(file)
 
 
 def dump(data: Any, path: Union[str, Path]) -> None:

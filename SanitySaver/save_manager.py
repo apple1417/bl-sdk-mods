@@ -57,7 +57,6 @@ class SaveManager:
                 int(unique_id): val for unique_id, val in data.get(self.ITEMS_KEY, {}).items()
             }
 
-        # In this version of python, gzip throws base `OSError`s, which also catches file not founds
         except (OSError, json.JSONDecodeError):
             self.items = {}
 
@@ -142,10 +141,15 @@ class SaveManager:
             for field, val in known_parts.items():
                 if field[0] == "_":
                     continue
-                actual_val = getattr(def_data, field)
+                # We won't be able to find the right version of these parts again, they're
+                # dynamically generated
+                if isinstance(val, str) and val.startswith("Transient"):
+                    continue
 
+                actual_val = getattr(def_data, field)
                 if isinstance(actual_val, unrealsdk.UObject):
                     actual_val = obj.PathName(actual_val)
+
                 if actual_val != val:
                     replacements[field] = val
 
