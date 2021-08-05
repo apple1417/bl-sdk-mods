@@ -13,6 +13,11 @@ module_setup_path = os.path.join(folder_path, MODULE_DIR_NAME, "setup.py")
 run_setup(module_setup_path, ["build"])
 
 zip_path = os.path.join(folder_path, folder_name + ".zip")
+ignored_files = (
+    zip_path,
+    os.path.abspath(__file__)
+)
+
 with ZipFile(zip_path, "w", ZIP_DEFLATED, compresslevel=9) as zip_file:
     for dir_path, dir_names, file_names in os.walk(folder_path):
         current_dir = os.path.basename(dir_path)
@@ -25,7 +30,7 @@ with ZipFile(zip_path, "w", ZIP_DEFLATED, compresslevel=9) as zip_file:
 
         for file in file_names:
             file_path = os.path.join(dir_path, file)
-            if file_path in (zip_path, __file__):
+            if file_path in ignored_files:
                 continue
 
             rel_path = os.path.relpath(file_path, os.path.join(folder_path, ".."))

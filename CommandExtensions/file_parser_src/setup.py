@@ -8,6 +8,7 @@ from pybind11.setup_helpers import Pybind11Extension, build_ext
 __version__ = "1.0"
 MODULE_NAME = "file_parser"
 
+cwd = os.getcwd()
 os.chdir(os.path.dirname(__file__))
 
 setup(
@@ -30,3 +31,4 @@ setup(
 )
 
 copyfile(glob("build/lib.*/" + MODULE_NAME + ".*.pyd")[0], "../" + MODULE_NAME + ".pyd")
+os.chdir(cwd)
