@@ -22,17 +22,13 @@ re_obj_name = re.compile(
 def obj_name_splitter(args: str) -> List[str]:
     """
     Custom argument splitter that returns object names as single tokens. This makes the splitting
-    significantly less versatile.
+     less versatile.
     """
     lex = shlex.shlex(args)
     lex.wordchars += ".:?+!,'\"\\-"
     lex.quotes = ""
-    output = []
-    token = lex.get_token()
-    while token:
-        output.append(token)
-        token = lex.get_token()
-    return output
+    lex.whitespace_split = True
+    return list(lex)
 
 
 def parse_object(name: str) -> Optional[unrealsdk.UObject]:

@@ -28,7 +28,8 @@ args = parser.parse_args()
 config = ConfigParser(defaults=OrderedDict(
     dont_zip="false",
     include_settings="false",
-    ignore=""
+    ignore="",
+    custom_script=""
 ))
 config.read("zipper.ini")
 
@@ -63,6 +64,10 @@ for dir_entry in os.scandir():
     dont_zip = args.dont_zip
     ignores = ["settings.json"]
     if dir_entry.name in config:
+        if config[dir_entry.name]["custom_script"]:
+            os.system(config[dir_entry.name]["custom_script"])
+            continue
+
         dont_zip = dont_zip or config[dir_entry.name].getboolean("dont_zip")
 
         if config[dir_entry.name].getboolean("include_settings"):

@@ -2,6 +2,8 @@ import unrealsdk
 import argparse
 from typing import Tuple
 
+from Mods.ModMenu.DeprecationHelper import Deprecated
+
 from .. import RegisterConsoleCommand
 from . import is_obj_instance, obj_name_splitter, parse_object
 
@@ -18,6 +20,9 @@ MESH: unrealsdk.UObject = unrealsdk.ConstructObject(
 unrealsdk.KeepAlive(MESH)
 
 
+@Deprecated(
+    "`set_material` is deprecated, clone `Engine.Default__MaterialInstanceConstant` instead"
+)
 def handler(args: argparse.Namespace) -> None:
     part = parse_object(args.part)
     if part is None:
@@ -67,6 +72,7 @@ parser = RegisterConsoleCommand(
     handler,
     splitter=obj_name_splitter,
     description=(
+        "DEPRECATED. "
         "Sets a parts's material, without causing crashes if it's a cloned from an existing one."
         " Note that cloning `Engine.Default__MaterialInstanceConstant` will not cause crashes, this"
         " command is most useful when only making a small edit. Practically, this creates a new"

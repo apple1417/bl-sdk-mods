@@ -13,7 +13,7 @@ parser = RegisterConsoleCommand(
     handler,
     splitter=lambda m: [m],
     description=(
-        "Behaves exactly like a set command. Only useful in files, as it's run during custom"
+        "Behaves exactly like a `set` command. Only useful in files, as it's run during custom"
         " command parsing instead of afterwards."
     ),
 )

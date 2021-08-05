@@ -10,20 +10,24 @@ Multiplayer compatability largely depends on the exact mod making use of this. S
 simply incompatibly with multiplayer, anything relying on them too much will not work. Like always,
 all players should make sure to be running the exact same set of mods, even more so than normally.
 
-### Why does it take so much longer to `exec` my mods now?
-This mod has to look through your mod file to handle the extra commands, which just takes some
-extra, unavoidable, time. You can speed it up by making your mod file smaller - enable structural
-edits then delete any categories you don't have enabled (and won't suddenly re-enable soon).
-
-A more optimized file parser is being worked on, but it will never remove all the extra time.
+### Why does it take longer to `exec` my mods now?
+This mod has to look through your mod file to handle the extra commands. This has to be done before
+the game looks through it, which just takes some extra, unavoidable, time. You can speed it up by
+making your mod file smaller - enable structural edits then delete any categories you don't have
+enabled (and won't suddenly re-enable soon).
 
 ## Changelog
+
+### Command Extensions v1.6
+Moved file parsing to a native module - `exec`ing large mod files should now be faster.    
+Added the `chat` command.    
+Deprecated the `set_material` command.
 
 ### Command Extensions v1.5
 Added the `unlock_package` command.    
 Added the `--undo` optional argument to `keep_alive`.    
 The `clone` and `clone_bpd` commands now set the `ObjectArchetype` field to whatever the source
-object used, rather than having it regernce the source object directly.
+object used, rather than having it reference the source object directly.
 
 ### Command Extensions v1.4
 The `clone` and `clone_bpd` commands now output an error if the target already exists, and don't try

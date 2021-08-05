@@ -1,4 +1,7 @@
 #!/bin/sh
+if [ -f .env/Scripts/activate ]; then
+    source .env/Scripts/activate
+fi
 python zipper.py --git-staged
 code=$?
 if [ $code != 0 ]; then

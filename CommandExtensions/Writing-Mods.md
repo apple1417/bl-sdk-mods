@@ -2,6 +2,7 @@
 - [Table of Contents](#table-of-contents)
 - [Built-in Custom Commands](#built-in-custom-commands)
   - [`CE_Debug`](#ce_debug)
+  - [`chat`](#chat)
   - [`clone`](#clone)
   - [`clone_bpd`](#clone_bpd)
   - [`load_package`](#load_package)
@@ -23,7 +24,7 @@ usage: `CE_Debug [-h] {Enable,Disable}`
 Enables/disables Command Extension debug logging. This logs a copy of each command to be run, useful
 for checking that your blcm files are being handled correctly.
 
-| positional arguments: | |
+| positional arguments | |
 |:---|:---|
 | `{Enable,Disable}` | |
 
@@ -31,6 +32,21 @@ for checking that your blcm files are being handled correctly.
 |:---|:---|
 | `-h, --help` | show this help message and exit |
 
+## `chat`
+usage: `chat [-h] [source] msg`
+
+Similarly to the `say` command, writes a message in chat, but without chance of crashing the game.
+Also lets you customize the message source. Note this does not use the same parsing as the `say`
+command, make sure you quote your message if it includes spaces.
+
+| positional arguments | |
+|:---|:---|
+| `source` | What the message source should be. Defaults to the same as a normal chat message, username/timestamp. |
+| `msg` | The message to write. |
+
+| optional arguments | |
+|:---|:---|
+| `-h, --help` | show this help message and exit |
 
 ## `clone`
 usage: `clone [-h] [-x] base clone`
@@ -97,8 +113,8 @@ game.
 ## `set_early`
 usage: `set_early [-h] args [args ...]`
 
-Behaves exactly like a set command. Only useful in files, as it's run during custom command parsing
-instead of afterwards.
+Behaves exactly like a `set` command. Only useful in files, as it's run during custom command
+parsing instead of afterwards.
 
 | positional arguments | |
 |:---|:---|
@@ -111,10 +127,10 @@ instead of afterwards.
 ## `set_material`
 usage: `set_material [-h] part material`
 
-Sets a parts's material, without causing crashes if it's a cloned from an existing one. Note that
-cloning `Engine.Default__MaterialInstanceConstant` will not cause crashes, this command is most
-useful when only making a small edit. Practically, this creates a new material and copies the fields
-from the provided one as a template.
+DEPRECATED. Sets a parts's material, without causing crashes if it's a cloned from an existing one.
+Note that cloning `Engine.Default__MaterialInstanceConstant` will not cause crashes, this command is
+most useful when only making a small edit. Practically, this creates a new material and copies the
+fields from the provided one as a template.
 
 | positional arguments | |
 |:---|:---|

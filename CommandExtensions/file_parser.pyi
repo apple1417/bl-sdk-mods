@@ -1,0 +1,26 @@
+from __future__ import annotations
+
+from typing import Dict, List, Set, Tuple
+
+class EnableStrategy:
+    All: EnableStrategy
+    Any: EnableStrategy
+    Force: EnableStrategy
+    Next: EnableStrategy
+
+    __members__: Dict[str, EnableStrategy]
+
+    def __init__(self, value: int) -> None: ...
+    def __int__(self) -> int: ...
+    def __getstate__(self) -> int: ...
+    def __setstate__(self, state: int) -> None: ...
+
+    @property
+    def name(self) -> str: ...
+    @property
+    def value(self) -> int: ...
+
+class ParserError(RuntimeError):
+    ...
+
+def parse(filename: str, cmd_names: Set[str]) -> List[Tuple[str, str]]: ...
