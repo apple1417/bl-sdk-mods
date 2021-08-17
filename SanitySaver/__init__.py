@@ -5,6 +5,7 @@ from typing import Any, ClassVar, Dict
 from Mods.ModMenu import EnabledSaveType, Mods, ModTypes, Options, RegisterMod, SDKMod
 
 from .compression_handler import update_compression
+from .console import disable_console_commands, enable_console_commands
 from .helpers import cached_obj_find
 from .hooks import AllHooks, update_vendor_rerolling
 from .migrations import migrate_all
@@ -18,7 +19,7 @@ class SanitySaver(SDKMod):
         "Disables sanity check, and also saves items which don't serialize, which would have parts"
         " deleted even with it off."
     )
-    Version: str = f"{SAVE_VERSION}.1"
+    Version: str = f"{SAVE_VERSION}.2"
 
     Types: ModTypes = ModTypes.Utility
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
@@ -56,10 +57,12 @@ class SanitySaver(SDKMod):
 
         migrate_all()
 
+        enable_console_commands()
         for func, hook in AllHooks.items():
             unrealsdk.RunHook(func, self.Name, hook)
 
     def Disable(self) -> None:
+        disable_console_commands()
         for func in AllHooks.keys():
             unrealsdk.RemoveHook(func, self.Name)
 

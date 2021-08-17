@@ -185,17 +185,30 @@ class SaveManager:
 
     @staticmethod
     def _get_description(def_data: unrealsdk.FStruct, is_weapon: bool) -> str:
-        description_parts = [f"Level {def_data.ManufacturerGradeIndex}"]
+        prefix_field, title_field, def_field, def_name_field = (
+            ("PrefixPartDefinition", "TitlePartDefinition", "WeaponTypeDefinition", "Typename")
+            if is_weapon else
+            ("PrefixItemNamePartDefinition", "TitleItemNamePartDefinition", "ItemDefinition", "ItemName")
+        )
 
-        if is_weapon:
-            if def_data.PrefixPartDefinition is not None:
-                description_parts.append(def_data.PrefixPartDefinition.PartName)
-            if def_data.TitlePartDefinition is not None:
-                description_parts.append(def_data.TitlePartDefinition.PartName)
-        else:
-            if def_data.PrefixItemNamePartDefinition is not None:
-                description_parts.append(def_data.PrefixItemNamePartDefinition.PartName)
-            if def_data.TitleItemNamePartDefinition is not None:
-                description_parts.append(def_data.TitleItemNamePartDefinition.PartName)
+        prefix_part = getattr(def_data, prefix_field)
+        prefix = None if prefix_part is None else prefix_part.PartName
 
-        return " ".join(x for x in description_parts if x is not None)
+        title_part = getattr(def_data, title_field)
+        title = None if title_part is None else title_part.PartName
+
+        description = f"Level {def_data.ManufacturerGradeIndex}"
+
+        if prefix:
+            description += " " + prefix
+        if title:
+            description += " " + title
+
+        if not prefix and not title:
+            definition = getattr(def_data, def_field)
+            if definition is not None:
+                def_name = getattr(definition, def_name_field)
+                if def_name:
+                    description += " " + def_name
+
+        return description

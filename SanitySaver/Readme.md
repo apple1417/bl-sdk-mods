@@ -77,7 +77,30 @@ edits you make so the mod will note down that it needs to replace them. If you'r
 or if you just want a cleaner item list, you can always quickly load back into the game or re-open
 the bank/stash to update them.
 
+### Console Commands
+This mod also adds a console command which may be helpful when save editing. You must have
+[CommandExtensions](https://bl-sdk.github.io/mods/CommandExtensions) installed for the command to
+be added - the rest of the mod will function without it, but this command requires it.
+
+#### `SanitySaverDump`
+usage: `SanitySaverDump [-h] [-e] [-b] [-i] [-w]`
+
+Dumps ids of all items and weapons on the current character, to aid in save editing. By default,
+dumps all gear. You may use the optional arguments to narrow this down.
+
+| optional arguments | |
+|:---|:---|
+| `-h, --help` | show this help message and exit |
+| `-e, --equipped` | Dump equipped gear. |
+| `-b, --backpack` | Dump backpack gear. |
+| `-i, --items` | Dump items. |
+| `-w, --weapons` | Dump weapons. |
+
 ## Changelog
+
+### Sanity Saver v2.2
+Changed how item descriptions get generated, so relics should now get more meaningful descriptions.    
+Added the `SanitySaverDump` console command.    
 
 ### Sanity Saver v2.1
 Added a little bit of info on the part caching system to the readme.    
