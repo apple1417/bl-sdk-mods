@@ -2,7 +2,7 @@
   "defaults": {
     "authors": "apple1417",
     "source": "https://github.com/apple1417/bl-sdk-mods/",
-    "supports": ["BL2", "TPS"],
+    "supports": ["BL2", "TPS", "AoDK"],
     "license": "GNU GPLv3"
   },
   "mods": [
