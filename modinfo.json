@@ -323,9 +323,10 @@
       ],
       "tagline": "Adds an option to change the game's base scaling value.",
       "types": ["Utility"],
-      "latest": "1.6",
+      "latest": "1.7",
       "versions": {
-        "1.6": "https://github.com/apple1417/bl-sdk-mods/raw/master/ScalingAdjuster/ScalingAdjuster.zip"
+        "1.6": "https://github.com/apple1417/bl-sdk-mods/raw/bcd5b7a2d92e2b8af9ded5de00117775d17e7078/ScalingAdjuster/ScalingAdjuster.zip",
+        "1.7": "https://github.com/apple1417/bl-sdk-mods/raw/master/ScalingAdjuster/ScalingAdjuster.zip"
       },
       "requirements": {}
     },

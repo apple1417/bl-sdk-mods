@@ -11,7 +11,7 @@ class ScalingAdjuster(SDKMod):
         "Adds an option to let you easily adjust the game's base scaling value.\n"
         "Note that you may have to save quit to get values to update."
     )
-    Version: str = "1.6"
+    Version: str = "1.7"
 
     Types: ModTypes = ModTypes.Utility
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadOnMainMenu
@@ -43,10 +43,19 @@ class ScalingAdjuster(SDKMod):
                 MaxValue=500,
                 Increment=1,
                 IsHidden=Game.GetCurrent() != Game.TPS
-            )
+            ),
+            Options.Slider(
+                Caption="AoDK Scaling",
+                Description="The game's base scaling value (multiplied by 113). 113 means every level the numbers get 13% higher.",
+                StartingValue=113,
+                MinValue=0,
+                MaxValue=500,
+                Increment=1,
+                IsHidden=Game.GetCurrent() != Game.AoDK
+            ),
         ]
 
-        self.ScalingSlider = cast(Options.Slider, self.Options[1 if self.Options[0].IsHidden else 0])
+        self.ScalingSlider = cast(Options.Slider, next(x for x in self.Options if not x.IsHidden))
 
     def Enable(self) -> None:
         self.ScalingObject.ConstantValue = self.ScalingSlider.CurrentValue / 100

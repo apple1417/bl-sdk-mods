@@ -1,5 +1,8 @@
 ## Changelog
 
+### Scaling Adjuster v1.7
+Added support for AoDK.
+
 ### Scaling Adjuster v1.6
 Updated to use some of the new features from SDK version 0.7.8.    
 Most notably, the enabled state is now saved over game launches.
