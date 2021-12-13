@@ -191,6 +191,17 @@
       "requirements": {}
     },
     {
+      "name": "Mario Mode",
+      "description": "Jump on enemies to actually kill them.",
+      "tagline": "Jump on enemies to actually kill them.",
+      "types": ["Gameplay"],
+      "latest": "2.0",
+      "versions": {
+        "2.0": "https://github.com/apple1417/bl-sdk-mods/raw/master/Mario/Mario.zip"
+      },
+      "requirements": {}
+    },
+    {
       "name": "No Ads",
       "description": [
         "Prevents ads from showing. Includes both the obnoxious BL3 ads as well as the small MoTD",
