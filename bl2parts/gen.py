@@ -2,7 +2,7 @@ import unrealsdk
 import importlib
 import os
 import sys
-from typing import Set, Tuple
+from typing import List, Tuple
 
 # See https://github.com/bl-sdk/PythonSDK/issues/68
 try:
@@ -52,27 +52,27 @@ for base_bal in NON_UNIQUE_BALANCES:
         non_unique_parts.update(get_parts_on_balance(bal))
         bal = bal.BaseDefinition
 
-data: YAML = {
-    "definitions": [],
-    "parts": {}
-}
 
-def_objects: Set[unrealsdk.UObject] = set()
-for def_name in DEFINITIONS:
-    def_obj = unrealsdk.FindObject("WeaponTypeDefinition", def_name)
-    def_objects.add(def_obj)
+def_objects: List[unrealsdk.UObject] = [
+    unrealsdk.FindObject("WeaponTypeDefinition", def_name)
+    for def_name in DEFINITIONS
+]
 
-    data["definitions"].append(get_definition_data(def_obj))
+data: YAML = {}
 
 for part in get_parts_for_definitions(def_objects):
     part_type, part_data = get_part_data(part)
 
-    if part not in non_unique_parts:
-        part_data["unique"] = True
+    part_data["unique"] = part not in non_unique_parts
 
-    if part_type not in data["parts"]:
-        data["parts"][part_type] = []
-    data["parts"][part_type].append(part_data)
+    if part_type not in data:
+        data[part_type] = []
+    data[part_type].append(part_data)
 
 with open("Mods/bl2parts/shotguns.yml", "w") as file:
-    yaml.dump(data, file)
+    yaml.dump(data, file)  # type: ignore
+
+with open("Mods/bl2parts/shotguns_meta.yml", "w") as file:
+    yaml.dump({  # type: ignore
+        "standard_definition": get_definition_data(def_objects[0])
+    }, file)

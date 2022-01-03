@@ -10,17 +10,17 @@ MODIFIER_NAMES: Tuple[str, ...] = (
 )
 
 WEAPON_PART_TYPE_NAMES: Tuple[str, ...] = (
-    "body",
-    "grip",
-    "barrel",
-    "sight",
-    "stock",
-    "element",
-    "accessory",
-    "accessory2",
-    "material",
-    "prefix",
-    "title",
+    "bodies",
+    "grips",
+    "barrels",
+    "sights",
+    "stocks",
+    "elements",
+    "accessories",
+    "accessory2s",
+    "materials",
+    "prefixes",
+    "titles",
 )
 
 WEAPON_MANU_ATTRIBUTES: Dict[unrealsdk.UObject, str] = {
@@ -46,13 +46,17 @@ WEAPON_MANU_ATTRIBUTES: Dict[unrealsdk.UObject, str] = {
 }
 
 PART_TYPE_OVERRIDES: Dict[str, str] = {
-    "GD_Weap_Shotgun.Stock.SG_Stock_Bandit": "stock",
-    "GD_Weap_Shotgun.Stock.SG_Stock_Hyperion": "stock",
-    "GD_Weap_Shotgun.Stock.SG_Stock_Jakobs": "stock",
-    "GD_Weap_Shotgun.Stock.SG_Stock_Tediore": "stock",
-    "GD_Weap_Shotgun.Stock.SG_Stock_Torgue": "stock",
+    "GD_Weap_Shotgun.Stock.SG_Stock_Bandit": WEAPON_PART_TYPE_NAMES[4],
+    "GD_Weap_Shotgun.Stock.SG_Stock_Hyperion": WEAPON_PART_TYPE_NAMES[4],
+    "GD_Weap_Shotgun.Stock.SG_Stock_Jakobs": WEAPON_PART_TYPE_NAMES[4],
+    "GD_Weap_Shotgun.Stock.SG_Stock_Tediore": WEAPON_PART_TYPE_NAMES[4],
+    "GD_Weap_Shotgun.Stock.SG_Stock_Torgue": WEAPON_PART_TYPE_NAMES[4],
+    "GD_Anemone_Weapons.Shotguns.SG_Barrel_Alien_Swordsplosion": WEAPON_PART_TYPE_NAMES[2],
 }
 
 
 def float_error(val: float) -> float:
-    return round(val, 5)
+    rounded = round(val, 5)
+    if int(rounded) == rounded:
+        return int(rounded)
+    return rounded

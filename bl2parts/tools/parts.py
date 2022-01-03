@@ -20,7 +20,7 @@ def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
     if part_name in PART_TYPE_OVERRIDES:
         part_type = PART_TYPE_OVERRIDES[part_name]
     elif part.Material is not None:
-        part_type = "material"
+        part_type = WEAPON_PART_TYPE_NAMES[8]
     elif 0 <= part.PartType < len(WEAPON_PART_TYPE_NAMES):
         part_type = WEAPON_PART_TYPE_NAMES[part.PartType]
     else:
@@ -29,6 +29,8 @@ def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
     all_bonuses = []
 
     for grade in part.AttributeSlotUpgrades:
+        if grade.GradeIncrease == 0:
+            continue
         all_bonuses.append({
             "slot": grade.SlotName,
             "value": grade.GradeIncrease,
@@ -42,7 +44,7 @@ def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
     ):
         for attr in attr_group:
             bonus_data = {
-                "attribute": attr.AttributeToModify.Name,
+                "attribute": part.PathName(attr.AttributeToModify),
                 "type": MODIFIER_NAMES[attr.ModifierType],
             }
 
@@ -71,6 +73,9 @@ def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
                     * attr.BaseModifierValue.BaseValueScaleConstant
                 )
 
+            if value == 0:
+                continue
+
             bonus_data["value"] = value
             if restrict is not None:
                 bonus_data["restrict"] = restrict
@@ -83,7 +88,7 @@ def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
     if len(all_bonuses) > 0:
         part_data["bonuses"] = all_bonuses
 
-    if part.GestaltModeSkeletalMeshName not in (None, "", "None"):
+    if part.GestaltModeSkeletalMeshName not in (None, "", "None") and part.bIsGestaltMode:
         part_data["mesh"] = part.GestaltModeSkeletalMeshName
 
     return part_type, part_data

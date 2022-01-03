@@ -27,7 +27,7 @@ def get_definition_data(def_obj: unrealsdk.UObject) -> YAML:
                 slot.BaseModifierValue.BaseValueConstant
                 * slot.BaseModifierValue.BaseValueScaleConstant
             ),
-            "per-grade": float_error(
+            "per_grade": float_error(
                 slot.PerGradeUpgrade.BaseValueConstant
                 * slot.PerGradeUpgrade.BaseValueScaleConstant
             )
