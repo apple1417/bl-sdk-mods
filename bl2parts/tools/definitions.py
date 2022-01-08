@@ -1,6 +1,7 @@
 import unrealsdk
 
-from . import MODIFIER_NAMES, YAML, float_error
+from . import YAML, float_error
+from .data import MODIFIER_NAMES
 
 
 def get_definition_data(def_obj: unrealsdk.UObject) -> YAML:
@@ -21,7 +22,7 @@ def get_definition_data(def_obj: unrealsdk.UObject) -> YAML:
 
         grades.append({
             "slot": slot.SlotName,
-            "attribute": slot.AttributeToModify.Name,
+            "attribute": def_obj.PathName(slot.AttributeToModify),
             "type": MODIFIER_NAMES[slot.ModifierType],
             "base": float_error(
                 slot.BaseModifierValue.BaseValueConstant

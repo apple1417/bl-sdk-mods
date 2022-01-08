@@ -1,8 +1,12 @@
 import unrealsdk
 import importlib
+import itertools
+import json
 import os
 import sys
-from typing import List, Tuple
+from typing import List
+
+from Mods.ModMenu import Game  # type: ignore
 
 # See https://github.com/bl-sdk/PythonSDK/issues/68
 try:
@@ -18,6 +22,7 @@ import yaml
 for mod in (
     "tools",
     "tools.balances",
+    "tools.data",
     "tools.definitions",
     "tools.parts",
 ):
@@ -26,53 +31,66 @@ for mod in (
 
 from tools import YAML  # noqa: E402
 from tools.balances import get_parts_for_definitions, get_parts_on_balance  # noqa: E402
+from tools.data import (ALL_WEAPON_DEFINITIONS, NON_UNIQUE_BALANCES,  # noqa: E402
+                        PLURAL_WEAPON_PART_TYPE)
 from tools.definitions import get_definition_data  # noqa: E402
 from tools.parts import get_part_data  # noqa: E402
 
-DEFINITIONS: Tuple[str, ...] = (
-    "GD_Weap_Shotgun.A_Weapons.WT_Bandit_Shotgun",
-    "GD_Weap_Shotgun.A_Weapons.WT_Hyperion_Shotgun",
-    "GD_Weap_Shotgun.A_Weapons.WT_Jakobs_Shotgun",
-    "GD_Weap_Shotgun.A_Weapons.WT_Tediore_Shotgun",
-    "GD_Weap_Shotgun.A_Weapons.WT_Torgue_Shotgun",
-)
+output_dir = f"Mods/bl2parts/data/{Game.GetCurrent()._name_}/"
+os.makedirs(output_dir, exist_ok=True)
 
-NON_UNIQUE_BALANCES: Tuple[str, ...] = (
-    "GD_Weap_Shotgun.A_Weapons.SG_Bandit_5_Alien",
-    "GD_Weap_Shotgun.A_Weapons.SG_Hyperion_5_Alien",
-    "GD_Weap_Shotgun.A_Weapons.SG_Jakobs_4_VeryRare",
-    "GD_Weap_Shotgun.A_Weapons.SG_Tediore_5_Alien",
-    "GD_Weap_Shotgun.A_Weapons.SG_Torgue_4_VeryRare",
-)
+GEN_NAME_DUMP_TEMPLATE: bool = False
 
-non_unique_parts = set()
-for base_bal in NON_UNIQUE_BALANCES:
-    bal = unrealsdk.FindObject("WeaponBalanceDefinition", base_bal)
-    while bal is not None:
-        non_unique_parts.update(get_parts_on_balance(bal))
-        bal = bal.BaseDefinition
+for weapon_type, def_list in ALL_WEAPON_DEFINITIONS.items():
+    non_unique_parts = set()
+    for base_bal in NON_UNIQUE_BALANCES[weapon_type]:
+        bal = unrealsdk.FindObject("WeaponBalanceDefinition", base_bal)
+        while bal is not None:
+            non_unique_parts.update(get_parts_on_balance(bal))
+            bal = bal.BaseDefinition
 
+    def_objects: List[unrealsdk.UObject] = [
+        unrealsdk.FindObject("WeaponTypeDefinition", def_name)
+        for def_name in def_list
+    ]
 
-def_objects: List[unrealsdk.UObject] = [
-    unrealsdk.FindObject("WeaponTypeDefinition", def_name)
-    for def_name in DEFINITIONS
-]
+    data: YAML = {}
 
-data: YAML = {}
+    for part in itertools.chain(def_objects, get_parts_for_definitions(def_objects)):
+        part_type, part_data = get_part_data(part)
+        plural_type = PLURAL_WEAPON_PART_TYPE[part_type]
 
-for part in get_parts_for_definitions(def_objects):
-    part_type, part_data = get_part_data(part)
+        part_data["unique"] = part not in non_unique_parts
 
-    part_data["unique"] = part not in non_unique_parts
+        if plural_type not in data:
+            data[plural_type] = []
+        data[plural_type].append(part_data)
 
-    if part_type not in data:
-        data[part_type] = []
-    data[part_type].append(part_data)
+    for parts in data.values():
+        parts.sort(key=lambda x: x["_obj_name"])
 
-with open("Mods/bl2parts/shotguns.yml", "w") as file:
-    yaml.dump(data, file)  # type: ignore
+    with open(os.path.join(output_dir, f"{weapon_type}s.yml"), "w") as file:
+        yaml.dump(data, file)  # type: ignore
 
-with open("Mods/bl2parts/shotguns_meta.yml", "w") as file:
-    yaml.dump({  # type: ignore
-        "standard_definition": get_definition_data(def_objects[0])
-    }, file)
+    with open(os.path.join(output_dir, f"{weapon_type}s_meta.yml"), "w") as file:
+        yaml.dump({  # type: ignore
+            "standard_definition": get_definition_data(def_objects[0])
+        }, file)
+
+    name_path = os.path.join(output_dir, f"{weapon_type}_names.json")
+    if GEN_NAME_DUMP_TEMPLATE and not os.path.exists(name_path):
+        with open(name_path, "w") as file:
+            json.dump(
+                {
+                    part_data["_obj_name"]: {
+                        "name": "",
+                        "type": weapon_type.title(),
+                        "slot": part_type.title(),
+                    }
+                    for part_type, part_list in data.items()
+                    for part_data in part_list
+                },
+                file,
+                indent=4,
+                sort_keys=True
+            )

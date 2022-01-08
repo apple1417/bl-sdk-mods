@@ -1,0 +1,742 @@
+{
+    "GD_Anemone_Weapons.Body.SG_Body_Torgue_7": {
+        "name": "Unicornsplosion",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Anemone_Weapons.ManufacturerMaterials.Mat_Torgue_3_SwordTEST": {
+        "name": "Unicornsplosion",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Anemone_Weapons.Shotgun.Overcompensator.Mat_Hyperion_6_Overcompensator": {
+        "name": "Overcompensator",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Anemone_Weapons.Shotgun.Overcompensator.SG_Barrel_Torgue_Overcompensator": {
+        "name": "Overcompensator",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Anemone_Weapons.Shotgun.Overcompensator.SG_Body_Hyperion_Overcompensator": {
+        "name": "Overcompensator",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Anemone_Weapons.Shotguns.SG_Barrel_Alien_Swordsplosion": {
+        "name": "Unicornsplosion",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Aster_RaidWeapons.ManufacturerMaterials.Mat_Tediore_5_Omen": {
+        "name": "Omen",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Aster_RaidWeapons.Shotguns.SG_Barrel_Alien_Omen": {
+        "name": "Omen",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Bandit_4_Quartz_Shotgun": {
+        "name": "Quartz",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Hyperion_4_Diamond_SG": {
+        "name": "Diamond",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Jakobs_4_Citrine_SG": {
+        "name": "Citrine",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Tediore_4_CubicZerconia_SG": {
+        "name": "Cubic Zerconia",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Torgue_3_Swordsplosion": {
+        "name": "Swordsplosion",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Torgue_4_Rock_SG": {
+        "name": "Rock",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Aster_Weapons.Shotguns.SG_Barrel_Alien_Swordsplosion": {
+        "name": "Swordsplosion",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Gladiolus_Weapons.ManufacturerMaterials.Mat_Hyperion_6_Butcher": {
+        "name": "Butcher",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Gladiolus_Weapons.Shotgun.SG_Barrel_Torgue_Butcher": {
+        "name": "Butcher",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Gladiolus_Weapons.Shotgun.SG_Body_Hyperion_6": {
+        "name": "Butcher",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Iris_Weapons.ManufacturerMaterials.Mat_Hyperion_3_SlowHand": {
+        "name": "Slow Hand",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Iris_Weapons.Shotguns.SG_Barrel_Alien_SlowHand": {
+        "name": "Slow Hand",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Lobelia_Weapons.ManufacturerMaterials.Mat_Torgue_Pearl_Carnage": {
+        "name": "Carnage",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Lobelia_Weapons.Shotguns.SG_Accessory_VerticalGrip_Carnage": {
+        "name": "Vertical Grip (Carnage)",
+        "slot": "Accessory",
+        "type": "Shotgun"
+    },
+    "GD_Lobelia_Weapons.Shotguns.SG_Barrel_Torgue_Carnage": {
+        "name": "Carnage",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Lobelia_Weapons.Shotguns.SG_Body_Torgue_6_Carnage": {
+        "name": "Carnage",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Orchid_BossWeapons.ManufacturerMaterials.Mat_Bandit_3_JollyRoger": {
+        "name": "Jolly Roger",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Orchid_BossWeapons.ManufacturerMaterials.Mat_Jakobs_3_OrphanMaker": {
+        "name": "Orphan Maker",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Orchid_BossWeapons.Shotgun.SG_Barrel_Bandit_JollyRoger": {
+        "name": "Jolly Roger",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Orchid_BossWeapons.Shotgun.SG_Barrel_Jakobs_OrphanMaker": {
+        "name": "Orphan Maker",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Orchid_RaidWeapons.ManufacturerMaterials.Mat_Tediore_1_Spitter": {
+        "name": "Retcher",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Orchid_RaidWeapons.Shotgun.Spitter.Orchid_Seraph_Spitter_Barrel": {
+        "name": "Retcher",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Sage_RaidWeapons.ManufacturerMaterials.Mat_Hyperion_1_Interfacer": {
+        "name": "Interfacer",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Sage_RaidWeapons.Shotgun.SG_Barrel_Interfacer": {
+        "name": "Interfacer",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Sage_Weapons.ManufacturerMaterials.Mat_Jakobs_2_Hydra": {
+        "name": "Hydra",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Sage_Weapons.ManufacturerMaterials.Mat_Jakobs_3_Twister": {
+        "name": "Twister",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Sage_Weapons.Shotgun.SG_Barrel_Bandit_Hydra": {
+        "name": "Hydra",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Sage_Weapons.Shotgun.SG_Barrel_Torgue_Twister": {
+        "name": "Twister",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.A_Weapons.WT_Bandit_Shotgun": {
+        "name": "Bandit",
+        "slot": "Definition",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.A_Weapons.WT_Hyperion_Shotgun": {
+        "name": "Hyperion",
+        "slot": "Definition",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.A_Weapons.WT_Jakobs_Shotgun": {
+        "name": "Jakobs",
+        "slot": "Definition",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.A_Weapons.WT_Tediore_Shotgun": {
+        "name": "Tediore",
+        "slot": "Definition",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.A_Weapons.WT_Torgue_Shotgun": {
+        "name": "Torgue",
+        "slot": "Definition",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Accessory.SG_Accessory_Bayonet_1": {
+        "name": "Bayonet 1",
+        "slot": "Accessory",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Accessory.SG_Accessory_Bayonet_2": {
+        "name": "Bayonet 2",
+        "slot": "Accessory",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Accessory.SG_Accessory_MoonClip": {
+        "name": "Moon Clip",
+        "slot": "Accessory",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Accessory.SG_Accessory_None": {
+        "name": "\"No Accessory\"",
+        "slot": "Accessory",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Accessory.SG_Accessory_ShotgunShell": {
+        "name": "Shotgun Shell",
+        "slot": "Accessory",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Accessory.SG_Accessory_Tech_1": {
+        "name": "Tech 1",
+        "slot": "Accessory",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Accessory.SG_Accessory_Tech_2": {
+        "name": "Tech 2",
+        "slot": "Accessory",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Accessory.SG_Accessory_Tech_3": {
+        "name": "Tech 3",
+        "slot": "Accessory",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Accessory.SG_Accessory_VerticalGrip": {
+        "name": "Vertical Grip",
+        "slot": "Accessory",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Alien": {
+        "name": "E-Tech",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Alien_Hyperion": {
+        "name": "E-Tech (Hyperion)",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Bandit": {
+        "name": "Bandit",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Bandit_Dog": {
+        "name": "Dog",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Bandit_Triquetra": {
+        "name": "Triquetra",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Hyperion": {
+        "name": "Hyperion",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Hyperion_ConferenceCall": {
+        "name": "Conference Call",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Hyperion_HeartBreaker": {
+        "name": "Heart Breaker",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Hyperion_Striker": {
+        "name": "Striker",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Jakobs": {
+        "name": "Jakobs",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Jakobs_Landscaper": {
+        "name": "Landscaper",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Jakobs_RockSalt": {
+        "name": "RokSalt",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Jakobs_Sledges": {
+        "name": "Sledge's Shotgun",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Jakobs_TidalWave": {
+        "name": "Tidal Wave",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Tediore": {
+        "name": "Tediore",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Tediore_Blockhead": {
+        "name": "Blockhead",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Tediore_Deliverance": {
+        "name": "Deliverance",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Tediore_Octo": {
+        "name": "Octo",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Tediore_Shotgun1340": {
+        "name": "Shotgun 1340",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Torgue": {
+        "name": "Torgue",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Torgue_Flakker": {
+        "name": "Flakker",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Torgue_Teeth": {
+        "name": "Teeth of Terramorphous",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Body.SG_Body_Bandit": {
+        "name": "Bandit (Common)",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Body.SG_Body_Bandit_2": {
+        "name": "Bandit (Uncommon)",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Body.SG_Body_Bandit_3": {
+        "name": "Bandit (Rare)",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Body.SG_Body_Bandit_4": {
+        "name": "Bandit (Very Rare)",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Body.SG_Body_Hyperion": {
+        "name": "Hyperion (Common)",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Body.SG_Body_Hyperion_2": {
+        "name": "Hyperion (Uncommon)",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Body.SG_Body_Hyperion_3": {
+        "name": "Hyperion (Rare)",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Body.SG_Body_Hyperion_4": {
+        "name": "Hyperion (Very Rare)",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Body.SG_Body_Jakobs": {
+        "name": "Jakobs (Common)",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Body.SG_Body_Jakobs_2": {
+        "name": "Jakobs (Uncommon)",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Body.SG_Body_Jakobs_3": {
+        "name": "Jakobs (Rare)",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Body.SG_Body_Jakobs_4": {
+        "name": "Jakobs (Very Rare)",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Body.SG_Body_Tediore": {
+        "name": "Tediore (Common)",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Body.SG_Body_Tediore_2": {
+        "name": "Tediore (Uncommon)",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Body.SG_Body_Tediore_3": {
+        "name": "Tediore (Rare)",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Body.SG_Body_Tediore_4": {
+        "name": "Tediore (Very Rare)",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Body.SG_Body_Torgue": {
+        "name": "Torgue (Common)",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Body.SG_Body_Torgue_2": {
+        "name": "Torgue (Uncommon)",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Body.SG_Body_Torgue_3": {
+        "name": "Torgue (Rare)",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Body.SG_Body_Torgue_4": {
+        "name": "Torgue (Very Rare)",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Grip.SG_Grip_Bandit": {
+        "name": "Bandit",
+        "slot": "Grip",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Grip.SG_Grip_Hyperion": {
+        "name": "Hyperion",
+        "slot": "Grip",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Grip.SG_Grip_Jakobs": {
+        "name": "Jakobs",
+        "slot": "Grip",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Grip.SG_Grip_Tediore": {
+        "name": "Tediore",
+        "slot": "Grip",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Grip.SG_Grip_Torgue": {
+        "name": "Torgue",
+        "slot": "Grip",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Bandit_1": {
+        "name": "Bandit (Common)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Bandit_2": {
+        "name": "Bandit (Uncommon)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Bandit_3": {
+        "name": "Bandit (Rare)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Bandit_3_Dog": {
+        "name": "Dog",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Bandit_3_RokSalt": {
+        "name": "RokSalt",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Bandit_3_Teeth": {
+        "name": "Teeth of Terramorphous",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Bandit_4": {
+        "name": "Bandit (Very Rare)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Bandit_5_Legendary": {
+        "name": "Sledge's Shotgun",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Hyperion_1": {
+        "name": "Hyperion (Common)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Hyperion_2": {
+        "name": "Hyperion (Uncommon)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Hyperion_3": {
+        "name": "Hyperion (Rare)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Hyperion_3_1340": {
+        "name": "Shotgun 1340",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Hyperion_3_HeartBreaker": {
+        "name": "Heart Breaker",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Hyperion_4": {
+        "name": "Hyperion (Very Rare)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Hyperion_5_Legendary": {
+        "name": "Conference Call",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Jakobs_1": {
+        "name": "Jakobs (Common)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Jakobs_2": {
+        "name": "Jakobs (Uncommon)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Jakobs_3": {
+        "name": "Jakobs (Rare)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Jakobs_3_TidalWave": {
+        "name": "Tidal Wave",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Jakobs_3_Triquetra": {
+        "name": "Triquetra",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Jakobs_4": {
+        "name": "Jakobs (Very Rare)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Jakobs_5_Legendary": {
+        "name": "Striker",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Tediore_1": {
+        "name": "Tediore (Common)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Tediore_2": {
+        "name": "Tediore (Uncommon)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Tediore_3": {
+        "name": "Tediore (Rare)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Tediore_3_Blockhead": {
+        "name": "Blockhead",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Tediore_3_Octo": {
+        "name": "Octo",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Tediore_4": {
+        "name": "Tediore (Very Rare)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Tediore_5_Legendary": {
+        "name": "Deliverance",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Torgue_1": {
+        "name": "Torgue (Common)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Torgue_2": {
+        "name": "Torgue (Uncommon)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Torgue_3": {
+        "name": "Torgue (Rare)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Torgue_3_Landscaper": {
+        "name": "Landscaper",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Torgue_4": {
+        "name": "Torgue (Very Rare)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Torgue_5_Legendary": {
+        "name": "Flakker",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Sight.SG_Sight_Bandit": {
+        "name": "Bandit",
+        "slot": "Sight",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Sight.SG_Sight_Hyperion": {
+        "name": "Hyperion",
+        "slot": "Sight",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Sight.SG_Sight_Jakobs": {
+        "name": "Jakobs",
+        "slot": "Sight",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Sight.SG_Sight_None": {
+        "name": "\"No Sight\"",
+        "slot": "Sight",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Sight.SG_Sight_Tediore": {
+        "name": "Tediore",
+        "slot": "Sight",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Sight.SG_Sight_Torgue": {
+        "name": "Torgue",
+        "slot": "Sight",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Stock.SG_Stock_Bandit": {
+        "name": "Bandit",
+        "slot": "Stock",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Stock.SG_Stock_Hyperion": {
+        "name": "Hyperion",
+        "slot": "Stock",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Stock.SG_Stock_Jakobs": {
+        "name": "Jakobs",
+        "slot": "Stock",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Stock.SG_Stock_Tediore": {
+        "name": "Tediore",
+        "slot": "Stock",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.Stock.SG_Stock_Torgue": {
+        "name": "Torgue",
+        "slot": "Stock",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.elemental.Shotgun_Elemental_Corrosive": {
+        "name": "Corrosive",
+        "slot": "Element",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.elemental.Shotgun_Elemental_Fire": {
+        "name": "Fire",
+        "slot": "Element",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.elemental.Shotgun_Elemental_None": {
+        "name": "\"No Element\"",
+        "slot": "Element",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.elemental.Shotgun_Elemental_Shock": {
+        "name": "Shock",
+        "slot": "Element",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.elemental.Shotgun_Elemental_Slag": {
+        "name": "Slag",
+        "slot": "Element",
+        "type": "Shotgun"
+    }
+}

@@ -1,8 +1,11 @@
 import unrealsdk
 from typing import Tuple
 
-from . import (MODIFIER_NAMES, PART_TYPE_OVERRIDES, WEAPON_MANU_ATTRIBUTES, WEAPON_PART_TYPE_NAMES,
-               YAML, float_error)
+from Mods.ModMenu import Game  # type: ignore
+
+from . import YAML, float_error
+from .data import (DEFINITION_PART_TYPE, MODIFIER_NAMES, PART_NAMES, PART_TYPE_OVERRIDES,
+                   WEAPON_MANU_ATTRIBUTES, WEAPON_PART_TYPE_NAMES)
 
 
 def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
@@ -19,6 +22,8 @@ def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
     part_type: str
     if part_name in PART_TYPE_OVERRIDES:
         part_type = PART_TYPE_OVERRIDES[part_name]
+    elif part.Class.Name == "WeaponTypeDefinition":
+        part_type = DEFINITION_PART_TYPE
     elif part.Material is not None:
         part_type = WEAPON_PART_TYPE_NAMES[8]
     elif 0 <= part.PartType < len(WEAPON_PART_TYPE_NAMES):
@@ -40,7 +45,8 @@ def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
     for attr_group, base_restrict in (
         (part.WeaponAttributeEffects, None),
         (part.ExternalAttributeEffects, None),
-        (part.ZoomExternalAttributeEffects, "Zoom")
+        (part.ZoomWeaponAttributeEffects, "Zoom"),
+        (part.ZoomExternalAttributeEffects, "Zoom"),
     ):
         for attr in attr_group:
             bonus_data = {
@@ -85,6 +91,15 @@ def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
     part_data = {
         "_obj_name": part_name
     }
+
+    if part_name in PART_NAMES:
+        name_data = PART_NAMES[part_name]
+        override = name_data.get("game_overrides", {}).get(Game.GetCurrent()._name_)  # type: ignore
+
+        part_data["name"] = override if override is not None else name_data["name"]
+    else:
+        part_data["name"] = part_name.split(".")[-1]
+
     if len(all_bonuses) > 0:
         part_data["bonuses"] = all_bonuses
 
