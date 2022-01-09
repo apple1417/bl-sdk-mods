@@ -25,6 +25,7 @@ for mod in (
     "tools.data",
     "tools.definitions",
     "tools.parts",
+    "tools.prefixes",
 ):
     if mod in sys.modules:
         importlib.reload(sys.modules[mod])
@@ -35,6 +36,7 @@ from tools.data import (ALL_WEAPON_DEFINITIONS, NON_UNIQUE_BALANCES,  # noqa: E4
                         PLURAL_WEAPON_PART_TYPE)
 from tools.definitions import get_definition_data  # noqa: E402
 from tools.parts import get_part_data  # noqa: E402
+from tools.prefixes import get_prefix_data  # noqa: E402
 
 output_dir = f"Mods/bl2parts/data/{Game.GetCurrent()._name_}/"
 os.makedirs(output_dir, exist_ok=True)
@@ -53,6 +55,7 @@ for weapon_type, def_list in ALL_WEAPON_DEFINITIONS.items():
         unrealsdk.FindObject("WeaponTypeDefinition", def_name)
         for def_name in def_list
     ]
+    non_unique_parts.update(def_objects)
 
     data: YAML = {}
 
@@ -60,7 +63,13 @@ for weapon_type, def_list in ALL_WEAPON_DEFINITIONS.items():
         part_type, part_data = get_part_data(part)
         plural_type = PLURAL_WEAPON_PART_TYPE[part_type]
 
-        part_data["unique"] = part not in non_unique_parts
+        unique = part not in non_unique_parts
+        part_data["unique"] = unique
+
+        if part_type == "accessory" and not unique:
+            prefixes = get_prefix_data(part)
+            if prefixes:
+                part_data["prefixes"] = prefixes
 
         if plural_type not in data:
             data[plural_type] = []
@@ -74,7 +83,7 @@ for weapon_type, def_list in ALL_WEAPON_DEFINITIONS.items():
 
     with open(os.path.join(output_dir, f"{weapon_type}s_meta.yml"), "w") as file:
         yaml.dump({  # type: ignore
-            "standard_definition": get_definition_data(def_objects[0])
+            "definitions": [get_definition_data(def_obj) for def_obj in def_objects]
         }, file)
 
     name_path = os.path.join(output_dir, f"{weapon_type}_names.json")
