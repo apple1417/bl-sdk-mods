@@ -5,7 +5,7 @@ from Mods.ModMenu import Game  # type: ignore
 
 from . import YAML, float_error
 from .data import (DEFINITION_PART_TYPE, MODIFIER_NAMES, PART_NAMES, PART_TYPE_OVERRIDES,
-                   WEAPON_MANU_ATTRIBUTES, WEAPON_PART_TYPE_NAMES)
+                   SCALING_ATTRIBUTES, WEAPON_MANU_ATTRIBUTES, WEAPON_PART_TYPE_NAMES)
 
 
 def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
@@ -67,6 +67,12 @@ def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
                         f" {part_name}"
                     )
                 restrict = WEAPON_MANU_ATTRIBUTES[attr.BaseModifierValue.BaseValueAttribute]
+            elif (
+                attr.BaseModifierValue.BaseValueAttribute in SCALING_ATTRIBUTES
+                and attr.BaseModifierValue.InitializationDefinition is None
+            ):
+                value = float_error(attr.BaseModifierValue.BaseValueScaleConstant)
+                bonus_data["scale"] = SCALING_ATTRIBUTES[attr.BaseModifierValue.BaseValueAttribute]
             elif (
                 attr.BaseModifierValue.BaseValueAttribute is not None
                 or attr.BaseModifierValue.InitializationDefinition is not None

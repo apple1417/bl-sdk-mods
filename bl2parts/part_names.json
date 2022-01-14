@@ -74,6 +74,176 @@
         "slot": "Barrel",
         "type": "Shotgun"
     },
+    "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Bandit_Boganella": {
+        "name": "Boganella",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Bandit_Torgemada": {
+        "name": "Torgemada",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Hyperion_Bullpup": {
+        "name": "Bullpup",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Hyperion_ConferenceCall": {
+        "name": "Viral Marketer",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Hyperion_HeartBreaker": {
+        "name": "Heart Breaker",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Hyperion_Striker": {
+        "name": "Striker",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Jakobs_Boomacorn": {
+        "name": "Boomacorn",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Jakobs_Sledges": {
+        "name": "Sledge's Shotgun",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Jakobs_TooScoops": {
+        "name": "Too Scoops",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Jakobs_Wombat": {
+        "name": "Wombat",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Tediore_Octo": {
+        "name": "Octo",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Torgue_Flakker": {
+        "name": "Flakker",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Torgue_JackOCannon": {
+        "name": "Jack-o'-Cannon",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Torgue_Moonface": {
+        "name": "Moonface",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Body.SG_Body_Jakobs_3_Moonface": {
+        "name": "Moonface",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Body.SG_Body_Jakobs_Boomacorn": {
+        "name": "Boomacorn",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Body.SG_Body_Jakobs_TooScoops": {
+        "name": "Too Scoops",
+        "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Grip.SG_Grip_Hyperion_Bullpup": {
+        "name": "Bullpup",
+        "slot": "Grip",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Grip.SG_Grip_Jakobs_Boomacorn": {
+        "name": "Boomacorn",
+        "slot": "Grip",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Grip.SG_Grip_Jakobs_TooScoops": {
+        "name": "Too Scoops",
+        "slot": "Grip",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.ManufacturerMaterials.Mat_Hyperion_3_HeartBreaker": {
+        "name": "Heart Breaker",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.ManufacturerMaterials.Mat_Jakobs_3_Boomacorn": {
+        "name": "Boomacorn",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.ManufacturerMaterials.Mat_Jakobs_3_Moonface": {
+        "name": "Moon Face",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.ManufacturerMaterials.Mat_Jakobs_3_TooScoopz": {
+        "name": "Too Scoops",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.ManufacturerMaterials.Mat_Tediore_3_Octo": {
+        "name": "Octo",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.ManufacturerMaterials.Mat_Torgue_3_JackOCannon": {
+        "name": "Jack-o'-Cannon",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.ManufacturerMaterials.Mat_Torgue_3_Torgemada": {
+        "name": "Torgemada",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.ManufacturerMaterials.Mat_Torgue_3_Wombat": {
+        "name": "Wombat",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Stock.SG_Stock_Jakobs_Boomacorn": {
+        "name": "Boomacorn",
+        "slot": "Stock",
+        "type": "Shotgun"
+    },
+    "GD_Cork_Weap_Shotgun.Stock.SG_Stock_Jakobs_TooScoops": {
+        "name": "Too Scoops",
+        "slot": "Stock",
+        "type": "Shotgun"
+    },
+    "GD_Cypressure_Weapons.A_Weapons_Unique.SG_Barrel_Hyperion_CompanyMan": {
+        "name": "Company Man",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Cypressure_Weapons.A_Weapons_Unique.SG_Barrel_Jakobs_Landscaper2": {
+        "name": "Moonscaper",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Cypressure_Weapons.ManufacturerMaterials.Shotgun.Mat_Hyperion_3_CompanyMan": {
+        "name": "Company Man",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Cypressure_Weapons.ManufacturerMaterials.Shotgun.Mat_Torgue_3_Landscaper2": {
+        "name": "Moonscaper",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
     "GD_Gladiolus_Weapons.ManufacturerMaterials.Mat_Hyperion_6_Butcher": {
         "name": "Butcher",
         "slot": "Material",
@@ -117,6 +287,46 @@
     "GD_Lobelia_Weapons.Shotguns.SG_Body_Torgue_6_Carnage": {
         "name": "Carnage",
         "slot": "Body",
+        "type": "Shotgun"
+    },
+    "GD_Ma_Weapons.Barrel.SG_Barrel_Jakobs_5_Flayer": {
+        "name": "Flayer",
+        "slot": "Barrel",
+        "type": "Shotgun"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Jakobs_5_Legendary_Flayer": {
+        "name": "Flayer",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Ma_Weapons.Materials.Mat_SG_Bandit_6_Glitch": {
+        "name": "Bandit (Glitch)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Ma_Weapons.Materials.Mat_SG_Hyperion_6_Glitch": {
+        "name": "Hyperion (Glitch)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Ma_Weapons.Materials.Mat_SG_Jakobs_6_Glitch": {
+        "name": "Jakobs (Glitch)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Ma_Weapons.Materials.Mat_SG_Old_Hyperion_6_Glitch": {
+        "name": "Old Hyperion (Glitch)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Ma_Weapons.Materials.Mat_SG_Tediore_6_Glitch": {
+        "name": "Tediore (Glitch)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Ma_Weapons.Materials.Mat_SG_Torgue_6_Glitch": {
+        "name": "Torgue (Glitch)",
+        "slot": "Material",
         "type": "Shotgun"
     },
     "GD_Orchid_BossWeapons.ManufacturerMaterials.Mat_Bandit_3_JollyRoger": {
@@ -557,7 +767,10 @@
     "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Hyperion_5_Legendary": {
         "name": "Conference Call",
         "slot": "Material",
-        "type": "Shotgun"
+        "type": "Shotgun",
+        "game_overrides": {
+            "TPS": "Viral Marketer"
+        }
     },
     "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Jakobs_1": {
         "name": "Jakobs (Common)",
@@ -591,6 +804,26 @@
     },
     "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Jakobs_5_Legendary": {
         "name": "Striker",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Old_Hyperion_1": {
+        "name": "Old Hyperion (Common)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Old_Hyperion_2": {
+        "name": "Old Hyperion (Uncommon)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Old_Hyperion_3": {
+        "name": "Old Hyperion (Rare)",
+        "slot": "Material",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.ManufacturerMaterials.Mat_Old_Hyperion_4": {
+        "name": "Old Hyperion (Very Rare)",
         "slot": "Material",
         "type": "Shotgun"
     },
@@ -721,6 +954,11 @@
     },
     "GD_Weap_Shotgun.elemental.Shotgun_Elemental_Fire": {
         "name": "Fire",
+        "slot": "Element",
+        "type": "Shotgun"
+    },
+    "GD_Weap_Shotgun.elemental.Shotgun_Elemental_Ice": {
+        "name": "Cryo",
         "slot": "Element",
         "type": "Shotgun"
     },

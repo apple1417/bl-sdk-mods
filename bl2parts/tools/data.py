@@ -19,11 +19,18 @@ NON_UNIQUE_BALANCES: Dict[str, Tuple[str, ...]] = {
         "GD_Aster_Weapons.Shotguns.SG_Jakobs_4_Citrine",
         "GD_Aster_Weapons.Shotguns.SG_Tediore_4_CubicZerconia",
         "GD_Aster_Weapons.Shotguns.SG_Torgue_4_Rock",
+        "GD_Ma_Weapons.A_Weapons.SG_Bandit_6_Glitch",
+        "GD_Ma_Weapons.A_Weapons.SG_Hyperion_6_Glitch",
+        "GD_Ma_Weapons.A_Weapons.SG_Jakobs_6_Glitch",
+        "GD_Ma_Weapons.A_Weapons.SG_Old_Hyperion_6_Glitch",
+        "GD_Ma_Weapons.A_Weapons.SG_Tediore_6_Glitch",
+        "GD_Ma_Weapons.A_Weapons.SG_Torgue_6_Glitch",
         "GD_Weap_Shotgun.A_Weapons.SG_Bandit_4_VeryRare",
         "GD_Weap_Shotgun.A_Weapons.SG_Bandit_5_Alien",
         "GD_Weap_Shotgun.A_Weapons.SG_Hyperion_4_VeryRare",
         "GD_Weap_Shotgun.A_Weapons.SG_Hyperion_5_Alien",
         "GD_Weap_Shotgun.A_Weapons.SG_Jakobs_4_VeryRare",
+        "GD_Weap_Shotgun.A_Weapons.SG_Old_Hyperion_4_VeryRare",
         "GD_Weap_Shotgun.A_Weapons.SG_Tediore_4_VeryRare",
         "GD_Weap_Shotgun.A_Weapons.SG_Tediore_5_Alien",
         "GD_Weap_Shotgun.A_Weapons.SG_Torgue_4_VeryRare",
@@ -70,16 +77,9 @@ PLURAL_WEAPON_PART_TYPE: Dict[str, str] = {
 WEAPON_MANU_ATTRIBUTES: Dict[unrealsdk.UObject, str] = {
     unrealsdk.FindObject("AttributeDefinition", obj_name): name
     for obj_name, name in (
-        ("D_Attributes.WeaponManufacturer.OffhandWeapon_Is_Bandit", "Bandit (Offhand)"),
-        ("D_Attributes.WeaponManufacturer.OffhandWeapon_Is_Dahl", "Dahl (Offhand)"),
-        ("D_Attributes.WeaponManufacturer.OffhandWeapon_Is_Hyperion", "Hyperion (Offhand)"),
-        ("D_Attributes.WeaponManufacturer.OffhandWeapon_Is_Jakobs", "Jakobs (Offhand)"),
-        ("D_Attributes.WeaponManufacturer.OffhandWeapon_Is_Maliwan", "Maliwan (Offhand)"),
-        ("D_Attributes.WeaponManufacturer.OffhandWeapon_Is_Tediore", "Tediore (Offhand)"),
-        ("D_Attributes.WeaponManufacturer.OffhandWeapon_Is_Torgue", "Torgue (Offhand)"),
-        ("D_Attributes.WeaponManufacturer.OffhandWeapon_Is_Vladof", "Vladof (Offhand)"),
         ("D_Attributes.WeaponManufacturer.Weapon_Is_Bandit", "Bandit"),
         ("D_Attributes.WeaponManufacturer.Weapon_Is_Dahl", "Dahl"),
+        ("D_Attributes.WeaponManufacturer.Weapon_Is_Hyperion_Old", "Old Hyperion"),
         ("D_Attributes.WeaponManufacturer.Weapon_Is_Hyperion", "Hyperion"),
         ("D_Attributes.WeaponManufacturer.Weapon_Is_Jakobs", "Jakobs"),
         ("D_Attributes.WeaponManufacturer.Weapon_Is_Maliwan", "Maliwan"),
@@ -87,15 +87,26 @@ WEAPON_MANU_ATTRIBUTES: Dict[unrealsdk.UObject, str] = {
         ("D_Attributes.WeaponManufacturer.Weapon_Is_Torgue", "Torgue"),
         ("D_Attributes.WeaponManufacturer.Weapon_Is_Vladof", "Vladof"),
     )
+    if unrealsdk.FindObject("AttributeDefinition", obj_name) is not None
+}
+
+SCALING_ATTRIBUTES: Dict[unrealsdk.UObject, str] = {
+    unrealsdk.FindObject("AttributeDefinition", obj_name): scale
+    for obj_name, scale in (
+        ("D_Attributes.ExperienceResourcePool.PlayerExperienceLevel", "[Player Level]"),
+    )
+    if unrealsdk.FindObject("AttributeDefinition", obj_name) is not None
 }
 
 PART_TYPE_OVERRIDES: Dict[str, str] = {
+    "GD_Anemone_Weapons.Shotguns.SG_Barrel_Alien_Swordsplosion": WEAPON_PART_TYPE_NAMES[2],
+    "GD_Cork_Weap_Shotgun.Stock.SG_Stock_Jakobs_Boomacorn": WEAPON_PART_TYPE_NAMES[4],
+    "GD_Cork_Weap_Shotgun.Stock.SG_Stock_Jakobs_TooScoops": WEAPON_PART_TYPE_NAMES[4],
     "GD_Weap_Shotgun.Stock.SG_Stock_Bandit": WEAPON_PART_TYPE_NAMES[4],
     "GD_Weap_Shotgun.Stock.SG_Stock_Hyperion": WEAPON_PART_TYPE_NAMES[4],
     "GD_Weap_Shotgun.Stock.SG_Stock_Jakobs": WEAPON_PART_TYPE_NAMES[4],
     "GD_Weap_Shotgun.Stock.SG_Stock_Tediore": WEAPON_PART_TYPE_NAMES[4],
     "GD_Weap_Shotgun.Stock.SG_Stock_Torgue": WEAPON_PART_TYPE_NAMES[4],
-    "GD_Anemone_Weapons.Shotguns.SG_Barrel_Alien_Swordsplosion": WEAPON_PART_TYPE_NAMES[2],
 }
 
 """

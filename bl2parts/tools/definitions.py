@@ -27,6 +27,8 @@ SIMPLE_BASE_VALUES: Dict[str, str] = {
     "ShotCost": "D_Attributes.Weapon.WeaponShotCost",
 }
 
+BASE_SCALING_CONSTANT: str = "&beta;"
+
 
 def get_definition_data(def_obj: unrealsdk.UObject) -> YAML:
     """
@@ -61,12 +63,12 @@ def get_definition_data(def_obj: unrealsdk.UObject) -> YAML:
 
     data["base"].append({
         "attribute": WEAPON_DAMAGE_ATTR,
-        "scales": True,
+        "scale": BASE_SCALING_CONSTANT,
         "value": float_error(8 * def_obj.InstantHitDamage.BaseValueScaleConstant),
     })
     data["base"].append({
         "attribute": STATUS_DAMAGE_ATTR,
-        "scales": True,
+        "scale": BASE_SCALING_CONSTANT,
         "value": float_error(8 * def_obj.StatusEffectDamage.BaseValueScaleConstant),
     })
     data["base"].append({

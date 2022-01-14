@@ -1,6 +1,8 @@
 import unrealsdk
 from typing import List
 
+from Mods.ModMenu import Game  # type: ignore
+
 from . import YAML
 from .data import WEAPON_MANU_ATTRIBUTES
 
@@ -21,9 +23,15 @@ def get_prefix_data(part: unrealsdk.UObject) -> List[YAML]:
                 "name": prefix.PartName,
             })
         else:
+            restrict = WEAPON_MANU_ATTRIBUTES[attribute]
+            if restrict == "Bandit" and Game.GetCurrent() == Game.TPS:
+                restrict = "Scav"
+
             prefixes.append({
                 "name": prefix.PartName,
-                "restrict": WEAPON_MANU_ATTRIBUTES[attribute]
+                "restrict": restrict
             })
+
+    prefixes.sort(key=lambda p: p["restrict"])  # type: ignore
 
     return prefixes

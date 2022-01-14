@@ -61,7 +61,9 @@ for weapon_type, def_list in ALL_WEAPON_DEFINITIONS.items():
 
     for part in itertools.chain(def_objects, get_parts_for_definitions(def_objects)):
         part_type, part_data = get_part_data(part)
-        plural_type = PLURAL_WEAPON_PART_TYPE[part_type]
+
+        if part_type == "accessory2":
+            continue
 
         unique = part not in non_unique_parts
         part_data["unique"] = unique
@@ -71,6 +73,7 @@ for weapon_type, def_list in ALL_WEAPON_DEFINITIONS.items():
             if prefixes:
                 part_data["prefixes"] = prefixes
 
+        plural_type = PLURAL_WEAPON_PART_TYPE[part_type]
         if plural_type not in data:
             data[plural_type] = []
         data[plural_type].append(part_data)
@@ -79,22 +82,27 @@ for weapon_type, def_list in ALL_WEAPON_DEFINITIONS.items():
         parts.sort(key=lambda x: x["_obj_name"])
 
     with open(os.path.join(output_dir, f"{weapon_type}s.yml"), "w") as file:
+        # Seperate passes to force ordering
         yaml.dump(data, file)  # type: ignore
-
-    with open(os.path.join(output_dir, f"{weapon_type}s_meta.yml"), "w") as file:
         yaml.dump({  # type: ignore
-            "definitions": [get_definition_data(def_obj) for def_obj in def_objects]
+            "meta": {
+                "definitions": sorted([
+                    get_definition_data(def_obj) for def_obj in def_objects
+                ], key=lambda x: x["_obj_name"])  # type: ignore
+            }
         }, file)
 
     name_path = os.path.join(output_dir, f"{weapon_type}_names.json")
     if GEN_NAME_DUMP_TEMPLATE and not os.path.exists(name_path):
+        depluralize_weapon_part_type = {v: k for k, v in PLURAL_WEAPON_PART_TYPE.items()}
+
         with open(name_path, "w") as file:
             json.dump(
                 {
                     part_data["_obj_name"]: {
                         "name": "",
                         "type": weapon_type.title(),
-                        "slot": part_type.title(),
+                        "slot": depluralize_weapon_part_type[part_type].title(),
                     }
                     for part_type, part_list in data.items()
                     for part_data in part_list
