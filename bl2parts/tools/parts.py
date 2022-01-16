@@ -1,11 +1,79 @@
 import unrealsdk
-from typing import Tuple
+from typing import Optional, Tuple
 
 from Mods.ModMenu import Game  # type: ignore
 
 from . import YAML, float_error
 from .data import (DEFINITION_PART_TYPE, MODIFIER_NAMES, PART_NAMES, PART_TYPE_OVERRIDES,
                    SCALING_ATTRIBUTES, WEAPON_MANU_ATTRIBUTES, WEAPON_PART_TYPE_NAMES)
+
+VALID_MANU_RESTRICT_PREPENDS: Tuple[str, ...] = (
+    "Zoom",
+)
+
+
+def _create_bonus_data(
+    part: unrealsdk.UObject,
+    attr_struct: unrealsdk.FStruct,
+    restrict: Optional[str] = None
+) -> Optional[YAML]:
+    """
+    Create bonus yaml from an attribute struct.
+
+    Args:
+        part: The part currently being parsed.
+        attr_struct: The attribute struct to parse.
+        restrict: The base restriction to use. May be None.
+    Returns:
+        None if the bonus was unparseable and should be skipped.
+        The bonus yaml otherwise.
+    """
+    bonus_data = {
+        "attribute": part.PathName(attr_struct.AttributeToModify),
+        "type": MODIFIER_NAMES[attr_struct.ModifierType],
+    }
+
+    if (
+        attr_struct.BaseModifierValue.BaseValueAttribute in WEAPON_MANU_ATTRIBUTES
+        and attr_struct.BaseModifierValue.InitializationDefinition is None
+    ):
+        value = float_error(attr_struct.BaseModifierValue.BaseValueScaleConstant)
+        if restrict is not None and restrict not in VALID_MANU_RESTRICT_PREPENDS:
+            unrealsdk.Log(
+                f"Found manufacturer restriction on bonus with existing restriction"
+                f" {part.PathName(part)}"
+            )
+        manu_restrict = WEAPON_MANU_ATTRIBUTES[attr_struct.BaseModifierValue.BaseValueAttribute]
+        if restrict in VALID_MANU_RESTRICT_PREPENDS:
+            restrict = manu_restrict + " + " + restrict
+        else:
+            restrict = manu_restrict
+    elif (
+        attr_struct.BaseModifierValue.BaseValueAttribute in SCALING_ATTRIBUTES
+        and attr_struct.BaseModifierValue.InitializationDefinition is None
+    ):
+        value = float_error(attr_struct.BaseModifierValue.BaseValueScaleConstant)
+        bonus_data["scale"] = SCALING_ATTRIBUTES[attr_struct.BaseModifierValue.BaseValueAttribute]
+    elif (
+        attr_struct.BaseModifierValue.BaseValueAttribute is not None
+        or attr_struct.BaseModifierValue.InitializationDefinition is not None
+    ):
+        unrealsdk.Log(f"Unparsable bonus on {part.PathName(part)}")
+        return None
+    else:
+        value = float_error(
+            attr_struct.BaseModifierValue.BaseValueConstant
+            * attr_struct.BaseModifierValue.BaseValueScaleConstant
+        )
+
+    if value == 0:
+        return None
+
+    bonus_data["value"] = value
+    if restrict is not None:
+        bonus_data["restrict"] = restrict
+
+    return bonus_data
 
 
 def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
@@ -48,51 +116,21 @@ def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
         (part.ZoomWeaponAttributeEffects, "Zoom"),
         (part.ZoomExternalAttributeEffects, "Zoom"),
     ):
-        for attr in attr_group:
-            bonus_data = {
-                "attribute": part.PathName(attr.AttributeToModify),
-                "type": MODIFIER_NAMES[attr.ModifierType],
-            }
+        for attr_struct in attr_group:
+            bonus_data = _create_bonus_data(part, attr_struct, base_restrict)
+            if bonus_data is not None:
+                all_bonuses.append(bonus_data)
 
-            restrict = base_restrict
-
-            if (
-                attr.BaseModifierValue.BaseValueAttribute in WEAPON_MANU_ATTRIBUTES
-                and attr.BaseModifierValue.InitializationDefinition is None
-            ):
-                value = float_error(attr.BaseModifierValue.BaseValueScaleConstant)
-                if restrict is not None:
-                    unrealsdk.Log(
-                        f"Found manufacturer restriction on bonus with existing restriction"
-                        f" {part_name}"
-                    )
-                restrict = WEAPON_MANU_ATTRIBUTES[attr.BaseModifierValue.BaseValueAttribute]
-            elif (
-                attr.BaseModifierValue.BaseValueAttribute in SCALING_ATTRIBUTES
-                and attr.BaseModifierValue.InitializationDefinition is None
-            ):
-                value = float_error(attr.BaseModifierValue.BaseValueScaleConstant)
-                bonus_data["scale"] = SCALING_ATTRIBUTES[attr.BaseModifierValue.BaseValueAttribute]
-            elif (
-                attr.BaseModifierValue.BaseValueAttribute is not None
-                or attr.BaseModifierValue.InitializationDefinition is not None
-            ):
-                unrealsdk.Log(f"Unparsable bonus on {part_name}")
-                continue
-            else:
-                value = float_error(
-                    attr.BaseModifierValue.BaseValueConstant
-                    * attr.BaseModifierValue.BaseValueScaleConstant
-                )
-
-            if value == 0:
-                continue
-
-            bonus_data["value"] = value
-            if restrict is not None:
-                bonus_data["restrict"] = restrict
-
-            all_bonuses.append(bonus_data)
+    # This catches the fibber, we'll see if it works for anything else
+    if part.BehaviorProviderDefinition is not None:
+        for seq in part.BehaviorProviderDefinition.BehaviorSequences:
+            for behaviour_struct in seq.BehaviorData2:
+                if behaviour_struct.Behavior.Class.Name != "Behavior_AttributeEffect":
+                    continue
+                for attr_struct in behaviour_struct.Behavior.AttributeEffects:
+                    bonus_data = _create_bonus_data(part, attr_struct, "Post-Init")
+                    if bonus_data is not None:
+                        all_bonuses.append(bonus_data)
 
     part_data = {
         "_obj_name": part_name

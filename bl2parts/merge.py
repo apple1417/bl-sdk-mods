@@ -31,6 +31,10 @@ PART_NAME_OVERRIDES: Dict[str, Dict[str, str]] = {
     "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Jakobs_Sledges": {
         "TPS": "Sledge's Shotgun (TPS)",
     },
+    "GD_Weap_Pistol.A_Weapons.WeaponType_Jakobs_Pistol": {
+        "BL2": "Jakobs (BL2)",
+        "TPS": "Jakobs (TPS)",
+    }
 }
 
 # ==================================================================================================

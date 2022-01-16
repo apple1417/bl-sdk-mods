@@ -32,8 +32,8 @@ for mod in (
 
 from tools import YAML  # noqa: E402
 from tools.balances import get_parts_for_definitions, get_parts_on_balance  # noqa: E402
-from tools.data import (ALL_WEAPON_DEFINITIONS, NON_UNIQUE_BALANCES,  # noqa: E402
-                        PLURAL_WEAPON_PART_TYPE)
+from tools.data import (ALL_WEAPON_DEFINITIONS, GLITCH_PARTS, MOONSTONE_PARTS,  # noqa: E402
+                        NON_UNIQUE_BALANCES, PLURAL_WEAPON_PART_TYPE)
 from tools.definitions import get_definition_data  # noqa: E402
 from tools.parts import get_part_data  # noqa: E402
 from tools.prefixes import get_prefix_data  # noqa: E402
@@ -41,7 +41,7 @@ from tools.prefixes import get_prefix_data  # noqa: E402
 output_dir = f"Mods/bl2parts/data/{Game.GetCurrent()._name_}/"
 os.makedirs(output_dir, exist_ok=True)
 
-GEN_NAME_DUMP_TEMPLATE: bool = False
+GEN_NAME_DUMP_TEMPLATE: bool = True
 
 for weapon_type, def_list in ALL_WEAPON_DEFINITIONS.items():
     non_unique_parts = set()
@@ -60,10 +60,10 @@ for weapon_type, def_list in ALL_WEAPON_DEFINITIONS.items():
     data: YAML = {}
 
     for part in itertools.chain(def_objects, get_parts_for_definitions(def_objects)):
-        part_type, part_data = get_part_data(part)
-
-        if part_type == "accessory2":
+        if part in MOONSTONE_PARTS or part in GLITCH_PARTS:
             continue
+
+        part_type, part_data = get_part_data(part)
 
         unique = part not in non_unique_parts
         part_data["unique"] = unique

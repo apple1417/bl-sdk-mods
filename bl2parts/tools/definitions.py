@@ -1,6 +1,8 @@
 import unrealsdk
 from typing import Dict
 
+from Mods.ModMenu import Game  # type: ignore
+
 from . import YAML, float_error
 from .data import MODIFIER_NAMES, PART_NAMES
 
@@ -11,9 +13,7 @@ WEAPON_DAMAGE_ID: unrealsdk.UObject = unrealsdk.FindObject(
 
 WEAPON_DAMAGE_ATTR: str = "D_Attributes.Weapon.WeaponDamage"
 STATUS_CHANCE_ATTR: str = "D_Attributes.Weapon.WeaponBaseStatusEffectChanceModifier"
-
-# TODO: investigate which attr is actually right
-STATUS_DAMAGE_ATTR: str = "FAKE:Status Damage"
+STATUS_DAMAGE_ATTR: str = "D_Attributes.Weapon.WeaponStatusEffectDamage"
 
 SIMPLE_BASE_VALUES: Dict[str, str] = {
     "FireRate": "D_Attributes.Weapon.WeaponFireInterval",
@@ -42,9 +42,18 @@ def get_definition_data(def_obj: unrealsdk.UObject) -> YAML:
 
     def_name = def_obj.PathName(def_obj)
 
+    friendly_name: str
+    if def_name in PART_NAMES:
+        name_data = PART_NAMES[def_name]
+        override = name_data.get("game_overrides", {}).get(Game.GetCurrent()._name_)  # type: ignore
+
+        friendly_name = override if override is not None else name_data["name"]  # type: ignore
+    else:
+        friendly_name = def_name.split(".")[-1]
+
     data = {
         "_obj_name": def_name,
-        "name": PART_NAMES[def_name]["name"],
+        "name": friendly_name,
         "base": []
     }
 

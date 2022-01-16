@@ -1,4 +1,1254 @@
 {
+    "GD_Anemone_Weapons.Barrel.Pistol_Barrel_Dahl_Hornet_Hector": {
+        "name": "Hector's Paradise",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Anemone_Weapons.Barrel.Pistol_Barrel_Vladof_Fire": {
+        "name": "Fire Infinity",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Anemone_Weapons.Barrel.Pistol_Barrel_Vladof_Infinity": {
+        "name": "Fire Drill",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Anemone_Weapons.Body.Pistol_Body_Vladof_4": {
+        "name": "Fire Drill/Infinity",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Anemone_Weapons.ManufacturerMaterials.Mat_Dahl_5_Legendary_Hector": {
+        "name": "Hector's Paradise",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Anemone_Weapons.ManufacturerMaterials.Mat_Vladof_5_Fire": {
+        "name": "Fire Drill",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Anemone_Weapons.ManufacturerMaterials.Mat_Vladof_5_Legendary": {
+        "name": "Fire Infinity",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Anemone_Weapons.elemental.Pistol_Elemental_Fire": {
+        "name": "Fire Drill/Infinity",
+        "slot": "Element",
+        "type": "Pistol"
+    },
+    "GD_Aster_RaidWeapons.ManufacturerMaterials.Mat_Vladof_5_Stinger": {
+        "name": "Stinger",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Aster_RaidWeapons.Pistols.Pistol_Barrel_Vladof_Stinger": {
+        "name": "Stinger",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Bandit_4_Quartz_Pistol": {
+        "name": "Quartz",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Dahl_4_Emerald_Pistol": {
+        "name": "Emerald",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Hyperion_4_Diamond_Pistol": {
+        "name": "Diamond",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Jakobs_4_Citrine_Pistol": {
+        "name": "Citrine",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Maliwan_3_GrogNozzle": {
+        "name": "Grog Nozzle",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Malwan_4_Aquamarine_Pistol": {
+        "name": "Aquamarine",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Tediore_4_CubicZerconia_Pistol": {
+        "name": "Cubic Zerconia",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Torgue_4_Rock_Pistol": {
+        "name": "Rock",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Vladof_4_Garnet_Pistol": {
+        "name": "Garnet",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Aster_Weapons.Pistols.Pistol_Barrel_Bandit_GrogNozzle": {
+        "name": "Grog Nozzle",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.Barrel.Pistol_Barrel_Bandit_Fibber_1": {
+        "name": "Fibber 1 (Shotgun)",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.Barrel.Pistol_Barrel_Bandit_Fibber_2": {
+        "name": "Fibber 2 (Ricochet)",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.Barrel.Pistol_Barrel_Bandit_Fibber_3": {
+        "name": "Fibber 3 (Crit)",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.Barrel.Pistol_Barrel_Bandit_Zim": {
+        "name": "Zim",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.Barrel.Pistol_Barrel_Dahl_Blowfly": {
+        "name": "Blowfly",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.Barrel.Pistol_Barrel_Dahl_Globber": {
+        "name": "Globber",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.Barrel.Pistol_Barrel_Dahl_LadyFist": {
+        "name": "Lady Fist",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.Barrel.Pistol_Barrel_Hyperion_GwensOtherHead": {
+        "name": "Gwen's Other Head",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.Barrel.Pistol_Barrel_Jakobs_CyberColt": {
+        "name": "Cyber Eagle",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.Barrel.Pistol_Barrel_Jakobs_Maggie": {
+        "name": "Maggie",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.Barrel.Pistol_Barrel_Jakobs_Smasher": {
+        "name": "Smasher",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.Barrel.Pistol_Barrel_Scav_Moxxis_Probe": {
+        "name": "Probe",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.Barrel.Pistol_Barrel_Tediore_Shooterang": {
+        "name": "Shooterang",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.Barrel.Pistol_Barrel_Torgue_88Fragnum": {
+        "name": "Fragnum",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.Body.Pistol_Body_Jakobs_CyberColt": {
+        "name": "Cyber Eagle",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.Grip.Pistol_Grip_Jakobs_CyberColt": {
+        "name": "Cyber Eagle",
+        "slot": "Grip",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.ManufacturerMaterials.Mat_Dahl_3_GwensOtherHead": {
+        "name": "Gwen's Other Head",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.ManufacturerMaterials.Mat_Dahl_5_Legendary_Blowfly": {
+        "name": "Blowfly",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.ManufacturerMaterials.Mat_Hyperion_3_Fibber": {
+        "name": "Fibber",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.ManufacturerMaterials.Mat_Hyperion_3_Globber": {
+        "name": "Globber",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.ManufacturerMaterials.Mat_Hyperion_3_LadyFist": {
+        "name": "Lady Fist",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.ManufacturerMaterials.Mat_Jakobs_3_Smasher": {
+        "name": "Smasher",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.ManufacturerMaterials.Mat_Jakobs_4_CyberColt": {
+        "name": "Cyber Eagle",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.ManufacturerMaterials.Mat_Maliwan_3_Moxxis_Probe": {
+        "name": "Probe",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.ManufacturerMaterials.Mat_Scav_5_Legendary_Zim": {
+        "name": "Zim",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.ManufacturerMaterials.Mat_Starter_Dahl_1": {
+        "name": "Wilhelm Starter",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.ManufacturerMaterials.Mat_Tediore_5_Legendary_Shooterang": {
+        "name": "Shooterang",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.Sight.Pistol_Sight_Jakobs_CyberColt": {
+        "name": "Cyber Eagle",
+        "slot": "Sight",
+        "type": "Pistol"
+    },
+    "GD_Cork_Weap_Pistol.elemental.Pistol_Elemental_Ice": {
+        "name": "Cryo (Hot Head)",
+        "slot": "Element",
+        "type": "Pistol"
+    },
+    "GD_Gladiolus_Weapons.ManufacturerMaterials.Mat_Jakobs_6_Unforgiven": {
+        "name": "Unforgiven",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Gladiolus_Weapons.ManufacturerMaterials.Mat_Vladof_6_Stalker": {
+        "name": "Stalker",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Gladiolus_Weapons.Pistol.Pistol_Barrel_Jakobs_Unforgiven": {
+        "name": "Unforgiven",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Gladiolus_Weapons.Pistol.Pistol_Barrel_Stalker": {
+        "name": "Stalker",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Gladiolus_Weapons.Pistol.Pistol_Body_Jakobs_6": {
+        "name": "Unforgiven",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Gladiolus_Weapons.Pistol.Pistol_Body_Vladof_6": {
+        "name": "Stalker",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Iris_Weapons.ManufacturerMaterials.Mat_Torgue_3_PocketRocket": {
+        "name": "Pocket Rocket",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Iris_Weapons.Pistols.Pistol_Barrel_Torgue_PocketRocket": {
+        "name": "Pocket Rocket",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Lobelia_Weapons.ManufacturerMaterials.Mat_Maliwan_6_Wanderlust": {
+        "name": "Wanderlust",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Lobelia_Weapons.Pistol.Pistol_Barrel_Alien_Homing_Wanderlust": {
+        "name": "Wanderlust",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Lobelia_Weapons.Pistol.Pistol_Body_Maliwan_6_Wanderlust": {
+        "name": "Pocket Rocket",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Ma_Weapons.Barrel.Pistol_Barrel_Bandit_3_PartyPopper": {
+        "name": "Party Popper",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Ma_Weapons.Barrel.Pistol_Barrel_Jakobs_5_LuckCannon": {
+        "name": "Luck Cannon",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Ma_Weapons.Barrel.Pistol_Barrel_Maliwan_3_HardReboot": {
+        "name": "Hard Reboot",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Ma_Weapons.Barrel.Pistol_Barrel_Vladof_5_Expander": {
+        "name": "Proleterian Revolution",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Pistol_Bandit_3_PartyPopper": {
+        "name": "Party Popper",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Pistol_Bandit_6_Glitch": {
+        "name": "Bandit (Glitch)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Pistol_Dahl_6_Glitch": {
+        "name": "Dahl (Glitch)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Pistol_Hyperion_6_Glitch": {
+        "name": "Hyperion (Glitch)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Pistol_Jakobs_5_LuckCannon": {
+        "name": "Luck Cannon",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Pistol_Jakobs_6_Glitch": {
+        "name": "Jakobs (Glitch)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Pistol_Maliwan_3_HardReboot": {
+        "name": "Hard Reboot",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Pistol_Maliwan_6_Glitch": {
+        "name": "Maliwan",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Pistol_Old_Hyperion_6_Glitch": {
+        "name": "Old Hyperion",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Pistol_Tediore_6_Glitch": {
+        "name": "Tediore",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Pistol_Torgue_6_Glitch": {
+        "name": "Torgue",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Pistol_Vladof_6_Glitch": {
+        "name": "Vladof",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Vladof_5_Legendary_Expander": {
+        "name": "Proleterian Revolution",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Orchid_BossWeapons.ManufacturerMaterials.Mat_Jakobs_3_Greed": {
+        "name": "Greed",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Orchid_BossWeapons.ManufacturerMaterials.Mat_Maliwan_2_Evie": {
+        "name": "Little Evie",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Orchid_BossWeapons.Pistol.Pistol_Barrel_ScarletsGreed": {
+        "name": "Greed",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Orchid_BossWeapons.Pistol.Pistol_Barrel_Vladof_Evie": {
+        "name": "Little Evie",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Orchid_RaidWeapons.ManufacturerMaterials.Mat_Torgue_1_Devastator": {
+        "name": "Devastator",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Orchid_RaidWeapons.Pistol.Devastator.Orchid_Seraph_Devastator_Barrel": {
+        "name": "Devastator",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Petunia_Weapons.ManufacturerMaterials.Pistol.Mat_Hyperion_3_T4sr": {
+        "name": "T4s-R",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Petunia_Weapons.Pistols.Pistol_Barrel_T4sr": {
+        "name": "T4s-R",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Sage_RaidWeapons.ManufacturerMaterials.Mat_Maliwan_1_Infection": {
+        "name": "Infection",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Sage_RaidWeapons.Pistol.Pistol_Barrel_Infection": {
+        "name": "Infection",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Sage_Weapons.ManufacturerMaterials.Mat_Jakobs_2_Rex": {
+        "name": "Rex",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Sage_Weapons.Pistols.Pistol_Barrel_Jakobs_Rex": {
+        "name": "Rex",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.A_Weapons.WeaponType_Bandit_Pistol": {
+        "name": "Bandit",
+        "slot": "Definition",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.A_Weapons.WeaponType_Dahl_Pistol": {
+        "name": "Dahl",
+        "slot": "Definition",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.A_Weapons.WeaponType_Hyperion_Pistol": {
+        "name": "Hyperion",
+        "slot": "Definition",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.A_Weapons.WeaponType_Jakobs_Pistol": {
+        "name": "Jakobs",
+        "slot": "Definition",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.A_Weapons.WeaponType_Maliwan_Pistol": {
+        "name": "Maliwan",
+        "slot": "Definition",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.A_Weapons.WeaponType_Tediore_Pistol": {
+        "name": "Tediore",
+        "slot": "Definition",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.A_Weapons.WeaponType_Torgue_Pistol": {
+        "name": "Torgue",
+        "slot": "Definition",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.A_Weapons.WeaponType_Vladof_Pistol": {
+        "name": "Vladof",
+        "slot": "Definition",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Accessory.Pistol_Accessory_Bayonet_1": {
+        "name": "Bayonet 1",
+        "slot": "Accessory",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Accessory.Pistol_Accessory_Bayonet_1_Law": {
+        "name": "Law Bayonet",
+        "slot": "Accessory",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Accessory.Pistol_Accessory_Bayonet_2": {
+        "name": "Bayonet 2",
+        "slot": "Accessory",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Accessory.Pistol_Accessory_Laser_Accuracy": {
+        "name": "Accuracy Laser",
+        "slot": "Accessory",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Accessory.Pistol_Accessory_Laser_Double": {
+        "name": "Double Laser",
+        "slot": "Accessory",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Accessory.Pistol_Accessory_Laser_Double_DvaInfinity": {
+        "name": "Infinity Double Laser",
+        "slot": "Accessory",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Accessory.Pistol_Accessory_None": {
+        "name": "\"No Accessory\"",
+        "slot": "Accessory",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Accessory.Pistol_Accessory_Stock_Stability": {
+        "name": "Stock",
+        "slot": "Accessory",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Accessory.Pistol_Accessory_Tech_1_Mag": {
+        "name": "Tech 1 Mag",
+        "slot": "Accessory",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Accessory.Pistol_Accessory_Tech_2_Damage": {
+        "name": "Tech 2 Damage",
+        "slot": "Accessory",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Accessory.Pistol_Accessory_Tech_3_Firerate": {
+        "name": "Tech 3 Firerate",
+        "slot": "Accessory",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Fibber.Pistol_Barrel_Bandit_Fibber_1": {
+        "name": "Fibber 1 (Shotgun)",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Fibber.Pistol_Barrel_Bandit_Fibber_2": {
+        "name": "Fibber 2 (Ricochet)",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Fibber.Pistol_Barrel_Bandit_Fibber_3": {
+        "name": "Fibber 3 (Crit)",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Alien": {
+        "name": "E-Tech",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Alien_Homing": {
+        "name": "E-Tech (Homing)",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Alien_Homing_Dahlminator": {
+        "name": "Dahlminator",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Bandit": {
+        "name": "Bandit",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Bandit_CrappyStarter": {
+        "name": "Basic Repeater",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Bandit_Gub": {
+        "name": "Gub",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Dahl": {
+        "name": "Dahl",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Dahl_Hornet": {
+        "name": "Hornet",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Dahl_LadyFist": {
+        "name": "Lady Fist",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Dahl_Law": {
+        "name": "Law",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Dahl_Tinderbox": {
+        "name": "Tinderbox",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Hyperion": {
+        "name": "Hyperion",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Hyperion_GwensHead": {
+        "name": "Gwen's Head",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Hyperion_LogansGun": {
+        "name": "Logan's Gun",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Hyperion_Veritas": {
+        "name": "Veritas",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Jakobs": {
+        "name": "Jakobs",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Jakobs_Maggie": {
+        "name": "Maggie",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Maliwan": {
+        "name": "Maliwan",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Maliwan_Rubi": {
+        "name": "Rubi",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Maliwan_ThunderballFists": {
+        "name": "Thunderball Fists",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Tediore": {
+        "name": "Tediore",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Tediore_Gunerang": {
+        "name": "Gunerang",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Tediore_Judge": {
+        "name": "Judge",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Tediore_Teapot": {
+        "name": "Teapot",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Torgue": {
+        "name": "Torgue",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Torgue_Calla": {
+        "name": "Unkempt Harold",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Vladof": {
+        "name": "Vladof",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Barrel.Pistol_Barrel_Vladof_Infinity": {
+        "name": "Infinity",
+        "slot": "Barrel",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Bandit": {
+        "name": "Bandit (Common)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Bandit_2": {
+        "name": "Bandit (Uncommon)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Bandit_3": {
+        "name": "Bandit (Rare)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Bandit_4": {
+        "name": "Bandit (Very Rare)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Dahl": {
+        "name": "Dahl (Common)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Dahl_2": {
+        "name": "Dahl (Uncommon)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Dahl_3": {
+        "name": "Dahl (Rare)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Dahl_4": {
+        "name": "Dahl (Very Rare)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Hyperion": {
+        "name": "Hyperion (Common)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Hyperion_2": {
+        "name": "Hyperion (Uncommon)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Hyperion_3": {
+        "name": "Hyperion (Rare)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Hyperion_4": {
+        "name": "Hyperion (Very Rare)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Jakobs": {
+        "name": "Jakobs (Common)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Jakobs_2": {
+        "name": "Jakobs (Uncommon)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Jakobs_3": {
+        "name": "Jakobs (Rare)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Jakobs_4": {
+        "name": "Jakobs (Very Rare)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Maliwan": {
+        "name": "Maliwan (Common)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Maliwan_2": {
+        "name": "Maliwan (Uncommon)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Maliwan_3": {
+        "name": "Maliwan (Rare)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Maliwan_4": {
+        "name": "Maliwan (Very Rare)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Tediore": {
+        "name": "Tediore (Common)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Tediore_2": {
+        "name": "Tediore (Uncommon)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Tediore_3": {
+        "name": "Tediore (Rare)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Tediore_4": {
+        "name": "Tediore (Very Rare)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Torgue": {
+        "name": "Torgue (Common)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Torgue_2": {
+        "name": "Torgue (Uncommon)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Torgue_3": {
+        "name": "Torgue (Rare)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Torgue_4": {
+        "name": "Torgue (Very Rare)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Vladof": {
+        "name": "Vladof (Common)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Vladof_2": {
+        "name": "Vladof (Uncommon)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Vladof_3": {
+        "name": "Vladof (Rare)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body_Vladof_4": {
+        "name": "Vladof (Very Rare)",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Body.Pistol_Body__Unique_Teapot": {
+        "name": "Teapot",
+        "slot": "Body",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Grip.Pistol_Grip_Bandit": {
+        "name": "Bandit",
+        "slot": "Grip",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Grip.Pistol_Grip_Dahl": {
+        "name": "Dahl",
+        "slot": "Grip",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Grip.Pistol_Grip_Hyperion": {
+        "name": "Hyperion",
+        "slot": "Grip",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Grip.Pistol_Grip_Jakobs": {
+        "name": "Jakobs",
+        "slot": "Grip",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Grip.Pistol_Grip_Maliwan": {
+        "name": "Maliwan",
+        "slot": "Grip",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Grip.Pistol_Grip_Tediore": {
+        "name": "Tediore",
+        "slot": "Grip",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Grip.Pistol_Grip_Torgue": {
+        "name": "Torgue",
+        "slot": "Grip",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Grip.Pistol_Grip_Vladof": {
+        "name": "Vladof",
+        "slot": "Grip",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Bandit_1": {
+        "name": "Bandit (Common)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Bandit_2": {
+        "name": "Bandit (Uncommon)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Bandit_3": {
+        "name": "Bandit (Rare)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Bandit_3_Tinderbox": {
+        "name": "Tinderbox",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Bandit_4": {
+        "name": "Bandit (Very Rare)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Bandit_5_Legendary": {
+        "name": "Gub",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Dahl_1": {
+        "name": "Dahl (Common)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Dahl_1_Starter": {
+        "name": "Basic Repeater",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Dahl_2": {
+        "name": "Dahl (Uncommon)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Dahl_3": {
+        "name": "Dahl (Rare)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Dahl_3_Dahlminator": {
+        "name": "Dahlminator",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Dahl_3_GwensHead": {
+        "name": "Gwen's Head",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Dahl_3_Teapot": {
+        "name": "Teapot",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Dahl_4": {
+        "name": "Dahl (Very Rare)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Dahl_5_Legendary": {
+        "name": "Hornet",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Hyperion_1": {
+        "name": "Hyperion (Common)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Hyperion_2": {
+        "name": "Hyperion (Uncommon)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Hyperion_3": {
+        "name": "Hyperion (Rare)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Hyperion_3_Fibber": {
+        "name": "Fibber",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Hyperion_3_LadyFist": {
+        "name": "Lady Fist",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Hyperion_4": {
+        "name": "Hyperion (Very Rare)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Hyperion_5_Legendary": {
+        "name": "Logan's Gun",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Jakobs_1": {
+        "name": "Jakobs (Common)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Jakobs_2": {
+        "name": "Jakobs (Uncommon)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Jakobs_3": {
+        "name": "Jakobs (Rare)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Jakobs_3_Judge": {
+        "name": "Judge",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Jakobs_3_Law": {
+        "name": "Law",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Jakobs_4": {
+        "name": "Jakobs (Very Rare)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Jakobs_5_Legendary": {
+        "name": "Maggie",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Maliwan_1": {
+        "name": "Maliwan (Common)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Maliwan_2": {
+        "name": "Maliwan (Uncommon)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Maliwan_3": {
+        "name": "Maliwan (Rare)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Maliwan_3_Rubi": {
+        "name": "Rubi",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Maliwan_4": {
+        "name": "Maliwan (Very Rare)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Maliwan_5_Legendary": {
+        "name": "Thunderball Fists",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Old_Hyperion_1": {
+        "name": "Old Hyperion (Common)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Old_Hyperion_2": {
+        "name": "Old Hyperion (Uncommon)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Old_Hyperion_3": {
+        "name": "Old Hyperion (Rare)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Old_Hyperion_4": {
+        "name": "Old Hyperion (Very Rare)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Tediore_1": {
+        "name": "Tediore (Common)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Tediore_2": {
+        "name": "Tediore (Uncommon)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Tediore_3": {
+        "name": "Tediore (Rare)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Tediore_4": {
+        "name": "Tediore (Very Rare)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Tediore_5_Legendary": {
+        "name": "Gunerang",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Torgue_1": {
+        "name": "Torgue (Common)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Torgue_2": {
+        "name": "Torgue (Uncommon)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Torgue_3": {
+        "name": "Torgue (Rare)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Torgue_4": {
+        "name": "Torgue (Very Rare)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Torgue_5_Legendary": {
+        "name": "Unkempt Harold",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Vladof_1": {
+        "name": "Vladof (Common)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Vladof_2": {
+        "name": "Vladof (Uncommon)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Vladof_3": {
+        "name": "Vladof (Rare)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Vladof_3_Veritas": {
+        "name": "Veritas",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Vladof_4": {
+        "name": "Vladof (Very Rare)",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.ManufacturerMaterials.Mat_Vladof_5_Legendary": {
+        "name": "Infinity",
+        "slot": "Material",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Sight.Pistol_Sight_Bandit": {
+        "name": "Bandit",
+        "slot": "Sight",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Sight.Pistol_Sight_Dahl": {
+        "name": "Dahl",
+        "slot": "Sight",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Sight.Pistol_Sight_Hyperion": {
+        "name": "Hyperion",
+        "slot": "Sight",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Sight.Pistol_Sight_Jakobs": {
+        "name": "Jakobs",
+        "slot": "Sight",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Sight.Pistol_Sight_Maliwan": {
+        "name": "Maliwan",
+        "slot": "Sight",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Sight.Pistol_Sight_None": {
+        "name": "\"No Sight\"",
+        "slot": "Sight",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Sight.Pistol_Sight_Tediore": {
+        "name": "Tediore",
+        "slot": "Sight",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Sight.Pistol_Sight_Torgue": {
+        "name": "Torgue",
+        "slot": "Sight",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.Sight.Pistol_Sight_Vladof": {
+        "name": "Vladof",
+        "slot": "Sight",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.elemental.Pistol_Elemental_Corrosive": {
+        "name": "Corrosive",
+        "slot": "Element",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.elemental.Pistol_Elemental_Fire": {
+        "name": "Fire",
+        "slot": "Element",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.elemental.Pistol_Elemental_Ice": {
+        "name": "Cryo",
+        "slot": "Element",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.elemental.Pistol_Elemental_None": {
+        "name": "\"No Element\"",
+        "slot": "Element",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.elemental.Pistol_Elemental_Shock": {
+        "name": "Shock",
+        "slot": "Element",
+        "type": "Pistol"
+    },
+    "GD_Weap_Pistol.elemental.Pistol_Elemental_Slag": {
+        "name": "Slag",
+        "slot": "Element",
+        "type": "Pistol"
+    },
     "GD_Anemone_Weapons.Body.SG_Body_Torgue_7": {
         "name": "Unicornsplosion",
         "slot": "Body",
