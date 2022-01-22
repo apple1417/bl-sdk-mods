@@ -1019,7 +1019,7 @@
         "type": "Grenade"
     },
     "GD_GrenadeMods.Material.Material_Bandit_2_Uncommon": {
-        "name": "Bandit (Unommon)",
+        "name": "Bandit (Uncommon)",
         "slot": "Material",
         "type": "Grenade"
     },
@@ -1044,7 +1044,7 @@
         "type": "Grenade"
     },
     "GD_GrenadeMods.Material.Material_Dahl_2_Uncommon": {
-        "name": "Dahl (Unommon)",
+        "name": "Dahl (Uncommon)",
         "slot": "Material",
         "type": "Grenade"
     },
@@ -1069,7 +1069,7 @@
         "type": "Grenade"
     },
     "GD_GrenadeMods.Material.Material_Hyperion_2_Uncommon": {
-        "name": "Hyperion (Unommon)",
+        "name": "Hyperion (Uncommon)",
         "slot": "Material",
         "type": "Grenade"
     },
@@ -1094,7 +1094,7 @@
         "type": "Grenade"
     },
     "GD_GrenadeMods.Material.Material_Maliwan_2_Uncommon": {
-        "name": "Maliwan (Unommon)",
+        "name": "Maliwan (Uncommon)",
         "slot": "Material",
         "type": "Grenade"
     },
@@ -1119,7 +1119,7 @@
         "type": "Grenade"
     },
     "GD_GrenadeMods.Material.Material_Tedior_2_Uncommon": {
-        "name": "Tediore (Unommon)",
+        "name": "Tediore (Uncommon)",
         "slot": "Material",
         "type": "Grenade"
     },
@@ -1144,7 +1144,7 @@
         "type": "Grenade"
     },
     "GD_GrenadeMods.Material.Material_Torgue_2_Uncommon": {
-        "name": "Torgue (Unommon)",
+        "name": "Torgue (Uncommon)",
         "slot": "Material",
         "type": "Grenade"
     },
@@ -1169,7 +1169,7 @@
         "type": "Grenade"
     },
     "GD_GrenadeMods.Material.Material_Vladof_2_Uncommon": {
-        "name": "Vladof (Unommon)",
+        "name": "Vladof (Uncommon)",
         "slot": "Material",
         "type": "Grenade"
     },
