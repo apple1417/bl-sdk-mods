@@ -39,6 +39,8 @@ PART_NAME_OVERRIDES: Dict[str, Dict[str, str]] = {
 
 PARTS_TO_NAIVE_BONUS_MERGE: Tuple[str, ...] = (
     # These just conflict on cryo/slag, otherwise identical
+    "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_Leech",
+    "GD_GrenadeMods.A_Item.GrenadeMod_Standard",
     "GD_GrenadeMods.Payload.Payload_AreaEffect",
     "GD_GrenadeMods.StatusDamage.StatusDamage_Grade1",
     "GD_GrenadeMods.StatusDamage.StatusDamage_Grade2",
@@ -174,11 +176,21 @@ for name, matching_files in get_file_mappings("yml").items():
                     continue
 
                 duplicate = next(filter(
-                    lambda x: x["name"] == part["name"],  # type: ignore
+                    lambda x: x["name"] == def_data["name"],  # type: ignore
                     merged_meta_definitions
                 ), None)
                 if not duplicate:
                     merged_meta_definitions.append(def_data)
+                    continue
+
+                if remove_key(def_data, "_obj_name") == remove_key(duplicate, "_obj_name"):
+                    continue
+
+                if def_data["_obj_name"] in PARTS_TO_NAIVE_BONUS_MERGE:
+                    for list_name in ("base", "grades"):
+                        for entry in def_data[list_name]:
+                            if entry not in duplicate[list_name]:
+                                duplicate[list_name].append(entry)
                     continue
 
                 print("Collision on meta '" + def_data["_obj_name"] + "'!")

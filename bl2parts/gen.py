@@ -4,7 +4,7 @@ import itertools
 import json
 import os
 import sys
-from typing import List
+from typing import Set
 
 from Mods.ModMenu import Game  # type: ignore
 
@@ -33,8 +33,8 @@ for mod in (
 from tools import YAML  # noqa: E402
 from tools.balances import get_parts_for_definitions, get_parts_on_balance  # noqa: E402
 from tools.data import (ALL_DEFINITIONS, DEFINITION_PART_TYPE, GLITCH_PARTS,  # noqa: E402
-                        ITEM_PART_TYPE_NAMES, MOONSTONE_PARTS, NON_UNIQUE_BALANCES,
-                        PLURAL_WEAPON_PART_TYPE)
+                        ITEM_CLASS_OVERRIDES, ITEM_PART_TYPE_NAMES, MOONSTONE_PARTS,
+                        NON_UNIQUE_BALANCES, PLURAL_WEAPON_PART_TYPE)
 from tools.definitions import get_definition_data  # noqa: E402
 from tools.parts import get_part_data  # noqa: E402
 from tools.prefixes import get_prefix_data  # noqa: E402
@@ -52,16 +52,28 @@ for item_type, def_list in ALL_DEFINITIONS.items():
             non_unique_parts.update(get_parts_on_balance(bal))
             bal = bal.BaseDefinition
 
-    def_objects: List[unrealsdk.UObject] = [
+    def_objects = [
         unrealsdk.FindObject("WillowInventoryDefinition", def_name)
         for def_name in def_list
     ]
     def_objects = [x for x in def_objects if x is not None]
+
     non_unique_parts.update(def_objects)
 
+    part_objects: Set[unrealsdk.UObject]
+    if item_type in ITEM_CLASS_OVERRIDES:
+        def_class, part_class = ITEM_CLASS_OVERRIDES[item_type]
+        def_objects = [
+            x for x in unrealsdk.FindAll(def_class) if not x.Name.startswith("Default__")
+        ]
+        part_objects = {
+            x for x in unrealsdk.FindAll(part_class) if not x.Name.startswith("Default__")
+        }
+    else:
+        part_objects = get_parts_for_definitions(def_objects)
     data: YAML = {}
 
-    for part in itertools.chain(def_objects, get_parts_for_definitions(def_objects)):
+    for part in itertools.chain(def_objects, part_objects):
         if part in MOONSTONE_PARTS or part in GLITCH_PARTS:
             continue
 

@@ -20,6 +20,14 @@ DEFINITION_BLACKLIST: Tuple[str, ...] = (
     "VehicleWeaponTypeDefinition",
 )
 
+"""
+Maps item type to a set of definitions.
+For weapons, this is all their definitions.
+For items, it's only their non unique definitions - we'll use classes from `ITEM_CLASS_OVERRIDES`
+ to grab them instead.
+
+Is this distinction a hacky confusing mess? Sure. Does it work? Yup.
+"""
 ALL_DEFINITIONS: Dict[str, Tuple[str, ...]] = {
     "shotgun": (
         "GD_Weap_Shotgun.A_Weapons.WT_Bandit_Shotgun",
@@ -39,34 +47,12 @@ ALL_DEFINITIONS: Dict[str, Tuple[str, ...]] = {
         "GD_Weap_Pistol.A_Weapons.WeaponType_Vladof_Pistol",
     ),
     "grenade": (
-        "GD_Anemone_GrenadeMods.A_Item_Legendary.GrenadeMod_Exterminator",
-        "GD_Anemone_GrenadeMods.A_Item.GrenadeMod_Standard",
-        "GD_Aster_GrenadeMods.A_Item.GrenadeMod_MagicSpell",
-        "GD_Cork_GrenadeMods.A_Item_Custom.GrenadeMod_MonsterTrap",
-        "GD_Cork_GrenadeMods.A_Item_Legendary.GrenadeMod_BonusPackage",
-        "GD_Cork_GrenadeMods.A_Item_Legendary.GrenadeMod_Quasar",
-        "GD_GrenadeMods.A_Item_Custom.GrenadeMod_BabyBoomer",
-        "GD_GrenadeMods.A_Item_Custom.GrenadeMod_FusterCluck",
-        "GD_GrenadeMods.A_Item_Custom.GrenadeMod_SkyRocket",
-        "GD_GrenadeMods.A_Item_Custom.GrenadeMod_Snowball",
-        "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_BonusPackage",
-        "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_BouncingBonny",
-        "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_Exterminator",
-        "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_Fastball",
-        "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_FlameSpurt",
-        "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_FourSeasons",
-        "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_Leech",
-        "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_NastySurprise",
-        "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_Quasar",
-        "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_RollingThunder",
         "GD_GrenadeMods.A_Item.GrenadeMod_Standard",
-        "GD_Iris_SeraphItems.Crossfire.Iris_Seraph_GrenadeMod_Crossfire",
-        "GD_Iris_SeraphItems.MeteorShower.Iris_Seraph_GrenadeMod_MeteorShower",
-        "GD_Iris_SeraphItems.ONegative.Iris_Seraph_GrenadeMod_ONegative",
-        "GD_Ma_GrenadeMods.A_Item_Legendary.GrenadeMod_Meganade",
-        "GD_Ma_GrenadeMods.A_Item_Unique.GrenadeMod_DataScrubber",
-        "GD_Orchid_GrenadeMods.A_Item_Custom.GrenadeMod_Blade",
-    )
+    ),
+}
+
+ITEM_CLASS_OVERRIDES: Dict[str, Tuple[str, str]] = {
+    "grenade": ("GrenadeModDefinition", "GrenadeModPartDefinition"),
 }
 
 NON_UNIQUE_BALANCES: Dict[str, Tuple[str, ...]] = {
@@ -130,11 +116,29 @@ NON_UNIQUE_BALANCES: Dict[str, Tuple[str, ...]] = {
         "GD_Weap_Shotgun.A_Weapons.SG_Torgue_4_VeryRare",
     ),
     "grenade": (
+        "GD_GrenadeMods.A_Item.GM_AreaEffect",
+        "GD_GrenadeMods.A_Item.GM_AreaEffect_2_Uncommon",
+        "GD_GrenadeMods.A_Item.GM_AreaEffect_3_Rare",
         "GD_GrenadeMods.A_Item.GM_AreaEffect_4_VeryRare",
+        "GD_GrenadeMods.A_Item.GM_BouncingBetty",
+        "GD_GrenadeMods.A_Item.GM_BouncingBetty_2_Uncommon",
+        "GD_GrenadeMods.A_Item.GM_BouncingBetty_3_Rare",
         "GD_GrenadeMods.A_Item.GM_BouncingBetty_4_VeryRare",
+        "GD_GrenadeMods.A_Item.GM_Mirv",
+        "GD_GrenadeMods.A_Item.GM_Mirv_2_Uncommon",
+        "GD_GrenadeMods.A_Item.GM_Mirv_3_Rare",
         "GD_GrenadeMods.A_Item.GM_Mirv_4_VeryRare",
+        "GD_GrenadeMods.A_Item.GM_Singularity",
+        "GD_GrenadeMods.A_Item.GM_Singularity_2_Uncommon",
+        "GD_GrenadeMods.A_Item.GM_Singularity_3_Rare",
         "GD_GrenadeMods.A_Item.GM_Singularity_4_VeryRare",
+        "GD_GrenadeMods.A_Item.GM_Standard",
+        "GD_GrenadeMods.A_Item.GM_Standard_2_Uncommon",
+        "GD_GrenadeMods.A_Item.GM_Standard_3_Rare",
         "GD_GrenadeMods.A_Item.GM_Standard_4_VeryRare",
+        "GD_GrenadeMods.A_Item.GM_Transfusion",
+        "GD_GrenadeMods.A_Item.GM_Transfusion_2_Uncommon",
+        "GD_GrenadeMods.A_Item.GM_Transfusion_3_Rare",
         "GD_GrenadeMods.A_Item.GM_Transfusion_4_VeryRare",
     )
 }
@@ -339,3 +343,15 @@ GLITCH_PARTS: Tuple[unrealsdk.UObject, ...] = tuple(
         "GD_Ma_Weapons.Glitch_Attachments.Glitch_Attachment_4444",
     )
 )
+
+CONSTRAINT_NAMES: Dict[unrealsdk.UObject, str] = {
+    unrealsdk.FindObject("AttributeDefinition", obj_name): restriction
+    for obj_name, restriction in (
+        ("D_Attributes.GrenadeMod.GrenadeModIsIncendiary", "Fire"),
+        ("D_Attributes.GrenadeMod.GrenadeModIsCorrosive", "Corrosive"),
+        ("D_Attributes.GrenadeMod.GrenadeModIsShock", "Shock"),
+        ("D_Attributes.GrenadeMod.GrenadeModIsSlag", "Slag"),
+        ("D_Attributes.GrenadeMod.GrenadeModIsIce", "Cryo"),
+    )
+    if unrealsdk.FindObject("AttributeDefinition", obj_name) is not None
+}

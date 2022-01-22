@@ -4,7 +4,7 @@ from typing import Dict
 from Mods.ModMenu import Game  # type: ignore
 
 from . import YAML, float_error
-from .data import MODIFIER_NAMES, PART_NAMES, SCALING_INITALIZATIONS
+from .data import CONSTRAINT_NAMES, MODIFIER_NAMES, PART_NAMES, SCALING_INITALIZATIONS
 
 WEAPON_DAMAGE_ID: unrealsdk.UObject = unrealsdk.FindObject(
     "AttributeInitializationDefinition",
@@ -90,14 +90,6 @@ def get_definition_data(def_obj: unrealsdk.UObject) -> YAML:
                 * def_obj.BaseStatusEffectChanceModifier.BaseValueScaleConstant
             ),
         })
-    elif def_obj.Class.Name == "GrenadeModDefinition":
-        proj_def = def_obj.DefaultProjectileDefinition
-        if proj_def is not None:
-            data["base"].append({
-                "attribute": GRENADE_DAMAGE_ATTR,
-                "scale": BASE_SCALING_CONSTANT,
-                "value": float_error(8 * proj_def.Damage.BaseValueScaleConstant),
-            })
 
     grades = []
     for slot in def_obj.AttributeSlotEffects:
@@ -113,6 +105,14 @@ def get_definition_data(def_obj: unrealsdk.UObject) -> YAML:
             "attribute": def_obj.PathName(slot.AttributeToModify),
             "type": MODIFIER_NAMES[slot.ModifierType],
         }
+
+        if slot.ConstraintAttribute:
+            if slot.ConstraintAttribute not in CONSTRAINT_NAMES:
+                constraint_name = def_obj.PathName(slot.ConstraintAttribute)
+                unrealsdk.Log(f"Unknown constraint '{constraint_name}' on '{def_name}'")
+                grade_data["constraint"] = constraint_name
+            else:
+                grade_data["constraint"] = CONSTRAINT_NAMES[slot.ConstraintAttribute]
 
         scaling_init = slot.BaseModifierValue.InitializationDefinition
 
