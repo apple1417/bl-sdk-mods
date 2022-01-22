@@ -1,17 +1,31 @@
 import unrealsdk
-from typing import Collection, Dict, Set, Tuple
+from typing import Collection, Dict, Set
 
-WEAPON_PART_SLOTS: Tuple[str, ...] = (
-    "BodyPartData",
-    "GripPartData",
-    "BarrelPartData",
-    "SightPartData",
-    "StockPartData",
-    "ElementalPartData",
-    "Accessory1PartData",
-    "Accessory2PartData",
-    "MaterialPartData",
-)
+from .data import (ALLOWED_DEFINITION_CLASSES, ITEM_DEFINITION_PART_SLOTS, ITEM_PART_SLOTS,
+                   PART_LIST_SLOTS, WEAPON_PART_SLOTS)
+
+
+def get_parts_on_item_definition(item_def: unrealsdk.UObject) -> Set[unrealsdk.UObject]:
+    """
+    Gets all parts which can spawn as defined by the provided item definition.
+
+    Args:
+        item_def: The item definition to check.
+    Returns:
+        A set of parts which can spawn on the item definition.
+    """
+    parts: Set[unrealsdk.UObject] = set()
+
+    for slot_name in ITEM_DEFINITION_PART_SLOTS:
+        slot = getattr(item_def, slot_name)
+        if slot is None:
+            continue
+        for part_struct in slot.WeightedParts:
+            if part_struct.Part is None:
+                continue
+            parts.add(part_struct.Part)
+
+    return parts
 
 
 def get_parts_on_balance(bal: unrealsdk.UObject) -> Set[unrealsdk.UObject]:
@@ -23,14 +37,22 @@ def get_parts_on_balance(bal: unrealsdk.UObject) -> Set[unrealsdk.UObject]:
     Returns:
         A set of parts which can spawn on the balance.
     """
+    is_weapon = bal.Class.Name == "WeaponBalanceDefinition"
+
     parts: Set[unrealsdk.UObject] = set()
 
-    if bal.RuntimePartListCollection is None:
-        print(f"Unknown parts collection on {bal.PathName(bal)}")
+    part_list = None
+    for list_slot in PART_LIST_SLOTS:
+        part_list = getattr(bal, list_slot, None)
+        if part_list is not None:
+            break
+    else:
+        if not is_weapon and bal.InventoryDefinition is not None:
+            parts.update(get_parts_on_item_definition(bal.InventoryDefinition))
         return parts
 
-    for slot_name in WEAPON_PART_SLOTS:
-        slot = getattr(bal.RuntimePartListCollection, slot_name)
+    for slot_name in (WEAPON_PART_SLOTS if is_weapon else ITEM_PART_SLOTS):
+        slot = getattr(part_list, slot_name)
         if not slot.bEnabled:
             continue
         for part_struct in slot.WeightedParts:
@@ -58,19 +80,26 @@ def get_parts_for_definitions(definitions: Collection[unrealsdk.UObject]) -> Set
     """
     if len(_parts_by_definition) > 0:
         parts: Set[unrealsdk.UObject] = set()
-        for weap_def in definitions:
-            parts.update(_parts_by_definition[weap_def])
+        for def_obj in definitions:
+            parts.update(_parts_by_definition[def_obj])
         return parts
 
-    for bal in unrealsdk.FindAll("WeaponBalanceDefinition"):
-        if bal.RuntimePartListCollection is None:
-            print("Unknown parts collection on " + bal.PathName(bal))
-            continue
+    for bal in unrealsdk.FindAll("InventoryBalanceDefinition", True):
+        def_obj = None
+        if bal.Class.Name == "WeaponBalanceDefinition":
+            if bal.RuntimePartListCollection is None:
+                continue
+            def_obj = bal.RuntimePartListCollection.AssociatedWeaponType
+        else:
+            if bal.InventoryDefinition is None:
+                continue
+            if bal.InventoryDefinition.Class.Name not in ALLOWED_DEFINITION_CLASSES:
+                continue
+            def_obj = bal.InventoryDefinition
 
-        weap_def = bal.RuntimePartListCollection.AssociatedWeaponType
-        if weap_def not in _parts_by_definition:
-            _parts_by_definition[weap_def] = set()
+        if def_obj not in _parts_by_definition:
+            _parts_by_definition[def_obj] = set()
 
-        _parts_by_definition[weap_def].update(get_parts_on_balance(bal))
+        _parts_by_definition[def_obj].update(get_parts_on_balance(bal))
 
     return get_parts_for_definitions(definitions)

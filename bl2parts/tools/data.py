@@ -2,7 +2,25 @@ import unrealsdk
 import json
 from typing import Dict, Tuple, Union
 
-ALL_WEAPON_DEFINITIONS: Dict[str, Tuple[str, ...]] = {
+ALLOWED_DEFINITION_CLASSES: Tuple[str, ...] = (
+    "ArtifactDefinition",
+    "ClassModDefinition",
+    "CrossDLCClassModDefinition",
+    "GrenadeModDefinition",
+    "ShieldDefinition",
+    "WeaponTypeDefinition",
+)
+
+DEFINITION_BLACKLIST: Tuple[str, ...] = (
+    "BuzzaxeWeaponTypeDefinition",
+    "MissionItemDefinition",
+    "TurretWeaponTypeDefinition",
+    "UsableCustomizationItemDefinition",
+    "UsableItemDefinition",
+    "VehicleWeaponTypeDefinition",
+)
+
+ALL_DEFINITIONS: Dict[str, Tuple[str, ...]] = {
     "shotgun": (
         "GD_Weap_Shotgun.A_Weapons.WT_Bandit_Shotgun",
         "GD_Weap_Shotgun.A_Weapons.WT_Hyperion_Shotgun",
@@ -20,6 +38,35 @@ ALL_WEAPON_DEFINITIONS: Dict[str, Tuple[str, ...]] = {
         "GD_Weap_Pistol.A_Weapons.WeaponType_Torgue_Pistol",
         "GD_Weap_Pistol.A_Weapons.WeaponType_Vladof_Pistol",
     ),
+    "grenade": (
+        "GD_Anemone_GrenadeMods.A_Item_Legendary.GrenadeMod_Exterminator",
+        "GD_Anemone_GrenadeMods.A_Item.GrenadeMod_Standard",
+        "GD_Aster_GrenadeMods.A_Item.GrenadeMod_MagicSpell",
+        "GD_Cork_GrenadeMods.A_Item_Custom.GrenadeMod_MonsterTrap",
+        "GD_Cork_GrenadeMods.A_Item_Legendary.GrenadeMod_BonusPackage",
+        "GD_Cork_GrenadeMods.A_Item_Legendary.GrenadeMod_Quasar",
+        "GD_GrenadeMods.A_Item_Custom.GrenadeMod_BabyBoomer",
+        "GD_GrenadeMods.A_Item_Custom.GrenadeMod_FusterCluck",
+        "GD_GrenadeMods.A_Item_Custom.GrenadeMod_SkyRocket",
+        "GD_GrenadeMods.A_Item_Custom.GrenadeMod_Snowball",
+        "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_BonusPackage",
+        "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_BouncingBonny",
+        "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_Exterminator",
+        "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_Fastball",
+        "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_FlameSpurt",
+        "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_FourSeasons",
+        "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_Leech",
+        "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_NastySurprise",
+        "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_Quasar",
+        "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_RollingThunder",
+        "GD_GrenadeMods.A_Item.GrenadeMod_Standard",
+        "GD_Iris_SeraphItems.Crossfire.Iris_Seraph_GrenadeMod_Crossfire",
+        "GD_Iris_SeraphItems.MeteorShower.Iris_Seraph_GrenadeMod_MeteorShower",
+        "GD_Iris_SeraphItems.ONegative.Iris_Seraph_GrenadeMod_ONegative",
+        "GD_Ma_GrenadeMods.A_Item_Legendary.GrenadeMod_Meganade",
+        "GD_Ma_GrenadeMods.A_Item_Unique.GrenadeMod_DataScrubber",
+        "GD_Orchid_GrenadeMods.A_Item_Custom.GrenadeMod_Blade",
+    )
 }
 
 NON_UNIQUE_BALANCES: Dict[str, Tuple[str, ...]] = {
@@ -82,6 +129,14 @@ NON_UNIQUE_BALANCES: Dict[str, Tuple[str, ...]] = {
         "GD_Weap_Shotgun.A_Weapons.SG_Tediore_5_Alien",
         "GD_Weap_Shotgun.A_Weapons.SG_Torgue_4_VeryRare",
     ),
+    "grenade": (
+        "GD_GrenadeMods.A_Item.GM_AreaEffect_4_VeryRare",
+        "GD_GrenadeMods.A_Item.GM_BouncingBetty_4_VeryRare",
+        "GD_GrenadeMods.A_Item.GM_Mirv_4_VeryRare",
+        "GD_GrenadeMods.A_Item.GM_Singularity_4_VeryRare",
+        "GD_GrenadeMods.A_Item.GM_Standard_4_VeryRare",
+        "GD_GrenadeMods.A_Item.GM_Transfusion_4_VeryRare",
+    )
 }
 
 MODIFIER_NAMES: Tuple[str, ...] = (
@@ -104,6 +159,20 @@ WEAPON_PART_TYPE_NAMES: Tuple[str, ...] = (
     "title",
 )
 
+ITEM_PART_TYPE_NAMES: Tuple[str, ...] = (
+    "alpha",
+    "beta",
+    "gamma",
+    "delta",
+    "epsilon",
+    "zeta",
+    "eta",
+    "theta",
+    "material",
+    "prefix",
+    "title",
+)
+
 DEFINITION_PART_TYPE: str = "definition"
 
 PLURAL_WEAPON_PART_TYPE: Dict[str, str] = {
@@ -118,8 +187,49 @@ PLURAL_WEAPON_PART_TYPE: Dict[str, str] = {
     "material": "materials",
     "prefix": "prefixes",
     "title": "titles",
-    "definition": "definitions",
+    DEFINITION_PART_TYPE: "definitions",
 }
+
+WEAPON_PART_SLOTS: Tuple[str, ...] = (
+    "BodyPartData",
+    "GripPartData",
+    "BarrelPartData",
+    "SightPartData",
+    "StockPartData",
+    "ElementalPartData",
+    "Accessory1PartData",
+    "Accessory2PartData",
+    "MaterialPartData",
+)
+
+ITEM_PART_SLOTS: Tuple[str, ...] = (
+    "AlphaPartData",
+    "BetaPartData",
+    "GammaPartData",
+    "DeltaPartData",
+    "EpsilonPartData",
+    "ZetaPartData",
+    "EtaPartData",
+    "ThetaPartData",
+    "MaterialPartData",
+)
+
+ITEM_DEFINITION_PART_SLOTS: Tuple[str, ...] = (
+    "AlphaParts",
+    "BetaParts",
+    "GammaParts",
+    "DeltaParts",
+    "EpsilonParts",
+    "ZetaParts",
+    "EtaParts",
+    "ThetaParts",
+    "MaterialParts",
+)
+
+PART_LIST_SLOTS: Tuple[str, ...] = (
+    "RuntimePartListCollection",
+    "PartListCollection"
+)
 
 WEAPON_MANU_ATTRIBUTES: Dict[unrealsdk.UObject, str] = {
     unrealsdk.FindObject("AttributeDefinition", obj_name): name
@@ -137,12 +247,21 @@ WEAPON_MANU_ATTRIBUTES: Dict[unrealsdk.UObject, str] = {
     if unrealsdk.FindObject("AttributeDefinition", obj_name) is not None
 }
 
-SCALING_ATTRIBUTES: Dict[unrealsdk.UObject, str] = {
-    unrealsdk.FindObject("AttributeDefinition", obj_name): scale
-    for obj_name, scale in (
-        ("D_Attributes.ExperienceResourcePool.PlayerExperienceLevel", "[Player Level]"),
+SCALING_ATTRIBUTES: Dict[unrealsdk.UObject, Tuple[str, float]] = {
+    unrealsdk.FindObject("AttributeDefinition", obj_name): scale_data
+    for obj_name, scale_data in (
+        ("D_Attributes.ExperienceResourcePool.PlayerExperienceLevel", ("[Player Level]", 1)),
     )
     if unrealsdk.FindObject("AttributeDefinition", obj_name) is not None
+}
+
+SCALING_INITALIZATIONS: Dict[unrealsdk.UObject, Tuple[str, float]] = {
+    unrealsdk.FindObject("AttributeInitializationDefinition", obj_name): scale_data
+    for obj_name, scale_data in (
+        ("GD_Balance_HealthAndDamage.HealthAndDamage.Init_GrenadeModDamage", ("&beta;", 100)),
+        ("GD_Balance_HealthAndDamage.HealthAndDamage.Init_GrenadeModStatusEffectDamage", ("&beta;", 20)),
+    )
+    if unrealsdk.FindObject("AttributeInitializationDefinition", obj_name) is not None
 }
 
 PART_TYPE_OVERRIDES: Dict[str, str] = {

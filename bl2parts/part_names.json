@@ -1,4 +1,1466 @@
 {
+
+    "GD_Anemone_GrenadeMods.A_Item.GrenadeMod_Standard": {
+        "name": "Standard (Anemone)",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.A_Item_Legendary.GrenadeMod_Exterminator": {
+        "name": "Exterminator (Anemone)",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Corrosive": {
+        "name": "Corrosive Grade 0 (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Corrosive_Grade1": {
+        "name": "Corrosive Grade 1 (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Corrosive_Grade2": {
+        "name": "Corrosive Grade 2 (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Corrosive_Grade3": {
+        "name": "Corrosive Grade 3 (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Corrosive_Grade4": {
+        "name": "Corrosive Grade 4 (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Explosive": {
+        "name": "Explosive (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Incendiary": {
+        "name": "Fire Grade 0 (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Incendiary_Grade1": {
+        "name": "Fire Grade 1 (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Incendiary_Grade2": {
+        "name": "Fire Grade 2 (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Incendiary_Grade3": {
+        "name": "Fire Grade 3 (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Incendiary_Grade4": {
+        "name": "Fire Grade 4 (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Shock": {
+        "name": "Shock Grade 0 (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Shock_Grade1": {
+        "name": "Shock Grade 1 (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Shock_Grade2": {
+        "name": "Shock Grade 2 (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Shock_Grade3": {
+        "name": "Shock Grade 3 (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Shock_Grade4": {
+        "name": "Shock Grade 4 (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Slag": {
+        "name": "Slag Grade 0 (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Slag_Grade1": {
+        "name": "Slag Grade 1 (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Slag_Grade2": {
+        "name": "Slag Grade 2 (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Slag_Grade3": {
+        "name": "Slag Grade 3 (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Accessory.Accessory_Slag_Grade4": {
+        "name": "Slag Grade 4 (Anemone)",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.ChildCount.ChildCount_Grade0": {
+        "name": "Grade 0 (Anemone)",
+        "slot": "Child Count",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.ChildCount.ChildCount_Grade1": {
+        "name": "Grade 1 (Anemone)",
+        "slot": "Child Count",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.ChildCount.ChildCount_Grade2": {
+        "name": "Grade 2 (Anemone)",
+        "slot": "Child Count",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.ChildCount.ChildCount_Grade3": {
+        "name": "Grade 3 (Anemone)",
+        "slot": "Child Count",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.ChildCount.ChildCount_Grade4": {
+        "name": "Grade 4 (Anemone)",
+        "slot": "Child Count",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.ChildCount.ChildCount_Grade5": {
+        "name": "Grade 5 (Anemone)",
+        "slot": "Child Count",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.ChildCount.ChildCount_Grade6": {
+        "name": "Grade 6 (Anemone)",
+        "slot": "Child Count",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Damage.Damage_Grade0": {
+        "name": "Grade 0 (Anemone)",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Damage.Damage_Grade1": {
+        "name": "Grade 1 (Anemone)",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Damage.Damage_Grade2": {
+        "name": "Grade 2 (Anemone)",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Damage.Damage_Grade3": {
+        "name": "Grade 3 (Anemone)",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Damage.Damage_Grade4": {
+        "name": "Grade 4 (Anemone)",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Damage.Damage_Grade5": {
+        "name": "Grade 5 (Anemone)",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Damage.Damage_Grade6": {
+        "name": "Grade 6 (Anemone)",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Damage.Damage_Grade7": {
+        "name": "Grade 7 (Anemone)",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.DamageRadius.DamageRadius_ExtraLarge": {
+        "name": "Extra Large (Anemone)",
+        "slot": "Damage Radius",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.DamageRadius.DamageRadius_Large": {
+        "name": "Large (Anemone)",
+        "slot": "Damage Radius",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.DamageRadius.DamageRadius_Normal": {
+        "name": "Normal (Anemone)",
+        "slot": "Damage Radius",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.DamageRadius.DamageRadius_Small": {
+        "name": "Small (Anemone)",
+        "slot": "Damage Radius",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Delivery.Delivery_Fastball": {
+        "name": "Fastball (Anemone)",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Delivery.Delivery_Homing": {
+        "name": "Homing (Anemone)",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Delivery.Delivery_Homing_Sticky": {
+        "name": "Sticky Homing (Anemone)",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Delivery.Delivery_Lob": {
+        "name": "Lobbed (Anemone)",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Delivery.Delivery_Lob_Flamer": {
+        "name": "Lobbed Flamer (Anemone)",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Delivery.Delivery_Lob_Sticky": {
+        "name": "Sticky (Anemone)",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Delivery.Delivery_LongBow": {
+        "name": "Longbow (Anemone)",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Delivery.Delivery_LongBow_Sticky": {
+        "name": "Sticky Longbow (Anemone)",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Delivery.Delivery_NastySurprise": {
+        "name": "Nasty Surprise (Anemone)",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Delivery.Delivery_RollingThunder": {
+        "name": "Rolling Thunder (Anemone)",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Delivery.Delivery_Rubberized": {
+        "name": "Rubberized (Anemone)",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Delivery.Delivery_SkyRocket": {
+        "name": "Sky Rocket (Anemone)",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Bandit": {
+        "name": "Bandit (Common, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Bandit_2_Uncommon": {
+        "name": "Bandit (Uncommon, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Bandit_3_Rare": {
+        "name": "Bandit (Rare, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Bandit_4_VeryRare": {
+        "name": "Bandit (Very Rare, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Bandit_5_Legendary": {
+        "name": "Bandit (Legendary, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Dahl": {
+        "name": "Dahl (Common, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Dahl_2_Uncommon": {
+        "name": "Dahl (Uncommon, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Dahl_3_Rare": {
+        "name": "Dahl (Rare, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Dahl_4_VeryRare": {
+        "name": "Dahl (Very Rare, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Dahl_5_Legendary": {
+        "name": "Dahl (Legendary, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Hyperion": {
+        "name": "Hyperion (Common, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Hyperion_2_Uncommon": {
+        "name": "Hyperion (Uncommon, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Hyperion_3_Rare": {
+        "name": "Hyperion (Rare, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Hyperion_4_VeryRare": {
+        "name": "Hyperion (Very Rare, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Hyperion_5_Legendary": {
+        "name": "Hyperion (Legendary, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Maliwan": {
+        "name": "Maliwan (Common, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Maliwan_2_Uncommon": {
+        "name": "Maliwan (Uncommon, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Maliwan_3_Rare": {
+        "name": "Maliwan (Rare, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Maliwan_4_VeryRare": {
+        "name": "Maliwan (Very Rare, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Maliwan_5_Legendary": {
+        "name": "Maliwan (Legendary, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Tedior": {
+        "name": "Tediore (Common, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Tedior_2_Uncommon": {
+        "name": "Tediore (Uncommon, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Tedior_3_Rare": {
+        "name": "Tediore (Rare, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Tedior_4_VeryRare": {
+        "name": "Tediore (Very Rare, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Tedior_5_Legendary": {
+        "name": "Tediore (Legendary, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Torgue": {
+        "name": "Torgue (Common, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Torgue_2_Uncommon": {
+        "name": "Torgue (Uncommon, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Torgue_3_Rare": {
+        "name": "Torgue (Rare, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Torgue_4_VeryRare": {
+        "name": "Torgue (Very Rare, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Torgue_5_Legendary": {
+        "name": "Torgue (Legendary, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Vladof": {
+        "name": "Vladof (Common, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Vladof_2_Uncommon": {
+        "name": "Vladof (Uncommon, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Vladof_3_Rare": {
+        "name": "Vladof (Rare, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Vladof_4_VeryRare": {
+        "name": "Vladof (Very Rare, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Material.Material_Vladof_5_Legendary": {
+        "name": "Vladof (Legendary, Anemone)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Payload.Payload_AreaEffect": {
+        "name": "Area Effect (Anemone)",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Payload.Payload_BonusPackage": {
+        "name": "Bonus Package (Anemone)",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Payload.Payload_BouncingBetty": {
+        "name": "Bouncing Bettery (Anemone)",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Payload.Payload_BouncingBonny": {
+        "name": "Bouncing Bonny (Anemone)",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Payload.Payload_Exterminator": {
+        "name": "Exterminator (Anemone)",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Payload.Payload_FlameSpurt": {
+        "name": "Breath of Terramorphous (Anemone)",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Payload.Payload_FusterCluck": {
+        "name": "Fuster Cluck (Anemone)",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Payload.Payload_KissOfDeath": {
+        "name": "Kiss of Death (Anemone)",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Payload.Payload_Leech": {
+        "name": "Leech (Anemone)",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Payload.Payload_Mirv": {
+        "name": "MIRV (Anemone)",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Payload.Payload_Quasar": {
+        "name": "Quasar (Anemone)",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Payload.Payload_Singularity": {
+        "name": "Singularity (Anemone)",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Payload.Payload_Standard": {
+        "name": "Standard (Anemone)",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Payload.Payload_Transfusion": {
+        "name": "Transfusion (Anemone)",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.StatusDamage.StatusDamage_Grade0": {
+        "name": "Grade 0 (Anemone)",
+        "slot": "Status Damage",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.StatusDamage.StatusDamage_Grade1": {
+        "name": "Grade 1 (Anemone)",
+        "slot": "Status Damage",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.StatusDamage.StatusDamage_Grade2": {
+        "name": "Grade 2 (Anemone)",
+        "slot": "Status Damage",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.StatusDamage.StatusDamage_Grade3": {
+        "name": "Grade 3 (Anemone)",
+        "slot": "Status Damage",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.StatusDamage.StatusDamage_Grade4": {
+        "name": "Grade 4 (Anemone)",
+        "slot": "Status Damage",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.StatusDamage.StatusDamage_Grade5": {
+        "name": "Grade 5 (Anemone)",
+        "slot": "Status Damage",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Trigger.Trigger_Grade0": {
+        "name": "Grade 0 (Anemone)",
+        "slot": "Trigger",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Trigger.Trigger_Grade1": {
+        "name": "Grade 1 (Anemone)",
+        "slot": "Trigger",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Trigger.Trigger_Grade2": {
+        "name": "Grade 2 (Anemone)",
+        "slot": "Trigger",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Trigger.Trigger_Grade3": {
+        "name": "Grade 3 (Anemone)",
+        "slot": "Trigger",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Trigger.Trigger_Grade4": {
+        "name": "Grade 4 (Anemone)",
+        "slot": "Trigger",
+        "type": "Grenade"
+    },
+    "GD_Anemone_GrenadeMods.Trigger.Trigger_Grade5": {
+        "name": "Grade 5 (Anemone)",
+        "slot": "Trigger",
+        "type": "Grenade"
+    },
+    "GD_Aster_GrenadeMods.A_Item.GrenadeMod_MagicSpell": {
+        "name": "Magic Spell",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_Aster_GrenadeMods.Delivery.Delivery_ChainLightning": {
+        "name": "Chain Lightning",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_Aster_GrenadeMods.Delivery.Delivery_FireStorm": {
+        "name": "Fire Storm",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_Aster_GrenadeMods.Delivery.Delivery_Fireball": {
+        "name": "Fireball",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_Aster_GrenadeMods.Delivery.Delivery_LightningBolt": {
+        "name": "Lightning Bolt",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_Aster_GrenadeMods.Delivery.Delivery_MagicMissile": {
+        "name": "Magic Missile (x2)",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_Aster_GrenadeMods.Delivery.Delivery_MagicMissileRare": {
+        "name": "Magic Missile (x4)",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_Cork_GrenadeMods.A_Item_Custom.GrenadeMod_MonsterTrap": {
+        "name": "Monster Trap",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_Cork_GrenadeMods.A_Item_Legendary.GrenadeMod_BonusPackage": {
+        "name": "Bonus Package",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_Cork_GrenadeMods.A_Item_Legendary.GrenadeMod_Quasar": {
+        "name": "Quasar",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_Cork_GrenadeMods.Accessory.Accessory_MonsterTrap": {
+        "name": "Monster Trap",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_Cork_GrenadeMods.Payload.Payload_BonusPackage": {
+        "name": "Bonus Package",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_Cork_GrenadeMods.Payload.Payload_KissOfDeath": {
+        "name": "Kiss of Death",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_Cork_GrenadeMods.Payload.Payload_Quasar": {
+        "name": "Quasar",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.A_Item.GrenadeMod_Standard": {
+        "name": "Standard",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.A_Item_Custom.GrenadeMod_BabyBoomer": {
+        "name": "Baby Boomer",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.A_Item_Custom.GrenadeMod_FusterCluck": {
+        "name": "Fuster Cluck",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.A_Item_Custom.GrenadeMod_SkyRocket": {
+        "name": "Sky Rocket",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.A_Item_Custom.GrenadeMod_Snowball": {
+        "name": "Snowball",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_BonusPackage": {
+        "name": "Bonus Package",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_BouncingBonny": {
+        "name": "Bouncing Bonny",
+        "slot": "Definition",
+        "type": "Grenade",
+        "game_overrides": {
+            "TPS": "Bouncing Bazza"
+        }
+    },
+    "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_Exterminator": {
+        "name": "Exterminator",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_Fastball": {
+        "name": "Fastball",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_FlameSpurt": {
+        "name": "Breath of Terramorphous",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_FourSeasons": {
+        "name": "Four Seasons",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_Leech": {
+        "name": "Leech",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_NastySurprise": {
+        "name": "Nasty Surprise",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_Quasar": {
+        "name": "Quasar",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_RollingThunder": {
+        "name": "Rolling Thunder",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Corrosive": {
+        "name": "Corrosive Grade 0",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Corrosive_Grade1": {
+        "name": "Corrosive Grade 1",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Corrosive_Grade2": {
+        "name": "Corrosive Grade 2",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Corrosive_Grade3": {
+        "name": "Corrosive Grade 3",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Corrosive_Grade4": {
+        "name": "Corrosive Grade 4",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Explosive": {
+        "name": "Explosive",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Ice": {
+        "name": "Cryo Grade 0",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Ice_Grade1": {
+        "name": "Cryo Grade 1",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Ice_Grade2": {
+        "name": "Cryo Grade 2",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Ice_Grade3": {
+        "name": "Cryo Grade 3",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Ice_Grade4": {
+        "name": "Cryo Grade 4",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Incendiary": {
+        "name": "Fire Grade 0",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Incendiary_Grade1": {
+        "name": "Fire Grade 1",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Incendiary_Grade2": {
+        "name": "Fire Grade 2",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Incendiary_Grade3": {
+        "name": "Fire Grade 3",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Incendiary_Grade4": {
+        "name": "Fire Grade 4",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Shock": {
+        "name": "Shock Grade 0",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Shock_Grade1": {
+        "name": "Shock Grade 1",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Shock_Grade2": {
+        "name": "Shock Grade 2",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Shock_Grade3": {
+        "name": "Shock Grade 3",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Shock_Grade4": {
+        "name": "Shock Grade 4",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Slag": {
+        "name": "Slag Grade 0",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Slag_Grade1": {
+        "name": "Slag Grade 1",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Slag_Grade2": {
+        "name": "Slag Grade 2",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Slag_Grade3": {
+        "name": "Slag Grade 3",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Accessory.Accessory_Slag_Grade4": {
+        "name": "Slag Grade 4",
+        "slot": "Accessory",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.ChildCount.ChildCount_Grade0": {
+        "name": "Grade 0",
+        "slot": "Child Count",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.ChildCount.ChildCount_Grade1": {
+        "name": "Grade 1",
+        "slot": "Child Count",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.ChildCount.ChildCount_Grade2": {
+        "name": "Grade 2",
+        "slot": "Child Count",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.ChildCount.ChildCount_Grade3": {
+        "name": "Grade 3",
+        "slot": "Child Count",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.ChildCount.ChildCount_Grade4": {
+        "name": "Grade 4",
+        "slot": "Child Count",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.ChildCount.ChildCount_Grade5": {
+        "name": "Grade 5",
+        "slot": "Child Count",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.ChildCount.ChildCount_Grade6": {
+        "name": "Grade 6",
+        "slot": "Child Count",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Damage.Damage_Grade0": {
+        "name": "Grade 0",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Damage.Damage_Grade1": {
+        "name": "Grade 1",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Damage.Damage_Grade2": {
+        "name": "Grade 2",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Damage.Damage_Grade3": {
+        "name": "Grade 3",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Damage.Damage_Grade4": {
+        "name": "Grade 4",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Damage.Damage_Grade5": {
+        "name": "Grade 5",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Damage.Damage_Grade6": {
+        "name": "Grade 6",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Damage.Damage_Grade7": {
+        "name": "Grade 7",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.DamageRadius.DamageRadius_ExtraLarge": {
+        "name": "Extra Large",
+        "slot": "Damage Radius",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.DamageRadius.DamageRadius_Large": {
+        "name": "Large",
+        "slot": "Damage Radius",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.DamageRadius.DamageRadius_Normal": {
+        "name": "Normal",
+        "slot": "Damage Radius",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.DamageRadius.DamageRadius_Small": {
+        "name": "Small",
+        "slot": "Damage Radius",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Delivery.Delivery_BabyBoomer": {
+        "name": "Baby Boomer",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Delivery.Delivery_Fastball": {
+        "name": "Fastball",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Delivery.Delivery_Homing": {
+        "name": "Homing",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Delivery.Delivery_Homing_Sticky": {
+        "name": "Sticky Homing",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Delivery.Delivery_Lob": {
+        "name": "Lobbed",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Delivery.Delivery_Lob_Sticky": {
+        "name": "Sticky",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Delivery.Delivery_LongBow": {
+        "name": "Longbow",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Delivery.Delivery_LongBow_Sticky": {
+        "name": "Sticky Longbow",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Delivery.Delivery_NastySurprise": {
+        "name": "Nasty Surprise",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Delivery.Delivery_RollingThunder": {
+        "name": "Rolling Thunder",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Delivery.Delivery_Rubberized": {
+        "name": "Rubberized",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Delivery.Delivery_SkyRocket": {
+        "name": "Sky Rocket",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Delivery.Delivery_Snowball": {
+        "name": "Snowball",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Bandit": {
+        "name": "Bandit (Common)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Bandit_2_Uncommon": {
+        "name": "Bandit (Unommon)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Bandit_3_Rare": {
+        "name": "Bandit (Rare)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Bandit_4_VeryRare": {
+        "name": "Bandit (Very Rare)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Bandit_5_Legendary": {
+        "name": "Bandit (Legendary)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Dahl": {
+        "name": "Dahl (Common)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Dahl_2_Uncommon": {
+        "name": "Dahl (Unommon)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Dahl_3_Rare": {
+        "name": "Dahl (Rare)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Dahl_4_VeryRare": {
+        "name": "Dahl (Very Rare)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Dahl_5_Legendary": {
+        "name": "Dahl (Legendary)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Hyperion": {
+        "name": "Hyperion (Common)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Hyperion_2_Uncommon": {
+        "name": "Hyperion (Unommon)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Hyperion_3_Rare": {
+        "name": "Hyperion (Rare)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Hyperion_4_VeryRare": {
+        "name": "Hyperion (Very Rare)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Hyperion_5_Legendary": {
+        "name": "Hyperion (Legendary)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Maliwan": {
+        "name": "Maliwan (Common)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Maliwan_2_Uncommon": {
+        "name": "Maliwan (Unommon)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Maliwan_3_Rare": {
+        "name": "Maliwan (Rare)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Maliwan_4_VeryRare": {
+        "name": "Maliwan (Very Rare)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Maliwan_5_Legendary": {
+        "name": "Maliwan (Legendary)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Tedior": {
+        "name": "Tediore (Common)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Tedior_2_Uncommon": {
+        "name": "Tediore (Unommon)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Tedior_3_Rare": {
+        "name": "Tediore (Rare)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Tedior_4_VeryRare": {
+        "name": "Tediore (Very Rare)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Tedior_5_Legendary": {
+        "name": "Tediore (Legendary)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Torgue": {
+        "name": "Torgue (Common)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Torgue_2_Uncommon": {
+        "name": "Torgue (Unommon)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Torgue_3_Rare": {
+        "name": "Torgue (Rare)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Torgue_4_VeryRare": {
+        "name": "Torgue (Very Rare)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Torgue_5_Legendary": {
+        "name": "Torgue (Legendary)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Vladof": {
+        "name": "Vladof (Common)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Vladof_2_Uncommon": {
+        "name": "Vladof (Unommon)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Vladof_3_Rare": {
+        "name": "Vladof (Rare)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Vladof_4_VeryRare": {
+        "name": "Vladof (Very Rare)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Material.Material_Vladof_5_Legendary": {
+        "name": "Vladof (Legendary)",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Payload.Payload_AreaEffect": {
+        "name": "Area Effect",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Payload.Payload_AreaEffect_AirMask": {
+        "name": "Area Effect (Shattering)",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Payload.Payload_BonusPackage": {
+        "name": "Bonus Package",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Payload.Payload_BouncingBetty": {
+        "name": "Bouncing Betty",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Payload.Payload_BouncingBetty_AirMask": {
+        "name": "Bouncing Betty (Shattering)",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Payload.Payload_BouncingBonny": {
+        "name": "Bouncing Bonny",
+        "slot": "Payload",
+        "type": "Grenade",
+        "game_overrides": {
+            "TPS": "Bouncing Bazza"
+        }
+    },
+    "GD_GrenadeMods.Payload.Payload_Exterminator": {
+        "name": "Exterminator",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Payload.Payload_FlameSpurt": {
+        "name": "Breath of Terramorphous",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Payload.Payload_FourSeasons": {
+        "name": "Four Seasons",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Payload.Payload_FusterCluck": {
+        "name": "Fuster Cluck",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Payload.Payload_KissOfDeath": {
+        "name": "Kiss of Death",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Payload.Payload_Leech": {
+        "name": "Leech",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Payload.Payload_Mirv": {
+        "name": "MIRV",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Payload.Payload_Mirv_AirMask": {
+        "name": "MIRV (Shattering)",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Payload.Payload_Quasar": {
+        "name": "Quasar",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Payload.Payload_Singularity": {
+        "name": "Singularity",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Payload.Payload_Singularity_AirMask": {
+        "name": "Singularity (Shattering)",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Payload.Payload_Standard": {
+        "name": "Standard",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Payload.Payload_Standard_AirMask": {
+        "name": "Standard (Shattering)",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Payload.Payload_Transfusion": {
+        "name": "Transfusion",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Payload.Payload_Transfusion_AirMask": {
+        "name": "Transfusion (Shattering)",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.StatusDamage.StatusDamage_Grade0": {
+        "name": "Grade 0",
+        "slot": "Status Damage",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.StatusDamage.StatusDamage_Grade1": {
+        "name": "Grade 1",
+        "slot": "Status Damage",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.StatusDamage.StatusDamage_Grade2": {
+        "name": "Grade 2",
+        "slot": "Status Damage",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.StatusDamage.StatusDamage_Grade3": {
+        "name": "Grade 3",
+        "slot": "Status Damage",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.StatusDamage.StatusDamage_Grade4": {
+        "name": "Grade 4",
+        "slot": "Status Damage",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.StatusDamage.StatusDamage_Grade5": {
+        "name": "Grade 5",
+        "slot": "Status Damage",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Trigger.Trigger_Grade0": {
+        "name": "Grade 0",
+        "slot": "Trigger",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Trigger.Trigger_Grade1": {
+        "name": "Grade 1",
+        "slot": "Trigger",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Trigger.Trigger_Grade2": {
+        "name": "Grade 2",
+        "slot": "Trigger",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Trigger.Trigger_Grade3": {
+        "name": "Grade 3",
+        "slot": "Trigger",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Trigger.Trigger_Grade4": {
+        "name": "Grade 4",
+        "slot": "Trigger",
+        "type": "Grenade"
+    },
+    "GD_GrenadeMods.Trigger.Trigger_Grade5": {
+        "name": "Grade 5",
+        "slot": "Trigger",
+        "type": "Grenade"
+    },
+    "GD_Iris_SeraphItems.Crossfire.Iris_Seraph_GrenadeMod_Crossfire": {
+        "name": "Crossfire",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_Iris_SeraphItems.Crossfire.Iris_Seraph_GrenadeMod_Crossfire_Part_Damage6": {
+        "name": "Grade 6 (Crossfire)",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_Iris_SeraphItems.Crossfire.Iris_Seraph_GrenadeMod_Crossfire_Part_Damage7": {
+        "name": "Grade 7 (Crossfire)",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_Iris_SeraphItems.Crossfire.Iris_Seraph_GrenadeMod_Crossfire_Part_Payload": {
+        "name": "Crossfire",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_Iris_SeraphItems.MeteorShower.Iris_Seraph_GrenadeMod_MeteorShower": {
+        "name": "Meteor Shower",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_Iris_SeraphItems.MeteorShower.Iris_Seraph_GrenadeMod_MeteorShower_Part_Damage4": {
+        "name": "Grade 4 (Meteor Shower)",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_Iris_SeraphItems.MeteorShower.Iris_Seraph_GrenadeMod_MeteorShower_Part_Damage5": {
+        "name": "Grade 5 (Meteor Shower)",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_Iris_SeraphItems.MeteorShower.Iris_Seraph_GrenadeMod_MeteorShower_Part_Damage6": {
+        "name": "Grade 6 (Meteor Shower)",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_Iris_SeraphItems.MeteorShower.Iris_Seraph_GrenadeMod_MeteorShower_Part_Damage7": {
+        "name": "Grade 7 (Meteor Shower)",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_Iris_SeraphItems.MeteorShower.Iris_Seraph_GrenadeMod_MeteorShower_Part_Payload": {
+        "name": "Meteor Shower",
+        "slot": "Payload",
+        "type": "Grenade"
+    },
+    "GD_Iris_SeraphItems.ONegative.Iris_Seraph_GrenadeMod_ONegative": {
+        "name": "O-Negative",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_Iris_SeraphItems.ONegative.Iris_Seraph_GrenadeMod_ONegative_Part_Damage6": {
+        "name": "Grade 6 (O-Negative)",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_Iris_SeraphItems.ONegative.Iris_Seraph_GrenadeMod_ONegative_Part_Damage7": {
+        "name": "Grade 7 (O-Negative)",
+        "slot": "Damage",
+        "type": "Grenade"
+    },
+    "GD_Ma_GrenadeMods.A_Item_Legendary.GrenadeMod_Meganade": {
+        "name": "Meganade",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_Ma_GrenadeMods.A_Item_Unique.GrenadeMod_DataScrubber": {
+        "name": "Data Scrubber",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_Ma_GrenadeMods.Delivery.Delivery_DataScrubber": {
+        "name": "Data Scrubber",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_Ma_GrenadeMods.Delivery.Delivery_Meganade": {
+        "name": "Meganade",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
+    "GD_Ma_GrenadeMods.Material.Material_Maliwan_3_DataScrubber": {
+        "name": "Data Scrubber",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Ma_GrenadeMods.Material.Material_Maliwan_5_Meganade": {
+        "name": "Meganade",
+        "slot": "Material",
+        "type": "Grenade"
+    },
+    "GD_Orchid_GrenadeMods.A_Item_Custom.GrenadeMod_Blade": {
+        "name": "Midnight Star",
+        "slot": "Definition",
+        "type": "Grenade"
+    },
+    "GD_Orchid_GrenadeMods.Delivery.Delivery_Blade": {
+        "name": "Midnight Star",
+        "slot": "Delivery",
+        "type": "Grenade"
+    },
     "GD_Anemone_Weapons.Barrel.Pistol_Barrel_Dahl_Hornet_Hector": {
         "name": "Hector's Paradise",
         "slot": "Barrel",

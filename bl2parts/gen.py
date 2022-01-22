@@ -21,8 +21,8 @@ import yaml
 
 for mod in (
     "tools",
-    "tools.balances",
     "tools.data",
+    "tools.balances",
     "tools.definitions",
     "tools.parts",
     "tools.prefixes",
@@ -32,8 +32,9 @@ for mod in (
 
 from tools import YAML  # noqa: E402
 from tools.balances import get_parts_for_definitions, get_parts_on_balance  # noqa: E402
-from tools.data import (ALL_WEAPON_DEFINITIONS, GLITCH_PARTS, MOONSTONE_PARTS,  # noqa: E402
-                        NON_UNIQUE_BALANCES, PLURAL_WEAPON_PART_TYPE)
+from tools.data import (ALL_DEFINITIONS, DEFINITION_PART_TYPE, GLITCH_PARTS,  # noqa: E402
+                        ITEM_PART_TYPE_NAMES, MOONSTONE_PARTS, NON_UNIQUE_BALANCES,
+                        PLURAL_WEAPON_PART_TYPE)
 from tools.definitions import get_definition_data  # noqa: E402
 from tools.parts import get_part_data  # noqa: E402
 from tools.prefixes import get_prefix_data  # noqa: E402
@@ -43,18 +44,19 @@ os.makedirs(output_dir, exist_ok=True)
 
 GEN_NAME_DUMP_TEMPLATE: bool = True
 
-for weapon_type, def_list in ALL_WEAPON_DEFINITIONS.items():
+for item_type, def_list in ALL_DEFINITIONS.items():
     non_unique_parts = set()
-    for base_bal in NON_UNIQUE_BALANCES[weapon_type]:
-        bal = unrealsdk.FindObject("WeaponBalanceDefinition", base_bal)
+    for base_bal in NON_UNIQUE_BALANCES[item_type]:
+        bal = unrealsdk.FindObject("InventoryBalanceDefinition", base_bal)
         while bal is not None:
             non_unique_parts.update(get_parts_on_balance(bal))
             bal = bal.BaseDefinition
 
     def_objects: List[unrealsdk.UObject] = [
-        unrealsdk.FindObject("WeaponTypeDefinition", def_name)
+        unrealsdk.FindObject("WillowInventoryDefinition", def_name)
         for def_name in def_list
     ]
+    def_objects = [x for x in def_objects if x is not None]
     non_unique_parts.update(def_objects)
 
     data: YAML = {}
@@ -73,36 +75,41 @@ for weapon_type, def_list in ALL_WEAPON_DEFINITIONS.items():
             if prefixes:
                 part_data["prefixes"] = prefixes
 
-        plural_type = PLURAL_WEAPON_PART_TYPE[part_type]
-        if plural_type not in data:
-            data[plural_type] = []
-        data[plural_type].append(part_data)
+        if part.Class.Name == "WeaponPartDefinition":
+            part_type = PLURAL_WEAPON_PART_TYPE[part_type]
+
+        if part_type not in data:
+            data[part_type] = []
+        data[part_type].append(part_data)
 
     for parts in data.values():
         parts.sort(key=lambda x: x["_obj_name"])
 
-    with open(os.path.join(output_dir, f"{weapon_type}s.yml"), "w") as file:
+    with open(os.path.join(output_dir, f"{item_type}s.yml"), "w") as file:
         # Seperate passes to force ordering
         yaml.dump(data, file)  # type: ignore
         yaml.dump({  # type: ignore
             "meta": {
-                "definitions": sorted([
+                PLURAL_WEAPON_PART_TYPE[DEFINITION_PART_TYPE]: sorted([
                     get_definition_data(def_obj) for def_obj in def_objects
                 ], key=lambda x: x["_obj_name"])  # type: ignore
             }
         }, file)
 
-    name_path = os.path.join(output_dir, f"{weapon_type}_names.json")
+    name_path = os.path.join(output_dir, f"{item_type}_names.json")
     if GEN_NAME_DUMP_TEMPLATE and not os.path.exists(name_path):
-        depluralize_weapon_part_type = {v: k for k, v in PLURAL_WEAPON_PART_TYPE.items()}
+        depluralize_part_type = {x: x for x in ITEM_PART_TYPE_NAMES}
+        depluralize_part_type[DEFINITION_PART_TYPE] = DEFINITION_PART_TYPE
+
+        depluralize_part_type.update({v: k for k, v in PLURAL_WEAPON_PART_TYPE.items()})
 
         with open(name_path, "w") as file:
             json.dump(
                 {
                     part_data["_obj_name"]: {
                         "name": "",
-                        "type": weapon_type.title(),
-                        "slot": depluralize_weapon_part_type[part_type].title(),
+                        "type": item_type.title(),
+                        "slot": depluralize_part_type[part_type].title(),
                     }
                     for part_type, part_list in data.items()
                     for part_data in part_list

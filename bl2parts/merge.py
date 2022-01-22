@@ -34,8 +34,18 @@ PART_NAME_OVERRIDES: Dict[str, Dict[str, str]] = {
     "GD_Weap_Pistol.A_Weapons.WeaponType_Jakobs_Pistol": {
         "BL2": "Jakobs (BL2)",
         "TPS": "Jakobs (TPS)",
-    }
+    },
 }
+
+PARTS_TO_NAIVE_BONUS_MERGE: Tuple[str, ...] = (
+    # These just conflict on cryo/slag, otherwise identical
+    "GD_GrenadeMods.Payload.Payload_AreaEffect",
+    "GD_GrenadeMods.StatusDamage.StatusDamage_Grade1",
+    "GD_GrenadeMods.StatusDamage.StatusDamage_Grade2",
+    "GD_GrenadeMods.StatusDamage.StatusDamage_Grade3",
+    "GD_GrenadeMods.StatusDamage.StatusDamage_Grade4",
+    "GD_GrenadeMods.StatusDamage.StatusDamage_Grade5",
+)
 
 # ==================================================================================================
 
@@ -149,6 +159,12 @@ for name, matching_files in get_file_mappings("yml").items():
 
                         new_prefixes.sort(key=lambda p: p["restrict"])  # type: ignore
                         duplicate["prefixes"] = new_prefixes
+                        continue
+
+                    if part["_obj_name"] in PARTS_TO_NAIVE_BONUS_MERGE:
+                        for bonus in part["bonuses"]:
+                            if bonus not in duplicate["bonuses"]:
+                                duplicate["bonuses"].append(bonus)
                         continue
 
                     print("Collision on '" + part["_obj_name"] + "'!")

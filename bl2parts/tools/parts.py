@@ -4,8 +4,9 @@ from typing import Optional, Tuple
 from Mods.ModMenu import Game  # type: ignore
 
 from . import YAML, float_error
-from .data import (DEFINITION_PART_TYPE, MODIFIER_NAMES, PART_NAMES, PART_TYPE_OVERRIDES,
-                   SCALING_ATTRIBUTES, WEAPON_MANU_ATTRIBUTES, WEAPON_PART_TYPE_NAMES)
+from .data import (ALLOWED_DEFINITION_CLASSES, DEFINITION_PART_TYPE, ITEM_PART_TYPE_NAMES,
+                   MODIFIER_NAMES, PART_NAMES, PART_TYPE_OVERRIDES, SCALING_ATTRIBUTES,
+                   SCALING_INITALIZATIONS, WEAPON_MANU_ATTRIBUTES, WEAPON_PART_TYPE_NAMES)
 
 VALID_MANU_RESTRICT_PREPENDS: Tuple[str, ...] = (
     "Zoom",
@@ -33,38 +34,36 @@ def _create_bonus_data(
         "type": MODIFIER_NAMES[attr_struct.ModifierType],
     }
 
-    if (
-        attr_struct.BaseModifierValue.BaseValueAttribute in WEAPON_MANU_ATTRIBUTES
-        and attr_struct.BaseModifierValue.InitializationDefinition is None
-    ):
-        value = float_error(attr_struct.BaseModifierValue.BaseValueScaleConstant)
+    bvc = attr_struct.BaseModifierValue.BaseValueConstant
+    attr = attr_struct.BaseModifierValue.BaseValueAttribute
+    init = attr_struct.BaseModifierValue.InitializationDefinition
+    bvsc = attr_struct.BaseModifierValue.BaseValueScaleConstant
+
+    if attr in WEAPON_MANU_ATTRIBUTES and init is None:
+        value = float_error(bvsc)
         if restrict is not None and restrict not in VALID_MANU_RESTRICT_PREPENDS:
             unrealsdk.Log(
                 f"Found manufacturer restriction on bonus with existing restriction"
                 f" {part.PathName(part)}"
             )
-        manu_restrict = WEAPON_MANU_ATTRIBUTES[attr_struct.BaseModifierValue.BaseValueAttribute]
+        manu_restrict = WEAPON_MANU_ATTRIBUTES[attr]
         if restrict in VALID_MANU_RESTRICT_PREPENDS:
             restrict = manu_restrict + " + " + restrict
         else:
             restrict = manu_restrict
-    elif (
-        attr_struct.BaseModifierValue.BaseValueAttribute in SCALING_ATTRIBUTES
-        and attr_struct.BaseModifierValue.InitializationDefinition is None
-    ):
-        value = float_error(attr_struct.BaseModifierValue.BaseValueScaleConstant)
-        bonus_data["scale"] = SCALING_ATTRIBUTES[attr_struct.BaseModifierValue.BaseValueAttribute]
-    elif (
-        attr_struct.BaseModifierValue.BaseValueAttribute is not None
-        or attr_struct.BaseModifierValue.InitializationDefinition is not None
-    ):
+    elif attr in SCALING_ATTRIBUTES and init is None:
+        scale, scale_multi = SCALING_ATTRIBUTES[attr]
+        value = float_error(scale_multi * bvsc)
+        bonus_data["scale"] = scale
+    elif attr is None and init in SCALING_INITALIZATIONS:
+        scale, scale_multi = SCALING_INITALIZATIONS[init]
+        value = float_error(scale_multi * bvsc)
+        bonus_data["scale"] = scale
+    elif attr is not None or init is not None:
         unrealsdk.Log(f"Unparsable bonus on {part.PathName(part)}")
         return None
     else:
-        value = float_error(
-            attr_struct.BaseModifierValue.BaseValueConstant
-            * attr_struct.BaseModifierValue.BaseValueScaleConstant
-        )
+        value = float_error(bvc * bvsc)
 
     if value == 0:
         return None
@@ -87,15 +86,21 @@ def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
     """
     part_name = part.PathName(part)
 
+    part_type_names = (
+        WEAPON_PART_TYPE_NAMES
+        if part.Class.Name == "WeaponPartDefinition" else
+        ITEM_PART_TYPE_NAMES
+    )
+
     part_type: str
     if part_name in PART_TYPE_OVERRIDES:
         part_type = PART_TYPE_OVERRIDES[part_name]
-    elif part.Class.Name == "WeaponTypeDefinition":
+    elif part.Class.Name in ALLOWED_DEFINITION_CLASSES:
         part_type = DEFINITION_PART_TYPE
     elif part.Material is not None:
-        part_type = WEAPON_PART_TYPE_NAMES[8]
-    elif 0 <= part.PartType < len(WEAPON_PART_TYPE_NAMES):
-        part_type = WEAPON_PART_TYPE_NAMES[part.PartType]
+        part_type = part_type_names[8]
+    elif 0 <= part.PartType < len(part_type_names):
+        part_type = part_type_names[part.PartType]
     else:
         raise ValueError(f"Bad part type {part.PartType} on {part_name}")
 
@@ -112,10 +117,13 @@ def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
 
     for attr_group, base_restrict in (
         (part.WeaponAttributeEffects, None),
+        (part.ItemAttributeEffects, None),
         (part.ExternalAttributeEffects, None),
         (part.ZoomWeaponAttributeEffects, "Zoom"),
         (part.ZoomExternalAttributeEffects, "Zoom"),
     ):
+        if attr_group is None:
+            continue
         for attr_struct in attr_group:
             bonus_data = _create_bonus_data(part, attr_struct, base_restrict)
             if bonus_data is not None:
