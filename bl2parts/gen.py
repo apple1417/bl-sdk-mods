@@ -91,7 +91,7 @@ for item_type, def_list in ALL_DEFINITIONS.items():
             if prefixes:
                 part_data["prefixes"] = prefixes
 
-        if part.Class.Name == "WeaponPartDefinition":
+        if part.Class.Name in ("WeaponTypeDefinition", "WeaponPartDefinition"):
             part_type = PLURAL_WEAPON_PART_TYPE[part_type]
 
         if part_type not in data:

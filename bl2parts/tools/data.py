@@ -520,3 +520,8 @@ ATTRIBUTES_TO_IGNORE: Set[unrealsdk.UObject] = _load_obj_set("AttributeDefinitio
     "D_Attributes.Shield.ShieldRechargeDelaySlotGradeMinusRarity",
     "D_Attributes.Shield.ShieldSpecialSlotGradeMinusRarity",
 })
+
+
+IGNORED_POST_INIT_PARTS: Set[unrealsdk.UObject] = _load_obj_set("WeaponPartDefinition", (
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Jakobs_RockSalt",
+))

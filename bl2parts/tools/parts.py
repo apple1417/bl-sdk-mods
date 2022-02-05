@@ -5,8 +5,9 @@ from Mods.ModMenu import Game  # type: ignore
 
 from . import YAML, float_error
 from .data import (ALLOWED_DEFINITION_CLASSES, ATTRIBUTES_TO_IGNORE, DEFINITION_PART_TYPE,
-                   ITEM_PART_TYPE_NAMES, KNOWN_ATTRIBUTES, KNOWN_INITALIZATIONS, MODIFIER_NAMES,
-                   PART_NAMES, PART_TYPE_OVERRIDES, WEAPON_MANU_ATTRIBUTES, WEAPON_PART_TYPE_NAMES)
+                   IGNORED_POST_INIT_PARTS, ITEM_PART_TYPE_NAMES, KNOWN_ATTRIBUTES,
+                   KNOWN_INITALIZATIONS, MODIFIER_NAMES, PART_NAMES, PART_TYPE_OVERRIDES,
+                   WEAPON_MANU_ATTRIBUTES, WEAPON_PART_TYPE_NAMES)
 
 VALID_MANU_RESTRICT_PREPENDS: Tuple[str, ...] = (
     "Zoom",
@@ -140,7 +141,8 @@ def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
                 all_bonuses.append(bonus_data)
 
     # This catches the fibber, we'll see if it works for anything else
-    if part.BehaviorProviderDefinition is not None:
+    # Just going for simple logic, it's not perfect, it'll catch some stuff that's not connected
+    if part.BehaviorProviderDefinition is not None and part not in IGNORED_POST_INIT_PARTS:
         for seq in part.BehaviorProviderDefinition.BehaviorSequences:
             for behaviour_struct in seq.BehaviorData2:
                 if behaviour_struct.Behavior.Class.Name != "Behavior_AttributeEffect":
