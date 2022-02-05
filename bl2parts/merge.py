@@ -6,47 +6,79 @@ import yaml
 
 # ==================================================================================================
 
-PART_NAME_OVERRIDES: Dict[str, Dict[str, str]] = {
-    "GD_Weap_Shotgun.A_Weapons.WT_Jakobs_Shotgun": {
-        "BL2": "Jakobs (BL2)",
-        "TPS": "Jakobs (TPS)",
-    },
-    "GD_Weap_Shotgun.A_Weapons.WT_Tediore_Shotgun": {
-        "BL2": "Tediore (BL2)",
-        "TPS": "Tediore (TPS)",
-    },
-    "GD_Weap_Shotgun.A_Weapons.WT_Torgue_Shotgun": {
-        "BL2": "Torgue (BL2)",
-        "TPS": "Torgue (TPS)",
-    },
-    "GD_Weap_Shotgun.Barrel.SG_Barrel_Hyperion_Striker": {
-        "BL2": "Striker (BL2)",
-    },
-    "GD_Weap_Shotgun.Barrel.SG_Barrel_Jakobs_Sledges": {
-        "BL2": "Sledge's Shotgun (BL2)",
-    },
-    "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Hyperion_Striker": {
-        "TPS": "Striker (TPS)",
-    },
-    "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Jakobs_Sledges": {
-        "TPS": "Sledge's Shotgun (TPS)",
-    },
-    "GD_Weap_Pistol.A_Weapons.WeaponType_Jakobs_Pistol": {
-        "BL2": "Jakobs (BL2)",
-        "TPS": "Jakobs (TPS)",
-    },
-}
+PARTS_TO_ADD_GAME_TO_NAME: Tuple[str, ...] = (
+    "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Hyperion_Striker",
+    "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Jakobs_Sledges",
+    "GD_Shields.A_Item.Shield_Absorption_05_LegendaryNormal",
+    "GD_Shields.A_Item.Shield_Absorption",
+    "GD_Shields.A_Item.Shield_Booster_05_Legendary",
+    "GD_Shields.A_Item.Shield_Booster",
+    "GD_Shields.A_Item.Shield_Chimera",
+    "GD_Shields.A_Item.Shield_Impact",
+    "GD_Shields.A_Item.Shield_Juggernaut_05_Legendary",
+    "GD_Shields.A_Item.Shield_Juggernaut",
+    "GD_Shields.A_Item.Shield_Nova_Corrosive",
+    "GD_Shields.A_Item.Shield_Nova_Explosive_05_DeadlyBloom",
+    "GD_Shields.A_Item.Shield_Nova_Explosive",
+    "GD_Shields.A_Item.Shield_Nova_Fire",
+    "GD_Shields.A_Item.Shield_Nova_Shock_Singularity",
+    "GD_Shields.A_Item.Shield_Nova_Shock",
+    "GD_Shields.A_Item.Shield_Roid",
+    "GD_Shields.A_Item.Shield_Spike_Corrosive",
+    "GD_Shields.A_Item.Shield_Spike_CorrosiveLegendary",
+    "GD_Shields.A_Item.Shield_Spike_Explosive",
+    "GD_Shields.A_Item.Shield_Spike_Fire",
+    "GD_Shields.A_Item.Shield_Spike_Shock",
+    "GD_Shields.A_Item.Shield_Standard_05_Legendary",
+    "GD_Shields.A_Item.Shield_Standard_CrackedSash",
+    "GD_Shields.A_Item.Shield_Standard",
+    "GD_Shields.Material.Material5_Legendary_Juggernaut",
+    "GD_Weap_Pistol.A_Weapons.WeaponType_Jakobs_Pistol",
+    "GD_Weap_Shotgun.A_Weapons.WT_Jakobs_Shotgun",
+    "GD_Weap_Shotgun.A_Weapons.WT_Tediore_Shotgun",
+    "GD_Weap_Shotgun.A_Weapons.WT_Torgue_Shotgun",
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Hyperion_Striker",
+    "GD_Weap_Shotgun.Barrel.SG_Barrel_Jakobs_Sledges",
+)
 
 PARTS_TO_NAIVE_BONUS_MERGE: Tuple[str, ...] = (
-    # These just conflict on cryo/slag, otherwise identical
-    "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_Leech",
-    "GD_GrenadeMods.A_Item.GrenadeMod_Standard",
     "GD_GrenadeMods.Payload.Payload_AreaEffect",
     "GD_GrenadeMods.StatusDamage.StatusDamage_Grade1",
     "GD_GrenadeMods.StatusDamage.StatusDamage_Grade2",
     "GD_GrenadeMods.StatusDamage.StatusDamage_Grade3",
     "GD_GrenadeMods.StatusDamage.StatusDamage_Grade4",
     "GD_GrenadeMods.StatusDamage.StatusDamage_Grade5",
+)
+
+META_TO_ADD_GAME_TO_NAME: Tuple[str, ...] = (
+    "GD_Shields.A_Item.Shield_Chimera",
+    "GD_Shields.A_Item.Shield_Impact",
+    "GD_Shields.A_Item.Shield_Juggernaut_05_Legendary",
+    "GD_Shields.A_Item.Shield_Juggernaut",
+)
+
+META_TO_NAIVE_BONUS_MERGE: Tuple[str, ...] = (
+    "GD_GrenadeMods.A_Item_Legendary.GrenadeMod_Leech",
+    "GD_GrenadeMods.A_Item.GrenadeMod_Standard",
+    "GD_Shields.A_Item.Shield_Absorption_05_LegendaryNormal",
+    "GD_Shields.A_Item.Shield_Absorption",
+    "GD_Shields.A_Item.Shield_Booster_05_Legendary",
+    "GD_Shields.A_Item.Shield_Booster",
+    "GD_Shields.A_Item.Shield_Nova_Corrosive",
+    "GD_Shields.A_Item.Shield_Nova_Explosive_05_DeadlyBloom",
+    "GD_Shields.A_Item.Shield_Nova_Explosive",
+    "GD_Shields.A_Item.Shield_Nova_Fire",
+    "GD_Shields.A_Item.Shield_Nova_Shock_Singularity",
+    "GD_Shields.A_Item.Shield_Nova_Shock",
+    "GD_Shields.A_Item.Shield_Roid",
+    "GD_Shields.A_Item.Shield_Spike_Corrosive",
+    "GD_Shields.A_Item.Shield_Spike_CorrosiveLegendary",
+    "GD_Shields.A_Item.Shield_Spike_Explosive",
+    "GD_Shields.A_Item.Shield_Spike_Fire",
+    "GD_Shields.A_Item.Shield_Spike_Shock",
+    "GD_Shields.A_Item.Shield_Standard_05_Legendary",
+    "GD_Shields.A_Item.Shield_Standard_CrackedSash",
+    "GD_Shields.A_Item.Shield_Standard",
 )
 
 # ==================================================================================================
@@ -126,8 +158,11 @@ for name, matching_files in get_file_mappings("yml").items():
                     merged_yml[part_type] = []
 
                 for part in part_list:
-                    if part["_obj_name"] in PART_NAME_OVERRIDES:
-                        part["name"] = PART_NAME_OVERRIDES[part["_obj_name"]][game]
+                    if part["_obj_name"] in PARTS_TO_ADD_GAME_TO_NAME:
+                        if part["name"][-1] == ")":
+                            part["name"] = part["name"][:-1] + f", {game})"
+                        else:
+                            part["name"] += f" ({game})"
 
                     if part in merged_yml[part_type]:
                         continue
@@ -175,6 +210,12 @@ for name, matching_files in get_file_mappings("yml").items():
                 if def_data in merged_meta_definitions:
                     continue
 
+                if def_data["_obj_name"] in META_TO_ADD_GAME_TO_NAME:
+                    if def_data["name"][-1] == ")":
+                        def_data["name"] = def_data["name"][:-1] + f", {game})"
+                    else:
+                        def_data["name"] += f" ({game})"
+
                 duplicate = next(filter(
                     lambda x: x["name"] == def_data["name"],  # type: ignore
                     merged_meta_definitions
@@ -186,7 +227,7 @@ for name, matching_files in get_file_mappings("yml").items():
                 if remove_key(def_data, "_obj_name") == remove_key(duplicate, "_obj_name"):
                     continue
 
-                if def_data["_obj_name"] in PARTS_TO_NAIVE_BONUS_MERGE:
+                if def_data["_obj_name"] in META_TO_NAIVE_BONUS_MERGE:
                     for list_name in ("base", "grades"):
                         for entry in def_data[list_name]:
                             if entry not in duplicate[list_name]:

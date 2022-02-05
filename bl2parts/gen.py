@@ -62,12 +62,16 @@ for item_type, def_list in ALL_DEFINITIONS.items():
 
     part_objects: Set[unrealsdk.UObject]
     if item_type in ITEM_CLASS_OVERRIDES:
-        def_class, part_class = ITEM_CLASS_OVERRIDES[item_type]
+        class_data = ITEM_CLASS_OVERRIDES[item_type]
         def_objects = [
-            x for x in unrealsdk.FindAll(def_class) if not x.Name.startswith("Default__")
+            obj
+            for obj in unrealsdk.FindAll(class_data.def_class)
+            if not obj.Name.startswith("Default__")
         ]
         part_objects = {
-            x for x in unrealsdk.FindAll(part_class) if not x.Name.startswith("Default__")
+            obj
+            for obj in unrealsdk.FindAll(class_data.part_class)
+            if not obj.Name.startswith("Default__")
         }
     else:
         part_objects = get_parts_for_definitions(def_objects)

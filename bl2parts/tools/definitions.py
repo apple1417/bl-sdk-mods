@@ -4,7 +4,8 @@ from typing import Dict
 from Mods.ModMenu import Game  # type: ignore
 
 from . import YAML, float_error
-from .data import CONSTRAINT_NAMES, MODIFIER_NAMES, PART_NAMES, SCALING_INITALIZATIONS
+from .data import (ATTRIBUTES_TO_IGNORE, BASE_SCALING_CONSTANT, CONSTRAINT_NAMES, KNOWN_ATTRIBUTES,
+                   KNOWN_INITALIZATIONS, MODIFIER_NAMES, PART_NAMES)
 
 WEAPON_DAMAGE_ID: unrealsdk.UObject = unrealsdk.FindObject(
     "AttributeInitializationDefinition",
@@ -26,10 +27,6 @@ SIMPLE_WEAPON_BASE_VALUES: Dict[str, str] = {
     "ProjectilesPerShot": "D_Attributes.Weapon.WeaponProjectilesPerShot",
     "ShotCost": "D_Attributes.Weapon.WeaponShotCost",
 }
-
-GRENADE_DAMAGE_ATTR: str = "D_Attributes.GrenadeMod.GrenadeDamage"
-
-BASE_SCALING_CONSTANT: str = "&beta;"
 
 
 def get_definition_data(def_obj: unrealsdk.UObject) -> YAML:
@@ -66,12 +63,12 @@ def get_definition_data(def_obj: unrealsdk.UObject) -> YAML:
                 "value": float_error(getattr(def_obj, field))
             })
 
-        assert(def_obj.InstantHitDamage.BaseValueAttribute is None)
-        assert(def_obj.InstantHitDamage.InitializationDefinition == WEAPON_DAMAGE_ID)
-        assert(def_obj.StatusEffectDamage.BaseValueAttribute is None)
-        assert(def_obj.StatusEffectDamage.InitializationDefinition == WEAPON_DAMAGE_ID)
-        assert(def_obj.BaseStatusEffectChanceModifier.BaseValueAttribute is None)
-        assert(def_obj.BaseStatusEffectChanceModifier.InitializationDefinition is None)
+        assert def_obj.InstantHitDamage.BaseValueAttribute is None
+        assert def_obj.InstantHitDamage.InitializationDefinition == WEAPON_DAMAGE_ID
+        assert def_obj.StatusEffectDamage.BaseValueAttribute is None
+        assert def_obj.StatusEffectDamage.InitializationDefinition == WEAPON_DAMAGE_ID
+        assert def_obj.BaseStatusEffectChanceModifier.BaseValueAttribute is None
+        assert def_obj.BaseStatusEffectChanceModifier.InitializationDefinition is None
 
         data["base"].append({
             "attribute": WEAPON_DAMAGE_ATTR,
@@ -92,13 +89,14 @@ def get_definition_data(def_obj: unrealsdk.UObject) -> YAML:
         })
 
     grades = []
-    for slot in def_obj.AttributeSlotEffects:
-        assert(slot.BaseModifierValue.BaseValueAttribute is None)
-        assert(slot.BaseModifierValue.BaseValueAttribute == slot.PerGradeUpgrade.BaseValueAttribute)
-        assert(
-            slot.BaseModifierValue.InitializationDefinition
-            == slot.PerGradeUpgrade.InitializationDefinition
-        )
+    for idx, slot in enumerate(def_obj.AttributeSlotEffects):
+        if slot.AttributeToModify is None or slot.AttributeToModifier in ATTRIBUTES_TO_IGNORE:
+            continue
+
+        # HACK: This slot is never actually used, and causes a bunch of problems merging
+        #        definitions, so just don't ever add it
+        if def_obj.Class.Name == "ShieldDefinition" and slot.SlotName == "MaxHealth":
+            continue
 
         grade_data = {
             "slot": slot.SlotName,
@@ -114,30 +112,39 @@ def get_definition_data(def_obj: unrealsdk.UObject) -> YAML:
             else:
                 grade_data["constraint"] = CONSTRAINT_NAMES[slot.ConstraintAttribute]
 
-        scaling_init = slot.BaseModifierValue.InitializationDefinition
+        for value_key, scale_key, offset_key, bvc_struct in (
+            ("base", "scale", "offset", slot.BaseModifierValue),
+            ("per_grade", "per_grade_scale", "per_grade_offset", slot.PerGradeUpgrade),
+        ):
+            attr = bvc_struct.BaseValueAttribute
+            init = bvc_struct.InitializationDefinition
 
-        if scaling_init is None:
-            grade_data["base"] = float_error(
-                slot.BaseModifierValue.BaseValueConstant
-                * slot.BaseModifierValue.BaseValueScaleConstant
-            )
-            grade_data["per_grade"] = float_error(
-                slot.PerGradeUpgrade.BaseValueConstant
-                * slot.PerGradeUpgrade.BaseValueScaleConstant
-            )
-        elif scaling_init in SCALING_INITALIZATIONS:
-            scale, scale_multi = SCALING_INITALIZATIONS[scaling_init]
-            grade_data["scale"] = scale
-            grade_data["base"] = float_error(
-                scale_multi
-                * slot.BaseModifierValue.BaseValueScaleConstant
-            )
-            grade_data["per_grade"] = float_error(
-                scale_multi
-                * slot.PerGradeUpgrade.BaseValueScaleConstant
-            )
-        else:
-            raise AssertionError
+            if attr is None and init is None:
+                grade_data[value_key] = float_error(
+                    bvc_struct.BaseValueConstant * bvc_struct.BaseValueScaleConstant
+                )
+
+            elif (
+                (attr in KNOWN_ATTRIBUTES and init is None)
+                or (attr is None and init in KNOWN_INITALIZATIONS)
+            ):
+                stat_data = KNOWN_INITALIZATIONS[init] if attr is None else KNOWN_ATTRIBUTES[attr]
+
+                if stat_data.scale:
+                    grade_data[scale_key] = stat_data.scale
+                if stat_data.offset != 0:
+                    grade_data[offset_key] = float_error(
+                        stat_data.offset
+                        * bvc_struct.BaseValueScaleConstant
+                    )
+
+                grade_data[value_key] = float_error(
+                    stat_data.value * bvc_struct.BaseValueScaleConstant
+                )
+
+            else:
+                unrealsdk.Log(f"Unparseable grade {value_key} in index {idx} of '{def_name}'")
+                continue
 
         grades.append(grade_data)
 

@@ -2711,6 +2711,1270 @@
         "slot": "Element",
         "type": "Pistol"
     },
+    "GD_Anemone_Shields.A_Item.Shield_Nova_Shock_Singularity_Peak": {
+        "name": "Easy Mode",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Anemone_Shields.A_Item.Shield_Worming": {
+        "name": "Retainer",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Anemone_Shields.Accessory.Accessory2_Roid_Order": {
+        "name": "Retainer",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Anemone_Shields.Accessory.Accessory6_Nova_Singularity": {
+        "name": "Easy Mode",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Anemone_Shields.Battery.Battery1_Tediore": {
+        "name": "Tediore (Anemone)",
+        "slot": "Battery",
+        "type": "Shield"
+    },
+    "GD_Anemone_Shields.Battery.Battery3_Vladof": {
+        "name": "Vladof (Anemone)",
+        "slot": "Battery",
+        "type": "Shield"
+    },
+    "GD_Anemone_Shields.Battery.Battery4_Dahl": {
+        "name": "Dahl (Anemone)",
+        "slot": "Battery",
+        "type": "Shield"
+    },
+    "GD_Anemone_Shields.Battery.Battery5_Anshin": {
+        "name": "Anshin (Anemone)",
+        "slot": "Battery",
+        "type": "Shield"
+    },
+    "GD_Anemone_Shields.Battery.Battery5_Maliwan": {
+        "name": "Maliwan (Anemone)",
+        "slot": "Battery",
+        "type": "Shield"
+    },
+    "GD_Anemone_Shields.Battery.Battery7_Hyperion": {
+        "name": "Hyperion (Anemone)",
+        "slot": "Battery",
+        "type": "Shield"
+    },
+    "GD_Anemone_Shields.Battery.Battery8_Pangolin": {
+        "name": "Pangolin (Anemone)",
+        "slot": "Battery",
+        "type": "Shield"
+    },
+    "GD_Anemone_Shields.Body.Body1_Tediore": {
+        "name": "Tediore (Anemone)",
+        "slot": "Body",
+        "type": "Shield"
+    },
+    "GD_Anemone_Shields.Body.Body3_Vladof": {
+        "name": "Vladof (Anemone)",
+        "slot": "Body",
+        "type": "Shield"
+    },
+    "GD_Anemone_Shields.Body.Body4_Dahl": {
+        "name": "Dahl (Anemone)",
+        "slot": "Body",
+        "type": "Shield"
+    },
+    "GD_Anemone_Shields.Body.Body5_Anshin": {
+        "name": "Anshin (Anemone)",
+        "slot": "Body",
+        "type": "Shield"
+    },
+    "GD_Anemone_Shields.Body.Body5_Maliwan": {
+        "name": "Maliwan (Anemone)",
+        "slot": "Body",
+        "type": "Shield"
+    },
+    "GD_Anemone_Shields.Body.Body7_Hyperion": {
+        "name": "Hyperion (Anemone)",
+        "slot": "Body",
+        "type": "Shield"
+    },
+    "GD_Anemone_Shields.Body.Body8_Pangolin": {
+        "name": "Pangolin (Anemone)",
+        "slot": "Body",
+        "type": "Shield"
+    },
+    "GD_Anemone_Shields.Capacitor.Capacitor5_Maliwan_CorrosiveRes": {
+        "name": "Maliwan (Corrosive, Anemone)",
+        "slot": "Capacitor",
+        "type": "Shield"
+    },
+    "GD_Anemone_Shields.Material.Material3_Rare_Roid": {
+        "name": "Retainer",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Anemone_Shields.Material.Material5_Legendary_Nova_Singularity": {
+        "name": "Easy Mode",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Aster_Shields.A_Item.Aster_Seraph_Antagonist_Shield": {
+        "name": "Antagonist",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Aster_Shields.A_Item.Aster_Seraph_Blockade_Shield": {
+        "name": "Blockade",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Aster_Shields.Accessory.Accessory_Antagonist": {
+        "name": "Antagonist",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Aster_Shields.Accessory.Accessory_Blockade": {
+        "name": "Blockade",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Aster_Shields.Material.Aster_Seraph_Antagonist_Shield_Material": {
+        "name": "Antagonist",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Aster_Shields.Material.Aster_Seraph_Blockade_Shield_Material": {
+        "name": "Blockade",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Cork_Shields.A_Item.Shield_Nova_Ice": {
+        "name": "Nova (Cryo)",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Cork_Shields.A_Item.Shield_Spike_Ice": {
+        "name": "Spike (Cryo)",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Cork_Shields.A_Item_Custom.Shield_RapidRelease": {
+        "name": "Rapid Release",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Cork_Shields.Accessory.Accessory1_Spike_Ice": {
+        "name": "Spike (Cryo)",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Cork_Shields.Accessory.Accessory6_Nova_Ice": {
+        "name": "Nova (Cryo)",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Cork_Shields.Accessory.Accessory6_RapidRelease": {
+        "name": "Rapid Release",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Cork_Shields.Capacitor.Capacitor5_Maliwan_IceRes": {
+        "name": "Maliwan (Cryo)",
+        "slot": "Capacitor",
+        "type": "Shield"
+    },
+    "GD_Iris_SeraphItems.BigBoomBlaster.Iris_Seraph_Shield_Booster": {
+        "name": "Big Boom Blaster",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Iris_SeraphItems.BigBoomBlaster.Iris_Seraph_Shield_Booster_Accessory4_Booster": {
+        "name": "Big Boom Blaster",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Iris_SeraphItems.BigBoomBlaster.Iris_Seraph_Shield_Booster_Material": {
+        "name": "Big Boom Blaster",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Iris_SeraphItems.Hoplite.Iris_Seraph_Shield_Juggernaut": {
+        "name": "Hoplite",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Iris_SeraphItems.Hoplite.Iris_Seraph_Shield_Juggernaut_Material": {
+        "name": "Hoplite",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Iris_SeraphItems.Pun-chee.Iris_Seraph_Shield_Pun-chee": {
+        "name": "Pun-chee",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Iris_SeraphItems.Pun-chee.Iris_Seraph_Shield_Pun-chee_Part_Material": {
+        "name": "Pun-chee",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Iris_SeraphItems.Sponge.Iris_Seraph_Shield_Sponge": {
+        "name": "Sponge",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Iris_SeraphItems.Sponge.Iris_Seraph_Shield_Sponge_Part_Material": {
+        "name": "Sponge",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Ma_Shields.A_Item_Legendary.Shield_Chimera_05_M0RQ": {
+        "name": "M0RQ",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Ma_Shields.A_Item_Legendary.Shield_Impact_05_Rerouter": {
+        "name": "Rerouter",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Ma_Shields.A_Item_Unique.Shield_Juggernaut_03_ShieldOfAges": {
+        "name": "Shield of Ages",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Ma_Shields.A_Item_Unique.Shield_Standard_Naught": {
+        "name": "Naught",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Ma_Shields.Accessory.Accessory5_Chimera_M0RQ": {
+        "name": "M0RQ",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Ma_Shields.Accessory.Accessory7_Impact_Rerouter": {
+        "name": "Rerouter",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Ma_Shields.Accessory.Accessory8_Juggernaut_ShieldOfAges": {
+        "name": "Shield of Ages",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Ma_Shields.Accessory.Accessory_Naught": {
+        "name": "Naught",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Ma_Shields.Material.Material3_Rare_Naught": {
+        "name": "Naught",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Ma_Shields.Material.Material3_Rare_ShieldOfAges": {
+        "name": "Shield of Ages",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Ma_Shields.Material.Material5_Legendary_Chimera_M0RQ": {
+        "name": "M0RQ",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Ma_Shields.Material.Material5_Legendary_Rerouter": {
+        "name": "Rerouter",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Orchid_RaidWeapons.Shield.Anshin.Orchid_Seraph_Anshin_Shield": {
+        "name": "Evolution",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Orchid_RaidWeapons.Shield.Anshin.Orchid_Seraph_Anshin_Shield_Accessory": {
+        "name": "Evolution",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Orchid_RaidWeapons.Shield.Anshin.Orchid_Seraph_Anshin_Shield_Material": {
+        "name": "Evolution",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Orchid_Shields.A_Item_Custom.Shield_Blade": {
+        "name": "Manly Man Shield",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Orchid_Shields.Accessory.Accessory_Blade": {
+        "name": "Manly Man Shield",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Orchid_Shields.Material.Material3_Rare_Blade": {
+        "name": "Manly Man Shield",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Sage_Shields.A_Item_Custom.Shield_Buckler": {
+        "name": "Rough Rider",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Sage_Shields.Accessory.Accessory_Buckler": {
+        "name": "Rough Rider",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Sage_Shields.Material.Material3_Rare_Buckler": {
+        "name": "Rough Rider",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Absorption": {
+        "name": "Absorption",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Absorption_05_LegendaryNormal": {
+        "name": "Sham",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Absorption_05_LegendaryShock": {
+        "name": "Transformer",
+        "slot": "Definition",
+        "type": "Shield",
+        "game_overrides": {
+            "TPS": "Kala"
+        }
+    },
+    "GD_Shields.A_Item.Shield_Absorption_1340": {
+        "name": "1340 Shield",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Absorption_Aequitas": {
+        "name": "Aequitas",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Absorption_PrismaticBulwark": {
+        "name": "Prismatic Bulwark",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Booster": {
+        "name": "Booster",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Booster_05_Legendary": {
+        "name": "Whisky Tango Foxtrot",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Booster_AsteroidBelt": {
+        "name": "Asteroid Belt",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Booster_MoxxisSlammer": {
+        "name": "Moxxi's Slammer",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Booster_PotOGold": {
+        "name": "Pot O' Gold",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Chimera": {
+        "name": "Adaptive",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Chimera_05_Legendary": {
+        "name": "Neogenator",
+        "slot": "Definition",
+        "type": "Shield",
+        "game_overrides": {
+            "TPS": "Reogenator"
+        }
+    },
+    "GD_Shields.A_Item.Shield_Chimera_Haymaker": {
+        "name": "Haymaker",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Impact": {
+        "name": "Amp",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Impact_05_Legendary": {
+        "name": "Bee",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Juggernaut": {
+        "name": "Turtle",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Juggernaut_05_Legendary": {
+        "name": "Fabled Tortoise",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Nova_Corrosive": {
+        "name": "Nova (Corrosive)",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Nova_Explosive": {
+        "name": "Nova (Explosive)",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Nova_Explosive_05_DeadlyBloom": {
+        "name": "Deadly Bloom",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Nova_Fire": {
+        "name": "Nova (Fire)",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Nova_Fire_Phoenix": {
+        "name": "Flame of the Firehawk",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Nova_Fire_Sunshine": {
+        "name": "Sunshine",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Nova_Fire_Supernova": {
+        "name": "Supernova",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Nova_Shock": {
+        "name": "Nova (Shock)",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Nova_Shock_Singularity": {
+        "name": "Black Hole",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Roid": {
+        "name": "Roid",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Roid_05_Legendary": {
+        "name": "Bigg Thumppr",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Roid_05_ThresherRaid": {
+        "name": "Hide of Terramorphous",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Roid_Avalanche": {
+        "name": "Avalanche",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Roid_LoveThumper": {
+        "name": "Love Thumper",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Roid_Order": {
+        "name": "Order",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Roid_ShootingStar": {
+        "name": "Shooting Star",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Spike_Corrosive": {
+        "name": "Spike (Corrosive)",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Spike_CorrosiveLegendary": {
+        "name": "Impaler",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Spike_Explosive": {
+        "name": "Spike (Explosive)",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Spike_Fire": {
+        "name": "Spike (Fire)",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Spike_Shock": {
+        "name": "Spike (Shock)",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Standard": {
+        "name": "Standard",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Standard_05_Legendary": {
+        "name": "Cradle",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Standard_CrackedSash": {
+        "name": "Cracked Sash",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.A_Item.Shield_Standard_MyFirst": {
+        "name": "My First Shield",
+        "slot": "Definition",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory0_CrackedSash": {
+        "name": "Cracked Sash",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory0_None": {
+        "name": "Standard",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory0_StandardLegendary": {
+        "name": "Cradle",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory1_Spike_Corrosive": {
+        "name": "Spike (Corrosive)",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory1_Spike_Corrosive_Legendary": {
+        "name": "Impaler",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory1_Spike_Explosive": {
+        "name": "Spike (Explosive)",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory1_Spike_Fire": {
+        "name": "Spike (Fire)",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory1_Spike_Shock": {
+        "name": "Spike (Shock)",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory2_Roid": {
+        "name": "Roid",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory2_Roid_Avalanche": {
+        "name": "Avalanche",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory2_Roid_Legendary": {
+        "name": "Bigg Thumppr",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory2_Roid_LoveThumper": {
+        "name": "Love Thumper",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory2_Roid_Order": {
+        "name": "Order",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory2_Roid_ShootingStar": {
+        "name": "Shooting Star",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory3_Absorption": {
+        "name": "Absorption",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory3_Absorption_1340": {
+        "name": "1340 Shield",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory3_Absorption_Aequitas": {
+        "name": "Aequitas",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory3_Absorption_LegendaryNormal": {
+        "name": "Sham",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory3_Absorption_LegendaryShock": {
+        "name": "Transformer",
+        "slot": "Accessory",
+        "type": "Shield",
+        "game_overrides": {
+            "TPS": "Kala"
+        }
+    },
+    "GD_Shields.Accessory.Accessory3_Absorption_PrismaticBulwark": {
+        "name": "Prismatic Bulwark",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory4_Booster": {
+        "name": "Booster",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory4_Booster_AsteroidBelt": {
+        "name": "Asteroid Belt",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory4_Booster_Legendary": {
+        "name": "Whisky Tango Foxtrot",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory4_Booster_PotOGold": {
+        "name": "Pot O' Gold",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory5_Chimera": {
+        "name": "Adaptive",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory5_ChimeraLegendary": {
+        "name": "Neogenator",
+        "slot": "Accessory",
+        "type": "Shield",
+        "game_overrides": {
+            "TPS": "Reogenator"
+        }
+    },
+    "GD_Shields.Accessory.Accessory5_Chimera_Haymaker": {
+        "name": "Haymaker",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory6_Nova_Corrosive": {
+        "name": "Nova (Corrosive)",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory6_Nova_Explosive": {
+        "name": "Nova (Explosive)",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory6_Nova_Explosive_DeadlyBloom": {
+        "name": "Deadly Bloom",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory6_Nova_Fire": {
+        "name": "Nova (Fire)",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory6_Nova_Phoenix": {
+        "name": "Flame of the Firehawk",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory6_Nova_Shock": {
+        "name": "Nova (Shock)",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory6_Nova_Singularity": {
+        "name": "Black Hole",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory6_Nova_Sunshine": {
+        "name": "Sunshine",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory6_Nova_Supernova": {
+        "name": "Supernova",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory7_Impact": {
+        "name": "Amp",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory7_Impact_Legendary": {
+        "name": "Bee",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory8_Juggernaut": {
+        "name": "Turtle",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory8_Juggernaut_Legendary": {
+        "name": "Fabled Tortoise",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory9_01_Roid_ThresherRaid": {
+        "name": "Hide of Terramorphous 01",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory9_02_Roid_ThresherRaid": {
+        "name": "Hide of Terramorphous 02",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory9_03_Roid_ThresherRaid": {
+        "name": "Hide of Terramorphous 03",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory9_04_Roid_ThresherRaid": {
+        "name": "Hide of Terramorphous 04",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Accessory.Accessory9_05_Roid_ThresherRaid": {
+        "name": "Hide of Terramorphous 05",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
+    "GD_Shields.Battery.Battery1_Tediore": {
+        "name": "Tediore",
+        "slot": "Battery",
+        "type": "Shield"
+    },
+    "GD_Shields.Battery.Battery2_Bandit": {
+        "name": "Bandit",
+        "slot": "Battery",
+        "type": "Shield"
+    },
+    "GD_Shields.Battery.Battery3_Vladof": {
+        "name": "Vladof",
+        "slot": "Battery",
+        "type": "Shield"
+    },
+    "GD_Shields.Battery.Battery4_Dahl": {
+        "name": "Dahl",
+        "slot": "Battery",
+        "type": "Shield"
+    },
+    "GD_Shields.Battery.Battery5_Anshin": {
+        "name": "Anshin",
+        "slot": "Battery",
+        "type": "Shield"
+    },
+    "GD_Shields.Battery.Battery5_Anshin_RoidLegendary": {
+        "name": "Anshin (Neogenator)",
+        "slot": "Battery",
+        "type": "Shield",
+        "game_overrides": {
+            "TPS": "Anshin (Bigg Thumppr / M0RQ / Reogenator)"
+        }
+    },
+    "GD_Shields.Battery.Battery5_Maliwan": {
+        "name": "Maliwan",
+        "slot": "Battery",
+        "type": "Shield"
+    },
+    "GD_Shields.Battery.Battery6_Torgue": {
+        "name": "Torgue",
+        "slot": "Battery",
+        "type": "Shield"
+    },
+    "GD_Shields.Battery.Battery7_Hyperion": {
+        "name": "Hyperion",
+        "slot": "Battery",
+        "type": "Shield"
+    },
+    "GD_Shields.Battery.Battery8_Pangolin": {
+        "name": "Pangolin",
+        "slot": "Battery",
+        "type": "Shield"
+    },
+    "GD_Shields.Body.Body1_Tediore": {
+        "name": "Tediore",
+        "slot": "Body",
+        "type": "Shield"
+    },
+    "GD_Shields.Body.Body2_Bandit": {
+        "name": "Bandit",
+        "slot": "Body",
+        "type": "Shield"
+    },
+    "GD_Shields.Body.Body3_Vladof": {
+        "name": "Vladof",
+        "slot": "Body",
+        "type": "Shield"
+    },
+    "GD_Shields.Body.Body4_Dahl": {
+        "name": "Dahl",
+        "slot": "Body",
+        "type": "Shield"
+    },
+    "GD_Shields.Body.Body5_Anshin": {
+        "name": "Anshin",
+        "slot": "Body",
+        "type": "Shield"
+    },
+    "GD_Shields.Body.Body5_Anshin_RoidLegendary": {
+        "name": "Anshin (Bigg Thumppr)",
+        "slot": "Body",
+        "type": "Shield"
+    },
+    "GD_Shields.Body.Body5_Maliwan": {
+        "name": "Maliwan",
+        "slot": "Body",
+        "type": "Shield"
+    },
+    "GD_Shields.Body.Body6_Torgue": {
+        "name": "Torgue",
+        "slot": "Body",
+        "type": "Shield"
+    },
+    "GD_Shields.Body.Body7_Hyperion": {
+        "name": "Hyperion",
+        "slot": "Body",
+        "type": "Shield"
+    },
+    "GD_Shields.Body.Body8_Pangolin": {
+        "name": "Pangolin",
+        "slot": "Body",
+        "type": "Shield"
+    },
+    "GD_Shields.Capacitor.Capacitor1_Tediore": {
+        "name": "Tediore",
+        "slot": "Capacitor",
+        "type": "Shield"
+    },
+    "GD_Shields.Capacitor.Capacitor2_Bandit": {
+        "name": "Bandit",
+        "slot": "Capacitor",
+        "type": "Shield"
+    },
+    "GD_Shields.Capacitor.Capacitor3_Vladof": {
+        "name": "Vladof",
+        "slot": "Capacitor",
+        "type": "Shield"
+    },
+    "GD_Shields.Capacitor.Capacitor4_Dahl": {
+        "name": "Dahl",
+        "slot": "Capacitor",
+        "type": "Shield"
+    },
+    "GD_Shields.Capacitor.Capacitor5_Anshin": {
+        "name": "Anshin",
+        "slot": "Capacitor",
+        "type": "Shield"
+    },
+    "GD_Shields.Capacitor.Capacitor5_Anshin_RoidLegendary": {
+        "name": "Anshin (Bigg Thumppr)",
+        "slot": "Capacitor",
+        "type": "Shield"
+    },
+    "GD_Shields.Capacitor.Capacitor5_Maliwan_CorrosiveRes": {
+        "name": "Maliwan (Corrosive)",
+        "slot": "Capacitor",
+        "type": "Shield"
+    },
+    "GD_Shields.Capacitor.Capacitor5_Maliwan_FireRes": {
+        "name": "Maliwan (Fire)",
+        "slot": "Capacitor",
+        "type": "Shield"
+    },
+    "GD_Shields.Capacitor.Capacitor5_Maliwan_FireRes_Sunshine": {
+        "name": "Sunshine",
+        "slot": "Capacitor",
+        "type": "Shield"
+    },
+    "GD_Shields.Capacitor.Capacitor5_Maliwan_IceRes": {
+        "name": "Maliwan (Cryo)",
+        "slot": "Capacitor",
+        "type": "Shield"
+    },
+    "GD_Shields.Capacitor.Capacitor5_Maliwan_ShockRes": {
+        "name": "Maliwan (Shock)",
+        "slot": "Capacitor",
+        "type": "Shield"
+    },
+    "GD_Shields.Capacitor.Capacitor5_Maliwan_ShockRes_Legendary": {
+        "name": "Transformer",
+        "slot": "Capacitor",
+        "type": "Shield",
+        "game_overrides": {
+            "TPS": "Kala"
+        }
+    },
+    "GD_Shields.Capacitor.Capacitor6_Torgue_ExplosiveRes": {
+        "name": "",
+        "slot": "Capacitor",
+        "type": "Shield"
+    },
+    "GD_Shields.Capacitor.Capacitor7_Hyperion": {
+        "name": "Hyperion",
+        "slot": "Capacitor",
+        "type": "Shield"
+    },
+    "GD_Shields.Capacitor.Capacitor8_Pangolin": {
+        "name": "Pangolin",
+        "slot": "Capacitor",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material1_Common": {
+        "name": "Tediore (Common)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material1_Common_Absorption": {
+        "name": "Vladof (Common)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material1_Common_Booster": {
+        "name": "Dahl (Common)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material1_Common_Chimera": {
+        "name": "Anshin (Common)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material1_Common_Impact": {
+        "name": "Hyperion (Common)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material1_Common_Juggernaut": {
+        "name": "Pangolin (Common)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material1_Common_NovaSpike_Maliwan": {
+        "name": "Maliwan (Common)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material1_Common_NovaSpike_Torgue": {
+        "name": "Torgue (Common)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material1_Common_Roid": {
+        "name": "Bandit (Common)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material2_Uncommon_Absorption": {
+        "name": "Vladof (Uncommon)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material2_Uncommon_Balanced": {
+        "name": "Uncommon Balanced",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material2_Uncommon_Booster": {
+        "name": "Dahl (Uncommon)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material2_Uncommon_Capacity": {
+        "name": "Uncommon Capacity",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material2_Uncommon_Chimera": {
+        "name": "Anshin (Uncommon)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material2_Uncommon_Delay": {
+        "name": "Uncommon Delay",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material2_Uncommon_Impact": {
+        "name": "Hyperion (Uncommon)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material2_Uncommon_Juggernaut": {
+        "name": "Pangolin (Uncommon)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material2_Uncommon_NoSpecial": {
+        "name": "Tediore (Uncommon)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material2_Uncommon_NovaSpike_Maliwan": {
+        "name": "Maliwan (Uncommon)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material2_Uncommon_NovaSpike_Torgue": {
+        "name": "Torgue (Uncommon)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material2_Uncommon_Rate": {
+        "name": "Uncommon Recharge Rate",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material2_Uncommon_Roid": {
+        "name": "Bandit (Uncommon)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material2_Uncommon_Special01": {
+        "name": "Uncommon Special 01",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material2_Uncommon_Special02": {
+        "name": "Uncommon Special 02",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material3_Rare_Absorption": {
+        "name": "Vladof (Rare)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material3_Rare_Booster": {
+        "name": "Dahl (Rare)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material3_Rare_Chimera": {
+        "name": "Anshin (Rare)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material3_Rare_Impact": {
+        "name": "Hyperion (Rare)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material3_Rare_Juggernaut": {
+        "name": "Pangolin (Rare)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material3_Rare_NoSpecial": {
+        "name": "Tediore (Rare)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material3_Rare_NovaSpike_Maliwan": {
+        "name": "Maliwan (Rare)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material3_Rare_NovaSpike_Torgue": {
+        "name": "Torgue (Rare)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material3_Rare_Roid": {
+        "name": "Bandit (Rare)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material3_Rare_Special": {
+        "name": "Sunshine",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material4_VeryRare_Absorption": {
+        "name": "Vladof (Very Rare)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material4_VeryRare_Booster": {
+        "name": "Dahl (Very Rare)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material4_VeryRare_Booster_PotOGold": {
+        "name": "Pot O' Gold",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material4_VeryRare_Chimera": {
+        "name": "Anshin (Very Rare)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material4_VeryRare_Impact": {
+        "name": "Hyperion (Very Rare)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material4_VeryRare_Juggernaut": {
+        "name": "Pangolin (Very Rare)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material4_VeryRare_NoSpecial": {
+        "name": "Tediore (Very Rare)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material4_VeryRare_NovaSpike_Maliwan": {
+        "name": "Maliwan (Very Rare)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material4_VeryRare_NovaSpike_Torgue": {
+        "name": "Torgue (Very Rare)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material4_VeryRare_Nova_Phoenix": {
+        "name": "Flame of the Firehawk",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material4_VeryRare_Roid": {
+        "name": "Bandit (Very Rare)",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material4_VeryRare_Roid_LoveThumper": {
+        "name": "Love Thumper",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material5_Legendary": {
+        "name": "Prismatic Bulwark",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material5_Legendary_AbsorptionNormal": {
+        "name": "Sham",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material5_Legendary_AbsorptionShock": {
+        "name": "Transformer",
+        "slot": "Material",
+        "type": "Shield",
+        "game_overrides": {
+            "TPS": "Kala"
+        }
+    },
+    "GD_Shields.Material.Material5_Legendary_Booster": {
+        "name": "Whisky Tango Foxtrot",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material5_Legendary_Chimera": {
+        "name": "Neogenator",
+        "slot": "Material",
+        "type": "Shield",
+        "game_overrides": {
+            "TPS": "Reogenator"
+        }
+    },
+    "GD_Shields.Material.Material5_Legendary_Impact": {
+        "name": "Bee",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material5_Legendary_Juggernaut": {
+        "name": "Fabled Tortoise",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material5_Legendary_Nova_DeadlyBloom": {
+        "name": "Deadly Bloom",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material5_Legendary_Nova_Singularity": {
+        "name": "Black Hole",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material5_Legendary_Roid": {
+        "name": "Avalanche / Bigg Thumppr",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material5_Legendary_Roid_ShootingStar": {
+        "name": "Shooting Star",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material5_Legendary_Roid_ThresherRaid": {
+        "name": "Hide of Terramorphous",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material5_Legendary_Spike": {
+        "name": "Impaler",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Material.Material5_Legendary_Standard": {
+        "name": "Cradle",
+        "slot": "Material",
+        "type": "Shield"
+    },
+    "GD_Shields.Titles.Accessory4_Booster_MoxxisSlammer": {
+        "name": "Moxxi's Slammer",
+        "slot": "Accessory",
+        "type": "Shield"
+    },
     "GD_Anemone_Weapons.Body.SG_Body_Torgue_7": {
         "name": "Unicornsplosion",
         "slot": "Body",

@@ -4,9 +4,9 @@ from typing import Optional, Tuple
 from Mods.ModMenu import Game  # type: ignore
 
 from . import YAML, float_error
-from .data import (ALLOWED_DEFINITION_CLASSES, DEFINITION_PART_TYPE, ITEM_PART_TYPE_NAMES,
-                   MODIFIER_NAMES, PART_NAMES, PART_TYPE_OVERRIDES, SCALING_ATTRIBUTES,
-                   SCALING_INITALIZATIONS, WEAPON_MANU_ATTRIBUTES, WEAPON_PART_TYPE_NAMES)
+from .data import (ALLOWED_DEFINITION_CLASSES, ATTRIBUTES_TO_IGNORE, DEFINITION_PART_TYPE,
+                   ITEM_PART_TYPE_NAMES, KNOWN_ATTRIBUTES, KNOWN_INITALIZATIONS, MODIFIER_NAMES,
+                   PART_NAMES, PART_TYPE_OVERRIDES, WEAPON_MANU_ATTRIBUTES, WEAPON_PART_TYPE_NAMES)
 
 VALID_MANU_RESTRICT_PREPENDS: Tuple[str, ...] = (
     "Zoom",
@@ -29,6 +29,9 @@ def _create_bonus_data(
         None if the bonus was unparseable and should be skipped.
         The bonus yaml otherwise.
     """
+    if attr_struct.AttributeToModify in ATTRIBUTES_TO_IGNORE:
+        return None
+
     bonus_data = {
         "attribute": part.PathName(attr_struct.AttributeToModify),
         "type": MODIFIER_NAMES[attr_struct.ModifierType],
@@ -51,17 +54,24 @@ def _create_bonus_data(
             restrict = manu_restrict + " + " + restrict
         else:
             restrict = manu_restrict
-    elif attr in SCALING_ATTRIBUTES and init is None:
-        scale, scale_multi = SCALING_ATTRIBUTES[attr]
-        value = float_error(scale_multi * bvsc)
-        bonus_data["scale"] = scale
-    elif attr is None and init in SCALING_INITALIZATIONS:
-        scale, scale_multi = SCALING_INITALIZATIONS[init]
-        value = float_error(scale_multi * bvsc)
-        bonus_data["scale"] = scale
+
+    elif (
+        (attr in KNOWN_ATTRIBUTES and init is None)
+        or (attr is None and init in KNOWN_INITALIZATIONS)
+    ):
+        stat_data = KNOWN_INITALIZATIONS[init] if attr is None else KNOWN_ATTRIBUTES[attr]
+
+        if stat_data.scale:
+            bonus_data["scale"] = stat_data.scale
+        if stat_data.offset:
+            bonus_data["offset"] = float_error(stat_data.offset * bvsc)
+
+        value = float_error(stat_data.value * bvsc)
+
     elif attr is not None or init is not None:
         unrealsdk.Log(f"Unparsable bonus on {part.PathName(part)}")
         return None
+
     else:
         value = float_error(bvc * bvsc)
 
