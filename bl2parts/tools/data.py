@@ -360,7 +360,7 @@ with open("Mods/bl2parts/part_names.json") as file:
     PART_NAMES = json.load(file)
 
 
-WEAPON_MANU_ATTRIBUTES: Dict[unrealsdk.UObject, str] = _load_obj_dict("AttributeDefinition", {
+WEAPON_MANU_ATTRIBUTES: Dict[unrealsdk.UObject, str] = _load_obj_dict("AttributeDefinitionBase", {
     "D_Attributes.WeaponManufacturer.Weapon_Is_Bandit": "Bandit",
     "D_Attributes.WeaponManufacturer.Weapon_Is_Dahl": "Dahl",
     "D_Attributes.WeaponManufacturer.Weapon_Is_Hyperion_Old": "Old Hyperion",
@@ -373,7 +373,7 @@ WEAPON_MANU_ATTRIBUTES: Dict[unrealsdk.UObject, str] = _load_obj_dict("Attribute
 })
 
 
-KNOWN_ATTRIBUTES: Dict[unrealsdk.UObject, KnownStat] = _load_obj_dict("AttributeDefinition", {
+KNOWN_ATTRIBUTES: Dict[unrealsdk.UObject, KnownStat] = _load_obj_dict("AttributeDefinitionBase", {
     "D_Attributes.ExperienceResourcePool.PlayerExperienceLevel": KnownStat(1, "[Player Level]"),
 })
 
@@ -384,7 +384,7 @@ for _obj_name in (
     "GD_Shields.Misc.Att_UniversalShieldBaseDelayConstant",
     "GD_Orchid_Shields.Attributes.Attr_BladeElementalDamageModifier",
 ):
-    _obj = unrealsdk.FindObject("AttributeDefinition", _obj_name)
+    _obj = unrealsdk.FindObject("AttributeDefinitionBase", _obj_name)
     if _obj is None:
         continue
     KNOWN_ATTRIBUTES[_obj] = KnownStat(float_error(_obj.ValueResolverChain[0].ConstantValue))
@@ -504,7 +504,7 @@ GLITCH_PARTS: Set[unrealsdk.UObject] = _load_obj_set("WeaponPartDefinition", (
 ))
 
 
-CONSTRAINT_NAMES: Dict[unrealsdk.UObject, str] = _load_obj_dict("AttributeDefinition", {
+CONSTRAINT_NAMES: Dict[unrealsdk.UObject, str] = _load_obj_dict("AttributeDefinitionBase", {
     "D_Attributes.GrenadeMod.GrenadeModIsIncendiary": "Fire",
     "D_Attributes.GrenadeMod.GrenadeModIsCorrosive": "Corrosive",
     "D_Attributes.GrenadeMod.GrenadeModIsShock": "Shock",
@@ -514,18 +514,25 @@ CONSTRAINT_NAMES: Dict[unrealsdk.UObject, str] = _load_obj_dict("AttributeDefini
 })
 
 
-ATTRIBUTES_TO_IGNORE: Set[unrealsdk.UObject] = _load_obj_set("AttributeDefinition", {
-    "D_Attributes.Shield.ShieldCapacitySlotGradeMinusRarity",
-    "D_Attributes.Shield.ShieldRechargeRateSlotGradeMinusRarity",
-    "D_Attributes.Shield.ShieldRechargeDelaySlotGradeMinusRarity",
-    "D_Attributes.Shield.ShieldSpecialSlotGradeMinusRarity",
-})
-
-
 IGNORED_POST_INIT_PARTS: Set[unrealsdk.UObject] = _load_obj_set("WeaponPartDefinition", (
     "GD_Weap_Shotgun.Barrel.SG_Barrel_Jakobs_RockSalt",
 ))
 
+
+# These are split by part class to make unintentional conflicts a bit less likely
+ATTRIBUTES_TO_IGNORE: Dict[str, Set[unrealsdk.UObject]] = {
+    "ShieldPartDefinition": _load_obj_set("AttributeDefinitionBase", {
+        # These are just duplicates of the grades that already exist, only used for naming
+        "D_Attributes.Shield.ShieldCapacitySlotGradeMinusRarity",
+        "D_Attributes.Shield.ShieldRechargeRateSlotGradeMinusRarity",
+        "D_Attributes.Shield.ShieldRechargeDelaySlotGradeMinusRarity",
+        "D_Attributes.Shield.ShieldSpecialSlotGradeMinusRarity",
+    }),
+    "ShieldDefinition": _load_obj_set("AttributeDefinitionBase", {
+        # This just straight up does nothing
+        "GD_Shields.Misc.Att_BoosterShield_IEDDamage",
+    })
+}
 
 GRADES_TO_IGNORE: Dict[str, Tuple[str, ...]] = {
     "ShieldDefinition": (

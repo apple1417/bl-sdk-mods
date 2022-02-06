@@ -30,7 +30,7 @@ def _create_bonus_data(
         None if the bonus was unparseable and should be skipped.
         The bonus yaml otherwise.
     """
-    if attr_struct.AttributeToModify in ATTRIBUTES_TO_IGNORE:
+    if attr_struct.AttributeToModify in ATTRIBUTES_TO_IGNORE.get(part.Class.Name, ()):
         return None
 
     bonus_data = {

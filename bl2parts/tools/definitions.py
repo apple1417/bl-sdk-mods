@@ -90,7 +90,10 @@ def get_definition_data(def_obj: unrealsdk.UObject) -> YAML:
 
     grades = []
     for idx, slot in enumerate(def_obj.AttributeSlotEffects):
-        if slot.AttributeToModify is None or slot.AttributeToModifier in ATTRIBUTES_TO_IGNORE:
+        if (
+            slot.AttributeToModify is None
+            or slot.AttributeToModify in ATTRIBUTES_TO_IGNORE.get(def_obj.Class.Name, ())
+        ):
             continue
 
         if slot.SlotName in GRADES_TO_IGNORE.get(def_obj.Class.Name, ()):
