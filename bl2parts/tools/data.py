@@ -525,3 +525,28 @@ ATTRIBUTES_TO_IGNORE: Set[unrealsdk.UObject] = _load_obj_set("AttributeDefinitio
 IGNORED_POST_INIT_PARTS: Set[unrealsdk.UObject] = _load_obj_set("WeaponPartDefinition", (
     "GD_Weap_Shotgun.Barrel.SG_Barrel_Jakobs_RockSalt",
 ))
+
+
+GRADES_TO_IGNORE: Dict[str, Tuple[str, ...]] = {
+    "ShieldDefinition": (
+        # This never does anything, but is based on the base shield scaling, so keeping it causes a
+        #  tonne of conflicts when merging the games
+        "MaxHealth",
+    ),
+    "ShieldPartDefinition": (
+        # This is defined with a valid value on most shields, but the only places that provide a
+        #  bonus to it are shield definitions which don't define it, so it never does anything
+        "MaxHealth",
+        # These fields (only on maliwan battery) don't use the right slot name, so don't trigger the
+        #  intended effects
+        "CorrosiveImpactResistance",
+        "CorrosivePassiveResistance",
+        "IncendiaryImpactResistance",
+        "IncendiaryPassiveResistance",
+        "ShockImpactResistance",
+        "ShockPassiveResistance",
+        # This one is only on a maliwan battery again, and this time leads to a valid slot, but it's
+        #  to a completely useless attribute, and it doesn't actually have a value, it's always 0
+        "ExplosiveDamageResistance",
+    )
+}

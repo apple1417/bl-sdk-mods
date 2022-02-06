@@ -5,9 +5,9 @@ from Mods.ModMenu import Game  # type: ignore
 
 from . import YAML, float_error
 from .data import (ALLOWED_DEFINITION_CLASSES, ATTRIBUTES_TO_IGNORE, DEFINITION_PART_TYPE,
-                   IGNORED_POST_INIT_PARTS, ITEM_PART_TYPE_NAMES, KNOWN_ATTRIBUTES,
-                   KNOWN_INITALIZATIONS, MODIFIER_NAMES, PART_NAMES, PART_TYPE_OVERRIDES,
-                   WEAPON_MANU_ATTRIBUTES, WEAPON_PART_TYPE_NAMES)
+                   GRADES_TO_IGNORE, IGNORED_POST_INIT_PARTS, ITEM_PART_TYPE_NAMES,
+                   KNOWN_ATTRIBUTES, KNOWN_INITALIZATIONS, MODIFIER_NAMES, PART_NAMES,
+                   PART_TYPE_OVERRIDES, WEAPON_MANU_ATTRIBUTES, WEAPON_PART_TYPE_NAMES)
 
 VALID_MANU_RESTRICT_PREPENDS: Tuple[str, ...] = (
     "Zoom",
@@ -120,6 +120,9 @@ def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
     for grade in part.AttributeSlotUpgrades:
         if grade.GradeIncrease == 0:
             continue
+        if grade.SlotName in GRADES_TO_IGNORE.get(part.Class.Name, ()):
+            continue
+
         all_bonuses.append({
             "slot": grade.SlotName,
             "value": grade.GradeIncrease,

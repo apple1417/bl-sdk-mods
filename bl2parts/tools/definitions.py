@@ -4,8 +4,8 @@ from typing import Dict
 from Mods.ModMenu import Game  # type: ignore
 
 from . import YAML, float_error
-from .data import (ATTRIBUTES_TO_IGNORE, BASE_SCALING_CONSTANT, CONSTRAINT_NAMES, KNOWN_ATTRIBUTES,
-                   KNOWN_INITALIZATIONS, MODIFIER_NAMES, PART_NAMES)
+from .data import (ATTRIBUTES_TO_IGNORE, BASE_SCALING_CONSTANT, CONSTRAINT_NAMES, GRADES_TO_IGNORE,
+                   KNOWN_ATTRIBUTES, KNOWN_INITALIZATIONS, MODIFIER_NAMES, PART_NAMES)
 
 WEAPON_DAMAGE_ID: unrealsdk.UObject = unrealsdk.FindObject(
     "AttributeInitializationDefinition",
@@ -93,9 +93,7 @@ def get_definition_data(def_obj: unrealsdk.UObject) -> YAML:
         if slot.AttributeToModify is None or slot.AttributeToModifier in ATTRIBUTES_TO_IGNORE:
             continue
 
-        # HACK: This slot is never actually used, and causes a bunch of problems merging
-        #        definitions, so just don't ever add it
-        if def_obj.Class.Name == "ShieldDefinition" and slot.SlotName == "MaxHealth":
+        if slot.SlotName in GRADES_TO_IGNORE.get(def_obj.Class.Name, ()):
             continue
 
         grade_data = {
