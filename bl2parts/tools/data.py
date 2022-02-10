@@ -86,7 +86,7 @@ For weapons, this is all their definitions.
 For items, it's only their non unique definitions - we'll use classes from `ITEM_CLASS_OVERRIDES`
  to grab them instead.
 
-Is this distinction a hacky confusing mess? Sure. Does it work? Yup.
+Is this distinction a hacky confusing mess? Sure. Does it work? Kinda :)
 """
 ALL_DEFINITIONS: Dict[str, Tuple[str, ...]] = {
     "shield": (
@@ -372,6 +372,10 @@ WEAPON_MANU_ATTRIBUTES: Dict[unrealsdk.UObject, str] = _load_obj_dict("Attribute
     "D_Attributes.WeaponManufacturer.Weapon_Is_Vladof": "Vladof",
 })
 
+VALID_MANU_RESTRICT_PREPENDS: Tuple[str, ...] = (
+    "Zoom",
+)
+
 
 KNOWN_ATTRIBUTES: Dict[unrealsdk.UObject, KnownStat] = _load_obj_dict("AttributeDefinitionBase", {
     "D_Attributes.ExperienceResourcePool.PlayerExperienceLevel": KnownStat(1, "[Player Level]"),
@@ -555,5 +559,16 @@ GRADES_TO_IGNORE: Dict[str, Tuple[str, ...]] = {
         # This one is only on a maliwan battery again, and this time leads to a valid slot, but it's
         #  to a completely useless attribute, and it doesn't actually have a value, it's always 0
         "ExplosiveDamageResistance",
+    )
+}
+
+# This will add +0 grades only *if* they also activate the slot
+ALLOWED_ZERO_GRADES: Dict[str, Tuple[str, ...]] = {
+    "ShieldPartDefinition": (
+        # Used by the maliwan capacitors, done entirely in the base value
+        "FireResist",
+        "ShockResist",
+        "CorrosiveResist",
+        "IceResist",
     )
 }

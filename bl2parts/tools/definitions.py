@@ -7,7 +7,7 @@ from . import YAML, float_error
 from .data import (ATTRIBUTES_TO_IGNORE, BASE_SCALING_CONSTANT, CONSTRAINT_NAMES, GRADES_TO_IGNORE,
                    KNOWN_ATTRIBUTES, KNOWN_INITALIZATIONS, MODIFIER_NAMES, PART_NAMES)
 
-WEAPON_DAMAGE_ID: unrealsdk.UObject = unrealsdk.FindObject(
+WEAPON_DAMAGE_INIT: unrealsdk.UObject = unrealsdk.FindObject(
     "AttributeInitializationDefinition",
     "GD_Balance_HealthAndDamage.HealthAndDamage.Init_WeaponDamage"
 )
@@ -64,9 +64,9 @@ def get_definition_data(def_obj: unrealsdk.UObject) -> YAML:
             })
 
         assert def_obj.InstantHitDamage.BaseValueAttribute is None
-        assert def_obj.InstantHitDamage.InitializationDefinition == WEAPON_DAMAGE_ID
+        assert def_obj.InstantHitDamage.InitializationDefinition == WEAPON_DAMAGE_INIT
         assert def_obj.StatusEffectDamage.BaseValueAttribute is None
-        assert def_obj.StatusEffectDamage.InitializationDefinition == WEAPON_DAMAGE_ID
+        assert def_obj.StatusEffectDamage.InitializationDefinition == WEAPON_DAMAGE_INIT
         assert def_obj.BaseStatusEffectChanceModifier.BaseValueAttribute is None
         assert def_obj.BaseStatusEffectChanceModifier.InitializationDefinition is None
 

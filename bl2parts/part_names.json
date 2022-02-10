@@ -3650,7 +3650,7 @@
         }
     },
     "GD_Shields.Capacitor.Capacitor6_Torgue_ExplosiveRes": {
-        "name": "",
+        "name": "Torgue",
         "slot": "Capacitor",
         "type": "Shield"
     },

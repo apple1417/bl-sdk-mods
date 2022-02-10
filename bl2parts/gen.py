@@ -98,17 +98,23 @@ for item_type, def_list in ALL_DEFINITIONS.items():
             data[part_type] = []
         data[part_type].append(part_data)
 
+    meta_definitions = []
+    for def_obj in def_objects:
+        def_data = get_definition_data(def_obj)
+        def_data["unique"] = def_obj not in non_unique_parts
+        meta_definitions.append(def_data)
+
     for parts in data.values():
         parts.sort(key=lambda x: x["_obj_name"])
+
+    meta_definitions.sort(key=lambda x: x["_obj_name"])
 
     with open(os.path.join(output_dir, f"{item_type}s.yml"), "w") as file:
         # Seperate passes to force ordering
         yaml.dump(data, file)  # type: ignore
         yaml.dump({  # type: ignore
             "meta": {
-                PLURAL_WEAPON_PART_TYPE[DEFINITION_PART_TYPE]: sorted([
-                    get_definition_data(def_obj) for def_obj in def_objects
-                ], key=lambda x: x["_obj_name"])  # type: ignore
+                PLURAL_WEAPON_PART_TYPE[DEFINITION_PART_TYPE]: meta_definitions
             }
         }, file)
 

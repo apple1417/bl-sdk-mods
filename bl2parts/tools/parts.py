@@ -4,14 +4,11 @@ from typing import Optional, Tuple
 from Mods.ModMenu import Game  # type: ignore
 
 from . import YAML, float_error
-from .data import (ALLOWED_DEFINITION_CLASSES, ATTRIBUTES_TO_IGNORE, DEFINITION_PART_TYPE,
-                   GRADES_TO_IGNORE, IGNORED_POST_INIT_PARTS, ITEM_PART_TYPE_NAMES,
-                   KNOWN_ATTRIBUTES, KNOWN_INITALIZATIONS, MODIFIER_NAMES, PART_NAMES,
-                   PART_TYPE_OVERRIDES, WEAPON_MANU_ATTRIBUTES, WEAPON_PART_TYPE_NAMES)
-
-VALID_MANU_RESTRICT_PREPENDS: Tuple[str, ...] = (
-    "Zoom",
-)
+from .data import (ALLOWED_DEFINITION_CLASSES, ALLOWED_ZERO_GRADES, ATTRIBUTES_TO_IGNORE,
+                   DEFINITION_PART_TYPE, GRADES_TO_IGNORE, IGNORED_POST_INIT_PARTS,
+                   ITEM_PART_TYPE_NAMES, KNOWN_ATTRIBUTES, KNOWN_INITALIZATIONS, MODIFIER_NAMES,
+                   PART_NAMES, PART_TYPE_OVERRIDES, VALID_MANU_RESTRICT_PREPENDS,
+                   WEAPON_MANU_ATTRIBUTES, WEAPON_PART_TYPE_NAMES)
 
 
 def _create_bonus_data(
@@ -119,7 +116,10 @@ def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
 
     for grade in part.AttributeSlotUpgrades:
         if grade.GradeIncrease == 0:
-            continue
+            if not grade.bActivateSlot:
+                continue
+            if grade.SlotName not in ALLOWED_ZERO_GRADES.get(part.Class.Name, ()):
+                continue
         if grade.SlotName in GRADES_TO_IGNORE.get(part.Class.Name, ()):
             continue
 

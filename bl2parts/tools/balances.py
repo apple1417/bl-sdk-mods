@@ -37,9 +37,16 @@ def get_parts_on_balance(bal: unrealsdk.UObject) -> Set[unrealsdk.UObject]:
     Returns:
         A set of parts which can spawn on the balance.
     """
-    is_weapon = bal.Class.Name == "WeaponBalanceDefinition"
 
-    parts: Set[unrealsdk.UObject] = set()
+    # Of course nothing's simple, so we need different strategies for weapons, shields, and nades
+    is_weapon = bal.Class.Name == "WeaponBalanceDefinition"
+    is_shield = (
+        bal.InventoryDefinition is not None
+        and bal.InventoryDefinition.Class.Name == "ShieldDefinition"
+    )
+
+    if is_shield:
+        return get_parts_on_item_definition(bal.InventoryDefinition)
 
     part_list = None
     for list_slot in PART_LIST_SLOTS:
@@ -48,9 +55,10 @@ def get_parts_on_balance(bal: unrealsdk.UObject) -> Set[unrealsdk.UObject]:
             break
     else:
         if not is_weapon and bal.InventoryDefinition is not None:
-            parts.update(get_parts_on_item_definition(bal.InventoryDefinition))
-        return parts
+            return get_parts_on_item_definition(bal.InventoryDefinition)
+        return set()
 
+    parts: Set[unrealsdk.UObject] = set()
     for slot_name in (WEAPON_PART_SLOTS if is_weapon else ITEM_PART_SLOTS):
         slot = getattr(part_list, slot_name)
         if not slot.bEnabled:
