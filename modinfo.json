@@ -69,27 +69,6 @@
       "requirements": {}
     },
     {
-      "name": "Borderlands Crowd Control",
-      "description": [
-        "Lets viewers on Twitch spend channel points to affect your game.\n",
-        "\n",
-        "Installation is more involved than other mods, please refer to the",
-        " [readme](https://github.com/apple1417/bl-sdk-mods/blob/master/CrowdControl/Readme.md).\n",
-        "These instructions are included in the download, and are thus not duplicated here to",
-        " prevent two copies getting out of sync.\n",
-        "\n",
-        "A list of the default effects is available",
-        " [here](https://github.com/apple1417/bl-sdk-mods/blob/master/CrowdControl/Effects.md)."
-      ],
-      "tagline": "Lets viewers on Twitch spend channel points to affect your game.",
-      "types": ["Gameplay", "Utility"],
-      "latest": "1.3",
-      "versions": {
-        "1.3": "https://github.com/apple1417/bl-sdk-mods/blob/master/CrowdControl/Readme.md"
-      },
-      "requirements": {}
-    },
-    {
       "name": "Command Extensions",
       "description": [
         "Adds a few new console commands, and provides functionality for other mods to do the same.",

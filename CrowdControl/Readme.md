@@ -1,4 +1,7 @@
 # Borderlands Crowd Control
+NOTE: this is kind of outdated, and will be hacky to get working.
+
+Will not work if local Python is 3.10 or newer.
 
 ## How it works
 Borderlands Crowd Control contains a number of effects that you can choose to have activated when certain channel points rewards are redeemed. Each effect has a trigger phrase. While the mod is active, it will listen for any custom channel point reward redemptions, and it will check if that reward's title matches up with any of the trigger phrases. Any effects that it matches will be activated - though effects may chose to queue the activation for later. Multiple effects can share the same trigger phrase, though this may have unintended interactions.
