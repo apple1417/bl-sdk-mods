@@ -15,10 +15,11 @@
         "Adds alt use binds to quickly refill health and ammo at their vendors, like in BL3."
       ],
       "types": ["Utility"],
-      "latest": "1.6",
+      "latest": "1.7",
       "versions": {
         "1.5": "https://github.com/apple1417/bl-sdk-mods/raw/a45fde7c5edc2224c15ac0a775076aacd3d40a0a/AltUseVendors/AltUseVendors.zip",
-        "1.6": "https://github.com/apple1417/bl-sdk-mods/raw/master/AltUseVendors/AltUseVendors.zip"
+        "1.6": "https://github.com/apple1417/bl-sdk-mods/raw/8273080a0bfcc922f0edaffb84bec4a9ca044b54/AltUseVendors/AltUseVendors.zip",
+        "1.7": "https://github.com/apple1417/bl-sdk-mods/raw/master/AltUseVendors/AltUseVendors.zip"
       },
       "requirements": {
         "AsyncUtil": ">=1.0"

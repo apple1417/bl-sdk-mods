@@ -20,7 +20,7 @@ class AltUseVendors(SDKMod):
         "\n"
         "If you have issues with stuttering, disable updating costs in settings."
     )
-    Version: str = "1.6"
+    Version: str = "1.7"
 
     Types: ModTypes = ModTypes.Utility
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
@@ -183,7 +183,7 @@ class AltUseVendors(SDKMod):
 
             return True
 
-        def WillowClientDisableLoadingMovie(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
+        def WillowShowLoadingMovie(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
             # On level change reset all our caching
             self.TouchingActors = {}
             self.VialCosts = {}
@@ -243,7 +243,7 @@ class AltUseVendors(SDKMod):
         unrealsdk.RunHook("WillowGame.WillowInteractiveObject.InitializeFromDefinition", self.Name, InitializeFromDefinition)
         unrealsdk.RunHook("WillowGame.WillowInteractiveObject.Touch", self.Name, Touch)
         unrealsdk.RunHook("WillowGame.WillowInteractiveObject.UnTouch", self.Name, UnTouch)
-        unrealsdk.RunHook("WillowGame.WillowPlayerController.WillowClientDisableLoadingMovie", self.Name, WillowClientDisableLoadingMovie)
+        unrealsdk.RunHook("WillowGame.WillowPlayerController.WillowShowLoadingMovie", self.Name, WillowShowLoadingMovie)
         unrealsdk.RunHook("WillowGame.WillowVendingMachine.GenerateInventory", self.Name, GenerateInventory)
 
     def Disable(self) -> None:
@@ -252,7 +252,7 @@ class AltUseVendors(SDKMod):
         unrealsdk.RemoveHook("WillowGame.WillowInteractiveObject.InitializeFromDefinition", self.Name)
         unrealsdk.RemoveHook("WillowGame.WillowInteractiveObject.Touch", self.Name)
         unrealsdk.RemoveHook("WillowGame.WillowInteractiveObject.UnTouch", self.Name)
-        unrealsdk.RemoveHook("WillowGame.WillowPlayerController.WillowClientDisableLoadingMovie", self.Name)
+        unrealsdk.RemoveHook("WillowGame.WillowPlayerController.WillowShowLoadingMovie", self.Name)
         unrealsdk.RemoveHook("WillowGame.WillowVendingMachine.GenerateInventory", self.Name)
         unrealsdk.RemoveHook("WillowGame.WillowPlayerController.PayForUsedObject", self.Name)
 

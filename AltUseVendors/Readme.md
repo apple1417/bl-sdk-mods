@@ -1,5 +1,7 @@
 ## Changelog
 
+### Alt Use Vendors v1.7
+Fixed crash that occured when switching maps while standing near a vending machine.
 
 ### Alt Use Vendors v1.6
 Added more optimization in anticipation of sdk version 0.7.10. Will fall back to current implementation when running on older versions.
