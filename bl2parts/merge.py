@@ -9,6 +9,8 @@ import yaml
 PARTS_TO_ADD_GAME_TO_NAME: Tuple[str, ...] = (
     "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Hyperion_Striker",
     "GD_Cork_Weap_Shotgun.Barrel.SG_Barrel_Jakobs_Sledges",
+    "GD_Cork_Weap_SniperRifles.Barrel.SR_Barrel_Hyperion_Invader",
+    "GD_Cork_Weap_SniperRifles.Barrel.SR_Barrel_Jakobs_Skullmasher",
     "GD_Shields.A_Item.Shield_Absorption_05_LegendaryNormal",
     "GD_Shields.A_Item.Shield_Absorption",
     "GD_Shields.A_Item.Shield_Booster_05_Legendary",
@@ -39,6 +41,7 @@ PARTS_TO_ADD_GAME_TO_NAME: Tuple[str, ...] = (
     "GD_Weap_Shotgun.A_Weapons.WT_Torgue_Shotgun",
     "GD_Weap_Shotgun.Barrel.SG_Barrel_Hyperion_Striker",
     "GD_Weap_Shotgun.Barrel.SG_Barrel_Jakobs_Sledges",
+    "GD_Weap_SniperRifles.A_Weapons.WeaponType_Hyperion_Sniper",
 )
 
 PARTS_TO_NAIVE_BONUS_MERGE: Tuple[str, ...] = (
@@ -242,9 +245,9 @@ for name, matching_files in get_file_mappings("yml").items():
 
     with open(os.path.join(OUTPUT_DIR, name), "w") as file:
         # Seperate passes to force ordering
-        yaml.dump(merged_yml, file)  # type: ignore
+        yaml.dump(merged_yml, file, allow_unicode=True)  # type: ignore
         yaml.dump({  # type: ignore
             "meta": {
                 "definitions": merged_meta_definitions
             }
-        }, file)
+        }, file, allow_unicode=True)

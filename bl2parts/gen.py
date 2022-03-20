@@ -111,12 +111,12 @@ for item_type, def_list in ALL_DEFINITIONS.items():
 
     with open(os.path.join(output_dir, f"{item_type}s.yml"), "w") as file:
         # Seperate passes to force ordering
-        yaml.dump(data, file)  # type: ignore
+        yaml.dump(data, file, allow_unicode=True)  # type: ignore
         yaml.dump({  # type: ignore
             "meta": {
                 PLURAL_WEAPON_PART_TYPE[DEFINITION_PART_TYPE]: meta_definitions
             }
-        }, file)
+        }, file, allow_unicode=True)
 
     name_path = os.path.join(output_dir, f"{item_type}_names.json")
     if GEN_NAME_DUMP_TEMPLATE and not os.path.exists(name_path):

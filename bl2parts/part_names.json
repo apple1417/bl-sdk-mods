@@ -4952,5 +4952,1008 @@
         "name": "Slag",
         "slot": "Element",
         "type": "Shotgun"
+    },
+    "GD_Anemone_Weap_SniperRifles.A_Weapons.WeaponType_Jakobs_Sniper": {
+        "name": "Hot Mama",
+        "slot": "Definition",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Accessory.Sniper_Accessory_Bayonet1": {
+        "name": "Bayonet (Anemone)",
+        "slot": "Accessory",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Accessory.Sniper_Accessory_Bipod1_Accuracy": {
+        "name": "Bipod 1 Accuracy (Anemone)",
+        "slot": "Accessory",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Accessory.Sniper_Accessory_Bipod2_Critical": {
+        "name": "Bipod 2 Crit (Anemone)",
+        "slot": "Accessory",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Accessory.Sniper_Accessory_Foregrip_Stability": {
+        "name": "Foregrip (Anemone)",
+        "slot": "Accessory",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Accessory.Sniper_Accessory_Mount1_Mag": {
+        "name": "Mount 1 Mag (Anemone)",
+        "slot": "Accessory",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Accessory.Sniper_Accessory_Mount2_FireRate": {
+        "name": "Mount 2 Firerate (Anemone)",
+        "slot": "Accessory",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Accessory.Sniper_Accessory_Mount3_Damage": {
+        "name": "Mount 3 Damage (Anemone)",
+        "slot": "Accessory",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Accessory.Sniperl_Accessory_None": {
+        "name": "\"No Accessory\" (Anemone)",
+        "slot": "Accessory",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Barrel.SR_Barrel_Dahl": {
+        "name": "Dahl (Anemone)",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Barrel.SR_Barrel_Hyperion": {
+        "name": "Hyperion (Anemone)",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Barrel.SR_Barrel_Hyperion_Morde_Lt": {
+        "name": "Amigo Sincero ",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Barrel.SR_Barrel_Jakobs": {
+        "name": "Jakobs (Anemone)",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Barrel.SR_Barrel_Maliwan": {
+        "name": "Maliwan (Anemone)",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Barrel.SR_Barrel_Vladof": {
+        "name": "Vladof (Anemone)",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Body.SR_Body_Jakobs": {
+        "name": "Jakobs (Common, Anemone)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Body.SR_Body_Jakobs_2": {
+        "name": "Jakobs (Uncommon, Anemone)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Body.SR_Body_Jakobs_3": {
+        "name": "Jakobs (Rare, Anemone)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Body.SR_Body_Jakobs_4": {
+        "name": "Jakobs (Very Rare, Anemone)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Grip.SR_Grip_Dahl": {
+        "name": "Dahl (Anemone)",
+        "slot": "Grip",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Grip.SR_Grip_Hyperion": {
+        "name": "Hyperion (Anemone)",
+        "slot": "Grip",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Grip.SR_Grip_Jakobs": {
+        "name": "Jakobs (Anemone)",
+        "slot": "Grip",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Grip.SR_Grip_Maliwan": {
+        "name": "Maliwan (Anemone)",
+        "slot": "Grip",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Grip.SR_Grip_Vladof": {
+        "name": "Vladof (Anemone)",
+        "slot": "Grip",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.ManufacturerMaterials.Material_Jakobs_1": {
+        "name": "Jakobs (Common, Anemone)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.ManufacturerMaterials.Material_Jakobs_2": {
+        "name": "Jakobs (Uncommon, Anemone)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.ManufacturerMaterials.Material_Jakobs_3": {
+        "name": "Jakobs (Rare, Anemone)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.ManufacturerMaterials.Material_Jakobs_4": {
+        "name": "Jakobs (Very Rare, Anemone)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Sight.Sniper_Sight_Dahl": {
+        "name": "Dahl (Anemone)",
+        "slot": "Sight",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Sight.Sniper_Sight_Hyperion": {
+        "name": "Hyperion (Anemone)",
+        "slot": "Sight",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Sight.Sniper_Sight_Jakobs": {
+        "name": "Jakobs (Anemone)",
+        "slot": "Sight",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Sight.Sniper_Sight_Maliwan": {
+        "name": "Maliwan (Anemone)",
+        "slot": "Sight",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Sight.Sniper_Sight_Vladof": {
+        "name": "Vladof (Anemone)",
+        "slot": "Sight",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Stock.SR_Stock_Dahl": {
+        "name": "Dahl (Anemone)",
+        "slot": "Stock",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Stock.SR_Stock_Hyperion": {
+        "name": "Hyperion (Anemone)",
+        "slot": "Stock",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Stock.SR_Stock_Jakobs": {
+        "name": "Jakobs (Anemone)",
+        "slot": "Stock",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Stock.SR_Stock_Maliwan": {
+        "name": "Maliwan (Anemone)",
+        "slot": "Stock",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weap_SniperRifles.Stock.SR_Stock_Vladof": {
+        "name": "Vladof (Anemone)",
+        "slot": "Stock",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weapons.ManufacturerMaterials.Mat_Jakobs_6_Godfinger": {
+        "name": "Hot Mama",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weapons.sniper.SR_Barrel_Dahl_Chaude_Mama": {
+        "name": "Hot Mama",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Anemone_Weapons.sniper.SR_Body_Jakobs_6_Chaude_Mama": {
+        "name": "Hot Mama",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Dahl_4_Emerald_SR": {
+        "name": "Emerald",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Hyperion_4_Diamond_SR": {
+        "name": "Diamond",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Jakobs_4_Citrine_SR": {
+        "name": "Citrine",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Vladof_4_Garnet_SR": {
+        "name": "Garnet",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Cork_Weap_SniperRifles.Barrel.SR_Barrel_Dahl_Pitchfork": {
+        "name": "Pitchfork",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Cork_Weap_SniperRifles.Barrel.SR_Barrel_Dahl_WetWeek": {
+        "name": "Wet Week",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Cork_Weap_SniperRifles.Barrel.SR_Barrel_Hyperion_ChereAmie": {
+        "name": "Ch\u00c3\u00a8re-amie",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Cork_Weap_SniperRifles.Barrel.SR_Barrel_Hyperion_Invader": {
+        "name": "Invader",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Cork_Weap_SniperRifles.Barrel.SR_Barrel_Jakobs_Razorback": {
+        "name": "Razorback",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Cork_Weap_SniperRifles.Barrel.SR_Barrel_Jakobs_Skullmasher": {
+        "name": "Skullmasher",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Cork_Weap_SniperRifles.Barrel.SR_Barrel_Maliwan_Magma": {
+        "name": "Magma",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Cork_Weap_SniperRifles.Barrel.SR_Barrel_Vladof_Longnail": {
+        "name": "Longnail",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Cork_Weap_SniperRifles.Barrel.SR_Barrel_Vladof_TheMachine": {
+        "name": "The Machine",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Cork_Weap_SniperRifles.Grip.SR_Grip_Vladof_TheMachine": {
+        "name": "The Machine",
+        "slot": "Grip",
+        "type": "Sniper"
+    },
+    "GD_Cork_Weap_SniperRifles.ManufacturerMaterials.Material_Dahl_3_WetWeek": {
+        "name": "Wet Week",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Cork_Weap_SniperRifles.ManufacturerMaterials.Material_Jakobs_3_Razorback": {
+        "name": "Razorback",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Cork_Weap_SniperRifles.ManufacturerMaterials.Material_Maliwan_3_ChereAmie": {
+        "name": "Ch\u00c3\u00a8re-amie",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Cork_Weap_SniperRifles.ManufacturerMaterials.Material_Vladof_3_TheMachine": {
+        "name": "The Machine",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Cork_Weap_SniperRifles.ManufacturerMaterials.Material_Vladof_5_Legendary_Longnail": {
+        "name": "Longnail",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Cork_Weap_SniperRifles.Sight.Sniper_Sight_None_Razorback": {
+        "name": "Razorback",
+        "slot": "Sight",
+        "type": "Sniper"
+    },
+    "GD_Gladiolus_Weapons.ManufacturerMaterials.Mat_Maliwan_6_Storm": {
+        "name": "Storm",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Gladiolus_Weapons.sniper.SR_Barrel_Maliwan_Storm": {
+        "name": "Storm",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Gladiolus_Weapons.sniper.SR_Body_Maliwan_6_Storm": {
+        "name": "Storm",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Iris_Weapons.ManufacturerMaterials.Material_Jakobs_2_Cobra": {
+        "name": "Cobra",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Iris_Weapons.SniperRifles.SR_Barrel_Dahl_Cobra": {
+        "name": "Cobra",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Lobelia_Weapons.ManufacturerMaterials.Mat_Jakobs_6_Godfinger": {
+        "name": "Godfinger",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Lobelia_Weapons.sniper.SR_Barrel_Dahl_Godfinger": {
+        "name": "Godfinger",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Lobelia_Weapons.sniper.SR_Body_Jakobs_6_GodFinger": {
+        "name": "Godfinger",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Ma_Weapons.Barrel.SR_Barrel_Hyperion_5_OmniCannon": {
+        "name": "Omni-Cannon",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Sniper_Dahl_6_Glitch": {
+        "name": "Dahl (Glitch)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Sniper_Hyperion_6_Glitch": {
+        "name": "Hyperion (Glitch)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Sniper_Jakobs_6_Glitch": {
+        "name": "Jakobs (Glitch)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Sniper_Maliwan_6_Glitch": {
+        "name": "Maliwan (Glitch)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Sniper_Old_Hyperion_5_OmniCannon": {
+        "name": "Omni-Cannon",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Sniper_Vladof_6_Glitch": {
+        "name": "Vladof (Glitch)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Orchid_BossWeapons.ManufacturerMaterials.Mat_Maliwan_3_Pimpernel": {
+        "name": "Pimpernel",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Orchid_BossWeapons.SniperRifles.SR_Barrel_Dahl_Pimpernel": {
+        "name": "Pimpernel",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Orchid_RaidWeapons.ManufacturerMaterials.Material_Vladof_1_Patriot": {
+        "name": "Patriot",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Orchid_RaidWeapons.sniper.Patriot.Orchid_Seraph_Patriot_Barrel": {
+        "name": "Patriot",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Petunia_Weapons.ManufacturerMaterials.sniper.Mat_Jakobs_3_Plunkett": {
+        "name": "Plunkett",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Petunia_Weapons.Snipers.SR_Barrel_Plunkett": {
+        "name": "Plunkett",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Sage_RaidWeapons.ManufacturerMaterials.Material_Jakobs_1_HawkEye": {
+        "name": "Hawk Eye",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Sage_RaidWeapons.sniper.Sniper_Barrel_HawkEye": {
+        "name": "Hawk Eye",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Sage_Weapons.ManufacturerMaterials.Material_Jakobs_2_ElephantGun": {
+        "name": "Elephant Gun",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Sage_Weapons.SniperRifles.SR_Barrel_Hyperion_ElephantGun": {
+        "name": "Elephant Gun",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Sage_Weapons.SniperRifles.SR_Body_Jakobs_ElephantGun": {
+        "name": "Elephant Gun",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.A_Weapons.WeaponType_Dahl_Sniper": {
+        "name": "Dahl",
+        "slot": "Definition",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.A_Weapons.WeaponType_Hyperion_Sniper": {
+        "name": "Hyperion",
+        "slot": "Definition",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.A_Weapons.WeaponType_Jakobs_Sniper": {
+        "name": "Jakobs",
+        "slot": "Definition",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.A_Weapons.WeaponType_Maliwan_Sniper": {
+        "name": "Maliwan",
+        "slot": "Definition",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.A_Weapons.WeaponType_Vladof_Sniper": {
+        "name": "Vladof",
+        "slot": "Definition",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Accessory.Sniper_Accessory_Bayonet1": {
+        "name": "Bayonet",
+        "slot": "Accessory",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Accessory.Sniper_Accessory_Bipod1_Accuracy": {
+        "name": "Bipod 1 Accuracy",
+        "slot": "Accessory",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Accessory.Sniper_Accessory_Bipod2_Critical": {
+        "name": "Bipod 2 Crit",
+        "slot": "Accessory",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Accessory.Sniper_Accessory_Foregrip_Stability": {
+        "name": "Foregrip",
+        "slot": "Accessory",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Accessory.Sniper_Accessory_Mount1_Mag": {
+        "name": "Mount 1 Mag",
+        "slot": "Accessory",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Accessory.Sniper_Accessory_Mount2_FireRate": {
+        "name": "Mount 2 Firerate",
+        "slot": "Accessory",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Accessory.Sniper_Accessory_Mount3_Damage": {
+        "name": "Mount 3 Damage",
+        "slot": "Accessory",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Accessory.Sniperl_Accessory_None": {
+        "name": "\"No Accessory\"",
+        "slot": "Accessory",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Barrel.SR_Barrel_Alien_Longbow": {
+        "name": "Longbow",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Barrel.SR_Barrel_Alien_RailGun": {
+        "name": "E-Tech",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Barrel.SR_Barrel_Dahl": {
+        "name": "Dahl",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Barrel.SR_Barrel_Dahl_FremingtonsEdge": {
+        "name": "Fremington's Edge",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Barrel.SR_Barrel_Dahl_Pitchfork": {
+        "name": "Pitchfork",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Barrel.SR_Barrel_Dahl_Sloth": {
+        "name": "Sloth",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Barrel.SR_Barrel_Hyperion": {
+        "name": "Hyperion",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Barrel.SR_Barrel_Hyperion_ChereAmie": {
+        "name": "Ch\u00c3\u00a8re-amie",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Barrel.SR_Barrel_Hyperion_Invader": {
+        "name": "Invader",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Barrel.SR_Barrel_Hyperion_Tresspasser": {
+        "name": "Trespasser",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Barrel.SR_Barrel_Jakobs": {
+        "name": "Jakobs",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Barrel.SR_Barrel_Jakobs_Buffalo": {
+        "name": "Buffalo",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Barrel.SR_Barrel_Jakobs_Skullmasher": {
+        "name": "Skullmasher",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Barrel.SR_Barrel_Maliwan": {
+        "name": "Maliwan",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Barrel.SR_Barrel_Maliwan_Morningstar": {
+        "name": "Morningstar",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Barrel.SR_Barrel_Maliwan_Volcano": {
+        "name": "Volcano",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Barrel.SR_Barrel_Vladof": {
+        "name": "Vladof",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Barrel.SR_Barrel_Vladof_Lyudmila": {
+        "name": "Lyuda",
+        "slot": "Barrel",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Dahl": {
+        "name": "Dahl (Common)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Dahl_2": {
+        "name": "Dahl (Uncommon)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Dahl_3": {
+        "name": "Dahl (Rare)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Dahl_4": {
+        "name": "Dahl (Very Rare)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Gearbox": {
+        "name": "Gearbox",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Hyperion": {
+        "name": "Hyperion (Common)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Hyperion_2": {
+        "name": "Hyperion (Uncommon)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Hyperion_3": {
+        "name": "Hyperion (Rare)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Hyperion_4": {
+        "name": "Hyperion (Very Rare)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Jakobs": {
+        "name": "Jakobs (Common)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Jakobs_2": {
+        "name": "Jakobs (Uncommon)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Jakobs_3": {
+        "name": "Jakobs (Rare)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Jakobs_4": {
+        "name": "Jakobs (Very Rare)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Maliwan": {
+        "name": "Maliwan (Common)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Maliwan_2": {
+        "name": "Maliwan (Uncommon)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Maliwan_3": {
+        "name": "Maliwan (Rare)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Maliwan_4": {
+        "name": "Maliwan (Very Rare)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Vladof": {
+        "name": "Vladof (Common)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Vladof_2": {
+        "name": "Vladof (Uncommon)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Vladof_3": {
+        "name": "Vladof (Rare)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Body.SR_Body_Vladof_4": {
+        "name": "Vladof (Very Rare)",
+        "slot": "Body",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Grip.SR_Grip_Dahl": {
+        "name": "Dahl",
+        "slot": "Grip",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Grip.SR_Grip_Hyperion": {
+        "name": "Hyperion",
+        "slot": "Grip",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Grip.SR_Grip_Jakobs": {
+        "name": "Jakobs",
+        "slot": "Grip",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Grip.SR_Grip_Maliwan": {
+        "name": "Maliwan",
+        "slot": "Grip",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Grip.SR_Grip_Vladof": {
+        "name": "Vladof",
+        "slot": "Grip",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Mat_Gearbox_1": {
+        "name": "Gearbox (Common)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Dahl_1": {
+        "name": "Dahl (Common)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Dahl_2": {
+        "name": "Dahl (Uncommon)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Dahl_3": {
+        "name": "Dahl (Rare)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Dahl_3_Sloth": {
+        "name": "Sloth",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Dahl_4": {
+        "name": "Dahl (Very Rare)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Dahl_5_Legendary": {
+        "name": "Pitchfork",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Hyperion_1": {
+        "name": "Hyperion (Common)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Hyperion_2": {
+        "name": "Hyperion (Uncommon)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Hyperion_3": {
+        "name": "Hyperion (Rare)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Hyperion_3_FremingtonsEdge": {
+        "name": "Fremington's Edge",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Hyperion_3_Longbow": {
+        "name": "Longbow",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Hyperion_3_Morningstar": {
+        "name": "Morningstar",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Hyperion_4": {
+        "name": "Hyperion (Very Rare)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Hyperion_5_Legendary": {
+        "name": "Invader",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Jakobs_1": {
+        "name": "Jakobs (Common)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Jakobs_2": {
+        "name": "Jakobs (Uncommon)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Jakobs_3": {
+        "name": "Jakobs (Rare)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Jakobs_3_Buffalo": {
+        "name": "Buffalo",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Jakobs_3_Trespasser": {
+        "name": "Trespasser",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Jakobs_4": {
+        "name": "Jakobs (Very Rare)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Jakobs_5_Legendary": {
+        "name": "Skullmasher",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Maliwan_1": {
+        "name": "Maliwan (Common)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Maliwan_2": {
+        "name": "Maliwan (Uncommon)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Maliwan_3": {
+        "name": "Maliwan (Rare)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Maliwan_3_ChereAmie": {
+        "name": "Ch\u00c3\u00a8re-amie",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Maliwan_4": {
+        "name": "Maliwan (Very Rare)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Maliwan_5_Legendary": {
+        "game_overrides": {
+            "TPS": "Magma"
+        },
+        "name": "Volcano",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Old_Hyperion_1": {
+        "name": "Old Hyperion (Common)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Old_Hyperion_2": {
+        "name": "Old Hyperion (Uncommon)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Old_Hyperion_3": {
+        "name": "Old Hyperion (Rare)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Old_Hyperion_4": {
+        "name": "Old Hyperion (Very Rare)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Vladof_1": {
+        "name": "Vladof (Common)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Vladof_2": {
+        "name": "Vladof (Uncommon)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Vladof_3": {
+        "name": "Vladof (Rare)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Vladof_4": {
+        "name": "Vladof (Very Rare)",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.ManufacturerMaterials.Material_Vladof_5_Legendary": {
+        "name": "Lyuda",
+        "slot": "Material",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Sight.Sniper_Sight_Dahl": {
+        "name": "Dahl",
+        "slot": "Sight",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Sight.Sniper_Sight_Hyperion": {
+        "name": "Hyperion",
+        "slot": "Sight",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Sight.Sniper_Sight_Hyperion_FremingtonsEdge": {
+        "name": "Fremington's Edge",
+        "slot": "Sight",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Sight.Sniper_Sight_Jakobs": {
+        "name": "Jakobs",
+        "slot": "Sight",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Sight.Sniper_Sight_Maliwan": {
+        "name": "Maliwan",
+        "slot": "Sight",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Sight.Sniper_Sight_None_Buffalo": {
+        "name": "Buffalo",
+        "slot": "Sight",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Sight.Sniper_Sight_None_Longbow": {
+        "name": "Longbow",
+        "slot": "Sight",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Sight.Sniper_Sight_Vladof": {
+        "name": "Vladof",
+        "slot": "Sight",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Stock.SR_Stock_Dahl": {
+        "name": "Dahl",
+        "slot": "Stock",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Stock.SR_Stock_Hyperion": {
+        "name": "Hyperion",
+        "slot": "Stock",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Stock.SR_Stock_Jakobs": {
+        "name": "Jakobs",
+        "slot": "Stock",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Stock.SR_Stock_Maliwan": {
+        "name": "Maliwan",
+        "slot": "Stock",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.Stock.SR_Stock_Vladof": {
+        "name": "Vladof",
+        "slot": "Stock",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.elemental.SR_Elemental_Corrosive": {
+        "name": "Corrosive",
+        "slot": "Element",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.elemental.SR_Elemental_Fire": {
+        "name": "Fire",
+        "slot": "Element",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.elemental.SR_Elemental_Ice": {
+        "name": "Cryo",
+        "slot": "Element",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.elemental.SR_Elemental_None": {
+        "name": "\"No Element\"",
+        "slot": "Element",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.elemental.SR_Elemental_Shock": {
+        "name": "Shock",
+        "slot": "Element",
+        "type": "Sniper"
+    },
+    "GD_Weap_SniperRifles.elemental.SR_Elemental_Slag": {
+        "name": "Slag",
+        "slot": "Element",
+        "type": "Sniper"
     }
 }

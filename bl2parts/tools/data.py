@@ -89,6 +89,19 @@ For items, it's only their non unique definitions - we'll use classes from `ITEM
 Is this distinction a hacky confusing mess? Sure. Does it work? Kinda :)
 """
 ALL_DEFINITIONS: Dict[str, Tuple[str, ...]] = {
+    "grenade": (
+        "GD_GrenadeMods.A_Item.GrenadeMod_Standard",
+    ),
+    "pistol": (
+        "GD_Weap_Pistol.A_Weapons.WeaponType_Bandit_Pistol",
+        "GD_Weap_Pistol.A_Weapons.WeaponType_Dahl_Pistol",
+        "GD_Weap_Pistol.A_Weapons.WeaponType_Hyperion_Pistol",
+        "GD_Weap_Pistol.A_Weapons.WeaponType_Jakobs_Pistol",
+        "GD_Weap_Pistol.A_Weapons.WeaponType_Maliwan_Pistol",
+        "GD_Weap_Pistol.A_Weapons.WeaponType_Tediore_Pistol",
+        "GD_Weap_Pistol.A_Weapons.WeaponType_Torgue_Pistol",
+        "GD_Weap_Pistol.A_Weapons.WeaponType_Vladof_Pistol",
+    ),
     "shield": (
         "GD_Cork_Shields.A_Item.Shield_Nova_Ice",
         "GD_Cork_Shields.A_Item.Shield_Spike_Ice",
@@ -115,19 +128,14 @@ ALL_DEFINITIONS: Dict[str, Tuple[str, ...]] = {
         "GD_Weap_Shotgun.A_Weapons.WT_Tediore_Shotgun",
         "GD_Weap_Shotgun.A_Weapons.WT_Torgue_Shotgun",
     ),
-    "pistol": (
-        "GD_Weap_Pistol.A_Weapons.WeaponType_Bandit_Pistol",
-        "GD_Weap_Pistol.A_Weapons.WeaponType_Dahl_Pistol",
-        "GD_Weap_Pistol.A_Weapons.WeaponType_Hyperion_Pistol",
-        "GD_Weap_Pistol.A_Weapons.WeaponType_Jakobs_Pistol",
-        "GD_Weap_Pistol.A_Weapons.WeaponType_Maliwan_Pistol",
-        "GD_Weap_Pistol.A_Weapons.WeaponType_Tediore_Pistol",
-        "GD_Weap_Pistol.A_Weapons.WeaponType_Torgue_Pistol",
-        "GD_Weap_Pistol.A_Weapons.WeaponType_Vladof_Pistol",
-    ),
-    "grenade": (
-        "GD_GrenadeMods.A_Item.GrenadeMod_Standard",
-    ),
+    "sniper": (
+        "GD_Weap_SniperRifles.A_Weapons.WeaponType_Dahl_Sniper",
+        "GD_Weap_SniperRifles.A_Weapons.WeaponType_Hyperion_Sniper",
+        "GD_Weap_SniperRifles.A_Weapons.WeaponType_Jakobs_Sniper",
+        "GD_Weap_SniperRifles.A_Weapons.WeaponType_Maliwan_Sniper",
+        "GD_Weap_SniperRifles.A_Weapons.WeaponType_Vladof_Sniper",
+        "GD_Anemone_Weap_SniperRifles.A_Weapons.WeaponType_Jakobs_Sniper",
+    )
 }
 
 ITEM_CLASS_OVERRIDES: Dict[str, ItemClassData] = {
@@ -136,6 +144,18 @@ ITEM_CLASS_OVERRIDES: Dict[str, ItemClassData] = {
 }
 
 NON_UNIQUE_BALANCES: Dict[str, Tuple[str, ...]] = {
+    "grenade": tuple(
+        obj_start + suffix
+        for obj_start in (
+            "GD_GrenadeMods.A_Item.GM_AreaEffect",
+            "GD_GrenadeMods.A_Item.GM_BouncingBetty",
+            "GD_GrenadeMods.A_Item.GM_Mirv",
+            "GD_GrenadeMods.A_Item.GM_Singularity",
+            "GD_GrenadeMods.A_Item.GM_Standard",
+            "GD_GrenadeMods.A_Item.GM_Transfusion",
+        )
+        for suffix in ("", "_2_Uncommon", "_3_Rare", "_4_VeryRare")
+    ),
     "pistol": (
         "GD_Aster_Weapons.Pistols.Pistol_Bandit_4_Quartz",
         "GD_Aster_Weapons.Pistols.Pistol_Dahl_4_Emerald",
@@ -222,18 +242,22 @@ NON_UNIQUE_BALANCES: Dict[str, Tuple[str, ...]] = {
         "GD_Weap_Shotgun.A_Weapons.SG_Tediore_5_Alien",
         "GD_Weap_Shotgun.A_Weapons.SG_Torgue_4_VeryRare",
     ),
-    "grenade": tuple(
-        obj_start + suffix
-        for obj_start in (
-            "GD_GrenadeMods.A_Item.GM_AreaEffect",
-            "GD_GrenadeMods.A_Item.GM_BouncingBetty",
-            "GD_GrenadeMods.A_Item.GM_Mirv",
-            "GD_GrenadeMods.A_Item.GM_Singularity",
-            "GD_GrenadeMods.A_Item.GM_Standard",
-            "GD_GrenadeMods.A_Item.GM_Transfusion",
-        )
-        for suffix in ("", "_2_Uncommon", "_3_Rare", "_4_VeryRare")
-    )
+    "sniper": (
+        "GD_Aster_Weapons.Snipers.SR_Dahl_4_Emerald",
+        "GD_Aster_Weapons.Snipers.SR_Hyperion_4_Diamond",
+        "GD_Aster_Weapons.Snipers.SR_Jakobs_4_Citrine",
+        "GD_Aster_Weapons.Snipers.SR_Maliwan_4_Aquamarine",
+        "GD_Aster_Weapons.Snipers.SR_Vladof_4_Garnet",
+        "GD_Weap_SniperRifles.A_Weapons.Sniper_Dahl_4_VeryRare",
+        "GD_Weap_SniperRifles.A_Weapons.Sniper_Dahl_5_Alien",
+        "GD_Weap_SniperRifles.A_Weapons.Sniper_Hyperion_4_VeryRare",
+        "GD_Weap_SniperRifles.A_Weapons.Sniper_Hyperion_5_Alien",
+        "GD_Weap_SniperRifles.A_Weapons.Sniper_Jakobs_4_VeryRare",
+        "GD_Weap_SniperRifles.A_Weapons.Sniper_Maliwan_4_VeryRare",
+        "GD_Weap_SniperRifles.A_Weapons.Sniper_Maliwan_5_Alien",
+        "GD_Weap_SniperRifles.A_Weapons.Sniper_Vladof_4_VeryRare",
+        "GD_Weap_SniperRifles.A_Weapons.Sniper_Vladof_5_Alien",
+    ),
 }
 
 MODIFIER_NAMES: Tuple[str, ...] = (
@@ -329,6 +353,11 @@ PART_LIST_SLOTS: Tuple[str, ...] = (
 )
 
 PART_TYPE_OVERRIDES: Dict[str, str] = {
+    "GD_Anemone_Weap_SniperRifles.Stock.SR_Stock_Dahl": WEAPON_PART_TYPE_NAMES[4],
+    "GD_Anemone_Weap_SniperRifles.Stock.SR_Stock_Hyperion": WEAPON_PART_TYPE_NAMES[4],
+    "GD_Anemone_Weap_SniperRifles.Stock.SR_Stock_Jakobs": WEAPON_PART_TYPE_NAMES[4],
+    "GD_Anemone_Weap_SniperRifles.Stock.SR_Stock_Maliwan": WEAPON_PART_TYPE_NAMES[4],
+    "GD_Anemone_Weap_SniperRifles.Stock.SR_Stock_Vladof": WEAPON_PART_TYPE_NAMES[4],
     "GD_Anemone_Weapons.Shotguns.SG_Barrel_Alien_Swordsplosion": WEAPON_PART_TYPE_NAMES[2],
     "GD_Cork_Weap_Shotgun.Stock.SG_Stock_Jakobs_Boomacorn": WEAPON_PART_TYPE_NAMES[4],
     "GD_Cork_Weap_Shotgun.Stock.SG_Stock_Jakobs_TooScoops": WEAPON_PART_TYPE_NAMES[4],
@@ -337,6 +366,11 @@ PART_TYPE_OVERRIDES: Dict[str, str] = {
     "GD_Weap_Shotgun.Stock.SG_Stock_Jakobs": WEAPON_PART_TYPE_NAMES[4],
     "GD_Weap_Shotgun.Stock.SG_Stock_Tediore": WEAPON_PART_TYPE_NAMES[4],
     "GD_Weap_Shotgun.Stock.SG_Stock_Torgue": WEAPON_PART_TYPE_NAMES[4],
+    "GD_Weap_SniperRifles.Stock.SR_Stock_Dahl": WEAPON_PART_TYPE_NAMES[4],
+    "GD_Weap_SniperRifles.Stock.SR_Stock_Hyperion": WEAPON_PART_TYPE_NAMES[4],
+    "GD_Weap_SniperRifles.Stock.SR_Stock_Jakobs": WEAPON_PART_TYPE_NAMES[4],
+    "GD_Weap_SniperRifles.Stock.SR_Stock_Maliwan": WEAPON_PART_TYPE_NAMES[4],
+    "GD_Weap_SniperRifles.Stock.SR_Stock_Vladof": WEAPON_PART_TYPE_NAMES[4],
 }
 
 """
