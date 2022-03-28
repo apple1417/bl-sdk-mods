@@ -21,7 +21,7 @@ __all__: Tuple[str, ...] = (
 )
 
 VersionMajor: int = 1
-VersionMinor: int = 6
+VersionMinor: int = 7
 
 CommandCallback = Callable[[argparse.Namespace], None]
 SplitterFunction = Callable[[str], List[str]]
@@ -198,6 +198,14 @@ enable_on_parser.add_argument(
 pyexec_globals = {"unrealsdk": unrealsdk, "Mods": Mods}
 
 
+def log_traceback() -> None:
+    """
+    Prints the current exception traceback to the sdk log.
+    """
+    for line in traceback.format_exc().split('\n'):
+        unrealsdk.Log(line)
+
+
 def try_handle_command(cmd: str, args: str) -> bool:
     """
     Tries to handle the given command.
@@ -225,9 +233,7 @@ def try_handle_command(cmd: str, args: str) -> bool:
                 try_handle_command(file_cmd, file_args)
 
         except file_parser.ParserError:
-            for line in traceback.format_exc().split('\n'):
-                unrealsdk.Log(line)
-
+            log_traceback()
         return False
     elif cmd not in known_cmds:
         return False
@@ -241,13 +247,13 @@ def try_handle_command(cmd: str, args: str) -> bool:
         try:
             exec(args, pyexec_globals)
         except Exception:
-            unrealsdk.Log(traceback.format_exc())
+            log_traceback()
     elif cmd == "pyexec":
         with open(path.abspath(path.join(path.dirname(sys.executable), args))) as file:
             try:
                 exec(file.read(), pyexec_globals)
             except Exception:
-                unrealsdk.Log(traceback.format_exc())
+                log_traceback()
 
     else:
         parser, callback, splitter = parser_callback_map[cmd]
@@ -258,7 +264,7 @@ def try_handle_command(cmd: str, args: str) -> bool:
         except SystemExit:
             pass
         except Exception:
-            unrealsdk.Log(traceback.format_exc())
+            log_traceback()
 
     return True
 

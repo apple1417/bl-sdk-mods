@@ -5,6 +5,7 @@
   - [`chat`](#chat)
   - [`clone`](#clone)
   - [`clone_bpd`](#clone_bpd)
+  - [`exec_raw`](#exec_raw)
   - [`load_package`](#load_package)
   - [`keep_alive`](#keep_alive)
   - [`set_early`](#set_early)
@@ -80,6 +81,19 @@ manually to check what their new names are.
 | `-h, --help` | show this help message and exit |
 | `-x, --suppress-exists` | Suppress the error message when an object already exists. |
 
+## `exec_raw`
+usage: `exec_raw [-h] ...`
+
+Behaves exactly like an `exec` command, but disables custom command parsing.
+
+| positional arguments | |
+|:---|:---|
+| args | Standard exec command arguments |
+
+| optional arguments | |
+|:---|:---|
+| `-h, --help` | show this help message and exit |
+
 ## `load_package`
 usage: `load_package [-h] package`
 
@@ -94,6 +108,7 @@ explicit should still be prefered.
 | optional arguments | |
 |:---|:---|
 | `-h, --help` | show this help message and exit |
+| `--list` | List all packages matching the given pattern, instead of trying to load any. |
 
 ## `keep_alive`
 usage: `keep_alive [-h] [-u] object`
@@ -111,7 +126,7 @@ game.
 | `-u, --undo` | Undo a previous keep alive call. Note that this only affects the specific provided object, a normal keep alive command might also have affected a parent object. |
 
 ## `set_early`
-usage: `set_early [-h] args [args ...]`
+usage: `set_early [-h] ...`
 
 Behaves exactly like a `set` command. Only useful in files, as it's run during custom command
 parsing instead of afterwards.

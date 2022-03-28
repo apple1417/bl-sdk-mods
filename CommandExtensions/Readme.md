@@ -18,6 +18,10 @@ enabled (and won't suddenly re-enable soon).
 
 ## Changelog
 
+### Command Extensions v1.7
+Added the `exec_raw` command.    
+Added the `--list` argument to the `load_package` command.
+
 ### Command Extensions v1.6
 Moved file parsing to a native module - `exec`ing large mod files should now be faster.    
 Added the `chat` command.    

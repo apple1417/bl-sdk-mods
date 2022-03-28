@@ -82,10 +82,11 @@
       ],
       "tagline": "Adds a few new console commands, which are fully compatible with blcmm files.",
       "types": ["Library"],
-      "latest": "1.6",
+      "latest": "1.7",
       "versions": {
         "1.5": "https://github.com/apple1417/bl-sdk-mods/raw/a45fde7c5edc2224c15ac0a775076aacd3d40a0a/CommandExtensions/CommandExtensions.zip",
-        "1.6": "https://github.com/apple1417/bl-sdk-mods/raw/master/CommandExtensions/CommandExtensions.zip"
+        "1.6": "https://github.com/apple1417/bl-sdk-mods/raw/0c3096fb91ed3157557106b2e742a14c8b328c5c/CommandExtensions/CommandExtensions.zip",
+        "1.7": "https://github.com/apple1417/bl-sdk-mods/raw/master/CommandExtensions/CommandExtensions.zip"
       },
       "requirements": {}
     },
