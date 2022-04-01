@@ -34,7 +34,7 @@ from tools import YAML  # noqa: E402
 from tools.balances import get_parts_for_definitions, get_parts_on_balance  # noqa: E402
 from tools.data import (ALL_DEFINITIONS, DEFINITION_PART_TYPE, GLITCH_PARTS,  # noqa: E402
                         ITEM_CLASS_OVERRIDES, ITEM_PART_TYPE_NAMES, MOONSTONE_PARTS,
-                        NON_UNIQUE_BALANCES, PLURAL_WEAPON_PART_TYPE)
+                        NON_UNIQUE_BALANCES, PLURAL_WEAPON_PART_TYPE, UNIQUE_WEAPON_DEFINITIONS)
 from tools.definitions import get_definition_data  # noqa: E402
 from tools.parts import get_part_data  # noqa: E402
 from tools.prefixes import get_prefix_data  # noqa: E402
@@ -52,22 +52,22 @@ for item_type, def_list in ALL_DEFINITIONS.items():
             non_unique_parts.update(get_parts_on_balance(bal))
             bal = bal.BaseDefinition
 
-    def_objects = [
+    def_objects = {
         unrealsdk.FindObject("WillowInventoryDefinition", def_name)
         for def_name in def_list
-    ]
-    def_objects = [x for x in def_objects if x is not None]
+    }
+    def_objects = {x for x in def_objects if x is not None}
 
-    non_unique_parts.update(def_objects)
+    non_unique_parts.update(def_objects - UNIQUE_WEAPON_DEFINITIONS)
 
     part_objects: Set[unrealsdk.UObject]
     if item_type in ITEM_CLASS_OVERRIDES:
         class_data = ITEM_CLASS_OVERRIDES[item_type]
-        def_objects = [
+        def_objects = {
             obj
             for obj in unrealsdk.FindAll(class_data.def_class)
             if not obj.Name.startswith("Default__")
-        ]
+        }
         part_objects = {
             obj
             for obj in unrealsdk.FindAll(class_data.part_class)
@@ -107,7 +107,7 @@ for item_type, def_list in ALL_DEFINITIONS.items():
     for parts in data.values():
         parts.sort(key=lambda x: x["_obj_name"])
 
-    meta_definitions.sort(key=lambda x: x["_obj_name"])
+    meta_definitions.sort(key=lambda x: x["_obj_name"])  # type: ignore
 
     with open(os.path.join(output_dir, f"{item_type}s.yml"), "w") as file:
         # Seperate passes to force ordering

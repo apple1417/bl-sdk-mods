@@ -97,6 +97,8 @@ def get_parts_for_definitions(definitions: Collection[unrealsdk.UObject]) -> Set
         if bal.Class.Name == "WeaponBalanceDefinition":
             if bal.RuntimePartListCollection is None:
                 continue
+            if bal.RuntimePartListCollection.AssociatedWeaponType is None:
+                continue
             def_obj = bal.RuntimePartListCollection.AssociatedWeaponType
         else:
             if bal.InventoryDefinition is None:

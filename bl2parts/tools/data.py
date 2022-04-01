@@ -22,7 +22,7 @@ class ItemClassData:
 _T = TypeVar("_T")
 
 
-def _load_obj_set(class_name: str, obj_names: Collection[str]) -> Set[str]:
+def _load_obj_set(class_name: str, obj_names: Collection[str]) -> Set[unrealsdk.UObject]:
     """
     Given a class and a collection of object names, returns a set of all objects which are loaded.
 
@@ -40,9 +40,9 @@ def _load_obj_set(class_name: str, obj_names: Collection[str]) -> Set[str]:
     return all_objs
 
 
-def _load_obj_dict(class_name: str, obj_data: Mapping[str, _T]) -> Dict[str, _T]:
+def _load_obj_dict(class_name: str, obj_data: Mapping[str, _T]) -> Dict[unrealsdk.UObject, _T]:
     """
-    Given a class and a mapping  of object names to some arbitrary data, returns a dict of all
+    Given a class and a mapping of object names to some arbitrary data, returns a dict of all
      objects which are loaded to their relevant data.
 
     Args:
@@ -82,7 +82,7 @@ DEFINITION_BLACKLIST: Tuple[str, ...] = (
 
 """
 Maps item type to a set of definitions.
-For weapons, this is all their definitions.
+For weapons, this is all their definitions, including uniques.
 For items, it's only their non unique definitions - we'll use classes from `ITEM_CLASS_OVERRIDES`
  to grab them instead.
 
@@ -137,6 +137,10 @@ ALL_DEFINITIONS: Dict[str, Tuple[str, ...]] = {
         "GD_Anemone_Weap_SniperRifles.A_Weapons.WeaponType_Jakobs_Sniper",
     )
 }
+
+UNIQUE_WEAPON_DEFINITIONS: Set[unrealsdk.UObject] = _load_obj_set("WeaponTypeDefinition", {
+    "GD_Anemone_Weap_SniperRifles.A_Weapons.WeaponType_Jakobs_Sniper"
+})
 
 ITEM_CLASS_OVERRIDES: Dict[str, ItemClassData] = {
     "grenade": ItemClassData("GrenadeModDefinition", "GrenadeModPartDefinition"),
@@ -248,6 +252,11 @@ NON_UNIQUE_BALANCES: Dict[str, Tuple[str, ...]] = {
         "GD_Aster_Weapons.Snipers.SR_Jakobs_4_Citrine",
         "GD_Aster_Weapons.Snipers.SR_Maliwan_4_Aquamarine",
         "GD_Aster_Weapons.Snipers.SR_Vladof_4_Garnet",
+        "GD_Ma_Weapons.A_Weapons.Sniper_Dahl_6_Glitch",
+        "GD_Ma_Weapons.A_Weapons.Sniper_Hyperion_6_Glitch",
+        "GD_Ma_Weapons.A_Weapons.Sniper_Jakobs_6_Glitch",
+        "GD_Ma_Weapons.A_Weapons.Sniper_Maliwan_6_Glitch",
+        "GD_Ma_Weapons.A_Weapons.Sniper_Vladof_6_Glitch",
         "GD_Weap_SniperRifles.A_Weapons.Sniper_Dahl_4_VeryRare",
         "GD_Weap_SniperRifles.A_Weapons.Sniper_Dahl_5_Alien",
         "GD_Weap_SniperRifles.A_Weapons.Sniper_Hyperion_4_VeryRare",
@@ -255,6 +264,7 @@ NON_UNIQUE_BALANCES: Dict[str, Tuple[str, ...]] = {
         "GD_Weap_SniperRifles.A_Weapons.Sniper_Jakobs_4_VeryRare",
         "GD_Weap_SniperRifles.A_Weapons.Sniper_Maliwan_4_VeryRare",
         "GD_Weap_SniperRifles.A_Weapons.Sniper_Maliwan_5_Alien",
+        "GD_Weap_SniperRifles.A_Weapons.Sniper_Old_Hyperion_4_VeryRare",
         "GD_Weap_SniperRifles.A_Weapons.Sniper_Vladof_4_VeryRare",
         "GD_Weap_SniperRifles.A_Weapons.Sniper_Vladof_5_Alien",
     ),
