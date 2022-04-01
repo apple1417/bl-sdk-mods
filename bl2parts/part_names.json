@@ -5173,6 +5173,11 @@
         "slot": "Material",
         "type": "Sniper"
     },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Malwan_4_Aquamarine_SR": {
+        "name": "Aquamarine",
+        "slot": "Material",
+        "type": "Sniper"
+    },
     "GD_Aster_Weapons.ManufacturerMaterials.Mat_Vladof_4_Garnet_SR": {
         "name": "Garnet",
         "slot": "Material",
