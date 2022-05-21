@@ -1,3 +1,7 @@
+# SDK AUTORUN IS DEPRECATED
+To auto-enable text mods, install [Text Mod Loader](https://bl-sdk.github.io/mods/TextModLoader/).    
+Speak to the mod author if you were using it on SDK mods.
+
 ## Changelog
 
 ### SDK Autorun v1.5
