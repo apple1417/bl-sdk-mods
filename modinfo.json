@@ -392,6 +392,21 @@
       "requirements": {}
     },
     {
+      "name": "Text Mod Loader",
+      "description": [
+        "Displays Text Mods from binaries in the SDK mods menu."
+      ],
+      "tagline": [
+        "Displays Text Mods from binaries in the SDK mods menu."
+      ],
+      "types": ["Library"],
+      "latest": "1.0",
+      "versions": {
+        "1.0": "https://github.com/apple1417/bl-sdk-mods/raw/master/TextModLoader/TextModLoader.zip"
+      },
+      "requirements": {}
+    },
+    {
       "name": "True Damage Logger",
       "description": [
         "Prints the actual amount of damage you deal to console, bypassing visual damage cap.\n",

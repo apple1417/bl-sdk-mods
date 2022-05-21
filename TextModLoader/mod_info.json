@@ -1,0 +1,86 @@
+{
+    "ItemInspection.blcm": {
+        "auto_enable": false,
+        "is_mod_file": true,
+        "metadata": {
+            "@description": "Mod written by GitHub: Our Lord And Savior Gabe Newell / Nexus Mods: OB4MA A modders resource for taking screenshots of skins and models."
+        },
+        "modify_time": 1555907170.6319444,
+        "recommended_game": null,
+        "spark_service_idx": null
+    },
+    "Patch.txt": {
+        "auto_enable": false,
+        "is_mod_file": true,
+        "metadata": {
+            "@description": ""
+        },
+        "modify_time": 1599025025.117922,
+        "recommended_game": null,
+        "spark_service_idx": 0
+    },
+    "TPS Better Loot Mod.blcm": {
+        "auto_enable": false,
+        "is_mod_file": true,
+        "metadata": {
+            "@author": "Apocalyptech",
+            "@description": "Licensed under Public Domain / CC0 1.0 Universal\nAll sorts of tweaks to loot in general, with the aim of basically making all the loot drops in the game \"better\".  In the default configuration, there is a very increased chance of blues/purples/glitch/legendary items across the board, slightly more Moonstone, and far better badass and boss drops.  Also basically all game items will be available as regular world drops, including uniques.  Glitch weapons are available outside the Claptastic Voyage DLC, though they're more common when in the DLC levels.\nThe specifics of much of the mod, however, including drop quality, can be configured below.  Every section apart from \"Base Mod Configuration\" is intended to be user-configurable.",
+            "@title": "TPS Better Loot Mod",
+            "@version": "v1.1.1"
+        },
+        "modify_time": 1652251864.7940443,
+        "recommended_game": null,
+        "spark_service_idx": 5
+    },
+    "TravelPortalDisabler.blcm": {
+        "auto_enable": false,
+        "is_mod_file": true,
+        "metadata": {
+            "@description": "Mod by FromDarkHell This mod disables the fast travel 'portal' like animation\nGif of the mod in action: https://gfycat.com/HarshSmoggyHochstettersfrog"
+        },
+        "modify_time": 1627263397.7702127,
+        "recommended_game": null,
+        "spark_service_idx": 0
+    },
+    "a.a": {
+        "auto_enable": false,
+        "is_mod_file": true,
+        "metadata": {
+            "@description": ""
+        },
+        "modify_time": 1652074780.2063813,
+        "recommended_game": null,
+        "spark_service_idx": 0
+    },
+    "overlook": {
+        "auto_enable": false,
+        "is_mod_file": true,
+        "metadata": {
+            "@description": "",
+            "@tml-ignore-me": true
+        },
+        "modify_time": 1653084955.5519702,
+        "recommended_game": null,
+        "spark_service_idx": null
+    },
+    "super.blcm": {
+        "auto_enable": false,
+        "is_mod_file": true,
+        "metadata": {
+            "@description": "Contains the following mods: - UCP 5.0.3 - Quadrupled Spawns - Class Mod Randomizer - CERandomizer (Gear Randomizer) - Enemy Randomizer - No Spawn Limit The Enemy Randomizer is set to not contain Headhunter Pack enemies and is set to \"Unbalanced\". You can change these settings under - Randomizers -> Enemy Randomizer -> Shitstorming -> Merges - Randomizers -> Enemy Randomizer -> Shitstorming -> Main arrays -> Modes Optional Modules: - BL2 Cold Dead Hands (Enemies drop their gear) - Cutscene Disabler - Unlocked Fast Travels - Cars Anywhere - Car Replacements"
+        },
+        "modify_time": 1606897705.621857,
+        "recommended_game": null,
+        "spark_service_idx": 0
+    },
+    "ucp.txt": {
+        "auto_enable": false,
+        "is_mod_file": true,
+        "metadata": {
+            "@description": "Original author and published by shadowevil Credits to: 55tumbl, Aaron0000, Adudney, AngrierPat, apocalyptech, B33PB00PJOE, Dave Rabbit, empireScum, Freya, Ethel, FromDarkHell, Hydrattler, Jim Raven, Kazy, Kumakobi, laxlife, LightChaosman, MegaCyber, MikeyRay, mopioid, Orudeon, Our Lord And Savior Gabe Newell, SentySent, SirUmnei, the_Nocturni, Zububu"
+        },
+        "modify_time": 1583235070.6380498,
+        "recommended_game": null,
+        "spark_service_idx": 0
+    }
+}
