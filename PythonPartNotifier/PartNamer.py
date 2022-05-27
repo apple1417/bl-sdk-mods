@@ -1,20 +1,28 @@
 import unrealsdk
 from typing import Dict, Optional, Tuple, cast
 
+"""
+This is the old legacy programatic part namer, which is getting phased out in favour of the
+ hardcoded part name list. It will not be getting further updates.
+
+The logic is questionable in places, especially since I hacked in the  slot/type seperation
+ (originally there was just one detailed option), but it actually works decently well.
+"""
+
 
 # Easier to split out the different item types to different functions
-def GetPartName(part: unrealsdk.UObject, full: bool = False) -> str:
+def legacy_get_part_name(part: unrealsdk.UObject, show_slot: bool, show_type: bool) -> str:
     name = str(part)
     if name.startswith("Weapon"):
-        return _getWeaponPartName(part, full)
+        return _getWeaponPartName(part, show_slot, show_type)
     elif name.startswith("Shield"):
-        return _getShieldPartName(part, full)
+        return _getShieldPartName(part, show_slot, show_type)
     elif name.startswith("GrenadeMod"):
-        return _getGrenadePartName(part, full)
+        return _getGrenadePartName(part, show_slot, show_type)
     elif name.startswith("ClassMod"):
-        return _getCOMPartName(part, full)
+        return _getCOMPartName(part, show_slot, show_type)
     elif name.startswith("Artifact"):
-        return _getArtifactPartName(part, full)
+        return _getArtifactPartName(part, show_slot, show_type)
 
     return str(part.Name)
 
@@ -40,14 +48,25 @@ def _getElement(string: str) -> Optional[str]:
     return None
 
 
-def _getWeaponPartName(part: unrealsdk.UObject, full: bool) -> str:
+def _getWeaponPartName(part: unrealsdk.UObject, show_slot: bool, show_type: bool) -> str:
+    weap_type: str
+
+    def add_slot_type(text: str, slot_str: str) -> str:
+        if show_type:
+            text += " " + weap_type
+        if show_slot:
+            text += " " + slot_str
+        return text
+
     # Check through meshes first, which will eliminate most parts
     mesh = part.GestaltModeSkeletalMeshName
     if mesh in WEAP_MESH_NAMES and part.bIsGestaltMode:
-        return WEAP_MESH_NAMES[mesh][0] + (f" {WEAP_MESH_NAMES[mesh][1]}" if full else "")
+        name, weap_type, slot = WEAP_MESH_NAMES[mesh]
+        return add_slot_type(name, slot)
     # We can seperate some shared meshes through another table
     if part.Name in WEAP_OBJ_NAMES:
-        return WEAP_OBJ_NAMES[part.Name][0] + (f" {WEAP_OBJ_NAMES[part.Name][1]}" if full else "")
+        name, weap_type, slot = WEAP_OBJ_NAMES[part.Name]
+        return add_slot_type(name, slot)
 
     name = str(part).lower()
     # Messy way to find what weapon type this part belongs to
@@ -92,49 +111,55 @@ def _getWeaponPartName(part: unrealsdk.UObject, full: bool) -> str:
         manufacturer = "Vladof"
 
     # The 'No Accessory', 'No Sight', and 'No Element' parts don't expand well in the normal format
+    def handle_none_parts(none_str: str, slot_str: str) -> str:
+        if not show_slot and not show_type:
+            return "None"
+        return add_slot_type(none_str, slot_str)
+
     if ("accessory" in name or "accessories" in name) and "none" in name:
-        if full:
-            # This here is why moonstone is a valid weapon type
-            return f"'No Accessory' {weap_type} Accessory"
-        else:
-            return "None"
+        return handle_none_parts("'No Accessory'", "Accessory")
     elif "sight" in name and "none" in name:
-        if full:
-            return f"'No Sight' {weap_type} Sight"
-        else:
-            return "None"
+        return handle_none_parts("'No Sight'", "Sight")
     # Element parts share a lot of meshes so it's easier to seperate them here
     elif "element" in name:
         element = _getElement(name)
         if element is None and "egun" in name:
             element = "EGun"
-        elif full and element == "None":
-            return f"'No Element' {weap_type} Element"
-        else:
-            return cast(str, element) + (f" {weap_type} Element" if full else "")
+        if element == "None":
+            return handle_none_parts("'No Element'", "Element")
+        return add_slot_type(cast(str, element), "Element")
     # Glitch attachment parts share meshes again
     elif "glitch_attachment" in name:
         # Get the full proper name
         split_name = part.PathName(part).split(".")[-1].split("_")
         if len(split_name) == 3:
-            return f"{split_name[2]} Glitch" + (" Attachment" if full else "")
+            return add_slot_type(f"{split_name[2]} Glitch", "Attachment")
         return "Glitch Attachment"
     # Types don't really fit as a normal part, need their own processing too
     elif name.startswith("weapontypedefinition"):
-        return f"{manufacturer} {weap_type}" + (" Weapon Type" if full else "")
+        return f"{manufacturer} {weap_type}" + (" Definition" if show_slot else "")
 
     # For everything else (materials) just return the object name
     return str(part.Name)
 
 
-def _getShieldPartName(part: unrealsdk.UObject, full: bool) -> str:
-    # Despite widely different base packages, the 2nd last ones are mostly the sam
+def _getShieldPartName(part: unrealsdk.UObject, show_slot: bool, show_type: bool) -> str:
+    part_type: str
+
+    def add_slot_type(text: str) -> str:
+        if show_type:
+            text += " Shield"
+        if show_slot:
+            text += " " + part_type
+        return text
+
+    # Despite widely different base packages, the 2nd last ones are mostly the same
     part_type = part.Outer.Name
     name = part.Name
     split_name = name.split("_")
 
     # Unfortantly there are a few DLC parts that need this
-    if name in SHIELD_PART_TYPE_OVERRIDES:
+    if name in SHIELD_PART_TYPE_OVERRIDES:  # noqa: SIM908
         part_type = SHIELD_PART_TYPE_OVERRIDES[name]
 
     # All of these can be done the same way
@@ -143,7 +168,7 @@ def _getShieldPartName(part: unrealsdk.UObject, full: bool) -> str:
         mesh = part.GestaltModeSkeletalMeshName
 
         if mesh in SHIELD_MESH_NAMES:
-            return SHIELD_MESH_NAMES[mesh] + (f" Shield {part_type}" if full else "")
+            return add_slot_type(SHIELD_MESH_NAMES[mesh])
 
         text = ""
         # Want to add Nova/Spike to the Torgue accessories
@@ -191,12 +216,14 @@ def _getShieldPartName(part: unrealsdk.UObject, full: bool) -> str:
             if text == "Anshin" and "RoidLegendary" in name:
                 text += " Roid"
 
-            return text + (f" Shield {part_type}" if full else "")
+            return add_slot_type(text)
 
     elif str(part).startswith("ShieldDefinition"):
+        part_type = "Definition"
+
         # A few DLC parts don't follow the pattern
         if name in SHIELD_TYPE_OVERRIDES:
-            return SHIELD_TYPE_OVERRIDES[name] + (" Shield Type" if full else "")
+            return add_slot_type(SHIELD_TYPE_OVERRIDES[name])
 
         # This works suprisngly well
         text = split_name[1]
@@ -214,18 +241,25 @@ def _getShieldPartName(part: unrealsdk.UObject, full: bool) -> str:
             if element != "":
                 text = f"{element} {text}"
 
-        return text + (" Shield Type" if full else "")
+        return add_slot_type(text)
 
     return str(part.Name)
 
 
-def _getGrenadePartName(part: unrealsdk.UObject, full: bool) -> str:
+def _getGrenadePartName(part: unrealsdk.UObject, show_slot: bool, show_type: bool) -> str:
     # Grenade parts split up nicely just like shield ones
     part_type = part.Outer.Name
     name = part.Name
     split_name = name.split("_")
 
-    if name in GRENADE_PART_TYPE_OVERRIDES:
+    def add_slot_type(text: str) -> str:
+        if show_type:
+            text += " Grenade"
+        if show_slot:
+            text += " " + part_type
+        return text
+
+    if name in GRENADE_PART_TYPE_OVERRIDES:  # noqa: SIM908
         part_type = GRENADE_PART_TYPE_OVERRIDES[name]
 
     if part_type == "Accessory":
@@ -236,37 +270,31 @@ def _getGrenadePartName(part: unrealsdk.UObject, full: bool) -> str:
         # These accessories only have one grade, no need to show "Grade 0"
         if name == "Accessory_Explosive":
             # This will always be the same element but keep all the formatting in the same place
-            return element + (" Grenade Accessory" if full else "")
+            return add_slot_type(element)
         elif name == "Accessory_MonsterTrap":
-            return "Monster Trap" + (" Grenade Accessory" if full else "")
+            return add_slot_type("Monster Trap")
 
         # All parts after grade 0 have a suffix "_Grade[n]"
         grade = "0"
         if len(split_name) > 2:
             grade = name[-1]
 
-        return f"{element} Grade {grade}" + (" Grenade Accessory" if full else "")
+        return add_slot_type(f"{element} Grade {grade}")
 
     # A lot of grenade parts just have the info we want as a suffix
-    elif part_type == "ChildCount":
-        return f"Grade {name[-1]}" + (" Grenade Child Count" if full else "")
-    elif part_type == "Damage":
-        return f"Grade {name[-1]}" + (" Grenade Damage" if full else "")
-    elif part_type == "StatusDamage":
-        return f"Grade {name[-1]}" + (" Grenade Status Damage" if full else "")
-    elif part_type == "Trigger":
-        return f"Grade {name[-1]}" + (" Grenade Trigger" if full else "")
+    elif part_type in ("ChildCount", "Damage", "StatusDamage", "Trigger"):
+        return add_slot_type(f"Grade {name[-1]}")
     elif part_type == "DamageRadius":
         size = cast(str, split_name[1])
         # Just want to add a space :)
         if size == "ExtraLarge":
             size = "Extra Large"
-        return size + (" Grenade Blast Radius" if full else "")
+        return add_slot_type(size)
 
     # These parts are easier to just hardcode in a table
     elif part_type == "Delivery":
         if name in GRENADE_DELIVERY_NAMES:
-            return GRENADE_DELIVERY_NAMES[name] + (" Grenade Delivery" if full else "")
+            return add_slot_type(GRENADE_DELIVERY_NAMES[name])
     elif part_type == "Payload":
         # Deal with shattering payloads - they all append "_AirMask" to an existing one
         air_mask = ""
@@ -275,37 +303,49 @@ def _getGrenadePartName(part: unrealsdk.UObject, full: bool) -> str:
             air_mask = "Shattering "
 
         if name in GRENADE_PAYLOAD_NAMES:
-            return air_mask + GRENADE_PAYLOAD_NAMES[name] + (" Grenade Payload" if full else "")
+            return add_slot_type(air_mask + GRENADE_PAYLOAD_NAMES[name])
     elif str(part).startswith("GrenadeModDefinition") and name in GRENADE_DEFINTION_NAMES:
-        return GRENADE_DEFINTION_NAMES[name] + (" Grenade Type" if full else "")
+        part_type = "Definition"
+        return add_slot_type(GRENADE_DEFINTION_NAMES[name])
 
     return str(part.Name)
 
 
-def _getCOMPartName(part: unrealsdk.UObject, full: bool) -> str:
+def _getCOMPartName(part: unrealsdk.UObject, show_slot: bool, show_type: bool) -> str:
     part_type = part.Outer.Name
     name = part.Name
     split_name = name.split("_")
+
+    def add_slot_type(text: str) -> str:
+        if show_type:
+            text += " COM"
+        if show_slot:
+            if part_type.startswith("Stat"):
+                text += " " + part_type[4:]
+            else:
+                text += " " + part_type
+        return text
 
     # Can you belive that not a single object in either game messes up anything so we can actually
     #  do this entirely programtically
     if part_type == "Specialization":
         # While a little unclear, I think it's best to leave these with the proper name for people
         #  using gibbed, and instead let the stats explain what each part actually is
-        return "_".join(split_name[1:]) + (" COM Specialization" if full else "")
+        return add_slot_type("_".join(split_name[1:]))
     elif part_type == "StatPrimary":
-        return f"Grade {name[-7]}" + (" COM Primary" if full else "")
+        return add_slot_type(f"Grade {name[-7]}")
     elif part_type == "StatPrimary02":
-        return f"Grade {name[-4]}" + (" COM Secondary" if full else "")
+        return add_slot_type(f"Grade {name[-4]}")
     elif part_type == "StatPenalty":
-        return f"Grade {name[-1]}" + (" COM Penalty" if full else "")
+        return add_slot_type(f"Grade {name[-1]}")
 
     elif str(part).startswith("ClassModDefinition"):
+        part_type = "Definition"
         # Most COMs just have the full name as the last part after the last underscore
         com_name = cast(str, split_name[-1])
 
         if name in COM_DEFINITION_OVERRIDES:
-            return COM_DEFINITION_OVERRIDES[name] + (" COM Type" if full else "")
+            return add_slot_type(COM_DEFINITION_OVERRIDES[name])
 
         # Deal with Tina COMs
         if com_name in ("CE", "CG", "CN", "LE", "LG", "LN", "NE", "NG"):
@@ -316,7 +356,7 @@ def _getCOMPartName(part: unrealsdk.UObject, full: bool) -> str:
             elif player == "Merc":
                 player = "Monk"
 
-            return f"{com_name} {player}" + (" COM Type" if full else "")
+            return add_slot_type(f"{com_name} {player}")
 
         # These names have a COM for each character, so there's no sense in having 6 copies of each
         #  in the override list
@@ -333,29 +373,34 @@ def _getCOMPartName(part: unrealsdk.UObject, full: bool) -> str:
         elif com_name.startswith("Celestial"):
             com_name = f"Celestial {com_name[9:]}"
 
-        return com_name + (" COM Type" if full else "")
+        return add_slot_type(com_name)
 
     return str(part.Name)
 
 
-def _getArtifactPartName(part: unrealsdk.UObject, full: bool) -> str:
+def _getArtifactPartName(part: unrealsdk.UObject, show_slot: bool, show_type: bool) -> str:
     part_type = part.Outer.Name
     name = part.Name
     split_name = name.split("_")
 
+    def add_slot_type(text: str, slot_str: str) -> str:
+        if show_type:
+            text += " Relic"
+        if show_slot:
+            text += " " + slot_str
+        return text
+
     # Really there don't need to be 4 versions of these enable parts, they all act the same
     if part_type in ("Enable1st", "Enable2nd", "Enable3rd", "Enable4th"):
-        return f"Effect {name[-1]}" + (f" Relic Enable {part_type[6:]}" if full else "")
+        return add_slot_type(f"Effect {name[-1]}", f"Enable {part_type[6:]}")
     # Only the seraph blood relic gets this type, it behaves differently too so seperate it
     elif part_type == "Effects":
-        return "Seraph Blood" + (" Relic Effect" if full else "")
+        return add_slot_type("Seraph Blood", "Effect")
 
     # Only in TPS
     elif part_type == "EnableSpecial":
         element = _getElement(ARTIFACT_SPECIAL_NAMES[name])
-        if full:
-            return f"{element} Oz Kit Element"
-        return f"{element} Element"
+        return add_slot_type(cast(str, element), "Element")
 
     # Luckily all of the objects that get the type "Might" are upgrades
     elif part_type in ("Upgrade", "Might"):
@@ -370,18 +415,14 @@ def _getArtifactPartName(part: unrealsdk.UObject, full: bool) -> str:
         elif "SeraphBreath" in name:
             text += " Breath of the Seraphs"
 
-        return text + (" Relic Upgrade" if full else "")
+        return add_slot_type(text, "Upgrade")
 
     elif part_type == "Body":
-        text = split_name[-1]
-        if name in ARTIFACT_BODY_OVERRIDES:
-            text = ARTIFACT_BODY_OVERRIDES[name]
-        return text + (" Relic Body" if full else "")
+        text = ARTIFACT_BODY_OVERRIDES.get(name, split_name[-1])
+        return add_slot_type(text, "Body")
 
     elif str(part).startswith("ArtifactDefinition"):
-        text = split_name[-1]
-        if str(part) in ARTIFACT_DEFINITION_OVERRIDES:
-            text = ARTIFACT_DEFINITION_OVERRIDES[str(part)]
+        text = ARTIFACT_DEFINITION_OVERRIDES.get(str(part), split_name[-1])
 
         # A few definitions have multiple similar variants, just differing by the last char
         for base_name in ARTIFACT_DEFINITION_VARIANTS:
@@ -397,7 +438,7 @@ def _getArtifactPartName(part: unrealsdk.UObject, full: bool) -> str:
                         text += element + " "
                     text += "Two Face Duality"
 
-        return text + (" Relic Type" if full else "")
+        return add_slot_type(text, "Definition")
 
     return str(part.Name)
 
@@ -685,255 +726,255 @@ SHIELD_TYPE_OVERRIDES: Dict[str, str] = {
     "Shield_Worming": "Retainer"
 }
 
-WEAP_OBJ_NAMES: Dict[str, Tuple[str, str]] = {
-    "AR_Accessory_BanditClamp_Damage": ("Damage Clamp", "AR Accessory"),
-    "AR_Accessory_BanditClamp_Wild": ("Wild Clamp", "AR Accessory"),
-    "AR_Accessory_Bayonet": ("Bayonet", "1 AR Accessory"),
-    "AR_Accessory_CryBaby_Rapid": ("Crybaby Rapid", "AR Accessory"),
-    "AR_Accessory_CryBaby_Triple": ("Crybaby Triple", "AR Accessory"),
-    "AR_Elemental_CryBaby_Piercing": ("Crybaby Piercing", "AR Element"),
-    "AR_Elemental_CryBaby_Rage": ("Crybaby Rage", "AR Element"),
-    "Laser_Accessory_Bayonet": ("Bayonet", "Laser Accessory"),
-    "Laser_Accessory_Rosie_Thorns": ("Rosie", "Laser Accessory"),
-    "Laser_Elemental_Egun": ("EGun", "Laser Element"),
-    "Moonstone_Attachment_Boominator": ("Boominator", "Moonstone Accessory"),
-    "Moonstone_Attachment_FastLearner": ("Fast Learner", "Moonstone Accessory"),
-    "Moonstone_Attachment_HardenUp": ("Harden Up", "Moonstone Accessory"),
-    "Moonstone_Attachment_MareksMouth": ("Mareks Mouth", "Moonstone Accessory"),
-    "Moonstone_Attachment_Oxygenator": ("Oxygenator", "Moonstone Accessory"),
-    "Moonstone_Attachment_PiercingRounds": ("Piercing Rounds", "Moonstone Accessory"),
-    "Moonstone_Attachment_Punisher": ("Punisher", "Moonstone Accessory"),
-    "Moonstone_Attachment_Safeguard": ("Safeguard", "Moonstone Accessory"),
-    "Moonstone_Attachment_Serenity": ("Serenity", "Moonstone Accessory"),
-    "Pistol_Accessory_Laser_Accuracy": ("Accuracy Laser", "Pistol Accessory"),
-    "Pistol_Accessory_Laser_Double_DvaInfinity": ("Double Laser", "Pistol Accessory"),
-    "Pistol_Accessory_Laser_Double": ("Double Laser", "Pistol Accessory"),
-    "Pistol_Barrel_Torgue_88Fragnum": ("Torgue", "Pistol Barrel"),
-    "Pistol_Barrel_Torgue": ("Torgue", "Pistol Barrel"),
-    "SG_Accessory_Bayonet": ("Bayonet", "1 SG Accessory"),
-    "SG_Accessory_MoonClip": ("Moon Clip", "SG Accessory"),
-    "SG_Accessory_ShotgunShell": ("Shotgun Shell", "SG Accessory"),
-    "SG_Accessory_Tech": ("Accuracy Tech 1", "SG Accessory"),
-    "SMG_Accessory_Bayonet": ("Bayonet", "1 SMG Accessory"),
-    "SMG_Accessory_Body1_Accurate": ("Accuracy Body", "SMG Accessory"),
-    "SMG_Accessory_Body2_Damage": ("Damage Body", "SMG Accessory"),
-    "SMG_Accessory_Body3_Accelerated": ("Bullet Speed Body", "SMG Accessory"),
-    "SMG_Accessory_Stock1_Stabilized": ("Stability Stock", "SMG Accessory"),
-    "SMG_Accessory_Stock2_Reload": ("Reload Stock", "SMG Accessory"),
-    "Sniper_Accessory_Bayonet1": ("Bayonet", "SR Accessory"),
+WEAP_OBJ_NAMES: Dict[str, Tuple[str, str, str]] = {
+    "AR_Accessory_BanditClamp_Damage": ("Damage Clamp", "AR", "Accessory"),
+    "AR_Accessory_BanditClamp_Wild": ("Wild Clamp", "AR", "Accessory"),
+    "AR_Accessory_Bayonet": ("Bayonet 1", "AR", "Accessory"),
+    "AR_Accessory_CryBaby_Rapid": ("Crybaby Rapid", "AR", "Accessory"),
+    "AR_Accessory_CryBaby_Triple": ("Crybaby Triple", "AR", "Accessory"),
+    "AR_Elemental_CryBaby_Piercing": ("Crybaby Piercing", "AR", "Element"),
+    "AR_Elemental_CryBaby_Rage": ("Crybaby Rage", "AR", "Element"),
+    "Laser_Accessory_Bayonet": ("Bayonet", "Laser", "Accessory"),
+    "Laser_Accessory_Rosie_Thorns": ("Rosie", "Laser", "Accessory"),
+    "Laser_Elemental_Egun": ("EGun", "Laser", "Element"),
+    "Moonstone_Attachment_Boominator": ("Boominator", "Moonstone", "Accessory"),
+    "Moonstone_Attachment_FastLearner": ("Fast Learner", "Moonstone", "Accessory"),
+    "Moonstone_Attachment_HardenUp": ("Harden Up", "Moonstone", "Accessory"),
+    "Moonstone_Attachment_MareksMouth": ("Mareks Mouth", "Moonstone", "Accessory"),
+    "Moonstone_Attachment_Oxygenator": ("Oxygenator", "Moonstone", "Accessory"),
+    "Moonstone_Attachment_PiercingRounds": ("Piercing Rounds", "Moonstone", "Accessory"),
+    "Moonstone_Attachment_Punisher": ("Punisher", "Moonstone", "Accessory"),
+    "Moonstone_Attachment_Safeguard": ("Safeguard", "Moonstone", "Accessory"),
+    "Moonstone_Attachment_Serenity": ("Serenity", "Moonstone", "Accessory"),
+    "Pistol_Accessory_Laser_Accuracy": ("Accuracy Laser", "Pistol", "Accessory"),
+    "Pistol_Accessory_Laser_Double_DvaInfinity": ("Double Laser", "Pistol", "Accessory"),
+    "Pistol_Accessory_Laser_Double": ("Double Laser", "Pistol", "Accessory"),
+    "Pistol_Barrel_Torgue_88Fragnum": ("Torgue", "Pistol", "Barrel"),
+    "Pistol_Barrel_Torgue": ("Torgue", "Pistol", "Barrel"),
+    "SG_Accessory_Bayonet": ("Bayonet 1", "SG", "Accessory"),
+    "SG_Accessory_MoonClip": ("Moon Clip", "SG", "Accessory"),
+    "SG_Accessory_ShotgunShell": ("Shotgun Shell", "SG", "Accessory"),
+    "SG_Accessory_Tech": ("Accuracy Tech 1", "SG", "Accessory"),
+    "SMG_Accessory_Bayonet": ("Bayonet 1", "SMG", "Accessory"),
+    "SMG_Accessory_Body1_Accurate": ("Accuracy Body", "SMG", "Accessory"),
+    "SMG_Accessory_Body2_Damage": ("Damage Body", "SMG", "Accessory"),
+    "SMG_Accessory_Body3_Accelerated": ("Bullet Speed Body", "SMG", "Accessory"),
+    "SMG_Accessory_Stock1_Stabilized": ("Stability Stock", "SMG", "Accessory"),
+    "SMG_Accessory_Stock2_Reload": ("Reload Stock", "SMG", "Accessory"),
+    "Sniper_Accessory_Bayonet1": ("Bayonet", "SR", "Accessory"),
 }
 
-WEAP_MESH_NAMES: Dict[str, Tuple[str, str]] = {
-    "Acc_Barrel_Bayonet2": ("Bayonet", "2 AR Accessory"),
-    "Acc_Barrel_Bipod": ("Accuracy Bipod", "SR Accessory"),
-    "Acc_Barrel_Bipod2": ("Crit Bipod", "SR Accessory"),
-    "Acc_Barrel_Blade1": ("Blade", "1 Pistol Accessory"),
-    "Acc_Barrel_Blade2": ("Blade", "2 Pistol Accessory"),
-    "Acc_Barrel_ForeGrip": ("Foregrip", "SR Accessory"),
-    "Acc_Barrel_Grip": ("Foregrip", "AR Accessory"),
-    "Acc_Barrel_Tech1": ("Mag Tech", "Pistol Accessory"),
-    "Acc_Barrel_Tech2": ("Damage Tech", "Pistol Accessory"),
-    "Acc_Barrel_Tech3": ("Firerate Tech", "Pistol Accessory"),
-    "Acc_Bayonet2": ("Bayonet", "2 SG Accessory"),
-    "Acc_Body_Box": ("Box", "AR Accessory"),
-    "Acc_BodyMod1": ("Mag Body Mod", "RL Accessory"),
-    "Acc_BodyMod2": ("Accuracy Body Mod", "RL Accessory"),
-    "Acc_Grip_Stock": ("Stock", "Pistol Accessory"),
-    "Acc_Gripper": ("Gripper", "RL Accessory"),
-    "Acc_Handle": ("Handle", "RL Accessory"),
-    "Acc_Scope_Mount1": ("Mag Mount", "SR Accessory"),
-    "Acc_Scope_Mount2": ("Firerate Mount", "SR Accessory"),
-    "Acc_Scope_Mount3": ("Damage Mount", "SR Accessory"),
-    "Acc_Stock_Shroud1": ("Mag Shroud", "SR Accessory"),
-    "Acc_Stock_Shroud2": ("Accuracy Shroud", "SR Accessory"),
-    "Acc_StockCover": ("Stock Cover", "RL Accessory"),
-    "Acc_StockTube": ("Stock Tube", "RL Accessory"),
-    "Acc_Tech2": ("Crit Tech 2", "SG Accessory"),
-    "Acc_Tech3": ("Reload Tech 3", "SG Accessory"),
-    "Acc_TipCover": ("Tip Cover", "RL Accessory"),
-    "Acc_VerticalGrip": ("Vertical Grip", "SG Accessory"),
-    "AR_Barrel_Alien": ("ETech", "AR Barrel"),
-    "AR_Barrel_Bandit": ("Bandit", "AR Barrel"),
-    "AR_Barrel_Dahl": ("Dahl", "AR Barrel"),
-    "AR_Barrel_Jakobs": ("Jakobs", "AR Barrel"),
-    "AR_Barrel_Torgue": ("Torgue", "AR Barrel"),
-    "AR_Barrel_Vladof_Alt": ("Vladof", "AR Barrel"),
-    "AR_Barrel_Vladof": ("Vladof", "Minigun AR Barrel"),
-    "AR_Body_Bandit": ("Bandit", "AR Body"),
-    "AR_Body_Dahl": ("Dahl", "AR Body"),
-    "AR_Body_Jakobs": ("Jakobs", "AR Body"),
-    "AR_Body_Torgue": ("Torgue", "AR Body"),
-    "AR_Body_Vladof": ("Vladof", "AR Body"),
-    "AR_Grip_Bandit": ("Bandit", "AR Grip"),
-    "AR_Grip_Dahl": ("Dahl", "AR Grip"),
-    "AR_Grip_Jakobs": ("Jakobs", "AR Grip"),
-    "AR_Grip_Torgue": ("Torgue", "AR Grip"),
-    "AR_Grip_Vladof": ("Vladof", "AR Grip"),
-    "AR_Scope_Bandit": ("Bandit", "AR Sight"),
-    "AR_Scope_Dahl": ("Dahl", "AR Sight"),
-    "AR_Scope_Jakobs": ("Jakobs", "AR Sight"),
-    "AR_Scope_Torgue": ("Torgue", "AR Sight"),
-    "AR_Scope_Vladof": ("Vladof", "AR Sight"),
-    "AR_Stock_Bandit": ("Bandit", "AR Stock"),
-    "AR_Stock_Dahl": ("Dahl", "AR Stock"),
-    "AR_Stock_Jakobs": ("Jakobs", "AR Stock"),
-    "AR_Stock_Torgue": ("Torgue", "AR Stock"),
-    "AR_Stock_Vladof": ("Vladof", "AR Stock"),
-    "L_Barrel_Alien": ("ETech", "RL Barrel"),
-    "L_Barrel_Bandit": ("Bandit", "RL Barrel"),
-    "L_Barrel_Maliwan": ("Maliwan", "RL Barrel"),
-    "L_Barrel_Tediore": ("Tediore", "RL Barrel"),
-    "L_Barrel_Torgue": ("Torgue", "RL Barrel"),
-    "L_Barrel_Vladof": ("Vladof", "RL Barrel"),
-    "L_Body_Bandit": ("Bandit", "RL Body"),
-    "L_Body_Maliwan": ("Maliwan", "RL Body"),
-    "L_Body_Tediore": ("Tediore", "RL Body"),
-    "L_Body_Torgue": ("Torgue", "RL Body"),
-    "L_Body_Vladof": ("Vladof", "RL Body"),
-    "L_Exhaust_Bandit": ("Bandit", "RL Exhaust"),
-    "L_Exhaust_Maliwan": ("Maliwan", "RL Exhaust"),
-    "L_Exhaust_Tediore": ("Tediore", "RL Exhaust"),
-    "L_Exhaust_Torgue": ("Torgue", "RL Exhaust"),
-    "L_Exhaust_Vladof": ("Vladof", "RL Exhaust"),
-    "L_Grip_Bandit": ("Bandit", "RL Grip"),
-    "L_Grip_Maliwan": ("Maliwan", "RL Grip"),
-    "L_Grip_Tediore": ("Tediore", "RL Grip"),
-    "L_Grip_Torgue": ("Torgue", "RL Grip"),
-    "L_Grip_Vladof": ("Vladof", "RL Grip"),
-    "L_Scope_Bandit": ("Bandit", "RL Sight"),
-    "L_Scope_Maliwan": ("Maliwan", "RL Sight"),
-    "L_Scope_Tediore": ("Tediore", "RL Sight"),
-    "L_Scope_Torgue": ("Torgue", "RL Sight"),
-    "L_Scope_Vladof": ("Vladof", "RL Sight"),
-    "Laser_Barrel_Dahl": ("Dahl", "Laser Barrel"),
-    "Laser_Barrel_Hyperion": ("Hyperion", "Laser Barrel"),
-    "Laser_Barrel_Maliwan": ("Maliwan", "Laser Barrel"),
-    "Laser_Barrel_Tediore": ("Tediore", "Laser Barrel"),
-    "Laser_Body_Dahl": ("Dahl", "Laser Body"),
-    "Laser_Body_Hyperion": ("Hyperion", "Laser Body"),
-    "Laser_Body_Maliwan": ("Maliwan", "Laser Body"),
-    "Laser_Body_Tediore": ("Tediore", "Laser Body"),
-    "Laser_FrontGrip_Dahl": ("Dahl", "Laser Grip"),
-    "Laser_FrontGrip_Hyperion": ("Hyperion", "Laser Grip"),
-    "Laser_FrontGrip_Maliwan": ("Maliwan", "Laser Grip"),
-    "Laser_FrontGrip_Tediore": ("Tediore", "Laser Grip"),
-    "Laser_Sight_Dahl": ("Dahl", "Laser Sight"),
-    "Laser_Sight_Hyperion": ("Hyperion", "Laser Sight"),
-    "Laser_Sight_Maliwan": ("Maliwan", "Laser Sight"),
-    "Laser_Sight_Tediore": ("Tediore", "Laser Sight"),
-    "Laser_Stock_Dahl": ("Dahl", "Laser Stock"),
-    "Laser_Stock_Hyperion": ("Hyperion", "Laser Stock"),
-    "Laser_Stock_Maliwan": ("Maliwan", "Laser Stock"),
-    "Laser_Stock_Tediore": ("Tediore", "Laser Stock"),
-    "Pistol_Barrel_Alien": ("ETech", "Pistol Barrel"),
-    "Pistol_Barrel_Bandit": ("Bandit", "Pistol Barrel"),
-    "Pistol_Barrel_Dahl": ("Dahl", "Pistol Barrel"),
-    "Pistol_Barrel_Hyperion": ("Hyperion", "Pistol Barrel"),
-    "Pistol_Barrel_Jakobs": ("Jakobs", "Pistol Barrel"),
-    "Pistol_Barrel_Maliwan": ("Maliwan", "Pistol Barrel"),
-    "Pistol_Barrel_Tediore": ("Tediore", "Pistol Barrel"),
-    "Pistol_Barrel_Torgue": ("Torgue", "Pistol Barrel"),
-    "Pistol_Barrel_Vladof": ("Vladof", "Pistol Barrel"),
-    "Pistol_Body_Bandit": ("Bandit", "Pistol Body"),
-    "Pistol_Body_Dahl": ("Dahl", "Pistol Body"),
-    "Pistol_Body_Hyperion": ("Hyperion", "Pistol Body"),
-    "Pistol_Body_Jakobs": ("Jakobs", "Pistol Body"),
-    "Pistol_Body_Maliwan": ("Maliwan", "Pistol Body"),
-    "Pistol_Body_Tediore": ("Tediore", "Pistol Body"),
-    "Pistol_Body_Torgue": ("Torgue", "Pistol Body"),
-    "Pistol_Body_Vladof": ("Vladof", "Pistol Body"),
-    "Pistol_Grip_Bandit": ("Bandit", "Pistol Grip"),
-    "Pistol_Grip_Dahl": ("Dahl", "Pistol Grip"),
-    "Pistol_Grip_Hyperion": ("Hyperion", "Pistol Grip"),
-    "Pistol_Grip_Jakobs": ("Jakobs", "Pistol Grip"),
-    "Pistol_Grip_Maliwan": ("Maliwan", "Pistol Grip"),
-    "Pistol_Grip_Tediore": ("Tediore", "Pistol Grip"),
-    "Pistol_Grip_Torgue": ("Torgue", "Pistol Grip"),
-    "Pistol_Grip_Vladof": ("Vladof", "Pistol Grip"),
-    "Pistol_Scope_Bandit": ("Bandit", "Pistol Sight"),
-    "Pistol_Scope_Dahl": ("Dahl", "Pistol Sight"),
-    "Pistol_Scope_Hyperion": ("Hyperion", "Pistol Sight"),
-    "Pistol_Scope_Jakobs": ("Jakobs", "Pistol Sight"),
-    "Pistol_Scope_Maliwan": ("Maliwan", "Pistol Sight"),
-    "Pistol_Scope_Tediore": ("Tediore", "Pistol Sight"),
-    "Pistol_Scope_Torgue": ("Torgue", "Pistol Sight"),
-    "Pistol_Scope_Vladof": ("Vladof", "Pistol Sight"),
-    "SG_Barrel_Alien": ("ETech", "SG Barrel"),
-    "SG_Barrel_Bandit": ("Bandit", "SG Barrel"),
-    "SG_Barrel_Hyperion": ("Hyperion", "SG Barrel"),
-    "SG_Barrel_Jakobs": ("Jakobs", "SG Barrel"),
-    "SG_Barrel_Tediore": ("Tediore", "SG Barrel"),
-    "SG_Barrel_Torgue": ("Torgue", "SG Barrel"),
-    "SG_Body_Bandit": ("Bandit", "SG Body"),
-    "SG_Body_Hyperion": ("Hyperion", "SG Body"),
-    "SG_Body_Jakobs": ("Jakobs", "SG Body"),
-    "SG_Body_Tediore": ("Tediore", "SG Body"),
-    "SG_Body_Torgue": ("Torgue", "SG Body"),
-    "SG_FrontGrip_Bandit": ("Bandit", "SG Grip"),
-    "SG_FrontGrip_Hyperion": ("Hyperion", "SG Grip"),
-    "SG_FrontGrip_Jakobs": ("Jakobs", "SG Grip"),
-    "SG_FrontGrip_Tediore": ("Tediore", "SG Grip"),
-    "SG_FrontGrip_Torgue": ("Torgue", "SG Grip"),
-    "SG_Scope_Bandit": ("Bandit", "SG Sight"),
-    "SG_Scope_Hyperion": ("Hyperion", "SG Sight"),
-    "SG_Scope_Jakobs": ("Jakobs", "SG Sight"),
-    "SG_Scope_Tediore": ("Tediore", "SG Sight"),
-    "SG_Scope_Torgue": ("Torgue", "SG Sight"),
-    "SG_Stock_Bandit": ("Bandit", "Bandit SG Stock"),
-    "SG_Stock_Hyperion": ("Hyperion", "SG Stock"),
-    "SG_Stock_Jakobs": ("Jakobs", "SG Stock"),
-    "SG_Stock_Tediore": ("Tediore", "SG Stock"),
-    "SG_Stock_Torgue": ("Torgue", "SG Stock"),
-    "SMG_Barrel_Alien": ("ETech", "SMG Barrel"),
-    "SMG_Barrel_Bandit": ("Bandit", "SMG Barrel"),
-    "SMG_Barrel_Dahl": ("Dahl", "SMG Barrel"),
-    "SMG_Barrel_Hyperion": ("Hyperion", "SMG Barrel"),
-    "SMG_Barrel_Maliwan": ("Maliwan", "SMG Barrel"),
-    "SMG_Barrel_Tediore": ("Tediore", "SMG Barrel"),
-    "SMG_Body_Bandit": ("Bandit", "SMG Body"),
-    "SMG_Body_Dahl": ("Dahl", "SMG Body"),
-    "SMG_Body_Hyperion": ("Hyperion", "SMG Body"),
-    "SMG_Body_Maliwan": ("Maliwan", "SMG Body"),
-    "SMG_Body_Tediore": ("Tediore", "SMG Body"),
-    "SMG_Grip_Bandit": ("Bandit", "SMG Grip"),
-    "SMG_Grip_Dahl": ("Dahl", "SMG Grip"),
-    "SMG_Grip_Hyperion": ("Hyperion", "SMG Grip"),
-    "SMG_Grip_Maliwan": ("Maliwan", "SMG Grip"),
-    "SMG_Grip_Tediore": ("Tediore", "SMG Grip"),
-    "SMG_Scope_Bandit": ("Bandit", "SMG Sight"),
-    "SMG_Scope_Dahl": ("Dahl", "SMG Sight"),
-    "SMG_Scope_Hyperion": ("Hyperion", "SMG Sight"),
-    "SMG_Scope_Maliwan": ("Maliwan", "SMG Sight"),
-    "SMG_Scope_Tediore": ("Tediore", "SMG Sight"),
-    "SMG_Stock_Bandit": ("Bandit", "SMG Stock"),
-    "SMG_Stock_Dahl": ("Dahl", "SMG Stock"),
-    "SMG_Stock_Hyperion": ("Hyperion", "SMG Stock"),
-    "SMG_Stock_Maliwan": ("Maliwan", "SMG Stock"),
-    "SMG_Stock_Tediore": ("Tediore", "SMG Stock"),
-    "SR_Barrel_Alien": ("ETech", "SR Barrel"),
-    "SR_Barrel_Dahl": ("Dahl", "SR Barrel"),
-    "SR_Barrel_Hyperion": ("Hyperion", "SR Barrel"),
-    "SR_Barrel_Jakobs": ("Jakobs", "SR Barrel"),
-    "SR_Barrel_Maliwan": ("Maliwan", "SR Barrel"),
-    "SR_Barrel_Vladof": ("Vladof", "SR Barrel"),
-    "SR_Body_Dahl": ("Dahl", "SR Body"),
-    "SR_Body_Hyperion": ("Hyperion", "SR Body"),
-    "SR_Body_Jakobs": ("Jakobs", "SR Body"),
-    "SR_Body_Maliwan": ("Maliwan", "SR Body"),
-    "SR_Body_Vladof": ("Vladof", "SR Body"),
-    "SR_Grip_Dahl": ("Dahl", "SR Grip"),
-    "SR_Grip_Hyperion": ("Hyperion", "SR Grip"),
-    "SR_Grip_Jakobs": ("Jakobs", "SR Grip"),
-    "SR_Grip_Maliwan": ("Maliwan", "SR Grip"),
-    "SR_Grip_Vladof": ("Vladof", "SR Grip"),
-    "SR_Scope_Dahl": ("Dahl", "SR Sight"),
-    "SR_Scope_Hyperion": ("Hyperion", "SR Sight"),
-    "SR_Scope_Jakobs": ("Jakobs", "SR Sight"),
-    "SR_Scope_Maliwan": ("Maliwan", "SR Sight"),
-    "SR_Scope_Vladof": ("Vladof", "SR Sight"),
-    "SR_Stock_Dahl": ("Dahl", "SR Stock"),
-    "SR_Stock_Hyperion": ("Hyperion", "SR Stock"),
-    "SR_Stock_Jakobs": ("Jakobs", "SR Stock"),
-    "SR_Stock_Maliwan": ("Maliwan", "SR Stock"),
-    "SR_Stock_Vladof": ("Vladof", "SR Stock"),
+WEAP_MESH_NAMES: Dict[str, Tuple[str, str, str]] = {
+    "Acc_Barrel_Bayonet2": ("Bayonet 2", "AR", "Accessory"),
+    "Acc_Barrel_Bipod": ("Accuracy Bipod", "SR", "Accessory"),
+    "Acc_Barrel_Bipod2": ("Crit Bipod", "SR", "Accessory"),
+    "Acc_Barrel_Blade1": ("Blade 1", "Pistol", "Accessory"),
+    "Acc_Barrel_Blade2": ("Blade 2", "Pistol", "Accessory"),
+    "Acc_Barrel_ForeGrip": ("Foregrip", "SR", "Accessory"),
+    "Acc_Barrel_Grip": ("Foregrip", "AR", "Accessory"),
+    "Acc_Barrel_Tech1": ("Mag Tech", "Pistol", "Accessory"),
+    "Acc_Barrel_Tech2": ("Damage Tech", "Pistol", "Accessory"),
+    "Acc_Barrel_Tech3": ("Firerate Tech", "Pistol", "Accessory"),
+    "Acc_Bayonet2": ("Bayonet 2", "SG", "Accessory"),
+    "Acc_Body_Box": ("Box", "AR", "Accessory"),
+    "Acc_BodyMod1": ("Mag Body Mod", "RL", "Accessory"),
+    "Acc_BodyMod2": ("Accuracy Body Mod", "RL", "Accessory"),
+    "Acc_Grip_Stock": ("Stock", "Pistol", "Accessory"),
+    "Acc_Gripper": ("Gripper", "RL", "Accessory"),
+    "Acc_Handle": ("Handle", "RL", "Accessory"),
+    "Acc_Scope_Mount1": ("Mag Mount", "SR", "Accessory"),
+    "Acc_Scope_Mount2": ("Firerate Mount", "SR", "Accessory"),
+    "Acc_Scope_Mount3": ("Damage Mount", "SR", "Accessory"),
+    "Acc_Stock_Shroud1": ("Mag Shroud", "SR", "Accessory"),
+    "Acc_Stock_Shroud2": ("Accuracy Shroud", "SR", "Accessory"),
+    "Acc_StockCover": ("Stock Cover", "RL", "Accessory"),
+    "Acc_StockTube": ("Stock Tube", "RL", "Accessory"),
+    "Acc_Tech2": ("Crit Tech 2", "SG", "Accessory"),
+    "Acc_Tech3": ("Reload Tech 3", "SG", "Accessory"),
+    "Acc_TipCover": ("Tip Cover", "RL", "Accessory"),
+    "Acc_VerticalGrip": ("Vertical Grip", "SG", "Accessory"),
+    "AR_Barrel_Alien": ("ETech", "AR", "Barrel"),
+    "AR_Barrel_Bandit": ("Bandit", "AR", "Barrel"),
+    "AR_Barrel_Dahl": ("Dahl", "AR", "Barrel"),
+    "AR_Barrel_Jakobs": ("Jakobs", "AR", "Barrel"),
+    "AR_Barrel_Torgue": ("Torgue", "AR", "Barrel"),
+    "AR_Barrel_Vladof_Alt": ("Vladof", "AR", "Barrel"),
+    "AR_Barrel_Vladof": ("Vladof", "Minigun AR", "Barrel"),
+    "AR_Body_Bandit": ("Bandit", "AR", "Body"),
+    "AR_Body_Dahl": ("Dahl", "AR", "Body"),
+    "AR_Body_Jakobs": ("Jakobs", "AR", "Body"),
+    "AR_Body_Torgue": ("Torgue", "AR", "Body"),
+    "AR_Body_Vladof": ("Vladof", "AR", "Body"),
+    "AR_Grip_Bandit": ("Bandit", "AR", "Grip"),
+    "AR_Grip_Dahl": ("Dahl", "AR", "Grip"),
+    "AR_Grip_Jakobs": ("Jakobs", "AR", "Grip"),
+    "AR_Grip_Torgue": ("Torgue", "AR", "Grip"),
+    "AR_Grip_Vladof": ("Vladof", "AR", "Grip"),
+    "AR_Scope_Bandit": ("Bandit", "AR", "Sight"),
+    "AR_Scope_Dahl": ("Dahl", "AR", "Sight"),
+    "AR_Scope_Jakobs": ("Jakobs", "AR", "Sight"),
+    "AR_Scope_Torgue": ("Torgue", "AR", "Sight"),
+    "AR_Scope_Vladof": ("Vladof", "AR", "Sight"),
+    "AR_Stock_Bandit": ("Bandit", "AR", "Stock"),
+    "AR_Stock_Dahl": ("Dahl", "AR", "Stock"),
+    "AR_Stock_Jakobs": ("Jakobs", "AR", "Stock"),
+    "AR_Stock_Torgue": ("Torgue", "AR", "Stock"),
+    "AR_Stock_Vladof": ("Vladof", "AR", "Stock"),
+    "L_Barrel_Alien": ("ETech", "RL", "Barrel"),
+    "L_Barrel_Bandit": ("Bandit", "RL", "Barrel"),
+    "L_Barrel_Maliwan": ("Maliwan", "RL", "Barrel"),
+    "L_Barrel_Tediore": ("Tediore", "RL", "Barrel"),
+    "L_Barrel_Torgue": ("Torgue", "RL", "Barrel"),
+    "L_Barrel_Vladof": ("Vladof", "RL", "Barrel"),
+    "L_Body_Bandit": ("Bandit", "RL", "Body"),
+    "L_Body_Maliwan": ("Maliwan", "RL", "Body"),
+    "L_Body_Tediore": ("Tediore", "RL", "Body"),
+    "L_Body_Torgue": ("Torgue", "RL", "Body"),
+    "L_Body_Vladof": ("Vladof", "RL", "Body"),
+    "L_Exhaust_Bandit": ("Bandit", "RL", "Exhaust"),
+    "L_Exhaust_Maliwan": ("Maliwan", "RL", "Exhaust"),
+    "L_Exhaust_Tediore": ("Tediore", "RL", "Exhaust"),
+    "L_Exhaust_Torgue": ("Torgue", "RL", "Exhaust"),
+    "L_Exhaust_Vladof": ("Vladof", "RL", "Exhaust"),
+    "L_Grip_Bandit": ("Bandit", "RL", "Grip"),
+    "L_Grip_Maliwan": ("Maliwan", "RL", "Grip"),
+    "L_Grip_Tediore": ("Tediore", "RL", "Grip"),
+    "L_Grip_Torgue": ("Torgue", "RL", "Grip"),
+    "L_Grip_Vladof": ("Vladof", "RL", "Grip"),
+    "L_Scope_Bandit": ("Bandit", "RL", "Sight"),
+    "L_Scope_Maliwan": ("Maliwan", "RL", "Sight"),
+    "L_Scope_Tediore": ("Tediore", "RL", "Sight"),
+    "L_Scope_Torgue": ("Torgue", "RL", "Sight"),
+    "L_Scope_Vladof": ("Vladof", "RL", "Sight"),
+    "Laser_Barrel_Dahl": ("Dahl", "Laser", "Barrel"),
+    "Laser_Barrel_Hyperion": ("Hyperion", "Laser", "Barrel"),
+    "Laser_Barrel_Maliwan": ("Maliwan", "Laser", "Barrel"),
+    "Laser_Barrel_Tediore": ("Tediore", "Laser", "Barrel"),
+    "Laser_Body_Dahl": ("Dahl", "Laser", "Body"),
+    "Laser_Body_Hyperion": ("Hyperion", "Laser", "Body"),
+    "Laser_Body_Maliwan": ("Maliwan", "Laser", "Body"),
+    "Laser_Body_Tediore": ("Tediore", "Laser", "Body"),
+    "Laser_FrontGrip_Dahl": ("Dahl", "Laser", "Grip"),
+    "Laser_FrontGrip_Hyperion": ("Hyperion", "Laser", "Grip"),
+    "Laser_FrontGrip_Maliwan": ("Maliwan", "Laser", "Grip"),
+    "Laser_FrontGrip_Tediore": ("Tediore", "Laser", "Grip"),
+    "Laser_Sight_Dahl": ("Dahl", "Laser", "Sight"),
+    "Laser_Sight_Hyperion": ("Hyperion", "Laser", "Sight"),
+    "Laser_Sight_Maliwan": ("Maliwan", "Laser", "Sight"),
+    "Laser_Sight_Tediore": ("Tediore", "Laser", "Sight"),
+    "Laser_Stock_Dahl": ("Dahl", "Laser", "Stock"),
+    "Laser_Stock_Hyperion": ("Hyperion", "Laser", "Stock"),
+    "Laser_Stock_Maliwan": ("Maliwan", "Laser", "Stock"),
+    "Laser_Stock_Tediore": ("Tediore", "Laser", "Stock"),
+    "Pistol_Barrel_Alien": ("ETech", "Pistol", "Barrel"),
+    "Pistol_Barrel_Bandit": ("Bandit", "Pistol", "Barrel"),
+    "Pistol_Barrel_Dahl": ("Dahl", "Pistol", "Barrel"),
+    "Pistol_Barrel_Hyperion": ("Hyperion", "Pistol", "Barrel"),
+    "Pistol_Barrel_Jakobs": ("Jakobs", "Pistol", "Barrel"),
+    "Pistol_Barrel_Maliwan": ("Maliwan", "Pistol", "Barrel"),
+    "Pistol_Barrel_Tediore": ("Tediore", "Pistol", "Barrel"),
+    "Pistol_Barrel_Torgue": ("Torgue", "Pistol", "Barrel"),
+    "Pistol_Barrel_Vladof": ("Vladof", "Pistol", "Barrel"),
+    "Pistol_Body_Bandit": ("Bandit", "Pistol", "Body"),
+    "Pistol_Body_Dahl": ("Dahl", "Pistol", "Body"),
+    "Pistol_Body_Hyperion": ("Hyperion", "Pistol", "Body"),
+    "Pistol_Body_Jakobs": ("Jakobs", "Pistol", "Body"),
+    "Pistol_Body_Maliwan": ("Maliwan", "Pistol", "Body"),
+    "Pistol_Body_Tediore": ("Tediore", "Pistol", "Body"),
+    "Pistol_Body_Torgue": ("Torgue", "Pistol", "Body"),
+    "Pistol_Body_Vladof": ("Vladof", "Pistol", "Body"),
+    "Pistol_Grip_Bandit": ("Bandit", "Pistol", "Grip"),
+    "Pistol_Grip_Dahl": ("Dahl", "Pistol", "Grip"),
+    "Pistol_Grip_Hyperion": ("Hyperion", "Pistol", "Grip"),
+    "Pistol_Grip_Jakobs": ("Jakobs", "Pistol", "Grip"),
+    "Pistol_Grip_Maliwan": ("Maliwan", "Pistol", "Grip"),
+    "Pistol_Grip_Tediore": ("Tediore", "Pistol", "Grip"),
+    "Pistol_Grip_Torgue": ("Torgue", "Pistol", "Grip"),
+    "Pistol_Grip_Vladof": ("Vladof", "Pistol", "Grip"),
+    "Pistol_Scope_Bandit": ("Bandit", "Pistol", "Sight"),
+    "Pistol_Scope_Dahl": ("Dahl", "Pistol", "Sight"),
+    "Pistol_Scope_Hyperion": ("Hyperion", "Pistol", "Sight"),
+    "Pistol_Scope_Jakobs": ("Jakobs", "Pistol", "Sight"),
+    "Pistol_Scope_Maliwan": ("Maliwan", "Pistol", "Sight"),
+    "Pistol_Scope_Tediore": ("Tediore", "Pistol", "Sight"),
+    "Pistol_Scope_Torgue": ("Torgue", "Pistol", "Sight"),
+    "Pistol_Scope_Vladof": ("Vladof", "Pistol", "Sight"),
+    "SG_Barrel_Alien": ("ETech", "SG", "Barrel"),
+    "SG_Barrel_Bandit": ("Bandit", "SG", "Barrel"),
+    "SG_Barrel_Hyperion": ("Hyperion", "SG", "Barrel"),
+    "SG_Barrel_Jakobs": ("Jakobs", "SG", "Barrel"),
+    "SG_Barrel_Tediore": ("Tediore", "SG", "Barrel"),
+    "SG_Barrel_Torgue": ("Torgue", "SG", "Barrel"),
+    "SG_Body_Bandit": ("Bandit", "SG", "Body"),
+    "SG_Body_Hyperion": ("Hyperion", "SG", "Body"),
+    "SG_Body_Jakobs": ("Jakobs", "SG", "Body"),
+    "SG_Body_Tediore": ("Tediore", "SG", "Body"),
+    "SG_Body_Torgue": ("Torgue", "SG", "Body"),
+    "SG_FrontGrip_Bandit": ("Bandit", "SG", "Grip"),
+    "SG_FrontGrip_Hyperion": ("Hyperion", "SG", "Grip"),
+    "SG_FrontGrip_Jakobs": ("Jakobs", "SG", "Grip"),
+    "SG_FrontGrip_Tediore": ("Tediore", "SG", "Grip"),
+    "SG_FrontGrip_Torgue": ("Torgue", "SG", "Grip"),
+    "SG_Scope_Bandit": ("Bandit", "SG", "Sight"),
+    "SG_Scope_Hyperion": ("Hyperion", "SG", "Sight"),
+    "SG_Scope_Jakobs": ("Jakobs", "SG", "Sight"),
+    "SG_Scope_Tediore": ("Tediore", "SG", "Sight"),
+    "SG_Scope_Torgue": ("Torgue", "SG", "Sight"),
+    "SG_Stock_Bandit": ("Bandit", "SG", "Stock"),
+    "SG_Stock_Hyperion": ("Hyperion", "SG", "Stock"),
+    "SG_Stock_Jakobs": ("Jakobs", "SG", "Stock"),
+    "SG_Stock_Tediore": ("Tediore", "SG", "Stock"),
+    "SG_Stock_Torgue": ("Torgue", "SG", "Stock"),
+    "SMG_Barrel_Alien": ("ETech", "SMG", "Barrel"),
+    "SMG_Barrel_Bandit": ("Bandit", "SMG", "Barrel"),
+    "SMG_Barrel_Dahl": ("Dahl", "SMG", "Barrel"),
+    "SMG_Barrel_Hyperion": ("Hyperion", "SMG", "Barrel"),
+    "SMG_Barrel_Maliwan": ("Maliwan", "SMG", "Barrel"),
+    "SMG_Barrel_Tediore": ("Tediore", "SMG", "Barrel"),
+    "SMG_Body_Bandit": ("Bandit", "SMG", "Body"),
+    "SMG_Body_Dahl": ("Dahl", "SMG", "Body"),
+    "SMG_Body_Hyperion": ("Hyperion", "SMG", "Body"),
+    "SMG_Body_Maliwan": ("Maliwan", "SMG", "Body"),
+    "SMG_Body_Tediore": ("Tediore", "SMG", "Body"),
+    "SMG_Grip_Bandit": ("Bandit", "SMG", "Grip"),
+    "SMG_Grip_Dahl": ("Dahl", "SMG", "Grip"),
+    "SMG_Grip_Hyperion": ("Hyperion", "SMG", "Grip"),
+    "SMG_Grip_Maliwan": ("Maliwan", "SMG", "Grip"),
+    "SMG_Grip_Tediore": ("Tediore", "SMG", "Grip"),
+    "SMG_Scope_Bandit": ("Bandit", "SMG", "Sight"),
+    "SMG_Scope_Dahl": ("Dahl", "SMG", "Sight"),
+    "SMG_Scope_Hyperion": ("Hyperion", "SMG", "Sight"),
+    "SMG_Scope_Maliwan": ("Maliwan", "SMG", "Sight"),
+    "SMG_Scope_Tediore": ("Tediore", "SMG", "Sight"),
+    "SMG_Stock_Bandit": ("Bandit", "SMG", "Stock"),
+    "SMG_Stock_Dahl": ("Dahl", "SMG", "Stock"),
+    "SMG_Stock_Hyperion": ("Hyperion", "SMG", "Stock"),
+    "SMG_Stock_Maliwan": ("Maliwan", "SMG", "Stock"),
+    "SMG_Stock_Tediore": ("Tediore", "SMG", "Stock"),
+    "SR_Barrel_Alien": ("ETech", "SR", "Barrel"),
+    "SR_Barrel_Dahl": ("Dahl", "SR", "Barrel"),
+    "SR_Barrel_Hyperion": ("Hyperion", "SR", "Barrel"),
+    "SR_Barrel_Jakobs": ("Jakobs", "SR", "Barrel"),
+    "SR_Barrel_Maliwan": ("Maliwan", "SR", "Barrel"),
+    "SR_Barrel_Vladof": ("Vladof", "SR", "Barrel"),
+    "SR_Body_Dahl": ("Dahl", "SR", "Body"),
+    "SR_Body_Hyperion": ("Hyperion", "SR", "Body"),
+    "SR_Body_Jakobs": ("Jakobs", "SR", "Body"),
+    "SR_Body_Maliwan": ("Maliwan", "SR", "Body"),
+    "SR_Body_Vladof": ("Vladof", "SR", "Body"),
+    "SR_Grip_Dahl": ("Dahl", "SR", "Grip"),
+    "SR_Grip_Hyperion": ("Hyperion", "SR", "Grip"),
+    "SR_Grip_Jakobs": ("Jakobs", "SR", "Grip"),
+    "SR_Grip_Maliwan": ("Maliwan", "SR", "Grip"),
+    "SR_Grip_Vladof": ("Vladof", "SR", "Grip"),
+    "SR_Scope_Dahl": ("Dahl", "SR", "Sight"),
+    "SR_Scope_Hyperion": ("Hyperion", "SR", "Sight"),
+    "SR_Scope_Jakobs": ("Jakobs", "SR", "Sight"),
+    "SR_Scope_Maliwan": ("Maliwan", "SR", "Sight"),
+    "SR_Scope_Vladof": ("Vladof", "SR", "Sight"),
+    "SR_Stock_Dahl": ("Dahl", "SR", "Stock"),
+    "SR_Stock_Hyperion": ("Hyperion", "SR", "Stock"),
+    "SR_Stock_Jakobs": ("Jakobs", "SR", "Stock"),
+    "SR_Stock_Maliwan": ("Maliwan", "SR", "Stock"),
+    "SR_Stock_Vladof": ("Vladof", "SR", "Stock"),
 }
