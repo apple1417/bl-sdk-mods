@@ -9,16 +9,18 @@ from typing import Any, ClassVar, Dict, Optional
 from Mods.ModMenu import Game, ModPriorities, Mods, ModTypes, RegisterMod, SDKMod
 from Mods.TextModLoader.constants import (BINARIES_DIR, JSON, META_TAG_AUTHOR, META_TAG_DESCRIPTION,
                                           META_TAG_TITLE, META_TAG_TML_PRIORITY, META_TAG_VERSION,
-                                          SETTINGS_AUTO_ENABLE, SETTINGS_IS_MOD_FILE, SETTINGS_META,
-                                          SETTINGS_MODIFY_TIME, SETTINGS_RECOMMENDED_GAME,
-                                          SETTINGS_SPARK_SERVICE_IDX, TEXT_MOD_PRIORITY)
-from Mods.TextModLoader.settings import dump_settings_file, load_settings_file
+                                          SETTINGS_IS_MOD_FILE, SETTINGS_META, SETTINGS_MODIFY_TIME,
+                                          SETTINGS_RECOMMENDED_GAME, SETTINGS_SPARK_SERVICE_IDX,
+                                          TEXT_MOD_PRIORITY, VERSION)
+from Mods.TextModLoader.settings import dump_settings, load_auto_enable
 
 CommandExtensions: Optional[ModuleType]
 try:
     from Mods import CommandExtensions
 except ImportError:
     CommandExtensions = None
+
+__version__: str = ".".join(str(x) for x in VERSION)
 
 
 def is_hotfix_service(idx: int) -> bool:
@@ -311,16 +313,18 @@ class TextMod(SDKMod):
             SETTINGS_SPARK_SERVICE_IDX: self.spark_service_idx,
             SETTINGS_RECOMMENDED_GAME: game,
             SETTINGS_META: self.metadata,
-            SETTINGS_AUTO_ENABLE: self.auto_enable,
         }
 
     def update_auto_enable(self) -> None:
         """
         Updates the auto enable state for this mod in the settings file.
         """
-        mod_info = load_settings_file()
-        mod_info[self.filename] = self.serialize_mod_info()
-        dump_settings_file(mod_info)
+        auto_enable_mods = load_auto_enable()
+        if self.auto_enable:
+            auto_enable_mods.add(self.filename)
+        else:
+            auto_enable_mods.remove(self.filename)
+        dump_settings(auto_enable=auto_enable_mods)
 
 
 # Because the SDKMod metaclass creates copies of all fields (to make sure you don't affect other
@@ -380,7 +384,7 @@ class TextModLoader(SDKMod):
     Description: str = (
         "Enables loading text mods from the SDK Mods Menu."
     )
-    Version: str = "1.0"
+    Version: str = __version__
 
     Types: ModTypes = ModTypes.Library
     Priority: ModPriorities = ModPriorities.Library

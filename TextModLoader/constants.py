@@ -1,8 +1,10 @@
 import sys
 from os import path
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
 from Mods.ModMenu import Game
+
+VERSION: Tuple[int, int] = (1, 1)
 
 JSON = Dict[str, Any]
 
@@ -24,10 +26,12 @@ META_TAG_TML_PRIORITY: str = "@tml-priority"
 META_TAG_TML_IGNORE_ME: str = "@tml-ignore-me"
 
 SETTINGS_FILE: str = path.abspath(path.join(path.dirname(__file__), "mod_info.json"))
+SETTINGS_VERSION: str = "tml_version"
+SETTINGS_MOD_INFO: str = "mod_info"
+SETTINGS_AUTO_ENABLE: str = "auto_enable"
 
 SETTINGS_IS_MOD_FILE: str = "is_mod_file"
 SETTINGS_MODIFY_TIME: str = "modify_time"
 SETTINGS_SPARK_SERVICE_IDX: str = "spark_service_idx"
 SETTINGS_RECOMMENDED_GAME: str = "recommended_game"
-SETTINGS_AUTO_ENABLE: str = "auto_enable"
 SETTINGS_META: str = "metadata"

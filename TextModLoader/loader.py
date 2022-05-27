@@ -1,50 +1,40 @@
-from __future__ import annotations
-
 import os
 import string
-from typing import Iterable, List, Optional
+from typing import Iterable, List, Optional, Set
 
-from Mods.ModMenu import Game
 from Mods.TextModLoader import TextMod, tml_parser
 from Mods.TextModLoader.blimp import parse_blimp_tags
 from Mods.TextModLoader.constants import (BINARIES_DIR, BLCMM_GAME_MAP, JSON, META_TAG_AUTHOR,
                                           META_TAG_DESCRIPTION, META_TAG_MAIN_AUTHOR,
                                           META_TAG_TITLE, META_TAG_TML_IGNORE_ME,
                                           META_TAG_TML_PRIORITY, META_TAG_VERSION,
-                                          SETTINGS_AUTO_ENABLE, SETTINGS_IS_MOD_FILE, SETTINGS_META,
-                                          SETTINGS_MODIFY_TIME, SETTINGS_RECOMMENDED_GAME,
-                                          SETTINGS_SPARK_SERVICE_IDX)
-from Mods.TextModLoader.settings import dump_settings_file, load_settings_file
+                                          SETTINGS_IS_MOD_FILE, SETTINGS_META, SETTINGS_MODIFY_TIME,
+                                          SETTINGS_RECOMMENDED_GAME, SETTINGS_SPARK_SERVICE_IDX)
+from Mods.TextModLoader.settings import dump_settings, load_auto_enable, load_mod_info
 
 
-def handle_cached_mod_info(filename: str, cached_info: JSON, auto_enable: bool) -> None:
+def handle_cached_mod_info(filename: str, cached_info: JSON) -> Optional[TextMod]:
     """
     Looks through a cached file entry, and registers a mod based on it (if applicable).
-
-    May modify the passed in info in-place.
 
     Args:
         filename: The entry's filename.
         cached_info: The cached info.
-        auto_enable: If to enable any mods marked as autoenabled.
+    Returns:
+        The created Mod object, or None.
     """
     if not cached_info[SETTINGS_IS_MOD_FILE]:
-        return
+        return None
     if META_TAG_TML_IGNORE_ME in cached_info[SETTINGS_META]:
-        return
+        return None
 
     game_name = cached_info[SETTINGS_RECOMMENDED_GAME]
-    mod = TextMod.register_new(
+    return TextMod.register_new(
         filename,
         cached_info[SETTINGS_SPARK_SERVICE_IDX],
-        None if game_name is None else Game[game_name],
+        None if game_name is None else BLCMM_GAME_MAP.get(game_name.lower(), None),
         cached_info[SETTINGS_META]
     )
-    if auto_enable and cached_info[SETTINGS_AUTO_ENABLE]:
-        mod.enable_if_safe()
-        # If we failed to enable, disable auto enable
-        if not mod.IsEnabled:
-            cached_info[SETTINGS_AUTO_ENABLE] = False
 
 
 def join_lines_markdown_like(lines: Iterable[str]) -> str:
@@ -196,7 +186,7 @@ def parse_and_register_mod_file(file_path: str) -> JSON:
             SETTINGS_MODIFY_TIME: os.path.getmtime(file_path),
         }
 
-    game = None if game_str is None else BLCMM_GAME_MAP.get(game_str, None)
+    game = None if game_str is None else BLCMM_GAME_MAP.get(game_str.lower(), None)
     mod = TextMod(
         os.path.basename(file_path),
         spark_service_idx,
@@ -228,9 +218,10 @@ def load_all_text_mods(auto_enable: bool) -> None:
             continue
         mod.unregister()
 
-    # Cache mod info cause looking through the files each time is slow
-    mod_info: JSON = load_settings_file()
+    mod_info: JSON = load_mod_info()
     new_mod_info: JSON = {}
+
+    auto_enable_mods: Set[str] = load_auto_enable() if auto_enable else set()
 
     for filename in os.listdir(BINARIES_DIR):
         file_path = os.path.join(BINARIES_DIR, filename)
@@ -246,7 +237,13 @@ def load_all_text_mods(auto_enable: bool) -> None:
         # If the file hasn't been modified since we last saw it, load cached values
         if filename in mod_info and modify_time <= mod_info[filename][SETTINGS_MODIFY_TIME]:
             try:
-                handle_cached_mod_info(filename, mod_info[filename], auto_enable)
+                new_mod = handle_cached_mod_info(filename, mod_info[filename])
+                if new_mod is None:
+                    continue
+                if filename in auto_enable_mods:
+                    new_mod.enable_if_safe()
+                    if not new_mod.IsEnabled:
+                        auto_enable_mods.remove(filename)
                 new_mod_info[filename] = mod_info[filename]
                 continue
             # If something's formatted wrong, read from the file again and recreate it
@@ -255,4 +252,7 @@ def load_all_text_mods(auto_enable: bool) -> None:
 
         new_mod_info[filename] = parse_and_register_mod_file(file_path)
 
-    dump_settings_file(new_mod_info)
+    dump_settings(
+        mod_info=new_mod_info,
+        auto_enable=auto_enable_mods,
+    )

@@ -28,5 +28,11 @@ Tag Name |  Multiple | Intepretation
 
 
 # Changelog
+
+## Text Mod Loader v1.1
+- Fixed recommended game detection - you'll now get a warning when trying to run a mod file in a game it's not intended for.
+- Fixed that editing a mod would cause it to stop being auto-enabled.
+- Forced all mod info to be reloaded whenever you update TML.
+
 ## Text Mod Loader v1.0
-Inital Release
+- Inital Release.
