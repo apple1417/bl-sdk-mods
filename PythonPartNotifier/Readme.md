@@ -7,6 +7,9 @@ When [Command Extensions](https://bl-sdk.github.io/mods/CommandExtensions/) is i
 registers a few new console commands you can use to add names to custom parts. Since CE ignores
 unregisterd commands, using this won't cause any issues if someone has CE installed but not PPN.
 
+Note that if you try to edit multiple comments containing a `set_part_name` command in BLCMM, it
+will try merge them all into one line. If you edit them one by one they will remain seperate.
+
 ## `set_part_name`
 usage: `set_part_name [-h] [-g {BL2,TPS,AoDK} NAME] [-y] part name type slot`
 
