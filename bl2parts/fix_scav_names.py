@@ -1,4 +1,3 @@
-import gzip
 import json
 import re
 from glob import glob
@@ -9,15 +8,13 @@ from typing import Any, Dict, Set, Tuple
 For bl2.parts, we only want to use "Bandit" in part names, no point showing two identical parts
  which everyone knows are just a rename of each other. For other use cases though, we do want to
  overwrite it back to "Scav" in TPS. This script fixes that.
-
-Also gzip's the file so that it's smaller for other uses.
 """
 
 JSON = Dict[str, Any]
 
 TPS_DATA_FOLDER: str = "bl2parts/data/TPS"
 INPUT_NAME_FILE: str = "bl2parts/part_names.json"
-OUTPUT_NAME_FILE: str = "bl2parts/complete_part_names.json.gz"
+OUTPUT_NAME_FILE: str = "bl2parts/part_names_including_scav.json"
 
 RE_BANDIT = re.compile("bandit", flags=re.I)
 SCAV_REPLACEMENT: str = "Scav"
@@ -77,10 +74,10 @@ with open(INPUT_NAME_FILE) as file:
         data["game_overrides"]["TPS"] = new_name
 
 
-with gzip.open(OUTPUT_NAME_FILE, "wt", encoding="utf8") as gzfile:
+with open(OUTPUT_NAME_FILE, "w") as file:
     json.dump(
         fixed_names,
-        gzfile,
-        indent=None,
-        separators=(",", ":")
+        file,
+        indent=4,
+        sort_keys=True
     )

@@ -4,32 +4,65 @@ Grenades, COMs, and Relics/Oz Kits.
 
 # Adding names to custom parts as a Mod Author
 When [Command Extensions](https://bl-sdk.github.io/mods/CommandExtensions/) is installed, this mod
-registers a new console command you can use to add names to custom parts. Since CE ignores unregisterd
-commands, using this won't cause any issues if someone has CE installed but not PPN.
+registers a few new console commands you can use to add names to custom parts. Since CE ignores
+unregisterd commands, using this won't cause any issues if someone has CE installed but not PPN.
 
-## `name_part`
-usage: `name_part [-h] [-g {BL2,TPS,AoDK} NAME] [-d] [-y] part name type slot`
+## `set_part_name`
+usage: `set_part_name [-h] [-g {BL2,TPS,AoDK} NAME] [-y] part name type slot`
 
 Sets the name used for the given part. Note that this command is very sensitive to punctuation, best
 to quote all args.
 
-
 | positional arguments | |
 |:---|:---|
-| `part` | The part to set the name of. Must be quoted. |
-| `name` | The part's name. |
-| `type` | The item type the part is intended for. |
-| `slot` | The slot the part is intended to go into. |
+| `part` | The part to set the name of. |
+| `name` | The part's name, e.g. 'Bandit'. |
+| `type` | The item type the part is intended for, e.g. 'Shotgun'. |
+| `slot` | The slot the part is intended to go into, e.g. 'Stock'. |
 
 | optional arguments: ||
 |:---|:---|
 | `-h, --help` | show this help message and exit |
 | `-g {BL2,TPS,AoDK} NAME, --game-override {BL2,TPS,AoDK} NAME` | Set game-specific part name overrides. May be used multiple times. |
-| `-d, --delete` | Delete the stored name for the given part instead. You must still specify dummy names for the command to get parsed. |
 | `-y, --dry-run` | Don't modify anything, just print what the command would set the name to. Useful to check it's being parsed as expected. |
 
+The `name`, `type`, and `slot` arguments may include both text and html-style markup -
+`"[shock]Shock[-shock] <font color='#3c8eff'>Rare</font>"`.
+
+## `get_part_name`
+usage: `get_part_name [-h] part`
+
+Gets the stored part name info for the given part.
+
+| positional arguments | |
+|:---|:---|
+| `part` | The part to get the name of. |
+
+| optional arguments: ||
+|:---|:---|
+| `-h, --help` | show this help message and exit |
+
+## `delete_part_name`
+usage: `delete_part_name [-h] part`
+
+Deletes the stored part name info for the given part.
+
+| positional arguments | |
+|:---|:---|
+| `part` | The part to delete the stored name of. |
+
+| optional arguments: ||
+|:---|:---|
+| `-h, --help` | show this help message and exit |
 
 # Changelog
+
+### Python Part Notifier v1.9
+- Renamed the `name_part` console command to `set_part_name`.
+- Split out the `--delete` argument to it's own `delete_part_name` console command.
+- Added the `get_part_name` console command.
+- Allowed custom part names to use text markup tags (`[shock]Shock[-shock]`).
+- Removed the overzealous automatic element/rarity colouring, and manually added it instead.
 
 ### Python Part Notifier v1.8
 - Fixed that the settings menu included Oz Kits instead of Relics in AoDK.

@@ -17,7 +17,7 @@ from Mods.PythonPartNotifier.PartNamer import legacy_get_part_name
 CommandExtensions: Optional[ModuleType]
 try:
     from Mods import CommandExtensions
-    from Mods.CommandExtensions.builtins import parse_object
+    from Mods.CommandExtensions.builtins import obj_name_splitter, parse_object
 except ImportError:
     CommandExtensions = None
 
@@ -40,21 +40,6 @@ if __name__ == "__main__":
 JSON = Dict[str, Any]
 
 EMPHASIS_COLOUR: str = "#FFDEAD"
-ELEMENT_COLOUR_REPLACEMENTS: Dict[str, str] = {
-    "Fire": "<font color='#F57500'>Fire</font>",
-    "Shock": "<font color='#00BDF3'>Shock</font>",
-    "Corrosive": "<font color='#79DC3D'>Corrosive</font>",
-    "Slag": "<font color='#9B00DE'>Slag</font>",
-    "Cryo": "<font color='#00FFFF'>Cryo</font>",
-    "Explosive": "<font color='#F1D300'>Explosive</font>",
-}
-RARITY_COLOUR_REPLACEMENTS: Dict[str, str] = {
-    "Common": "<font color='#ffffff'>Common</font>",
-    "Uncommon": "<font color='#3dd201'>Uncommon</font>",
-    # Include the bracket to not match `Very Rare`
-    "(Rare": "(<font color='#3c8eff'>Rare</font>",
-    "Very Rare": "<font color='#a83fe5'>Very Rare</font>",
-}
 
 # Some terms should be changed in TPS
 TPS_TYPE_REPLACEMENTS: Dict[str, str] = {
@@ -74,6 +59,11 @@ try:
         PART_NAMES = json.load(file)
 except (OSError, json.JSONDecodeError):
     pass
+
+DEFAULT_MOVIE_PLAYER: unrealsdk.UObject = unrealsdk.FindObject("GFxMoviePlayer", "GFxUI.Default__GFxMoviePlayer")
+
+if DEFAULT_MOVIE_PLAYER is None:
+    raise RuntimeError("Unable to find default 'GFxMoviePlayer'")
 
 
 def apply_replacements(text: str, replacements: Dict[str, str]) -> str:
@@ -114,8 +104,8 @@ def get_single_part_name(part: unrealsdk.UObject, show_slot: bool, show_type: bo
         except KeyError:
             pass
 
-        name = apply_replacements(name, ELEMENT_COLOUR_REPLACEMENTS)
-        name = apply_replacements(name, RARITY_COLOUR_REPLACEMENTS)
+        name = DEFAULT_MOVIE_PLAYER.ResolveDataStoreMarkup(name)
+
         if Game.GetCurrent() == Game.TPS:
             item_type = apply_replacements(item_type, TPS_TYPE_REPLACEMENTS)
 
@@ -216,130 +206,112 @@ class ItemClassOption(Options.Nested):
         self.ItemClass = ItemClass
 
 
-@dataclass
-class GameOverride:
-    """
-    Dataclass to store game overrides, for when adding new names via command extensions.
-
-    Attributes:
-        game: The game this override is for.
-        name: The name to use if this override applies.
-    """
-    game: Game
-    name: str
-
-
-class GameOverrideAction(argparse.Action):
-    """
-    Custom Action which parses a game-name pair into a `GameOverride` object. Acts like the default
-     append action otherwise.
-    """
-
-    LOWER_GAME_MAP: ClassVar[Dict[str, Game]] = {
-        "bl2": Game.BL2,
-        "tps": Game.TPS,
-        "aodk": Game.AoDK,
-    }
-
-    # Argparse uses two different formats for these and now that I know I hate it
-    GAME_CHOICES_METAVAR: ClassVar[str] = "{" + ",".join(map(str, Game._member_map_.keys())) + "}"
-    GAME_CHOICES_ERR: ClassVar[str] = ", ".join(map(repr, Game._member_map_.keys()))
-
-    def __call__(
-        self,
-        parser: argparse.ArgumentParser,
-        namespace: argparse.Namespace,
-        values: Union[str, Sequence[Any], None],
-        option_string: Optional[str] = None
-    ) -> None:
-        game_str, override = values  # type: ignore
-        game = GameOverrideAction.LOWER_GAME_MAP.get(game_str.lower(), None)
-        if game is None:
-            raise argparse.ArgumentError(
-                self,
-                f"invalid choice: {game_str!r} (choose from {GameOverrideAction.GAME_CHOICES_ERR})"
-            )
-
-        items = getattr(namespace, self.dest, None)
-        if items is None:
-            items = []
-            setattr(namespace, self.dest, items)
-        items.append(GameOverride(game, override))
-
-
-def name_part_handler(args: argparse.Namespace) -> None:
-    """
-    Handles `name_part` command invokations.
-
-    Args:
-        args: The passed command line arguments.
-    """
-    part = parse_object(args.part)
-    if part is None:
-        return
-    part_name = part.PathName(part)
-
-    if args.delete:
-        if args.dry_run:
-            unrealsdk.Log(f"Would delete name for {part_name!r}")
-            return
-
-        try:
-            del PART_NAMES[part.PathName(part)]
-        except KeyError:
-            unrealsdk.Log(f"{part_name!r} already did not have a name assigned to it!")
-        return
-
-    part_info = {
-        "name": args.name,
-        "slot": args.slot,
-        "type": args.type,
-    }
-
-    if args.game_override:
-        game_overrides: Dict[str, str] = {}
-        for override in args.game_override:
-            game_overrides[override.game.name] = override.name
-        part_info["game_overrides"] = game_overrides
-
-    if args.dry_run:
-        unrealsdk.Log(json.dumps(part_info, indent=4, sort_keys=True))
-    else:
-        PART_NAMES[part_name] = part_info
-
-
-def register_name_part() -> None:
-    """ Registers the `name_part` console command, if Command Extensions is available. """
+def register_commands() -> None:
+    """ Registers all console command, if Command Extensions is available. """
     if CommandExtensions is None:
         return
 
-    parser = CommandExtensions.RegisterConsoleCommand(
-        "name_part",
-        name_part_handler,
+    @dataclass
+    class GameOverride:
+        """
+        Dataclass to store game overrides, for when adding new names via command extensions.
+
+        Attributes:
+            game: The game this override is for.
+            name: The name to use if this override applies.
+        """
+        game: Game
+        name: str
+
+    class GameOverrideAction(argparse.Action):
+        """
+        Custom Action which parses a game-name pair into a `GameOverride` object. Acts like the
+         default append action otherwise.
+        """
+
+        LOWER_GAME_MAP: ClassVar[Dict[str, Game]] = {
+            "bl2": Game.BL2,
+            "tps": Game.TPS,
+            "aodk": Game.AoDK,
+        }
+
+        # Argparse uses two different formats for these and now that I know I hate it
+        GAME_CHOICES_METAVAR: ClassVar[str] = "{" + ",".join(map(str, Game._member_map_.keys())) + "}"
+        GAME_CHOICES_ERR: ClassVar[str] = ", ".join(map(repr, Game._member_map_.keys()))
+
+        def __call__(
+            self,
+            parser: argparse.ArgumentParser,
+            namespace: argparse.Namespace,
+            values: Union[str, Sequence[Any], None],
+            option_string: Optional[str] = None
+        ) -> None:
+            game_str, override = values  # type: ignore
+            game = GameOverrideAction.LOWER_GAME_MAP.get(game_str.lower(), None)
+            if game is None:
+                raise argparse.ArgumentError(
+                    self,
+                    f"invalid choice: {game_str!r} (choose from {GameOverrideAction.GAME_CHOICES_ERR})"
+                )
+
+            items = getattr(namespace, self.dest, None)
+            if items is None:
+                items = []
+                setattr(namespace, self.dest, items)
+            items.append(GameOverride(game, override))
+
+    def set_handler(args: argparse.Namespace) -> None:
+        """
+        Handles `name_part` command invocations.
+
+        Args:
+            args: The passed command line arguments.
+        """
+        part = parse_object(args.part)
+        if part is None:
+            return
+        part_name = part.PathName(part)
+
+        part_info = {
+            "name": args.name,
+            "slot": args.slot,
+            "type": args.type,
+        }
+
+        if args.game_override:
+            game_overrides: Dict[str, str] = {}
+            for override in args.game_override:
+                game_overrides[override.game.name] = override.name
+            part_info["game_overrides"] = game_overrides
+
+        if args.dry_run:
+            unrealsdk.Log(json.dumps(part_info, indent=4, sort_keys=True))
+        else:
+            PART_NAMES[part_name] = part_info
+
+    set_parser = CommandExtensions.RegisterConsoleCommand(
+        "set_part_name",
+        set_handler,
         description=(
             "Sets the name used for the given part. Note that this command is very sensitive to"
             " punctuation, best to quote all args."
+        ),
+        epilog=(
+            "The 'name', 'type', and 'slot' arguments may include both text and html-style markup"
+            " - \"[shock]Shock[-shock] <font color='#3c8eff'>Rare</font>\"."
         )
     )
-    parser.add_argument("part", help="The part to set the name of. Must be quoted.")
-    parser.add_argument("name", help="The part's name.")
-    parser.add_argument("type", help="The item type the part is intended for.")
-    parser.add_argument("slot", help="The slot the part is intended to go into.")
-    parser.add_argument(
+    set_parser.add_argument("part", help="The part to set the name of.")
+    set_parser.add_argument("name", help="The part's name, e.g. 'Bandit'.")
+    set_parser.add_argument("type", help="The item type the part is intended for, e.g. 'Shotgun'.")
+    set_parser.add_argument("slot", help="The slot the part is intended to go into, e.g. 'Stock'.")
+    set_parser.add_argument(
         "-g", "--game-override",
         nargs=2, action=GameOverrideAction,
         metavar=(GameOverrideAction.GAME_CHOICES_METAVAR, "NAME"),
         help="Set game-specific part name overrides. May be used multiple times."
     )
-    parser.add_argument(
-        "-d", "--delete",
-        action="store_true",
-        help=(
-            "Delete the stored name for the given part instead. You must still specify dummy names"
-            " for the command to get parsed."
-        )
-    )
-    parser.add_argument(
+    set_parser.add_argument(
         "-y", "--dry-run",
         action="store_true",
         help=(
@@ -348,12 +320,75 @@ def register_name_part() -> None:
         )
     )
 
+    def get_handler(args: argparse.Namespace) -> None:
+        """
+        Handles `get_part_name` command invocations.
 
-def unregister_name_part() -> None:
-    """ Unregisters the `name_part` console command, if Command Extensions is available. """
+        Args:
+            args: The passed command line arguments.
+        """
+        part = parse_object(args.part)
+        if part is None:
+            return
+        part_name = part.PathName(part)
+
+        if part_name in PART_NAMES:
+            unrealsdk.Log(json.dumps(PART_NAMES[part_name], indent=4, sort_keys=True))
+        else:
+            unrealsdk.Log(f"{part_name!r} does not have defined name info. Using the legacy namer:")
+            # These use hand tuned spacing since the game console isn't monospaced
+            unrealsdk.Log("Type | Slot | Name")
+            unrealsdk.Log("-----+-----+-------")
+            for show_type in (False, True):
+                for show_slot in (False, True):
+                    name = legacy_get_part_name(part, show_type, show_slot)
+                    unrealsdk.Log(
+                        ("   N   |", "   Y   |")[show_type]
+                        + ("  N   | ", "  Y   | ")[show_slot]
+                        + name
+                    )
+
+    get_parser = CommandExtensions.RegisterConsoleCommand(
+        "get_part_name",
+        get_handler,
+        splitter=obj_name_splitter,
+        description="Gets the stored part name info for the given part.",
+    )
+    get_parser.add_argument("part", help="The part to get the name of.")
+
+    def delete_handler(args: argparse.Namespace) -> None:
+        """
+        Handles `delete_part_name` command invocations.
+
+        Args:
+            args: The passed command line arguments.
+        """
+        part = parse_object(args.part)
+        if part is None:
+            return
+        part_name = part.PathName(part)
+
+        if part_name in PART_NAMES:
+            del PART_NAMES[part_name]
+        else:
+            unrealsdk.Log(f"{part_name!r} does not have defined name info.")
+
+    delete_parser = CommandExtensions.RegisterConsoleCommand(
+        "delete_part_name",
+        delete_handler,
+        splitter=obj_name_splitter,
+        description="Deletes the stored part name info for the given part.",
+    )
+    delete_parser.add_argument("part", help="The part to delete the stored name of.")
+
+
+def unregister_commands() -> None:
+    """ Unregisters all console commands, if Command Extensions is available. """
     if CommandExtensions is None:
         return
-    CommandExtensions.UnregisterConsoleCommand("name_part")
+    CommandExtensions.UnregisterConsoleCommand("set_part_name")
+    CommandExtensions.UnregisterConsoleCommand("get_part_name")
+    CommandExtensions.UnregisterConsoleCommand("delete_part_name")
 
 
 class PythonPartNotifier(SDKMod):
@@ -364,7 +399,7 @@ class PythonPartNotifier(SDKMod):
         "\n"
         "Make sure to check out the options menu to customize what exactly is shown."
     )
-    Version: str = "1.8"
+    Version: str = "1.9"
 
     Types: ModTypes = ModTypes.Utility
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
@@ -553,7 +588,9 @@ class PythonPartNotifier(SDKMod):
             return True
 
         # Get the default text and convert it as needed
-        text = "" if self.RemoveOption.CurrentValue else item.GenerateFunStatsText()
+        text = item.GenerateFunStatsText()
+        if text is None or self.RemoveOption.CurrentValue:
+            text = ""
 
         text += f"<font size=\"{self.FontSizeOption.CurrentValue}\" color=\"#FFFFFF\">"
         text += part_text
@@ -572,11 +609,11 @@ class PythonPartNotifier(SDKMod):
         return True
 
     def Enable(self) -> None:
-        register_name_part()
+        register_commands()
         return super().Enable()
 
     def Disable(self) -> None:
-        unregister_name_part()
+        unregister_commands()
         return super().Disable()
 
 

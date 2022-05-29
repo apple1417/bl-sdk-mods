@@ -1,4 +1,5 @@
 yaml
 data
 merged
-complete_part_names.json.gz
+part_names_including_scav.json
+part_names_including_scav.json.gz

@@ -270,9 +270,10 @@
       ],
       "tagline": "Shows the parts making up all of your items and weapons on their cards.",
       "types": ["Utility"],
-      "latest": "1.8",
+      "latest": "1.9",
       "versions": {
-        "1.8": "https://github.com/apple1417/bl-sdk-mods/raw/master/PythonPartNotifier/PythonPartNotifier.zip",
+        "1.9": "https://github.com/apple1417/bl-sdk-mods/raw/master/PythonPartNotifier/PythonPartNotifier.zip",
+        "1.8": "https://github.com/apple1417/bl-sdk-mods/raw/ce064304366975d465d24a447b40cbeff5504c72/PythonPartNotifier/PythonPartNotifier.zip",
         "1.7": "https://github.com/apple1417/bl-sdk-mods/raw/bcd5b7a2d92e2b8af9ded5de00117775d17e7078/PythonPartNotifier/PythonPartNotifier.zip"
       },
       "requirements": {}
