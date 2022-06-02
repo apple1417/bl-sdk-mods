@@ -82,11 +82,12 @@
       ],
       "tagline": "Adds a few new console commands, which are fully compatible with blcmm files.",
       "types": ["Library"],
-      "latest": "1.7",
+      "latest": "1.8",
       "versions": {
         "1.5": "https://github.com/apple1417/bl-sdk-mods/raw/a45fde7c5edc2224c15ac0a775076aacd3d40a0a/CommandExtensions/CommandExtensions.zip",
         "1.6": "https://github.com/apple1417/bl-sdk-mods/raw/0c3096fb91ed3157557106b2e742a14c8b328c5c/CommandExtensions/CommandExtensions.zip",
-        "1.7": "https://github.com/apple1417/bl-sdk-mods/raw/master/CommandExtensions/CommandExtensions.zip"
+        "1.7": "https://github.com/apple1417/bl-sdk-mods/raw/745a8880c414e8f1bd8e697dcd7cb7d9496d45ad/CommandExtensions/CommandExtensions.zip",
+        "1.8": "https://github.com/apple1417/bl-sdk-mods/raw/master/CommandExtensions/CommandExtensions.zip"
       },
       "requirements": {}
     },
@@ -380,9 +381,10 @@
         "Displays Text Mods from binaries in the SDK mods menu."
       ],
       "types": ["Library"],
-      "latest": "1.1",
+      "latest": "1.2",
       "versions": {
-        "1.1": "https://github.com/apple1417/bl-sdk-mods/raw/master/TextModLoader/TextModLoader.zip",
+        "1.2": "https://github.com/apple1417/bl-sdk-mods/raw/master/TextModLoader/TextModLoader.zip",
+        "1.1": "https://github.com/apple1417/bl-sdk-mods/raw/ede5da85559b0a2a9aabc2638f0e5eb1a8eef9b8/TextModLoader/TextModLoader.zip",
         "1.0": "https://github.com/apple1417/bl-sdk-mods/raw/9578e50c9f21e9ecebadbde1a91aef7dd035e9fe/TextModLoader/TextModLoader.zip"
       },
       "requirements": {}
