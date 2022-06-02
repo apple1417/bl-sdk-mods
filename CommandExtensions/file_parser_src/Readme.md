@@ -7,7 +7,7 @@ Uses [pugixml](https://pugixml.org/) and [pybind11](https://pybind11.readthedocs
 
 ### Building
 1. Get a python install of the same version used to build the sdk.    
-   This is currently 3.7.9 32bit (for windows).
+   This is currently 3.7.5 32bit (for windows).
 2. `pip install -r requirements.txt`
 3. `python setup.py build`
 4. (Optional) Install and run `pybind11-stubgen` on the generated `.pyd`. The actual stub file is

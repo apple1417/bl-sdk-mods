@@ -5,7 +5,7 @@ from shutil import copyfile
 
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 
-__version__ = "1.0"
+__version__ = "1.1"
 MODULE_NAME = "file_parser"
 
 cwd = os.getcwd()
@@ -17,8 +17,8 @@ setup(
     ext_modules=[
         Pybind11Extension(
             MODULE_NAME,
-            sorted(glob("*.cpp") + glob("include/**/*.cpp")),
-            include_dirs=["include"],
+            sorted(glob("**/*.cpp", recursive=True)),
+            include_dirs=["lib"],
             define_macros=[
                 ("MODULE_VERSION", __version__),
                 ("MODULE_NAME", MODULE_NAME)

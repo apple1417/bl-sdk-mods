@@ -11,6 +11,16 @@ def clone_object(
     outer: Optional[unrealsdk.UObject],
     name: str
 ) -> Optional[unrealsdk.UObject]:
+    """
+    Clones an object and sets it up for proper use while modding.
+
+    Args:
+        src: The object to use as the template.
+        outer: The outer object the clone should be created under.
+        name: The name of the cloned object.
+    Returns:
+        The cloned object, or None if it failed to clone.
+    """
     cloned = unrealsdk.ConstructObject(
         Class=src.Class,
         Outer=outer,
@@ -32,6 +42,18 @@ def parse_clone_target(
     src_class: str,
     suppress_exists: bool
 ) -> Tuple[Optional[unrealsdk.UObject], Optional[str]]:
+    """
+    Parses a full object name intended to be a clone target into it's outer object and name.
+
+    If it's unable to parse or find the object, logs an error to console and returns None.
+
+    Args:
+        name: The full object name to parse.
+        src_class: The class of the source object. The target must use this class (or object).
+        suppress_exists: If true, doesn't log exists errors to console.
+    Returns:
+        A tuple of the target's outer object and it's name, or a tuple of two `None`s on error.
+    """
     dst_match = re_obj_name.match(name)
     if dst_match is None:
         unrealsdk.Log(f"Unable to parse object name {name}")

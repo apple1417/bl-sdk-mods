@@ -6,16 +6,18 @@
   - [`clone`](#clone)
   - [`clone_bpd`](#clone_bpd)
   - [`exec_raw`](#exec_raw)
-  - [`load_package`](#load_package)
   - [`keep_alive`](#keep_alive)
+  - [`load_package`](#load_package)
+  - [`regen_balance`](#regen_balance)
   - [`set_early`](#set_early)
-  - [`set_material`](#set_material)
   - [`suppress_next_chat`](#suppress_next_chat)
   - [`unlock_package`](#unlock_package)
 - [Writing Text Mods](#writing-text-mods)
   - [Parsing Intricacies](#parsing-intricacies)
     - [`CE_EnableOn`](#ce_enableon)
-- [Adding new commands in your own SDK Mods](#adding-new-commands-in-your-own-sdk-mods)
+- [Using Command Extensions in your own SDK mods](#using-command-extensions-in-your-own-sdk-mods)
+  - [Adding custom commands](#adding-custom-commands)
+  - [Calling custom commands](#calling-custom-commands)
 
 # Built-in Custom Commands
 
@@ -94,6 +96,21 @@ Behaves exactly like an `exec` command, but disables custom command parsing.
 |:---|:---|
 | `-h, --help` | show this help message and exit |
 
+## `keep_alive`
+usage: `keep_alive [-h] [-u] object`
+
+Prevents an object from being garbaged collected, it will always be loaded until you restart the
+game.
+
+| positional arguments | |
+|:---|:---|
+| `object` | The object to keep alive. |
+
+| optional arguments | |
+|:---|:---|
+| `-h, --help` | show this help message and exit |
+| `-u, --undo` | Undo a previous keep alive call. Note that this only affects the specific provided object, a normal keep alive command might also have affected a parent object. |
+
 ## `load_package`
 usage: `load_package [-h] package`
 
@@ -110,20 +127,19 @@ explicit should still be prefered.
 | `-h, --help` | show this help message and exit |
 | `--list` | List all packages matching the given pattern, instead of trying to load any. |
 
-## `keep_alive`
-usage: `keep_alive [-h] [-u] object`
+## `regen_balance`
+usage: `regen_balance [-h] balance`
 
-Prevents an object from being garbaged collected, it will always be loaded until you restart the
-game.
+Regenerates the runtime parts list of an item/weapon balance, to reflect changes in the base part
+lists. Edits objects in place.
 
 | positional arguments | |
 |:---|:---|
-| `object` | The object to keep alive. |
+| `balance` | The balance to regenerate. |
 
 | optional arguments | |
 |:---|:---|
 | `-h, --help` | show this help message and exit |
-| `-u, --undo` | Undo a previous keep alive call. Note that this only affects the specific provided object, a normal keep alive command might also have affected a parent object. |
 
 ## `set_early`
 usage: `set_early [-h] ...`
@@ -134,23 +150,6 @@ parsing instead of afterwards.
 | positional arguments | |
 |:---|:---|
 | args | Standard set command arguments |
-
-| optional arguments | |
-|:---|:---|
-| `-h, --help` | show this help message and exit |
-
-## `set_material`
-usage: `set_material [-h] part material`
-
-DEPRECATED. Sets a parts's material, without causing crashes if it's a cloned from an existing one.
-Note that cloning `Engine.Default__MaterialInstanceConstant` will not cause crashes, this command is
-most useful when only making a small edit. Practically, this creates a new material and copies the
-fields from the provided one as a template.
-
-| positional arguments | |
-|:---|:---|
-| part     | The part to set the material on. |
-| material | The MaterialInstanceConstant to set. |
 
 | optional arguments | |
 |:---|:---|
@@ -250,11 +249,40 @@ Using each strategy, a custom command is enabled if:
 | `-h, --help` | show this help message and exit
 
 
-# Adding new commands in your own SDK Mods
-Command Extensions exports two functions: `RegisterConsoleCommand`, and `UnregisterConsoleCommand`.
-Unsuprisingly, these are used to register and unregister console commands respectively. For the
-exact arguments, check the docstrings. All command parsing is done through Python's standard
-`argparse` library, the register function does a bit of basic setup before returning a
-`ArgumentParser` instance (or rather, a small wrapper around it). You just need to add your
-arguments to this object, everything else will automatically be handled for you. When your mod is
-disabled you can unregister your commands to stop them from being processed.
+# Using Command Extensions in your own SDK mods
+## Adding custom commands
+To add your own custom console commands, Command Extensions exports two functions:
+`RegisterConsoleCommand`, and `UnregisterConsoleCommand`. Unsuprisingly, these are used to register
+and unregister console commands respectively. For the exact arguments, check the docstrings. All
+command parsing is done through Python's standard `argparse` library, the register function does a
+bit of basic setup before returning a `ArgumentParser` instance (or rather, a small wrapper around
+it). You just need to add your arguments to this object, everything else will automatically be
+handled for you. When your mod is disabled you can unregister your commands to stop them from being
+processed.
+
+## Calling custom commands
+If your mod runs console commands manually, they will always skip the hooks Command Extensions uses.
+Because of this, it's a good idea to try manually pass them through to CE first, particularly if
+you're running `exec` commands. To do this, call `try_handle_command` before running the console
+command. This function takes two arguments, the command name (everything before the first space),
+and it's arguments (everything after). If you only have the command as a single string, a simple
+conversion is `*cmd.partition(" ")[::2]`. To allow your mod to function without requiring CE, catch
+the import error and set a flag to skip this call.
+
+```py
+try:
+    from Mods import CommandExtensions
+except ImportError:
+    CommandExtensions = None
+
+if CommandExtensions is not None:
+    CommandExtensions.try_handle_command("exec", f"\"{filename}\"")
+unrealsdk.GetEngine().GamePlayers[0].Actor.ConsoleCommand(f"exec \"{filename}\"")
+```
+
+Even builtin commands like `disconnect` or `open` can have custom CE command handlers registered
+overwriting them. There are only five commands guarenteed to never be overwritten: `exec`, `set`,
+`py`, `pyexec`, and `CE_EnableOn`, though of these only `set` and `exec` are meaningful to call from
+inside your own mods. As `exec` commands will run other commands, they should always be passed to
+`try_handle_command`, but it is ok to skip calling it on any of the other four. All other commmands
+should always be passed through to CE.

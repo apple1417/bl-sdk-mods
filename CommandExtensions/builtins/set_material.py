@@ -29,7 +29,7 @@ def handler(args: argparse.Namespace) -> None:
         return
     if not is_obj_instance(part, "WillowInventoryPartDefinition"):
         unrealsdk.Log(
-            f"Object {part.PathName(part)} must be a subclass of 'WillowInventoryPartDefinition'!"
+            f"Object '{part.PathName(part)}' must be a subclass of 'WillowInventoryPartDefinition'!"
         )
         return
 
@@ -37,7 +37,7 @@ def handler(args: argparse.Namespace) -> None:
     if template is None:
         return
     if not is_obj_instance(template, "MaterialInstanceConstant"):
-        unrealsdk.Log(f"Object {template.PathName(template)} must be a 'MaterialInstanceConstant'!")
+        unrealsdk.Log(f"Object '{template.PathName(template)}' must be a 'MaterialInstanceConstant'!")
         return
 
     material = MESH.CreateAndSetMaterialInstanceConstant(0)

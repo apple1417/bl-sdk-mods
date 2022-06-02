@@ -16,6 +16,14 @@ ClonesDict = Dict[unrealsdk.UObject, unrealsdk.UObject]
 
 # There are a bunch of different fields skills can be stored in, hence the field arg
 def fixup_skill_field(field: str, behavior: unrealsdk.UObject, known_clones: ClonesDict) -> None:
+    """
+    Clones skills referenced in skill bpds, as well as other bpds stored on those skills.
+
+    Args:
+        field: The name of the field on the behavior object which the skill's stored in.
+        behavior: The behavior object which references a skill.
+        known_clones: A dict of objects to their clones, used to prevent double-cloning.
+    """
     skill = getattr(behavior, field)
     if skill is None:
         return
@@ -57,15 +65,25 @@ def fixup_skill_field(field: str, behavior: unrealsdk.UObject, known_clones: Clo
     fixup_bpd(cloned_bpd, known_clones)
 
 
-# Mapping behavior class names to functions that perform extra fixup on them
+"""
+Dict mapping behavior class names to functions that perform extra fixups on them, incase there are
+ extra objects that need to be cloned.
+"""
 extra_behaviour_fixups: Dict[str, Callable[[unrealsdk.UObject, ClonesDict], None]] = {
     "Behavior_AttributeEffect": functools.partial(fixup_skill_field, "AttributeEffect"),
     "Behavior_ActivateSkill": functools.partial(fixup_skill_field, "SkillToActivate"),
-    "Behavior_DeactivateSkill": functools.partial(fixup_skill_field, "SkillToDeactivate"),
+    "Behavior_ActivateListenerSkill": functools.partial(fixup_skill_field, "SkillToActivate"),
 }
 
 
 def fixup_bpd(cloned: unrealsdk.UObject, known_clones: ClonesDict) -> None:
+    """
+    Looks through a BPD for subobjects which still need to be cloned.
+
+    Args:
+        cloned: The cloned BPD.
+        known_clones: A dict of objects to their clones, used to prevent double-cloning.
+    """
     for sequence in cloned.BehaviorSequences:
         # There are a bunch of other fields, but this seems to be the only used one
         for data in sequence.BehaviorData2:
@@ -98,7 +116,7 @@ def handler(args: argparse.Namespace) -> None:
     if src is None:
         return
     if not is_obj_instance(src, "BehaviorProviderDefinition"):
-        unrealsdk.Log(f"Object {src.PathName(src)} must be a 'BehaviorProviderDefinition'!")
+        unrealsdk.Log(f"Object '{src.PathName(src)}' must be a 'BehaviorProviderDefinition'!")
         return
 
     outer, name = parse_clone_target(args.clone, src.Class.Name, args.suppress_exists)

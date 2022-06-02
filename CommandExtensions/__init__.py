@@ -21,7 +21,7 @@ __all__: Tuple[str, ...] = (
 )
 
 VersionMajor: int = 1
-VersionMinor: int = 7
+VersionMinor: int = 8
 
 CommandCallback = Callable[[argparse.Namespace], None]
 SplitterFunction = Callable[[str], List[str]]
@@ -277,7 +277,7 @@ def console_command_hook(caller: unrealsdk.UObject, function: unrealsdk.UFunctio
 unrealsdk.RegisterHook("Engine.PlayerController.ConsoleCommand", __name__, console_command_hook)
 
 
-# load our builtin commands
+# Load our builtin commands
 from . import builtins  # noqa: F401, E402
 
 

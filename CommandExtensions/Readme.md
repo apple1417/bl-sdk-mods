@@ -18,38 +18,44 @@ enabled (and won't suddenly re-enable soon).
 
 ## Changelog
 
+### Command Extensions v1.8
+- Added the `regen_balance` command.
+- Made the `clone_bpd` command clone skills of `Behavior_ActivateListenerSkill` objects.
+- Updated the native file parser with a better [BLCMM preprocessor](https://github.com/apple1417/blcmm-parsing).
+  This should fix some obscure parsing errors when doing dumb things with your files.
+
 ### Command Extensions v1.7
-Added the `exec_raw` command.    
-Added the `--list` argument to the `load_package` command.
+- Added the `exec_raw` command.
+- Added the `--list` argument to the `load_package` command.
 
 ### Command Extensions v1.6
-Moved file parsing to a native module - `exec`ing large mod files should now be faster.    
-Added the `chat` command.    
-Deprecated the `set_material` command.
+- Moved file parsing to a native module - `exec`ing large mod files should now be faster.
+- Added the `chat` command.
+- Deprecated the `set_material` command.
 
 ### Command Extensions v1.5
-Added the `unlock_package` command.    
-Added the `--undo` optional argument to `keep_alive`.    
-The `clone` and `clone_bpd` commands now set the `ObjectArchetype` field to whatever the source
-object used, rather than having it reference the source object directly.
+- Added the `unlock_package` command.
+- Added the `--undo` optional argument to `keep_alive`.
+- The `clone` and `clone_bpd` commands now set the `ObjectArchetype` field to whatever the source
+  object used, rather than having it reference the source object directly.
 
 ### Command Extensions v1.4
-The `clone` and `clone_bpd` commands now output an error if the target already exists, and don't try
-to clone it again. This error message can be suppressed with an optional argument.    
-Fixed handling of `exec` commands when using files outside of Binaries.    
-Add support for the sdk's builtin `py` and `pyexec` commands to blcmm files. Also explicitly raise
-errors when a mod tries to unregister these, which never worked properly in the first place.    
-Cleanup handling of subclasses so they're less likely to break if you start trying to create custom
-classes.
+- The `clone` and `clone_bpd` commands now output an error if the target already exists, and don't
+  try to clone it again. This error message can be suppressed with an optional argument.
+- Fixed handling of `exec` commands when using files outside of Binaries.
+- Add support for the sdk's builtin `py` and `pyexec` commands to blcmm files. Also explicitly raise
+  errors when a mod tries to unregister these, which never worked properly in the first place.
+- Cleanup handling of subclasses so they're less likely to break if you start trying to create
+  custom classes.
 
 ### Command Extensions v1.2 + v1.3
-Added the `set_early` command.
+- Added the `set_early` command.
 
 ### Command Extensions v1.1
-Added the `CE_Debug`, `clone_bpd`, and `set_material` commands.    
-Explicitly raise errors when a mod tries to register `set` or unregister `CE_EnableOn` - neither of
-these worked properly in the first place.    
-Switched the demo mod file to "online" mode.
+- Added the `CE_Debug`, `clone_bpd`, and `set_material` commands.
+- Explicitly raise errors when a mod tries to register `set` or unregister `CE_EnableOn` - neither
+  of these worked properly in the first place.
+- Switched the demo mod file to "online" mode.
 
 ### Command Extensions v1.0
-Inital Release.
+- Inital Release.
