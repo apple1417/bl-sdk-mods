@@ -29,6 +29,9 @@ Tag Name |  Multiple | Intepretation
 
 # Changelog
 
+## Text Mod Loader v1.2
+- Updated the file parsing to better handle non-ascii text. The handling is still not perfect, but should cover most cases.
+
 ## Text Mod Loader v1.1
 - Fixed recommended game detection - you'll now get a warning when trying to run a mod file in a game it's not intended for.
 - Fixed that editing a mod would cause it to stop being auto-enabled.

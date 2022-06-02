@@ -5,7 +5,7 @@ from shutil import copyfile
 
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 
-__version__ = "1.0"
+__version__ = "1.1"
 MODULE_NAME = "tml_parser"
 
 cwd = os.getcwd()

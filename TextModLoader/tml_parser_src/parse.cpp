@@ -16,7 +16,7 @@
  * @param str The string to trim.
  * @return A new trimmed string.
  */
-static std::string trim_leading_whitespace(std::string str) {
+static std::string trim_leading_whitespace(const std::string& str) {
     auto c = str.begin();
     for (; c != str.end(); c++) {
        if (!std::isspace(*c)) {
@@ -32,7 +32,7 @@ static std::string trim_leading_whitespace(std::string str) {
  * @param str The string to trim.
  * @return A new trimmed string.
  */
-static std::string trim_whitespace(std::string str) {
+static std::string trim_whitespace(const std::string& str) {
     auto start = str.begin();
     auto end = str.begin();
     auto first_char = false;
@@ -57,7 +57,7 @@ static std::string trim_whitespace(std::string str) {
  * @param no_set Set to true to disable checking for `set` commands.
  * @return True if the line contains a command, false otherwise.
  */
-static bool is_command(std::string line, bool no_set = false) {
+static bool is_command(const std::string& line, bool no_set = false) {
     return line.rfind("exec", 0) == 0
            || line.rfind("say", 0) == 0
            || (!no_set && line.rfind("set", 0) == 0);
@@ -69,7 +69,7 @@ static bool is_command(std::string line, bool no_set = false) {
  * @param category_name The category name.
  * @return True if this is a description category, false otherwise.
  */
-static bool is_description_category(std::string category_name) {
+static bool is_description_category(const std::string& category_name) {
     const std::string DESCRIPTION = "description";
     auto it = std::search(
         category_name.begin(), category_name.end(),
