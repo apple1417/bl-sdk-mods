@@ -73,6 +73,7 @@ extra_behaviour_fixups: Dict[str, Callable[[unrealsdk.UObject, ClonesDict], None
     "Behavior_AttributeEffect": functools.partial(fixup_skill_field, "AttributeEffect"),
     "Behavior_ActivateSkill": functools.partial(fixup_skill_field, "SkillToActivate"),
     "Behavior_ActivateListenerSkill": functools.partial(fixup_skill_field, "SkillToActivate"),
+    "Behavior_DeactivateSkill": functools.partial(fixup_skill_field, "SkillToDeactivate"),
 }
 
 

@@ -18,6 +18,10 @@ enabled (and won't suddenly re-enable soon).
 
 ## Changelog
 
+### Command Extensions v1.9
+- Added the `pyb` command.
+- Fixed that `clone_bpd` no longer cloned skills on `Behavior_DeactivateSkill`.
+
 ### Command Extensions v1.8
 - Added the `regen_balance` command.
 - Made the `clone_bpd` command clone skills of `Behavior_ActivateListenerSkill` objects.

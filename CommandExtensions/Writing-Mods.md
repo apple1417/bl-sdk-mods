@@ -8,6 +8,7 @@
   - [`exec_raw`](#exec_raw)
   - [`keep_alive`](#keep_alive)
   - [`load_package`](#load_package)
+  - [`pyb`](#pyb)
   - [`regen_balance`](#regen_balance)
   - [`set_early`](#set_early)
   - [`suppress_next_chat`](#suppress_next_chat)
@@ -126,6 +127,26 @@ explicit should still be prefered.
 |:---|:---|
 | `-h, --help` | show this help message and exit |
 | `--list` | List all packages matching the given pattern, instead of trying to load any. |
+
+## `pyb`
+usage: `pyb [-h] [-x] [-d] [-p] ...`
+
+Runs a block of python statements, which may span multiple lines. Only one space after the command
+is consumed for arg parsing - `pyb[3*space]abc` extracts the line `[2*space]abc`.
+
+| positional arguments | |
+|:---|:---|
+| `args` | Python code. Whitespace is preserved. |
+
+| optional arguments | |
+|:---|:---|
+| `-h, --help` | show this help message and exit |
+| `-x, --exec` | Executes stored lines. |
+| `-d, --discard` | Discards stored lines. |
+| `-p, --print` | Prints stored lines. |
+
+If an optional arg is specified, python code is ignored. Optional args must be at the start of the
+command to be recognised.
 
 ## `regen_balance`
 usage: `regen_balance [-h] balance`
