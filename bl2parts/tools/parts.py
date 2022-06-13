@@ -7,14 +7,12 @@ from . import YAML, float_error
 from .data import (ALLOWED_DEFINITION_CLASSES, ALLOWED_ZERO_GRADES, ATTRIBUTES_TO_IGNORE,
                    DEFINITION_PART_TYPE, GRADES_TO_IGNORE, IGNORED_POST_INIT_PARTS,
                    ITEM_PART_TYPE_NAMES, KNOWN_ATTRIBUTES, KNOWN_INITALIZATIONS, MODIFIER_NAMES,
-                   PART_NAMES, PART_TYPE_OVERRIDES, VALID_MANU_RESTRICT_PREPENDS,
-                   WEAPON_MANU_ATTRIBUTES, WEAPON_PART_TYPE_NAMES)
+                   PART_NAMES, PART_TYPE_OVERRIDES, WEAPON_MANU_ATTRIBUTES, WEAPON_PART_TYPE_NAMES)
 
 
 def _create_bonus_data(
     part: unrealsdk.UObject,
     attr_struct: unrealsdk.FStruct,
-    restrict: Optional[str] = None
 ) -> Optional[YAML]:
     """
     Create bonus yaml from an attribute struct.
@@ -22,7 +20,6 @@ def _create_bonus_data(
     Args:
         part: The part currently being parsed.
         attr_struct: The attribute struct to parse.
-        restrict: The base restriction to use. May be None.
     Returns:
         None if the bonus was unparseable and should be skipped.
         The bonus yaml otherwise.
@@ -42,16 +39,9 @@ def _create_bonus_data(
 
     if attr in WEAPON_MANU_ATTRIBUTES and init is None:
         value = float_error(bvsc)
-        if restrict is not None and restrict not in VALID_MANU_RESTRICT_PREPENDS:
-            unrealsdk.Log(
-                f"Found manufacturer restriction on bonus with existing restriction"
-                f" {part.PathName(part)}"
-            )
-        manu_restrict = WEAPON_MANU_ATTRIBUTES[attr]
-        if restrict in VALID_MANU_RESTRICT_PREPENDS:
-            restrict = manu_restrict + " + " + restrict
-        else:
-            restrict = manu_restrict
+        bonus_data["restrict"] = {
+            "manu": WEAPON_MANU_ATTRIBUTES[attr]
+        }
 
     elif (
         (attr in KNOWN_ATTRIBUTES and init is None)
@@ -59,12 +49,11 @@ def _create_bonus_data(
     ):
         stat_data = KNOWN_INITALIZATIONS[init] if attr is None else KNOWN_ATTRIBUTES[attr]
 
-        if stat_data.scale:
-            bonus_data["scale"] = stat_data.scale
-        if stat_data.offset:
-            bonus_data["offset"] = float_error(stat_data.offset * bvsc)
-
         value = float_error(stat_data.value * bvsc)
+
+        formula = stat_data.get_formula()
+        if formula:
+            bonus_data["value_formula"] = formula
 
     elif attr is not None or init is not None:
         unrealsdk.Log(f"Unparsable bonus on {part.PathName(part)}")
@@ -77,8 +66,6 @@ def _create_bonus_data(
         return None
 
     bonus_data["value"] = value
-    if restrict is not None:
-        bonus_data["restrict"] = restrict
 
     return bonus_data
 
@@ -129,19 +116,26 @@ def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
             "type": "grade",
         })
 
-    for attr_group, base_restrict in (
-        (part.WeaponAttributeEffects, None),
-        (part.ItemAttributeEffects, None),
-        (part.ExternalAttributeEffects, None),
-        (part.ZoomWeaponAttributeEffects, "Zoom"),
-        (part.ZoomExternalAttributeEffects, "Zoom"),
+    for attr_group, is_zoom in (
+        (part.WeaponAttributeEffects, False),
+        (part.ItemAttributeEffects, False),
+        (part.ExternalAttributeEffects, False),
+        (part.ZoomWeaponAttributeEffects, True),
+        (part.ZoomExternalAttributeEffects, True),
     ):
         if attr_group is None:
             continue
         for attr_struct in attr_group:
-            bonus_data = _create_bonus_data(part, attr_struct, base_restrict)
-            if bonus_data is not None:
-                all_bonuses.append(bonus_data)
+            bonus_data = _create_bonus_data(part, attr_struct)
+            if bonus_data is None:
+                continue
+
+            if is_zoom:
+                if "restrict" not in bonus_data:
+                    bonus_data["restrict"] = {}
+                bonus_data["restrict"]["zoom"] = True
+
+            all_bonuses.append(bonus_data)
 
     # This catches the fibber, we'll see if it works for anything else
     # Just going for simple logic, it's not perfect, it'll catch some stuff that's not connected
@@ -151,9 +145,15 @@ def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
                 if behaviour_struct.Behavior.Class.Name != "Behavior_AttributeEffect":
                     continue
                 for attr_struct in behaviour_struct.Behavior.AttributeEffects:
-                    bonus_data = _create_bonus_data(part, attr_struct, "Post-Init")
-                    if bonus_data is not None:
-                        all_bonuses.append(bonus_data)
+                    bonus_data = _create_bonus_data(part, attr_struct)
+                    if bonus_data is None:
+                        continue
+
+                    if "restrict" not in bonus_data:
+                        bonus_data["restrict"] = {}
+                    bonus_data["restrict"]["post_init"] = True
+
+                    all_bonuses.append(bonus_data)
 
     part_data = {
         "_obj_name": part_name

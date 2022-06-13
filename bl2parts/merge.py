@@ -162,6 +162,10 @@ for name, matching_files in get_file_mappings("yml").items():
 
                 for part in part_list:
                     if part["_obj_name"] in PARTS_TO_ADD_GAME_TO_NAME:
+                        part["_original"] = {
+                            "name": part["name"],
+                            "game": game
+                        }
                         if part["name"][-1] == ")":
                             part["name"] = part["name"][:-1] + f", {game})"
                         else:
@@ -214,6 +218,10 @@ for name, matching_files in get_file_mappings("yml").items():
                     continue
 
                 if def_data["_obj_name"] in META_TO_ADD_GAME_TO_NAME:
+                    def_data["_original"] = {
+                        "name": def_data["name"],
+                        "game": game
+                    }
                     if def_data["name"][-1] == ")":
                         def_data["name"] = def_data["name"][:-1] + f", {game})"
                     else:

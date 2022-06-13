@@ -3,14 +3,22 @@ import json
 from dataclasses import dataclass
 from typing import Collection, Dict, Mapping, Optional, Set, Tuple, TypeVar, Union
 
-from . import float_error
+from . import YAML, float_error
 
 
 @dataclass
 class KnownStat:
     value: float
-    scale: Optional[str] = None
+    multiplier_str: Optional[str] = None
     offset: float = 0
+
+    def get_formula(self) -> YAML:
+        formula: YAML = {}
+        if self.multiplier_str:
+            formula["multiplier_str"] = self.multiplier_str
+        if self.offset:
+            formula["offset"] = self.offset
+        return formula
 
 
 @dataclass
@@ -416,11 +424,6 @@ WEAPON_MANU_ATTRIBUTES: Dict[unrealsdk.UObject, str] = _load_obj_dict("Attribute
     "D_Attributes.WeaponManufacturer.Weapon_Is_Vladof": "Vladof",
 })
 
-VALID_MANU_RESTRICT_PREPENDS: Tuple[str, ...] = (
-    "Zoom",
-)
-
-
 KNOWN_ATTRIBUTES: Dict[unrealsdk.UObject, KnownStat] = _load_obj_dict("AttributeDefinitionBase", {
     "D_Attributes.ExperienceResourcePool.PlayerExperienceLevel": KnownStat(1, "[Player Level]"),
 })
@@ -607,9 +610,21 @@ GRADES_TO_IGNORE: Dict[str, Tuple[str, ...]] = {
 }
 
 # This will add +0 grades only *if* they also activate the slot
+# These are generally for slots done entirely within the base value
 ALLOWED_ZERO_GRADES: Dict[str, Tuple[str, ...]] = {
+    "ShieldDefinition": (
+        # Used by the Antagonist
+        "DeflectChance",
+        # Used by the blockage, for it's damage reduction
+        "NormalDamageResist",
+        "FireDamageResist",
+        "ShockDamageResist",
+        "CorrosiveDamageResist",
+        "ExplosiveDamageResist",
+        "SlagDamageResist",
+    ),
     "ShieldPartDefinition": (
-        # Used by the maliwan capacitors, done entirely in the base value
+        # Used by the maliwan capacitors
         "FireResist",
         "ShockResist",
         "CorrosiveResist",

@@ -72,13 +72,17 @@ def get_definition_data(def_obj: unrealsdk.UObject) -> YAML:
 
         data["base"].append({
             "attribute": WEAPON_DAMAGE_ATTR,
-            "scale": BASE_SCALING_CONSTANT,
             "value": float_error(8 * def_obj.InstantHitDamage.BaseValueScaleConstant),
+            "value_formula": {
+                "multiplier_str": BASE_SCALING_CONSTANT,
+            }
         })
         data["base"].append({
             "attribute": STATUS_DAMAGE_ATTR,
-            "scale": BASE_SCALING_CONSTANT,
             "value": float_error(8 * def_obj.StatusEffectDamage.BaseValueScaleConstant),
+            "value_formula": {
+                "multiplier_str": BASE_SCALING_CONSTANT,
+            }
         })
         data["base"].append({
             "attribute": STATUS_CHANCE_ATTR,
@@ -113,9 +117,9 @@ def get_definition_data(def_obj: unrealsdk.UObject) -> YAML:
             else:
                 grade_data["constraint"] = CONSTRAINT_NAMES[slot.ConstraintAttribute]
 
-        for value_key, scale_key, offset_key, bvc_struct in (
-            ("base", "scale", "offset", slot.BaseModifierValue),
-            ("per_grade", "per_grade_scale", "per_grade_offset", slot.PerGradeUpgrade),
+        for value_key, bvc_struct in (
+            ("base", slot.BaseModifierValue),
+            ("per_grade", slot.PerGradeUpgrade),
         ):
             attr = bvc_struct.BaseValueAttribute
             init = bvc_struct.InitializationDefinition
@@ -131,17 +135,13 @@ def get_definition_data(def_obj: unrealsdk.UObject) -> YAML:
             ):
                 stat_data = KNOWN_INITALIZATIONS[init] if attr is None else KNOWN_ATTRIBUTES[attr]
 
-                if stat_data.scale:
-                    grade_data[scale_key] = stat_data.scale
-                if stat_data.offset != 0:
-                    grade_data[offset_key] = float_error(
-                        stat_data.offset
-                        * bvc_struct.BaseValueScaleConstant
-                    )
-
                 grade_data[value_key] = float_error(
                     stat_data.value * bvc_struct.BaseValueScaleConstant
                 )
+
+                formula = stat_data.get_formula()
+                if formula:
+                    grade_data[value_key + "_formula"] = formula
 
             else:
                 unrealsdk.Log(f"Unparseable grade {value_key} in index {idx} of '{def_name}'")
