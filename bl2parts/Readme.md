@@ -15,7 +15,20 @@ To generate:
 
 
 ### Broken items when offline
-1. Aquamarine Snipers are based off of maliwan SMGs, instead of snipers, so have a completely wrong part list
-2. The Hawkeye barrel has a -10 preadd zoom fov bonus turn into a +10 grade
-3. The Twister barrel has a +0.75 damage bonus turn into a +1
-4. The Little Evie barrel has a +0.33 damage bonus turn into a +0.4, and a +4 mag size bonus turn into a +6
+- Aquamarine Snipers are based off of maliwan SMGs, instead of snipers, so have a completely wrong part list
+
+The following parts all have some bonuses adjusted:
+- Hawkeye Barrel
+  - -10 preadd zoom turns into +10 grade
+- Twister Barrel
+  - +0.75 damage turns into +1
+- Little Evie Barrel
+  - +0.33 damage turns into +0.4
+  - +4 mag size turns into +6
+- Actualizer Barrel
+  - +0.6 damage turns into +1.4
+  - -0.2 mag size turns into +0.2
+  - +0.35 reload turns into +1
+- Tattler Barrel
+  - +1 projectile count turns into +2
+  - +10 weapon spread turns into +6

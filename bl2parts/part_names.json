@@ -4953,6 +4953,886 @@
         "slot": "Element",
         "type": "Shotgun"
     },
+    "GD_Anemone_Weapons.Barrel.SMG_Barrel_Maliwan_HellFire": {
+        "name": "Nirvana",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Anemone_Weapons.Body.SMG_Body_Maliwan_VarC": {
+        "name": "Nirvana",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Anemone_Weapons.ManufacturerMaterials.Mat_Maliwan_5_Legendary": {
+        "name": "Nirvana",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Anemone_Weapons.ManufacturerMaterials.Mat_Tediore_6_Infection_Cleaner": {
+        "name": "Infection Cleaner",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Anemone_Weapons.SMG.SMG_Barrel_Hyperion_Infection_Cleaner": {
+        "name": "Infection Cleaner",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Anemone_Weapons.SMG.SMG_Body_Tediore_6_Infection_Cleaner": {
+        "name": "Infection Cleaner",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Aster_RaidWeapons.ManufacturerMaterials.Mat_Maliwan_5_Florentine": {
+        "name": "Florentine",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Aster_RaidWeapons.SMGs.SMG_Barrel_Alien_Florentine": {
+        "name": "Florentine",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_BanditMade_3_Orc": {
+        "name": "Orc",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Bandit_4_Quartz_SMG": {
+        "name": "Quartz",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Dahl_4_Emerald_SMG": {
+        "name": "Emerald",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Hyperion_4_Diamond_SMG": {
+        "name": "Diamond",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Maliwan_3_Crit": {
+        "name": "Crit",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Malwan_4_Aquamarine_SMG": {
+        "name": "Aquamarine",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Aster_Weapons.ManufacturerMaterials.Mat_Tediore_4_CubicZerconia_SMG": {
+        "name": "Cubic Zerconia",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Aster_Weapons.SMGs.SMG_Barrel_Dahl_Orc": {
+        "name": "Orc",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Aster_Weapons.SMGs.SMG_Barrel_Hyperion_Crit": {
+        "name": "Crit",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Cork_Weap_SMG.Barrel.SMG_Barrel_Bandit_MareksMouth": {
+        "name": "Marek's Mouth",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Cork_Weap_SMG.Barrel.SMG_Barrel_Bandit_MeatGrinder": {
+        "name": "Meat Grinder",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Cork_Weap_SMG.Barrel.SMG_Barrel_Dahl_Torrent": {
+        "name": "Torrent",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Cork_Weap_SMG.Barrel.SMG_Barrel_Hyperion_Bitch": {
+        "name": "Fatale",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Cork_Weap_SMG.Barrel.SMG_Barrel_Hyperion_BlackSnake": {
+        "name": "Black Snake",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Cork_Weap_SMG.Barrel.SMG_Barrel_Maliwan_BadTouch": {
+        "name": "Bad Touch",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Cork_Weap_SMG.Barrel.SMG_Barrel_Maliwan_GoodTouch": {
+        "name": "Good Touch",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Cork_Weap_SMG.Barrel.SMG_Barrel_Maliwan_HellFire": {
+        "name": "HellFire",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Cork_Weap_SMG.Barrel.SMG_Barrel_Tediore_IVF": {
+        "name": "IVF",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Cork_Weap_SMG.Body.SMG_Body_Dahl_Torrent": {
+        "name": "Torrent",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Cork_Weap_SMG.Body.SMG_Body_Hyperion_BlackSnake": {
+        "name": "Black Snake",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Cork_Weap_SMG.Grip.SMG_Grip_Bandit_MareksMouth": {
+        "name": "Marek's Mouth",
+        "slot": "Grip",
+        "type": "SMG"
+    },
+    "GD_Cork_Weap_SMG.Grip.SMG_Grip_Hyperion_BlackSnake": {
+        "name": "Black Snake",
+        "slot": "Grip",
+        "type": "SMG"
+    },
+    "GD_Cork_Weap_SMG.ManufacturerMaterials.Mat_Bandit_3_MeatGrinder": {
+        "name": "Meat Grinder",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Cork_Weap_SMG.ManufacturerMaterials.Mat_Dahl_5_Legendary_Torrent": {
+        "name": "Torrent",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Cork_Weap_SMG.ManufacturerMaterials.Mat_Maliwan_3_BadTouch": {
+        "name": "Bad Touch",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Cork_Weap_SMG.ManufacturerMaterials.Mat_Maliwan_3_GoodTouch": {
+        "name": "Good Touch",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Cork_Weap_SMG.ManufacturerMaterials.Mat_Old_Hyperion_3_BlackSnake": {
+        "name": "Black Snake",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Cork_Weap_SMG.Sight.SMG_Sight_Hyperion_BlackSnake": {
+        "name": "Black Snake",
+        "slot": "Stock",
+        "type": "SMG"
+    },
+    "GD_Cork_Weap_SMG.Stock.SMG_Stock_Hyperion_BlackSnake": {
+        "name": "Black Snake",
+        "slot": "Stock",
+        "type": "SMG"
+    },
+    "GD_Cypressure_Weapons.A_Weapons_Unique.SMG_Barrel_Dahl_FastTalker": {
+        "name": "Fast Talker",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Cypressure_Weapons.ManufacturerMaterials.SMG.Mat_BanditMade_FastTalker": {
+        "name": "Fast Talker",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Gladiolus_Weapons.ManufacturerMaterials.Mat_Tediore_6_Avenger": {
+        "name": "Avenger",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Gladiolus_Weapons.SMG.SMG_Barrel_Hyperion_Avenger": {
+        "name": "Avenger",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Gladiolus_Weapons.SMG.SMG_Body_Tediore_6_Avenger": {
+        "name": "Avenger",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Ma_Weapons.Barrel.SMG_Barrel_Hyperion_CheatCode": {
+        "name": "Cheat Code",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Ma_Weapons.Materials.Mat_Hyperion_5_Legendary_CheatCode": {
+        "name": "Cheat Code",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Ma_Weapons.Materials.Mat_SMG_Bandit_6_Glitch": {
+        "name": "Bandit (Glitch)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Ma_Weapons.Materials.Mat_SMG_Bandit_6_Glitch_CutieKiller": {
+        "name": "%Cu+ie^_^ki||er",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Ma_Weapons.Materials.Mat_SMG_Dahl_6_Glitch": {
+        "name": "Dahl (Glitch)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Ma_Weapons.Materials.Mat_SMG_Hyperion_6_Glitch": {
+        "name": "Hyperion (Glitch)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Ma_Weapons.Materials.Mat_SMG_Maliwan_6_Glitch": {
+        "name": "Maliwan (Glitch)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Ma_Weapons.Materials.Mat_SMG_Old_Hyperion_6_Glitch": {
+        "name": "Old Hyperion (Glitch)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Ma_Weapons.Materials.Mat_SMG_Tediore_6_Glitch": {
+        "name": "Tediore (Glitch)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Orchid_BossWeapons.ManufacturerMaterials.Mat_Dahl_3_SandHawk": {
+        "name": "Sand Hawk",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Orchid_BossWeapons.SMG.SMG_Barrel_Bandit_SandHawk": {
+        "name": "Sand Hawk",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Orchid_RaidWeapons.ManufacturerMaterials.Mat_Bandit_1_Tattler": {
+        "name": "Tattler",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Orchid_RaidWeapons.ManufacturerMaterials.Mat_Hyperion_1_Actualizer": {
+        "name": "Actualizer",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Orchid_RaidWeapons.SMG.Actualizer.Orchid_Seraph_Actualizer_Barrel": {
+        "name": "Actualizer",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Orchid_RaidWeapons.SMG.Tattler.Orchid_Seraph_Tattler_Barrel": {
+        "name": "Tattler",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Sage_Weapons.ManufacturerMaterials.Mat_Hyperion_3_YellowJacket": {
+        "name": "Yellow Jacket",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Sage_Weapons.SMG.SMG_Barrel_Alien_YellowJacket": {
+        "name": "Yellow Jacket",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_Accessories.Moonstone_Unique.Moonstone_Attachment_MareksMouth": {
+        "name": "Marek's Mouth",
+        "slot": "Alt Accessory",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.A_Weapons.WT_SMG_Bandit": {
+        "name": "Bandit",
+        "slot": "Definition",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.A_Weapons.WT_SMG_Dahl": {
+        "name": "Dahl",
+        "slot": "Definition",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.A_Weapons.WT_SMG_Hyperion": {
+        "name": "Hyperion",
+        "slot": "Definition",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.A_Weapons.WT_SMG_Maliwan": {
+        "name": "Maliwan",
+        "slot": "Definition",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.A_Weapons.WT_SMG_Tediore": {
+        "name": "Tediore",
+        "slot": "Definition",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Accessory.SMG_Accessory_Bayonet_1": {
+        "name": "Bayonet 1",
+        "slot": "Accessory",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Accessory.SMG_Accessory_Bayonet_2": {
+        "name": "Bayonet 2",
+        "slot": "Accessory",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Accessory.SMG_Accessory_Body1_Accurate": {
+        "name": "Body 1 Accuracy",
+        "slot": "Accessory",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Accessory.SMG_Accessory_Body2_Damage": {
+        "name": "Body 2 Damage",
+        "slot": "Accessory",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Accessory.SMG_Accessory_Body3_Accelerated": {
+        "name": "Body 3 Accelerated",
+        "slot": "Accessory",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Accessory.SMG_Accessory_None": {
+        "name": "\"No Accessory\"",
+        "slot": "Accessory",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Accessory.SMG_Accessory_Stock1_Stabilized": {
+        "name": "Stock 1 Stability",
+        "slot": "Accessory",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Accessory.SMG_Accessory_Stock2_Reload": {
+        "name": "Stock 2 Reload",
+        "slot": "Accessory",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Alien": {
+        "name": "E-Tech",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Alien_Bandit": {
+        "name": "E-Tech (Bandit)",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Bandit": {
+        "name": "Bandit",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Bandit_BoneShredder": {
+        "name": "Bone Shredder",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Bandit_Fridgia": {
+        "name": "Fridgia",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Bandit_Lascaux": {
+        "name": "Lascaux",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Bandit_Slagga": {
+        "name": "Slagga",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Chulainn": {
+        "name": "Chulainn",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Dahl": {
+        "name": "Dahl",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Dahl_Bane": {
+        "name": "Bane",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Dahl_Emperor": {
+        "name": "Emperor",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Frostfire": {
+        "name": "Frostfire",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Hyperion": {
+        "name": "Hyperion",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Hyperion_Bitch": {
+        "name": "Bitch",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Maliwan": {
+        "name": "Maliwan",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Maliwan_BadTouch": {
+        "name": "Bad Touch",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Maliwan_GoodTouch": {
+        "name": "Good Touch",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Maliwan_HellFire": {
+        "name": "HellFire",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Tediore": {
+        "name": "Tediore",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Tediore_BabyMaker": {
+        "name": "Baby Maker",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Tediore_Commerce": {
+        "name": "Commerce ",
+        "slot": "Barrel",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Bandit": {
+        "name": "Bandit (Common)",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Bandit_VarA": {
+        "name": "Bandit (Uncommon)",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Bandit_VarB": {
+        "name": "Bandit (Rare)",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Bandit_VarC": {
+        "name": "Bandit (Very Rare)",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Dahl": {
+        "name": "Dahl (Common)",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Dahl_VarA": {
+        "name": "Dahl (Uncommon)",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Dahl_VarB": {
+        "name": "Dahl (Rare)",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Dahl_VarC": {
+        "name": "Dahl (Very Rare)",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Gearbox_1": {
+        "name": "Gearbox",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Hyperion": {
+        "name": "Hyperion (Common)",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Hyperion_VarA": {
+        "name": "Hyperion (Uncommon)",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Hyperion_VarB": {
+        "name": "Hyperion (Rare)",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Hyperion_VarC": {
+        "name": "Hyperion (Very Rare)",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Maliwan": {
+        "name": "Maliwan (Common)",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Maliwan_VarA": {
+        "name": "Maliwan (Uncommon)",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Maliwan_VarB": {
+        "name": "Maliwan (Rare)",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Maliwan_VarC": {
+        "name": "Maliwan (Very Rare)",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Tediore": {
+        "name": "Tediore (Common)",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Tediore_VarA": {
+        "name": "Tediore (Uncommon)",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Tediore_VarB": {
+        "name": "Tediore (Rare)",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Body.SMG_Body_Tediore_VarC": {
+        "name": "Tediore (Very Rare)",
+        "slot": "Body",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Grip.SMG_Grip_Bandit": {
+        "name": "Bandit",
+        "slot": "Grip",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Grip.SMG_Grip_Dahl": {
+        "name": "Dahl",
+        "slot": "Grip",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Grip.SMG_Grip_Hyperion": {
+        "name": "Hyperion",
+        "slot": "Grip",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Grip.SMG_Grip_Maliwan": {
+        "name": "Maliwan",
+        "slot": "Grip",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Grip.SMG_Grip_Tediore": {
+        "name": "Tediore",
+        "slot": "Grip",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Bandit_1": {
+        "name": "Bandit (Common)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Bandit_2": {
+        "name": "Bandit (Uncommon)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Bandit_3": {
+        "name": "Bandit (Rare)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Bandit_3_BoneShredder": {
+        "name": "Bone Shredder",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Bandit_4": {
+        "name": "Bandit (Very Rare)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Bandit_5_Legendary": {
+        "name": "Slagga",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Dahl_1": {
+        "name": "Dahl (Common)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Dahl_2": {
+        "name": "Dahl (Uncommon)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Dahl_3": {
+        "name": "Dahl (Rare)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Dahl_3_Fridgia": {
+        "name": "Fridgia",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Dahl_3_Lascaux": {
+        "name": "Lascaux",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Dahl_4": {
+        "name": "Dahl (Very Rare)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Dahl_5_Legendary": {
+        "name": "Emperor",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Gearbox_1": {
+        "name": "Gearbox",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Hyperion_1": {
+        "name": "Hyperion (Common)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Hyperion_2": {
+        "name": "Hyperion (Uncommon)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Hyperion_3": {
+        "name": "Hyperion (Rare)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Hyperion_3_Bane": {
+        "name": "Bane",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Hyperion_3_Commerce": {
+        "name": "Commerce ",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Hyperion_4": {
+        "name": "Hyperion (Very Rare)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Hyperion_5_Legendary": {
+        "name": "Bitch",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Maliwan_1": {
+        "name": "Maliwan (Common)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Maliwan_2": {
+        "name": "Maliwan (Uncommon)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Maliwan_3": {
+        "name": "Maliwan (Rare)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Maliwan_3_BadTouch": {
+        "name": "Bad Touch",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Maliwan_3_Chulainn": {
+        "name": "Chulainn",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Maliwan_3_Frostfire": {
+        "name": "Frostfire",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Maliwan_3_GoodTouch": {
+        "name": "Good Touch",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Maliwan_4": {
+        "name": "Maliwan (Very Rare)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Maliwan_5_Legendary": {
+        "name": "HellFire",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Old_Hyperion_1": {
+        "name": "Old Hyperion (Common)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Old_Hyperion_2": {
+        "name": "Old Hyperion (Uncommon)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Old_Hyperion_3": {
+        "name": "Old Hyperion (Rare)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Old_Hyperion_4": {
+        "name": "Old Hyperion (Very Rare)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Tedior_1": {
+        "name": "Tediore (Common)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Tedior_2": {
+        "name": "Tediore (Uncommon)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Tedior_3": {
+        "name": "Tediore (Rare)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Tedior_4": {
+        "name": "Tediore (Very Rare)",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.ManufacturerMaterials.Mat_Tedior_5_Legendary": {
+        "name": "Baby Maker",
+        "slot": "Material",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Sight.SMG_Sight_Bandit": {
+        "name": "Bandit",
+        "slot": "Stock",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Sight.SMG_Sight_Dahl": {
+        "name": "Dahl",
+        "slot": "Stock",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Sight.SMG_Sight_Hyperion": {
+        "name": "Hyperion",
+        "slot": "Stock",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Sight.SMG_Sight_Maliwan": {
+        "name": "Maliwan",
+        "slot": "Stock",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Sight.SMG_Sight_None": {
+        "name": "\"No Sight\"",
+        "slot": "Stock",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Sight.SMG_Sight_Tedior": {
+        "name": "Tediore",
+        "slot": "Stock",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Stock.SMG_Stock_Bandit": {
+        "name": "Bandit",
+        "slot": "Stock",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Stock.SMG_Stock_Dahl": {
+        "name": "Dahl",
+        "slot": "Stock",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Stock.SMG_Stock_Hyperion": {
+        "name": "Hyperion",
+        "slot": "Stock",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Stock.SMG_Stock_Maliwan": {
+        "name": "Maliwan",
+        "slot": "Stock",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.Stock.SMG_Stock_Tediore": {
+        "name": "Tediore",
+        "slot": "Stock",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.elemental.SMG_Elemental_Corrosive": {
+        "name": "Corrosive",
+        "slot": "Element",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.elemental.SMG_Elemental_Fire": {
+        "name": "Fire",
+        "slot": "Element",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.elemental.SMG_Elemental_Ice": {
+        "name": "Cryo",
+        "slot": "Element",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.elemental.SMG_Elemental_None": {
+        "name": "\"No Element\"",
+        "slot": "Element",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.elemental.SMG_Elemental_Shock": {
+        "name": "Shock",
+        "slot": "Element",
+        "type": "SMG"
+    },
+    "GD_Weap_SMG.elemental.SMG_Elemental_Slag": {
+        "name": "Slag",
+        "slot": "Element",
+        "type": "SMG"
+    },
     "GD_Anemone_Weap_SniperRifles.A_Weapons.WeaponType_Jakobs_Sniper": {
         "name": "Hot Mama",
         "slot": "Definition",

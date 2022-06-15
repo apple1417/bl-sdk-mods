@@ -1,7 +1,10 @@
+from __future__ import annotations
+
 import unrealsdk
 import json
 from dataclasses import dataclass
-from typing import Collection, Dict, Mapping, Optional, Set, Tuple, TypeVar, Union
+from enum import Enum
+from typing import Any, Collection, Dict, Mapping, Optional, Set, Tuple, TypeVar, Union
 
 from . import YAML, float_error
 
@@ -25,6 +28,49 @@ class KnownStat:
 class ItemClassData:
     def_class: str
     part_class: str
+
+
+@dataclass
+class _PartTypeData:
+    index: int
+    name: str
+    plural: str
+    slot: str
+
+    def title(self) -> str:
+        return self.name.replace("_", " ").title()
+
+
+class BasePartTypeEnum(Enum):
+    value: _PartTypeData
+
+    def __init__(self, *args: Any) -> None:
+        if any(self.value.index == d.index for d in self.__class__):
+            raise ValueError(f"Duplicate index {self.value.index} in {self.__class__.name}")
+
+    @classmethod
+    def from_index(cls, idx: int) -> BasePartTypeEnum:
+        # Deliberately using a list + index 0 to force an IndexError
+        return [d for d in cls if d.index == idx][0]
+
+    def title(self) -> str:
+        return self.value.title()
+
+    @property
+    def index(self) -> int:
+        return self.value.index
+
+    @property
+    def name(self) -> str:
+        return self.value.name
+
+    @property
+    def plural(self) -> str:
+        return self.value.plural
+
+    @property
+    def slot(self) -> str:
+        return self.value.slot
 
 
 _T = TypeVar("_T")
@@ -135,6 +181,13 @@ ALL_DEFINITIONS: Dict[str, Tuple[str, ...]] = {
         "GD_Weap_Shotgun.A_Weapons.WT_Jakobs_Shotgun",
         "GD_Weap_Shotgun.A_Weapons.WT_Tediore_Shotgun",
         "GD_Weap_Shotgun.A_Weapons.WT_Torgue_Shotgun",
+    ),
+    "smg": (
+        "GD_Weap_SMG.A_Weapons.WT_SMG_Bandit",
+        "GD_Weap_SMG.A_Weapons.WT_SMG_Dahl",
+        "GD_Weap_SMG.A_Weapons.WT_SMG_Hyperion",
+        "GD_Weap_SMG.A_Weapons.WT_SMG_Maliwan",
+        "GD_Weap_SMG.A_Weapons.WT_SMG_Tediore",
     ),
     "sniper": (
         "GD_Weap_SniperRifles.A_Weapons.WeaponType_Dahl_Sniper",
@@ -254,6 +307,30 @@ NON_UNIQUE_BALANCES: Dict[str, Tuple[str, ...]] = {
         "GD_Weap_Shotgun.A_Weapons.SG_Tediore_5_Alien",
         "GD_Weap_Shotgun.A_Weapons.SG_Torgue_4_VeryRare",
     ),
+    "smg": (
+        "GD_Aster_Weapons.SMGs.SMG_Bandit_4_Quartz",
+        "GD_Aster_Weapons.SMGs.SMG_Dahl_4_Emerald",
+        "GD_Aster_Weapons.SMGs.SMG_Hyperion_4_Diamond",
+        "GD_Aster_Weapons.SMGs.SMG_Maliwan_4_Aquamarine",
+        "GD_Aster_Weapons.SMGs.SMG_Tediore_4_CubicZerconia",
+        "GD_Ma_Weapons.A_Weapons.SMG_Bandit_6_Glitch",
+        "GD_Ma_Weapons.A_Weapons.SMG_Dahl_6_Glitch",
+        "GD_Ma_Weapons.A_Weapons.SMG_Hyperion_6_Glitch",
+        "GD_Ma_Weapons.A_Weapons.SMG_Maliwan_6_Glitch",
+        "GD_Ma_Weapons.A_Weapons.SMG_Old_Hyperion_6_Glitch",
+        "GD_Ma_Weapons.A_Weapons.SMG_Tediore_6_Glitch",
+        "GD_Weap_SMG.A_Weapons.SMG_Bandit_4_VeryRare",
+        "GD_Weap_SMG.A_Weapons.SMG_Bandit_5_Alien",
+        "GD_Weap_SMG.A_Weapons.SMG_Dahl_4_VeryRare",
+        "GD_Weap_SMG.A_Weapons.SMG_Dahl_5_Alien",
+        "GD_Weap_SMG.A_Weapons.SMG_Hyperion_4_VeryRare",
+        "GD_Weap_SMG.A_Weapons.SMG_Hyperion_5_Alien",
+        "GD_Weap_SMG.A_Weapons.SMG_Maliwan_4_VeryRare",
+        "GD_Weap_SMG.A_Weapons.SMG_Maliwan_5_Alien",
+        "GD_Weap_SMG.A_Weapons.SMG_Old_Hyperion_4_VeryRare",
+        "GD_Weap_SMG.A_Weapons.SMG_Tediore_4_VeryRare",
+        "GD_Weap_SMG.A_Weapons.SMG_Tediore_5_Alien",
+    ),
     "sniper": (
         "GD_Aster_Weapons.Snipers.SR_Dahl_4_Emerald",
         "GD_Aster_Weapons.Snipers.SR_Hyperion_4_Diamond",
@@ -284,111 +361,89 @@ MODIFIER_NAMES: Tuple[str, ...] = (
     "post-add"
 )
 
-WEAPON_PART_TYPE_NAMES: Tuple[str, ...] = (
-    "body",
-    "grip",
-    "barrel",
-    "sight",
-    "stock",
-    "element",
-    "accessory",
-    "accessory2",
-    "material",
-    "prefix",
-    "title",
-)
 
-ITEM_PART_TYPE_NAMES: Tuple[str, ...] = (
-    "alpha",
-    "beta",
-    "gamma",
-    "delta",
-    "epsilon",
-    "zeta",
-    "eta",
-    "theta",
-    "material",
-    "prefix",
-    "title",
-)
+# Probably should have a better way of doing this ¯\_(ツ)_/¯
+class GenericPartType(BasePartTypeEnum):
+    Definition: _PartTypeData = _PartTypeData(-9999, "definition", "definitions", "")
 
-DEFINITION_PART_TYPE: str = "definition"
 
-PLURAL_WEAPON_PART_TYPE: Dict[str, str] = {
-    "body": "bodies",
-    "grip": "grips",
-    "barrel": "barrels",
-    "sight": "sights",
-    "stock": "stocks",
-    "element": "elements",
-    "accessory": "accessories",
-    "accessory2": "accessory2s",
-    "material": "materials",
-    "prefix": "prefixes",
-    "title": "titles",
-    DEFINITION_PART_TYPE: "definitions",
-}
+class WeaponPartType(BasePartTypeEnum):
+    Body: _PartTypeData = _PartTypeData(0, "body", "bodies", "BodyPartData")
+    Grip: _PartTypeData = _PartTypeData(1, "grip", "grips", "GripPartData")
+    Barrel: _PartTypeData = _PartTypeData(2, "barrel", "barrels", "BarrelPartData")
+    Sight: _PartTypeData = _PartTypeData(3, "sight", "sights", "SightPartData")
+    Stock: _PartTypeData = _PartTypeData(4, "stock", "stocks", "StockPartData")
+    Element: _PartTypeData = _PartTypeData(5, "element", "elements", "ElementalPartData")
+    Accessory: _PartTypeData = _PartTypeData(6, "accessory", "accessories", "Accessory1PartData")
+    AltAccessory: _PartTypeData = _PartTypeData(7, "alt_accessory", "alt_accessories", "Accessory2PartData")
+    Material: _PartTypeData = _PartTypeData(8, "material", "materials", "MaterialPartData")
 
-WEAPON_PART_SLOTS: Tuple[str, ...] = (
-    "BodyPartData",
-    "GripPartData",
-    "BarrelPartData",
-    "SightPartData",
-    "StockPartData",
-    "ElementalPartData",
-    "Accessory1PartData",
-    "Accessory2PartData",
-    "MaterialPartData",
-)
 
-ITEM_PART_SLOTS: Tuple[str, ...] = (
-    "AlphaPartData",
-    "BetaPartData",
-    "GammaPartData",
-    "DeltaPartData",
-    "EpsilonPartData",
-    "ZetaPartData",
-    "EtaPartData",
-    "ThetaPartData",
-    "MaterialPartData",
-)
+class ItemPartType(BasePartTypeEnum):
+    Alpha: _PartTypeData = _PartTypeData(0, "alpha", "alpha", "AlphaPartData")
+    Beta: _PartTypeData = _PartTypeData(1, "beta", "beta", "BetaPartData")
+    Gamma: _PartTypeData = _PartTypeData(2, "gamma", "gamma", "GammaPartData")
+    Delta: _PartTypeData = _PartTypeData(3, "delta", "delta", "DeltaPartData")
+    Epsilon: _PartTypeData = _PartTypeData(4, "epsilon", "epsilon", "EpsilonPartData")
+    Zeta: _PartTypeData = _PartTypeData(5, "zeta", "zeta", "ZetaPartData")
+    Eta: _PartTypeData = _PartTypeData(6, "eta", "eta", "EtaPartData")
+    Theta: _PartTypeData = _PartTypeData(7, "theta", "theta", "ThetaPartData")
+    Material: _PartTypeData = _PartTypeData(8, "material", "material", "MaterialPartData")
 
-ITEM_DEFINITION_PART_SLOTS: Tuple[str, ...] = (
-    "AlphaParts",
-    "BetaParts",
-    "GammaParts",
-    "DeltaParts",
-    "EpsilonParts",
-    "ZetaParts",
-    "EtaParts",
-    "ThetaParts",
-    "MaterialParts",
-)
+    def get_def_slot(self) -> str:
+        definition_slots: Tuple[str, ...] = (
+            "AlphaParts",
+            "BetaParts",
+            "GammaParts",
+            "DeltaParts",
+            "EpsilonParts",
+            "ZetaParts",
+            "EtaParts",
+            "ThetaParts",
+            "MaterialParts",
+        )
+        return definition_slots[self.index]
+
 
 PART_LIST_SLOTS: Tuple[str, ...] = (
     "RuntimePartListCollection",
     "PartListCollection"
 )
 
-PART_TYPE_OVERRIDES: Dict[str, str] = {
-    "GD_Anemone_Weap_SniperRifles.Stock.SR_Stock_Dahl": WEAPON_PART_TYPE_NAMES[4],
-    "GD_Anemone_Weap_SniperRifles.Stock.SR_Stock_Hyperion": WEAPON_PART_TYPE_NAMES[4],
-    "GD_Anemone_Weap_SniperRifles.Stock.SR_Stock_Jakobs": WEAPON_PART_TYPE_NAMES[4],
-    "GD_Anemone_Weap_SniperRifles.Stock.SR_Stock_Maliwan": WEAPON_PART_TYPE_NAMES[4],
-    "GD_Anemone_Weap_SniperRifles.Stock.SR_Stock_Vladof": WEAPON_PART_TYPE_NAMES[4],
-    "GD_Anemone_Weapons.Shotguns.SG_Barrel_Alien_Swordsplosion": WEAPON_PART_TYPE_NAMES[2],
-    "GD_Cork_Weap_Shotgun.Stock.SG_Stock_Jakobs_Boomacorn": WEAPON_PART_TYPE_NAMES[4],
-    "GD_Cork_Weap_Shotgun.Stock.SG_Stock_Jakobs_TooScoops": WEAPON_PART_TYPE_NAMES[4],
-    "GD_Weap_Shotgun.Stock.SG_Stock_Bandit": WEAPON_PART_TYPE_NAMES[4],
-    "GD_Weap_Shotgun.Stock.SG_Stock_Hyperion": WEAPON_PART_TYPE_NAMES[4],
-    "GD_Weap_Shotgun.Stock.SG_Stock_Jakobs": WEAPON_PART_TYPE_NAMES[4],
-    "GD_Weap_Shotgun.Stock.SG_Stock_Tediore": WEAPON_PART_TYPE_NAMES[4],
-    "GD_Weap_Shotgun.Stock.SG_Stock_Torgue": WEAPON_PART_TYPE_NAMES[4],
-    "GD_Weap_SniperRifles.Stock.SR_Stock_Dahl": WEAPON_PART_TYPE_NAMES[4],
-    "GD_Weap_SniperRifles.Stock.SR_Stock_Hyperion": WEAPON_PART_TYPE_NAMES[4],
-    "GD_Weap_SniperRifles.Stock.SR_Stock_Jakobs": WEAPON_PART_TYPE_NAMES[4],
-    "GD_Weap_SniperRifles.Stock.SR_Stock_Maliwan": WEAPON_PART_TYPE_NAMES[4],
-    "GD_Weap_SniperRifles.Stock.SR_Stock_Vladof": WEAPON_PART_TYPE_NAMES[4],
+PART_TYPE_OVERRIDES: Dict[str, BasePartTypeEnum] = {
+    "GD_Anemone_Weap_SniperRifles.Stock.SR_Stock_Dahl": WeaponPartType.Stock,
+    "GD_Anemone_Weap_SniperRifles.Stock.SR_Stock_Hyperion": WeaponPartType.Stock,
+    "GD_Anemone_Weap_SniperRifles.Stock.SR_Stock_Jakobs": WeaponPartType.Stock,
+    "GD_Anemone_Weap_SniperRifles.Stock.SR_Stock_Maliwan": WeaponPartType.Stock,
+    "GD_Anemone_Weap_SniperRifles.Stock.SR_Stock_Vladof": WeaponPartType.Stock,
+    "GD_Anemone_Weapons.Shotguns.SG_Barrel_Alien_Swordsplosion": WeaponPartType.Barrel,
+    "GD_Cork_Weap_Shotgun.Stock.SG_Stock_Jakobs_Boomacorn": WeaponPartType.Stock,
+    "GD_Cork_Weap_Shotgun.Stock.SG_Stock_Jakobs_TooScoops": WeaponPartType.Stock,
+    "GD_Cork_Weap_SMG.Sight.SMG_Sight_Hyperion_BlackSnake": WeaponPartType.Sight,
+    "GD_Weap_Shotgun.Stock.SG_Stock_Bandit": WeaponPartType.Stock,
+    "GD_Weap_Shotgun.Stock.SG_Stock_Hyperion": WeaponPartType.Stock,
+    "GD_Weap_Shotgun.Stock.SG_Stock_Jakobs": WeaponPartType.Stock,
+    "GD_Weap_Shotgun.Stock.SG_Stock_Tediore": WeaponPartType.Stock,
+    "GD_Weap_Shotgun.Stock.SG_Stock_Torgue": WeaponPartType.Stock,
+    "GD_Weap_SMG.Accessory.SMG_Accessory_Bayonet_1": WeaponPartType.Accessory,
+    "GD_Weap_SMG.Accessory.SMG_Accessory_Bayonet_2": WeaponPartType.Accessory,
+    "GD_Weap_SMG.Accessory.SMG_Accessory_Body1_Accurate": WeaponPartType.Accessory,
+    "GD_Weap_SMG.Accessory.SMG_Accessory_Body2_Damage": WeaponPartType.Accessory,
+    "GD_Weap_SMG.Accessory.SMG_Accessory_Body3_Accelerated": WeaponPartType.Accessory,
+    "GD_Weap_SMG.Accessory.SMG_Accessory_None": WeaponPartType.Accessory,
+    "GD_Weap_SMG.Accessory.SMG_Accessory_Stock1_Stabilized": WeaponPartType.Accessory,
+    "GD_Weap_SMG.Accessory.SMG_Accessory_Stock2_Reload": WeaponPartType.Accessory,
+    "GD_Weap_SMG.Sight.SMG_Sight_Bandit": WeaponPartType.Sight,
+    "GD_Weap_SMG.Sight.SMG_Sight_Dahl": WeaponPartType.Sight,
+    "GD_Weap_SMG.Sight.SMG_Sight_Hyperion": WeaponPartType.Sight,
+    "GD_Weap_SMG.Sight.SMG_Sight_Maliwan": WeaponPartType.Sight,
+    "GD_Weap_SMG.Sight.SMG_Sight_None": WeaponPartType.Sight,
+    "GD_Weap_SMG.Sight.SMG_Sight_Tedior": WeaponPartType.Sight,
+    "GD_Weap_SniperRifles.Stock.SR_Stock_Dahl": WeaponPartType.Stock,
+    "GD_Weap_SniperRifles.Stock.SR_Stock_Hyperion": WeaponPartType.Stock,
+    "GD_Weap_SniperRifles.Stock.SR_Stock_Jakobs": WeaponPartType.Stock,
+    "GD_Weap_SniperRifles.Stock.SR_Stock_Maliwan": WeaponPartType.Stock,
+    "GD_Weap_SniperRifles.Stock.SR_Stock_Vladof": WeaponPartType.Stock,
 }
 
 """

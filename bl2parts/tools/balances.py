@@ -1,8 +1,7 @@
 import unrealsdk
 from typing import Collection, Dict, Set
 
-from .data import (ALLOWED_DEFINITION_CLASSES, ITEM_DEFINITION_PART_SLOTS, ITEM_PART_SLOTS,
-                   PART_LIST_SLOTS, WEAPON_PART_SLOTS)
+from .data import ALLOWED_DEFINITION_CLASSES, PART_LIST_SLOTS, ItemPartType, WeaponPartType
 
 
 def get_parts_on_item_definition(item_def: unrealsdk.UObject) -> Set[unrealsdk.UObject]:
@@ -16,8 +15,8 @@ def get_parts_on_item_definition(item_def: unrealsdk.UObject) -> Set[unrealsdk.U
     """
     parts: Set[unrealsdk.UObject] = set()
 
-    for slot_name in ITEM_DEFINITION_PART_SLOTS:
-        slot = getattr(item_def, slot_name)
+    for part_type in ItemPartType:
+        slot = getattr(item_def, part_type.get_def_slot())
         if slot is None:
             continue
         for part_struct in slot.WeightedParts:
@@ -59,8 +58,8 @@ def get_parts_on_balance(bal: unrealsdk.UObject) -> Set[unrealsdk.UObject]:
         return set()
 
     parts: Set[unrealsdk.UObject] = set()
-    for slot_name in (WEAPON_PART_SLOTS if is_weapon else ITEM_PART_SLOTS):
-        slot = getattr(part_list, slot_name)
+    for part_type in (WeaponPartType if is_weapon else ItemPartType):
+        slot = getattr(part_list, part_type.slot)
         if not slot.bEnabled:
             continue
         for part_struct in slot.WeightedParts:

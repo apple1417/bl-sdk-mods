@@ -20,12 +20,13 @@ RE_BANDIT = re.compile("bandit", flags=re.I)
 SCAV_REPLACEMENT: str = "Scav"
 
 KNOWN_NON_TPS_PARTS: Tuple[str, ...] = (
-    "GD_Anemone_GrenadeMods.Material.Material_Bandit",
     "GD_Anemone_GrenadeMods.Material.Material_Bandit_2_Uncommon",
     "GD_Anemone_GrenadeMods.Material.Material_Bandit_3_Rare",
     "GD_Anemone_GrenadeMods.Material.Material_Bandit_4_VeryRare",
     "GD_Anemone_GrenadeMods.Material.Material_Bandit_5_Legendary",
+    "GD_Anemone_GrenadeMods.Material.Material_Bandit",
     "GD_GrenadeMods.Material.Material_Bandit_5_Legendary",
+    "GD_Weap_SMG.Barrel.SMG_Barrel_Alien_Bandit",
 )
 
 

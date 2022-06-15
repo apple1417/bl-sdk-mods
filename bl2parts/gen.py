@@ -32,9 +32,9 @@ for mod in (
 
 from tools import YAML  # noqa: E402
 from tools.balances import get_parts_for_definitions, get_parts_on_balance  # noqa: E402
-from tools.data import (ALL_DEFINITIONS, DEFINITION_PART_TYPE, GLITCH_PARTS,  # noqa: E402
-                        ITEM_CLASS_OVERRIDES, ITEM_PART_TYPE_NAMES, MOONSTONE_PARTS,
-                        NON_UNIQUE_BALANCES, PLURAL_WEAPON_PART_TYPE, UNIQUE_WEAPON_DEFINITIONS)
+from tools.data import (ALL_DEFINITIONS, GLITCH_PARTS, ITEM_CLASS_OVERRIDES,  # noqa: E402
+                        MOONSTONE_PARTS, NON_UNIQUE_BALANCES, UNIQUE_WEAPON_DEFINITIONS,
+                        GenericPartType, WeaponPartType)
 from tools.definitions import get_definition_data  # noqa: E402
 from tools.parts import get_part_data  # noqa: E402
 from tools.prefixes import get_prefix_data  # noqa: E402
@@ -86,17 +86,14 @@ for item_type, def_list in ALL_DEFINITIONS.items():
         unique = part not in non_unique_parts
         part_data["unique"] = unique
 
-        if part_type == "accessory" and not unique:
+        if part_type == WeaponPartType.Accessory and not unique:
             prefixes = get_prefix_data(part)
             if prefixes:
                 part_data["prefixes"] = prefixes
 
-        if part.Class.Name in ("WeaponTypeDefinition", "WeaponPartDefinition"):
-            part_type = PLURAL_WEAPON_PART_TYPE[part_type]
-
-        if part_type not in data:
-            data[part_type] = []
-        data[part_type].append(part_data)
+        if part_type.plural not in data:
+            data[part_type.plural] = []
+        data[part_type.plural].append(part_data)
 
     meta_definitions = []
     for def_obj in def_objects:
@@ -111,27 +108,24 @@ for item_type, def_list in ALL_DEFINITIONS.items():
 
     with open(os.path.join(output_dir, f"{item_type}s.yml"), "w") as file:
         # Seperate passes to force ordering
-        yaml.dump(data, file, allow_unicode=True)
-        yaml.dump({
+        yaml.dump(data, file, allow_unicode=True)  # type: ignore
+        yaml.dump({  # type: ignore
             "meta": {
-                PLURAL_WEAPON_PART_TYPE[DEFINITION_PART_TYPE]: meta_definitions
+                GenericPartType.Definition.plural: meta_definitions
             }
         }, file, allow_unicode=True)
 
     name_path = os.path.join(output_dir, f"{item_type}_names.json")
     if GEN_NAME_DUMP_TEMPLATE and not os.path.exists(name_path):
-        depluralize_part_type = {x: x for x in ITEM_PART_TYPE_NAMES}
-        depluralize_part_type[DEFINITION_PART_TYPE] = DEFINITION_PART_TYPE
-
-        depluralize_part_type.update({v: k for k, v in PLURAL_WEAPON_PART_TYPE.items()})
+        item_type_title_case = item_type.upper() if item_type == "smg" else item_type.title()
 
         with open(name_path, "w") as file:
             json.dump(
                 {
                     part_data["_obj_name"]: {
                         "name": "",
-                        "type": item_type.title(),
-                        "slot": depluralize_part_type[part_type].title(),
+                        "type": item_type_title_case,
+                        "slot": part_type.title(),
                     }
                     for part_type, part_list in data.items()
                     for part_data in part_list

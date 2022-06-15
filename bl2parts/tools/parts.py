@@ -5,9 +5,10 @@ from Mods.ModMenu import Game  # type: ignore
 
 from . import YAML, float_error
 from .data import (ALLOWED_DEFINITION_CLASSES, ALLOWED_ZERO_GRADES, ATTRIBUTES_TO_IGNORE,
-                   DEFINITION_PART_TYPE, GRADES_TO_IGNORE, IGNORED_POST_INIT_PARTS,
-                   ITEM_PART_TYPE_NAMES, KNOWN_ATTRIBUTES, KNOWN_INITALIZATIONS, MODIFIER_NAMES,
-                   PART_NAMES, PART_TYPE_OVERRIDES, WEAPON_MANU_ATTRIBUTES, WEAPON_PART_TYPE_NAMES)
+                   GRADES_TO_IGNORE, IGNORED_POST_INIT_PARTS, KNOWN_ATTRIBUTES,
+                   KNOWN_INITALIZATIONS, MODIFIER_NAMES, PART_NAMES, PART_TYPE_OVERRIDES,
+                   WEAPON_MANU_ATTRIBUTES, BasePartTypeEnum, GenericPartType, ItemPartType,
+                   WeaponPartType)
 
 
 def _create_bonus_data(
@@ -70,7 +71,7 @@ def _create_bonus_data(
     return bonus_data
 
 
-def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
+def get_part_data(part: unrealsdk.UObject) -> Tuple[BasePartTypeEnum, YAML]:
     """
     Gets data about the provided part.
 
@@ -81,21 +82,21 @@ def get_part_data(part: unrealsdk.UObject) -> Tuple[str, YAML]:
     """
     part_name = part.PathName(part)
 
-    part_type_names = (
-        WEAPON_PART_TYPE_NAMES
+    part_type_enum = (
+        WeaponPartType
         if part.Class.Name == "WeaponPartDefinition" else
-        ITEM_PART_TYPE_NAMES
+        ItemPartType
     )
 
-    part_type: str
+    part_type: BasePartTypeEnum
     if part_name in PART_TYPE_OVERRIDES:
         part_type = PART_TYPE_OVERRIDES[part_name]
     elif part.Class.Name in ALLOWED_DEFINITION_CLASSES:
-        part_type = DEFINITION_PART_TYPE
+        part_type = GenericPartType.Definition
     elif part.Material is not None:
-        part_type = part_type_names[8]
-    elif 0 <= part.PartType < len(part_type_names):
-        part_type = part_type_names[part.PartType]
+        part_type = part_type_enum.Material  # type: ignore
+    elif 0 <= part.PartType < len(part_type_enum):
+        part_type = part_type_enum.from_index(part.PartType)
     else:
         raise ValueError(f"Bad part type {part.PartType} on {part_name}")
 

@@ -41,6 +41,11 @@ PARTS_TO_ADD_GAME_TO_NAME: Tuple[str, ...] = (
     "GD_Weap_Shotgun.A_Weapons.WT_Torgue_Shotgun",
     "GD_Weap_Shotgun.Barrel.SG_Barrel_Hyperion_Striker",
     "GD_Weap_Shotgun.Barrel.SG_Barrel_Jakobs_Sledges",
+    "GD_Weap_SMG.A_Weapons.WT_SMG_Bandit",
+    "GD_Weap_SMG.A_Weapons.WT_SMG_Dahl",
+    "GD_Weap_SMG.A_Weapons.WT_SMG_Hyperion",
+    "GD_Weap_SMG.A_Weapons.WT_SMG_Maliwan",
+    "GD_Weap_SMG.A_Weapons.WT_SMG_Tediore",
     "GD_Weap_SniperRifles.A_Weapons.WeaponType_Hyperion_Sniper",
 )
 
