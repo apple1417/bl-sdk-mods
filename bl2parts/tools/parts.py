@@ -6,9 +6,9 @@ from Mods.ModMenu import Game  # type: ignore
 from . import YAML, float_error
 from .data import (ALLOWED_DEFINITION_CLASSES, ALLOWED_ZERO_GRADES, ATTRIBUTES_TO_IGNORE,
                    GRADES_TO_IGNORE, IGNORED_POST_INIT_PARTS, KNOWN_ATTRIBUTES,
-                   KNOWN_INITALIZATIONS, MODIFIER_NAMES, PART_NAMES, PART_TYPE_OVERRIDES,
-                   WEAPON_MANU_ATTRIBUTES, BasePartTypeEnum, GenericPartType, ItemPartType,
-                   WeaponPartType)
+                   KNOWN_INITALIZATIONS, MESH_OVERRIDES, MODIFIER_NAMES, PART_NAMES,
+                   PART_TYPE_OVERRIDES, WEAPON_MANU_ATTRIBUTES, BasePartTypeEnum, GenericPartType,
+                   ItemPartType, WeaponPartType)
 
 
 def _create_bonus_data(
@@ -162,7 +162,7 @@ def get_part_data(part: unrealsdk.UObject) -> Tuple[BasePartTypeEnum, YAML]:
 
     if part_name in PART_NAMES:
         name_data = PART_NAMES[part_name]
-        override = name_data.get("game_overrides", {}).get(Game.GetCurrent()._name_)  # type: ignore
+        override = name_data.get("game_overrides", {}).get(Game.GetCurrent().name)  # type: ignore
 
         part_data["name"] = override if override is not None else name_data["name"]
     else:
@@ -171,7 +171,21 @@ def get_part_data(part: unrealsdk.UObject) -> Tuple[BasePartTypeEnum, YAML]:
     if len(all_bonuses) > 0:
         part_data["bonuses"] = all_bonuses
 
-    if part.GestaltModeSkeletalMeshName not in (None, "", "None") and part.bIsGestaltMode:
-        part_data["mesh"] = part.GestaltModeSkeletalMeshName
+    if part.bIsGestaltMode:
+        if part in MESH_OVERRIDES:
+            part_data["mesh"] = MESH_OVERRIDES[part]
+        elif part.GestaltModeSkeletalMeshName not in (None, "", "None"):
+            part_data["mesh"] = part.GestaltModeSkeletalMeshName
+
+    rarity_struct = part.BaseRarity if part_type == GenericPartType.Definition else part.Rarity
+    assert rarity_struct.InitializationDefinition is None
+
+    rarity: float
+    if rarity_struct.BaseValueAttribute:
+        rarity = rarity_struct.BaseValueAttribute.ValueResolverChain[0].ConstantValue
+    else:
+        rarity = rarity_struct.BaseValueConstant
+    rarity *= rarity_struct.BaseValueScaleConstant
+    part_data["rarity"] = float_error(rarity)
 
     return part_type, part_data

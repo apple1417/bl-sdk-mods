@@ -686,3 +686,13 @@ ALLOWED_ZERO_GRADES: Dict[str, Tuple[str, ...]] = {
         "IceResist",
     )
 }
+
+MESH_OVERRIDES: Dict[unrealsdk.UObject, str] = _load_obj_dict("WillowInventoryPartDefinition", {
+    "GD_Cork_Weap_Lasers.Accessory.Laser_Accessory_Rosie_Thorns": "Acc_Body_2",
+    "GD_Weap_SMG.Accessory.SMG_Accessory_Body1_Accurate": "Acc_Body_1",
+    "GD_Weap_SMG.Accessory.SMG_Accessory_Body2_Damage": "Acc_Body_2",
+    "GD_Weap_SMG.Accessory.SMG_Accessory_Body3_Accelerated": "Acc_Body_3",
+    "GD_Weap_SMG.Accessory.SMG_Accessory_Stock1_Stabilized": "Acc_Stock_1",
+    "GD_Weap_SMG.Accessory.SMG_Accessory_Stock2_Reload": "Acc_Stock_2",
+    "GD_Weap_SMG.Accessory.SMG_Accessory_Stock2_Reload": "Acc_Stock_2",
+})

@@ -17,15 +17,16 @@ STATUS_CHANCE_ATTR: str = "D_Attributes.Weapon.WeaponBaseStatusEffectChanceModif
 STATUS_DAMAGE_ATTR: str = "D_Attributes.Weapon.WeaponStatusEffectDamage"
 
 SIMPLE_WEAPON_BASE_VALUES: Dict[str, str] = {
-    "FireRate": "D_Attributes.Weapon.WeaponFireInterval",
-    "ClipSize": "D_Attributes.Weapon.WeaponClipSize",
-    "ReloadTime": "D_Attributes.Weapon.WeaponReloadSpeed",
-    "Spread": "D_Attributes.Weapon.WeaponSpread",
-    "PerShotAccuracyImpulse": "D_Attributes.Weapon.WeaponPerShotAccuracyImpulse",
+    "BurstInterval": "D_Attributes.Weapon.WeaponBurstInterval",
     "BurstShotAccuracyImpulseScale": "D_Attributes.Weapon.WeaponBurstShotAccuracyImpulseScale",
-    "ZoomedEndFOV": "D_Attributes.Weapon.WeaponZoomEndFOV",
+    "ClipSize": "D_Attributes.Weapon.WeaponClipSize",
+    "FireRate": "D_Attributes.Weapon.WeaponFireInterval",
+    "PerShotAccuracyImpulse": "D_Attributes.Weapon.WeaponPerShotAccuracyImpulse",
     "ProjectilesPerShot": "D_Attributes.Weapon.WeaponProjectilesPerShot",
+    "ReloadTime": "D_Attributes.Weapon.WeaponReloadSpeed",
     "ShotCost": "D_Attributes.Weapon.WeaponShotCost",
+    "Spread": "D_Attributes.Weapon.WeaponSpread",
+    "ZoomedEndFOV": "D_Attributes.Weapon.WeaponZoomEndFOV",
 }
 
 
@@ -57,7 +58,7 @@ def get_definition_data(def_obj: unrealsdk.UObject) -> YAML:
     }
 
     if def_obj.Class.Name == "WeaponTypeDefinition":
-        for field, attr in SIMPLE_WEAPON_BASE_VALUES.items():
+        for field, attr in sorted(SIMPLE_WEAPON_BASE_VALUES.items()):
             data["base"].append({
                 "attribute": attr,
                 "value": float_error(getattr(def_obj, field))
