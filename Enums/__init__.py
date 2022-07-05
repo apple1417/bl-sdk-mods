@@ -1,6 +1,6 @@
 import unrealsdk
 from enum import IntEnum
-from typing import Dict, Tuple
+from typing import TYPE_CHECKING, Dict, Tuple
 
 from Mods.ModMenu import ModPriorities, ModTypes, RegisterMod, SDKMod
 
@@ -22,6 +22,14 @@ for _enum in unrealsdk.FindAll("Enum", True):
 
 globals().update(_all_enums)
 __all__ = list(_all_enums.keys())
+
+if TYPE_CHECKING:
+    class UnrealScriptEnum(IntEnum):
+        def __getattr__(self, name: str) -> int:
+            raise NotImplementedError
+
+    def __getattr__(name: str) -> UnrealScriptEnum:
+        raise NotImplementedError
 
 
 # Provide an entry in the mods list just so users can see that this is loaded
