@@ -1,3 +1,6 @@
+# THIS MOD IS DEPRECATED
+Update any mods which claim to require it.
+
 ## Changelog
 
 ### AsyncUtil v1.2

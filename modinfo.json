@@ -54,23 +54,6 @@
       }
     },
     {
-      "name": "AsyncUtil",
-      "description": [
-        "Adds a few simple functions to let you easily run callbacks in the future without hanging",
-        " the game."
-      ],
-      "tagline": [
-        "A library which adds a few simple functions to let you easily run callbacks in the future",
-        " without hanging the game."
-      ],
-      "types": ["Library"],
-      "latest": "1.2",
-      "versions": {
-        "1.2": "https://github.com/apple1417/bl-sdk-mods/raw/master/AsyncUtil/AsyncUtil.zip"
-      },
-      "requirements": {}
-    },
-    {
       "name": "Command Extensions",
       "description": [
         "Adds a few new console commands, and provides functionality for other mods to do the same.",
