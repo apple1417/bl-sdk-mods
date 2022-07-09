@@ -24,8 +24,8 @@ globals().update(_all_enums)
 __all__ = list(_all_enums.keys())
 
 if TYPE_CHECKING:
-    class UnrealScriptEnum(IntEnum):
-        def __getattr__(self, name: str) -> int:
+    class UnrealScriptEnum(type):
+        def __getattr__(cls, name: str) -> IntEnum:
             raise NotImplementedError
 
     def __getattr__(name: str) -> UnrealScriptEnum:
