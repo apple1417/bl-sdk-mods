@@ -9,14 +9,14 @@ class RoundsPerMinute(SDKMod):
     Description: str = (
         "Makes item cards display rounds per minute rather than second."
     )
-    Version: str = "1.2"
+    Version: str = "1.3"
 
     Types: ModTypes = ModTypes.Utility
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
 
     def Enable(self) -> None:
         def SetTopStat(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-            if params.LabelText == "Fire Rate":
+            if params.LabelText == "Fire Rate" and "%" not in params.ValueText:
                 new_rate = f"{float(params.ValueText) * 60:.1f}"
                 aux = "" if params.AuxText is None else params.AuxText
 
