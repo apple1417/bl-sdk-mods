@@ -29,6 +29,9 @@ Tag Name |  Multiple | Intepretation
 
 # Changelog
 
+## Text Mod Loader v1.3
+- Updated the file parsing with a few new tweaks we made to BLIMP tags.
+
 ## Text Mod Loader v1.2
 - Updated the file parsing to better handle non-ascii text. The handling is still not perfect, but should cover most cases.
 

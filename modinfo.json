@@ -382,9 +382,10 @@
         "Displays Text Mods from binaries in the SDK mods menu."
       ],
       "types": ["Library"],
-      "latest": "1.2",
+      "latest": "1.3",
       "versions": {
-        "1.2": "https://github.com/apple1417/bl-sdk-mods/raw/master/TextModLoader/TextModLoader.zip",
+        "1.3": "https://github.com/apple1417/bl-sdk-mods/raw/master/TextModLoader/TextModLoader.zip",
+        "1.2": "https://github.com/apple1417/bl-sdk-mods/raw/f6bf3ae8db4754aa17fdc7d2f33bc42252c3f7b1/TextModLoader/TextModLoader.zip",
         "1.1": "https://github.com/apple1417/bl-sdk-mods/raw/ede5da85559b0a2a9aabc2638f0e5eb1a8eef9b8/TextModLoader/TextModLoader.zip",
         "1.0": "https://github.com/apple1417/bl-sdk-mods/raw/9578e50c9f21e9ecebadbde1a91aef7dd035e9fe/TextModLoader/TextModLoader.zip"
       },

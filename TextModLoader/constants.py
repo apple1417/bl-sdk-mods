@@ -4,7 +4,7 @@ from typing import Any, Dict, Tuple
 
 from Mods.ModMenu import Game
 
-VERSION: Tuple[int, int] = (1, 1)
+VERSION: Tuple[int, int] = (1, 3)
 
 JSON = Dict[str, Any]
 

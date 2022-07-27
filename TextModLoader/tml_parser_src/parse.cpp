@@ -55,12 +55,14 @@ static std::string trim_whitespace(const std::string& str) {
  *
  * @param line The line to compare.
  * @param no_set Set to true to disable checking for `set` commands.
+ * @param allow_spark Set to true to enable checking for `Spark` commands.
  * @return True if the line contains a command, false otherwise.
  */
-static bool is_command(const std::string& line, bool no_set = false) {
+static bool is_command(const std::string& line, bool no_set = false, bool allow_spark = false) {
     return line.rfind("exec", 0) == 0
            || line.rfind("say", 0) == 0
-           || (!no_set && line.rfind("set", 0) == 0);
+           || (!no_set && line.rfind("set", 0) == 0)
+           || (allow_spark && line.rfind("Spark", 0) == 0);
 }
 
 /**
@@ -90,11 +92,22 @@ static comments_list extract_generic_comments(std::istream& input) {
     comments_list comments;
 
     for (std::string line; std::getline(input, line); ) {
-        if (is_command(trim_leading_whitespace(line))) {
-            input.seekg(-(ptrdiff_t)line.size(), std::ios::cur);
-            return comments;
+        // Trim leading '#'s
+        // We know no commands start with a '#', so we can push anything matching this to comments
+        //  directly
+        if (line[0] == '#') {
+            auto first_non_hash = line.find_first_not_of('#');
+            if (line[first_non_hash] == ' ') {
+                first_non_hash++;
+            }
+            comments.push_back(line.substr(first_non_hash));
+        } else {
+            if (is_command(trim_leading_whitespace(line), false, true)) {
+                input.seekg(-(ptrdiff_t)line.size(), std::ios::cur);
+                return comments;
+            }
+            comments.push_back(line);
         }
-        comments.push_back(line);
     }
 
     // It might not actually be a mod file at all - want to be able to detect that.
