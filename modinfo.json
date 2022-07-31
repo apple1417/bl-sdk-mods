@@ -15,12 +15,13 @@
         "Adds alt use binds to vendors, like in BL3/Wonderlands."
       ],
       "types": ["Utility"],
-      "latest": "2.0",
+      "latest": "2.1",
       "versions": {
         "1.5": "https://github.com/apple1417/bl-sdk-mods/raw/a45fde7c5edc2224c15ac0a775076aacd3d40a0a/AltUseVendors/AltUseVendors.zip",
         "1.6": "https://github.com/apple1417/bl-sdk-mods/raw/8273080a0bfcc922f0edaffb84bec4a9ca044b54/AltUseVendors/AltUseVendors.zip",
         "1.7": "https://github.com/apple1417/bl-sdk-mods/raw/704664da48f8403e34e64ea0edef543e2bcdd544/AltUseVendors/AltUseVendors.zip",
-        "2.0": "https://github.com/apple1417/bl-sdk-mods/raw/master/AltUseVendors/AltUseVendors.zip"
+        "2.0": "https://github.com/apple1417/bl-sdk-mods/raw/b25d5ff91ebab5dc88035018813c6474e4556e74/AltUseVendors/AltUseVendors.zip",
+        "2.1": "https://github.com/apple1417/bl-sdk-mods/raw/master/AltUseVendors/AltUseVendors.zip"
       },
       "requirements": {
         "Enums": ">=1.0"

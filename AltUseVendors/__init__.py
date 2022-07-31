@@ -165,7 +165,7 @@ def get_ammo_cost(PC: WillowPlayerController, vendor: WillowVendingMachine) -> i
 
     total_cost = 0
     for item, info, pool in iter_ammo_data(PC, vendor):
-        ammo_needed = pool.GetMaxValue() - pool.GetCurrentValue()
+        ammo_needed = int(pool.GetMaxValue()) - pool.GetCurrentValue()
         cost_per_bullet = vendor.GetSellingPriceForInventory(item, PC, 1) / info.bullets_per_item
         if ammo_needed != 0:
             total_cost += max(1, int(ammo_needed * cost_per_bullet))
@@ -259,7 +259,7 @@ class AltUseVendors(SDKMod):
     Description: str = (
         "Adds alt use binds to vendors, like in BL3/Wonderlands."
     )
-    Version: str = "2.0"
+    Version: str = "2.1"
 
     Types: ModTypes = ModTypes.Utility
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings

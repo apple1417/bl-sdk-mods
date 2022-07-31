@@ -1,5 +1,8 @@
 # Changelog
 
+## Alt Use Vendors v2.1
+- Fixed that ammo vendors wouldn't realise when you were full if you had a fractional max ammo count (i.e. you had a max launcher ammo relic), and would keep charging you for ammo you'd never get.
+
 ## Alt Use Vendors v2.0
 Near complete rewrite.
 - Removed depencency on AsyncUtil. Added decepency to Enums.
