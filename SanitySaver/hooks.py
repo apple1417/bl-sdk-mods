@@ -188,8 +188,9 @@ def ServerSetWeaponSaveGameData_Hook(caller: unrealsdk.UObject, function: unreal
 
 
 def ServerSetItemSaveGameData(caller: unrealsdk.UObject, idx: int, def_data: unrealsdk.UObject, quantity: int, equipped: bool, mark: int) -> None:
+    if def_data.ItemDefinition is None:
+        return
     item = caller.Spawn(def_data.ItemDefinition.InventoryClass)
-
     if item is None:
         return
 
@@ -207,8 +208,9 @@ def ServerSetItemSaveGameData(caller: unrealsdk.UObject, idx: int, def_data: unr
 
 
 def ServerSetWeaponSaveGameData(caller: unrealsdk.UObject, idx: int, def_data: unrealsdk.UObject, slot: int, mark: int) -> None:
+    if def_data.WeaponTypeDefinition is None:
+        return
     weap = caller.Spawn(def_data.WeaponTypeDefinition.InventoryClass)
-
     if weap is None:
         return
 
@@ -292,7 +294,7 @@ def ApplyPlayerSaveGameData(caller: unrealsdk.UObject, function: unrealsdk.UFunc
     return True
 
 
-_inital_launch: bool = True
+_initial_launch: bool = True
 
 
 # Fixup the items that appear on your character on the main menu
@@ -300,9 +302,9 @@ _inital_launch: bool = True
 def LoadPlayerPawnDataAsync(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
     # Don't do anything on first launch, before modded parts get created - don't want to cache them
     # as not existing if we're auto enabled
-    global _inital_launch
-    if _inital_launch:
-        _inital_launch = False
+    global _initial_launch
+    if _initial_launch:
+        _initial_launch = False
         return True
 
     if unrealsdk.GetEngine().GetCurrentWorldInfo().GetStreamingPersistentMapName() != "menumap":
@@ -323,8 +325,8 @@ def LoadPlayerPawnDataAsync(caller: unrealsdk.UObject, function: unrealsdk.UFunc
 
 
 def LaunchNewSaveGame(caller: unrealsdk.UObject, function: unrealsdk.UFunction, params: unrealsdk.FStruct) -> bool:
-    global _inital_launch
-    _inital_launch = False
+    global _initial_launch
+    _initial_launch = False
 
     unrealsdk.RemoveHook("WillowGame.FrontendGFxMovie.LaunchNewGame", __file__)
     unrealsdk.RemoveHook("WillowGame.FrontendGFxMovie.LaunchSaveGame", __file__)

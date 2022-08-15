@@ -24,7 +24,7 @@ class EquipLocker(SDKMod):
         "Adds various options that prevent you from equipping certain types of items.\n"
         "Useful for allegiance or single rarity or weapon type runs."
     )
-    Version: str = "1.3"
+    Version: str = "1.4"
 
     Types: ModTypes = ModTypes.Utility | ModTypes.Gameplay
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings

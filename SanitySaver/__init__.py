@@ -19,7 +19,7 @@ class SanitySaver(SDKMod):
         "Disables sanity check, and also saves items which don't serialize, which would have parts"
         " deleted even with it off."
     )
-    Version: str = f"{SAVE_VERSION}.2"
+    Version: str = f"{SAVE_VERSION}.3"
 
     Types: ModTypes = ModTypes.Utility
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings

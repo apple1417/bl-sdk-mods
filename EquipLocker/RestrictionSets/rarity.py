@@ -11,7 +11,7 @@ from . import BaseRestrictionSet
 class RarityLevel:
     Name: str
     Value: int
-    SupportedGames: Game = Game.BL2 | Game.TPS
+    SupportedGames: Game = Game.BL2 | Game.TPS | Game.AoDK
 
 
 ALL_RARITIES: Tuple[RarityLevel, ...] = (
@@ -20,9 +20,9 @@ ALL_RARITIES: Tuple[RarityLevel, ...] = (
     RarityLevel("Rare", 3),
     RarityLevel("Very Rare", 4),
     RarityLevel("Legendary", 5),
-    RarityLevel("Seraph", 6, Game.BL2),
+    RarityLevel("Seraph", 6, Game.BL2 | Game.AoDK),
     RarityLevel("Glitch", 6, Game.TPS),
-    RarityLevel("Rainbow", 7, Game.BL2)
+    RarityLevel("Rainbow", 7, Game.BL2 | Game.AoDK)
 )
 
 

@@ -132,9 +132,10 @@
         "Adds various options that prevent you from equipping certain types of items/weapons."
       ],
       "types": ["Gameplay", "Utility"],
-      "latest": "1.3",
+      "latest": "1.4",
       "versions": {
-        "1.3": "https://github.com/apple1417/bl-sdk-mods/raw/master/EquipLocker/EquipLocker.zip"
+        "1.3": "https://github.com/apple1417/bl-sdk-mods/raw/a45fde7c5edc2224c15ac0a775076aacd3d40a0a/EquipLocker/EquipLocker.zip",
+        "1.4": "https://github.com/apple1417/bl-sdk-mods/raw/master/EquipLocker/EquipLocker.zip"
       },
       "requirements": {}
     },
@@ -319,7 +320,8 @@
         "1.1": "https://github.com/apple1417/bl-sdk-mods/raw/a45fde7c5edc2224c15ac0a775076aacd3d40a0a/SanitySaver/SanitySaver.zip",
         "2.0": "https://github.com/apple1417/bl-sdk-mods/raw/dad0cbc6bb500ae0d6b2a2305e51a85a4bb4d6ec/SanitySaver/SanitySaver.zip",
         "2.1": "https://github.com/apple1417/bl-sdk-mods/raw/52549cc534d4d8b702940978b3208cb402a0c929/SanitySaver/SanitySaver.zip",
-        "2.2": "https://github.com/apple1417/bl-sdk-mods/raw/master/SanitySaver/SanitySaver.zip"
+        "2.2": "https://github.com/apple1417/bl-sdk-mods/raw/c631c70226fe05e0209c34cd4f4e489a0c7154ce/SanitySaver/SanitySaver.zip",
+        "2.3": "https://github.com/apple1417/bl-sdk-mods/raw/master/SanitySaver/SanitySaver.zip"
       },
       "requirements": {}
     },

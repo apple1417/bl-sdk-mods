@@ -98,27 +98,31 @@ dumps all gear. You may use the optional arguments to narrow this down.
 
 ## Changelog
 
+### Sanity Saver v2.3
+- Fixed an exception which occured if you loaded a save with an overwritten definition which
+  couldn't be found.
+
 ### Sanity Saver v2.2
-Changed how item descriptions get generated, so relics should now get more meaningful descriptions.    
-Added the `SanitySaverDump` console command.    
+- Changed how item descriptions get generated, so relics should now get more meaningful descriptions.
+- Added the `SanitySaverDump` console command.
 
 ### Sanity Saver v2.1
-Added a little bit of info on the part caching system to the readme.    
-Fixed that the "Clear Cache" option in the mods menu did nothing.    
-Fixed that if the character you first loaded onto the main menu with had modded parts, those parts
-would temporarily get broken until you cleared the cache, or restarted the game with a different 
-character.    
-Made the compressed saves system a little more robust.
+- Added a little bit of info on the part caching system to the readme.
+- Fixed that the "Clear Cache" option in the mods menu did nothing.
+- Fixed that if the character you first loaded onto the main menu with had modded parts, those parts
+  would temporarily get broken until you cleared the cache, or restarted the game with a different 
+  character.
+- Made the compressed saves system a little more robust.
 
 ### Sanity Saver v2.0
-Changed the save file format a bit. Saves should automatically be migrated where possible.    
-Made unserializable dropped items and items equipped by NPCs save over level transitions.    
-Added option to reroll vendors on level transitions, to avoid unserialzable items breaking.    
+- Changed the save file format a bit. Saves should automatically be migrated where possible.
+- Made unserializable dropped items and items equipped by NPCs save over level transitions.
+- Added option to reroll vendors on level transitions, to avoid unserialzable items breaking.
 
 ### Sanity Saver v1.1
-Fixed that the grinder and the SHiFT mailbox in tps would incorrectly be forced empty.    
-Fixed that items with name parts that didn't have a name defined could cause custom saving to fail
-entirely.
+- Fixed that the grinder and the SHiFT mailbox in tps would incorrectly be forced empty.
+- Fixed that items with name parts that didn't have a name defined could cause custom saving to fail
+  entirely.
 
 ### Sanity Saver v1.0
-Inital Release.
+- Inital Release.
