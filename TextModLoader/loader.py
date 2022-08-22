@@ -1,6 +1,7 @@
+import itertools
 import os
 import string
-from typing import Iterable, List, Optional, Set
+from typing import Dict, Iterable, List, Optional, Set, Type
 
 from Mods.TextModLoader import TextMod, tml_parser
 from Mods.TextModLoader.blimp import parse_blimp_tags
@@ -12,14 +13,36 @@ from Mods.TextModLoader.constants import (BINARIES_DIR, BLCMM_GAME_MAP, JSON, ME
                                           SETTINGS_RECOMMENDED_GAME, SETTINGS_SPARK_SERVICE_IDX)
 from Mods.TextModLoader.settings import dump_settings, load_auto_enable, load_mod_info
 
+custom_mod_path_map: Dict[str, Type[TextMod]] = {}
 
-def handle_cached_mod_info(filename: str, cached_info: JSON) -> Optional[TextMod]:
+
+def add_custom_mod_path(filename: str, cls: Type[TextMod] = TextMod) -> None:
+    """
+    Adds a custom path to check for a mod file.
+
+    Intended to be used by SDK-text mod hybrids, which contain a text mod in their mod folder. These
+     should subclass TextMod, overwriting `Enable` and/or `__init__` as needed.
+
+    Args:
+        filename: The filename of the text mod. May be absolute.
+        cls: The class to create the text mod as.
+    """
+    rel_filename = os.path.relpath(os.path.abspath(filename), BINARIES_DIR)
+    custom_mod_path_map[rel_filename] = cls
+
+
+def handle_cached_mod_info(
+    filename: str,
+    cached_info: JSON,
+    cls: Type[TextMod] = TextMod
+) -> Optional[TextMod]:
     """
     Looks through a cached file entry, and registers a mod based on it (if applicable).
 
     Args:
         filename: The entry's filename.
         cached_info: The cached info.
+        cls: The class to register the mod as.
     Returns:
         The created Mod object, or None.
     """
@@ -29,7 +52,7 @@ def handle_cached_mod_info(filename: str, cached_info: JSON) -> Optional[TextMod
         return None
 
     game_name = cached_info[SETTINGS_RECOMMENDED_GAME]
-    return TextMod.register_new(
+    return cls.register_new(
         filename,
         cached_info[SETTINGS_SPARK_SERVICE_IDX],
         None if game_name is None else BLCMM_GAME_MAP.get(game_name.lower(), None),
@@ -124,7 +147,6 @@ def parse_metadata(comments: Iterable[str]) -> JSON:
 
     Args:
         comments: A list of extracted comments.
-        no_untagged: If to disable extracting data from untagged comment contents.
     Returns:
         A dict mapping each found metadata tag to it's value.
     """
@@ -165,12 +187,13 @@ def parse_metadata(comments: Iterable[str]) -> JSON:
     return metadata
 
 
-def parse_and_register_mod_file(file_path: str) -> JSON:
+def parse_and_register_mod_file(file_path: str, cls: Type[TextMod] = TextMod) -> JSON:
     """
     Parses through a given file, creating and registering a mod out of it if possible.
 
     Args:
         file_path: The full path to the mod file.
+        cls: The class to register the mod as.
     Returns:
         The info to cache for this file.
     """
@@ -187,8 +210,8 @@ def parse_and_register_mod_file(file_path: str) -> JSON:
         }
 
     game = None if game_str is None else BLCMM_GAME_MAP.get(game_str.lower(), None)
-    mod = TextMod(
-        os.path.basename(file_path),
+    mod = cls(
+        file_path,
         spark_service_idx,
         game,
         parse_metadata(comments)
@@ -209,8 +232,8 @@ def load_all_text_mods(auto_enable: bool) -> None:
     """
     # Clear disabled and locked text mods - anything else has special state we want to keep
     for mod in list(TextMod.filename_map.values()):
-        # Completely ignore custom registered files from outside of binaries
-        if not mod.is_in_binaries:
+        # Completely ignore custom registered files - we only reload binaries
+        if not mod.is_in_binaries or mod.filename in custom_mod_path_map:
             continue
         # Check for deletion on enabled files, but still keep them in the list
         if mod.IsEnabled:
@@ -223,7 +246,7 @@ def load_all_text_mods(auto_enable: bool) -> None:
 
     auto_enable_mods: Set[str] = load_auto_enable() if auto_enable else set()
 
-    for filename in os.listdir(BINARIES_DIR):
+    for filename in itertools.chain(os.listdir(BINARIES_DIR), custom_mod_path_map.keys()):
         file_path = os.path.join(BINARIES_DIR, filename)
         if os.path.isdir(file_path):
             continue
@@ -233,11 +256,12 @@ def load_all_text_mods(auto_enable: bool) -> None:
             continue
 
         modify_time = os.path.getmtime(file_path)
+        cls = custom_mod_path_map.get(filename, TextMod)
 
         # If the file hasn't been modified since we last saw it, load cached values
         if filename in mod_info and modify_time <= mod_info[filename][SETTINGS_MODIFY_TIME]:
             try:
-                new_mod = handle_cached_mod_info(filename, mod_info[filename])
+                new_mod = handle_cached_mod_info(filename, mod_info[filename], cls)
                 if new_mod is None:
                     continue
                 if filename in auto_enable_mods:
@@ -250,7 +274,7 @@ def load_all_text_mods(auto_enable: bool) -> None:
             except KeyError:
                 pass
 
-        new_mod_info[filename] = parse_and_register_mod_file(file_path)
+        new_mod_info[filename] = parse_and_register_mod_file(file_path, cls)
 
     dump_settings(
         mod_info=new_mod_info,

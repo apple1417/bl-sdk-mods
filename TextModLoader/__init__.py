@@ -11,7 +11,8 @@ from Mods.TextModLoader.constants import (BINARIES_DIR, JSON, META_TAG_AUTHOR, M
                                           META_TAG_TITLE, META_TAG_TML_PRIORITY, META_TAG_VERSION,
                                           SETTINGS_IS_MOD_FILE, SETTINGS_META, SETTINGS_MODIFY_TIME,
                                           SETTINGS_RECOMMENDED_GAME, SETTINGS_SPARK_SERVICE_IDX,
-                                          TEXT_MOD_PRIORITY, VERSION)
+                                          TEXT_MOD_PRIORITY)
+from Mods.TextModLoader.constants import VERSION as VERSION
 from Mods.TextModLoader.settings import dump_settings, load_auto_enable
 
 CommandExtensions: Optional[ModuleType]
@@ -141,8 +142,8 @@ class TextMod(SDKMod):
             self.check_deleted()
             return 0
 
-    @staticmethod
-    def register_new(*args: Any, **kwargs: Any) -> TextMod:
+    @classmethod
+    def register_new(cls, *args: Any, **kwargs: Any) -> TextMod:
         """
         Creates and registers a new text mod object.
 
@@ -151,7 +152,7 @@ class TextMod(SDKMod):
         Returns:
             The newly created text mod object.
         """
-        mod = TextMod(*args, **kwargs)
+        mod = cls(*args, **kwargs)
         mod.register()
         return mod
 
@@ -186,6 +187,30 @@ class TextMod(SDKMod):
             recommended_game: The game this mod file is for, or `None` if not recognised.
             metadata: Optional. The JSON metadata pulled out of the mod file.
         """
+
+        # We want to use properties for Status and SettingsInputs
+        # Because the SDKMod metaclass creates copies of all fields (to make sure you don't affect
+        #  other mods), we can't overwrite them directly on the class, it makes pickling fail.
+        # Unfortuantly, we also can't overwrite them right after the class definition, since, while
+        #  it will work fine for TextMod, subclasses it will run into the exact same error.
+        # The workaround is to overwrite them here
+        def TextMod_Status(self: TextMod) -> str:
+            return self.__class__.STATUSES_FOR_STATE[self.state]
+
+        def TextMod_SettingsInputs(self: TextMod) -> Dict[str, str]:
+            # Don't let you do anything if the mod file doesn't exist anymore
+            if self.is_deleted:
+                return {}
+            return self.__class__.SETTINGS_INPUTS_FOR_STATE[self.state]
+
+        # Only overwrite if not already a property, so that subclasses can overwrite with their own
+        #  implementations if need be
+        if not isinstance(self.__class__.Status, property):
+            self.__class__.Status = property(TextMod_Status)  # type: ignore
+        if not isinstance(self.__class__.SettingsInputs, property):
+            self.__class__.SettingsInputs = property(TextMod_SettingsInputs)  # type: ignore
+
+        # Actual initalization
         self.filename = filename
         self.spark_service_idx = spark_service_idx
         self.recommended_game = recommended_game
@@ -194,7 +219,7 @@ class TextMod(SDKMod):
             metadata = {}
         self.metadata = metadata
 
-        self.Name = metadata.get(META_TAG_TITLE, filename)
+        self.Name = metadata.get(META_TAG_TITLE, os.path.basename(filename))
 
         if META_TAG_AUTHOR in metadata:
             self.Author = metadata[META_TAG_AUTHOR]
@@ -327,24 +352,8 @@ class TextMod(SDKMod):
         dump_settings(auto_enable=auto_enable_mods)
 
 
-# Because the SDKMod metaclass creates copies of all fields (to make sure you don't affect other
-#  mods), we can't overwrite them with properties directly on the class, would make pickling fail
-# Instead we have to define them and manually add them here
-def TextMod_Status(self: TextMod) -> str:
-    return TextMod.STATUSES_FOR_STATE[self.state]
-
-
-def TextMod_SettingsInputs(self: TextMod) -> Dict[str, str]:
-    # Don't let you do anything if the mod file doesn't exist anymore
-    if self.is_deleted:
-        return {}
-    return TextMod.SETTINGS_INPUTS_FOR_STATE[self.state]
-
-
-TextMod.Status = property(TextMod_Status)  # type: ignore
-TextMod.SettingsInputs = property(TextMod_SettingsInputs)  # type: ignore
-
 # This needs to be all the way down here since it relies on `TextMod`
+from Mods.TextModLoader.loader import add_custom_mod_path as add_custom_mod_path  # noqa: F401, E402
 from Mods.TextModLoader.loader import load_all_text_mods  # noqa: E402
 
 
