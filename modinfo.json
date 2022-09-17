@@ -377,6 +377,21 @@
       "requirements": {}
     },
     {
+      "name": "Structs",
+      "description": [
+        "Imports all Unrealscript structs into Python as named tuples."
+      ],
+      "tagline": [
+        "A library which imports all Unrealscript structs into Python as named tuples."
+      ],
+      "types": ["Library"],
+      "latest": "1.0",
+      "versions": {
+        "1.0": "https://github.com/apple1417/bl-sdk-mods/raw/master/Structs/Structs.zip"
+      },
+      "requirements": {}
+    },
+    {
       "name": "Text Mod Loader",
       "description": [
         "Displays Text Mods from binaries in the SDK mods menu."
