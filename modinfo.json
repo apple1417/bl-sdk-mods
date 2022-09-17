@@ -103,9 +103,10 @@
         "A library which imports all Unrealscript enums into Python."
       ],
       "types": ["Library"],
-      "latest": "1.0",
+      "latest": "1.1",
       "versions": {
-        "1.0": "https://github.com/apple1417/bl-sdk-mods/raw/master/Enums/Enums.zip"
+        "1.1": "https://github.com/apple1417/bl-sdk-mods/raw/master/Enums/Enums.zip",
+        "1.0": "https://github.com/apple1417/bl-sdk-mods/raw/1a6247d33c537051706ca021a5d02c05f7ec06ff/Enums/Enums.zip"
       },
       "requirements": {}
     },
