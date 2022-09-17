@@ -8,7 +8,7 @@ from Mods.Structs import Vector
 pawn.Location = Vector(Y=1000)
 
 loc = Vector(pawn.Location)
-pawn.Location = loc.replace(Z=500)
+pawn.Location = loc._replace(Z=500)
 ```
 
 All fields default to the relevant zero-value - including nested structs automatically defaulting to
