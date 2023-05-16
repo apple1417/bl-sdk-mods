@@ -186,6 +186,18 @@ def _define_struct(struct: unrealsdk.UStruct) -> None:
             )
 
         return expected_type(fstruct)  # type: ignore
+    
+    def convert_arg(
+        arg: Any,
+        idx: int
+    ) -> Any:
+        if isinstance(arg, unrealsdk.FArray):
+            return [convert_arg(a, i) for i, a in enumerate(arg)]
+        if isinstance(arg, unrealsdk.FStruct) and idx < len(fields):
+            return convert_fstruct(arg, fields[idx], type(defaults[idx]))
+        if isinstance(arg, unrealsdk.FScriptInterface):
+            return arg.ObjectPointer
+        return arg
 
     @wraps(old_new)
     def new(cls: Type[NamedTuple], *args: Any, **kwargs: Any) -> NamedTuple:
@@ -199,10 +211,7 @@ def _define_struct(struct: unrealsdk.UStruct) -> None:
 
         # Expand any nested fstructs
         args = [
-            convert_fstruct(val, fields[idx], type(defaults[idx]))  # type: ignore
-            # If we have too many args, let the base __new__ deal with it
-            if isinstance(val, unrealsdk.FStruct) and idx < len(fields) else
-            val
+            convert_arg(val, idx)
             for idx, val in enumerate(args)
         ]
         kwargs = {
