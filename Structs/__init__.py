@@ -189,12 +189,25 @@ def _define_struct(struct: unrealsdk.UStruct) -> None:
     
     def convert_arg(
         arg: Any,
-        idx: int
+        field: str,
     ) -> Any:
+        """
+        Helper function to handle FArray, FStruct and FScriptInterface arguments.
+
+        Recursively converts and FArray into an array.
+        Converts an FStruct arg into a named tuple.
+        Changes an FScriptInterface into the ObjectPointer of that FScriptInterface
+
+        Args:
+            arg: The Argument to handle.
+            field: The name of the field this struct was extracted from, used for error messages.
+        Returns:
+            The new argument.
+        """
         if isinstance(arg, unrealsdk.FArray):
-            return [convert_arg(a, i) for i, a in enumerate(arg)]
-        if isinstance(arg, unrealsdk.FStruct) and idx < len(fields):
-            return convert_fstruct(arg, fields[idx], type(defaults[idx]))
+            return [convert_arg(a, f"{field}[{idx}]") for idx, a in enumerate(arg)]
+        if isinstance(arg, unrealsdk.FStruct):
+            return convert_fstruct(arg, field, _all_structs[arg.structType.Name])
         if isinstance(arg, unrealsdk.FScriptInterface):
             return arg.ObjectPointer
         return arg
@@ -211,7 +224,8 @@ def _define_struct(struct: unrealsdk.UStruct) -> None:
 
         # Expand any nested fstructs
         args = [
-            convert_arg(val, idx)
+            val if idx > len(fields) else
+            convert_arg(val, fields[idx])
             for idx, val in enumerate(args)
         ]
         kwargs = {
