@@ -159,7 +159,7 @@ def _define_struct(struct: unrealsdk.UStruct) -> None:
 
     def convert_fstruct(
         fstruct: unrealsdk.FStruct,
-        field: str,
+        field_error: str,
         expected_type: Type[Any],
     ) -> NamedTuple:
         """
@@ -176,20 +176,20 @@ def _define_struct(struct: unrealsdk.UStruct) -> None:
         # The sdk can handle other invalid types
         if not issubclass(expected_type, tuple):
             raise TypeError(
-                f"Got a struct '{struct.PathName(fstruct.structType)}' to field '{field}',"
+                f"Got a struct '{struct.PathName(fstruct.structType)}' to field '{field_error}',"
                 f" expected '{expected_type.__name__}'!"
             )
         if fstruct.structType != expected_type._unreal:  # type: ignore
             raise TypeError(
                 f"Got struct of incompatible type '{struct.PathName(fstruct.structType)}' to"  # type: ignore
-                f" field '{field}', expected '{struct.PathName(expected_type._unreal)}'!"
+                f" field '{field_error}', expected '{struct.PathName(expected_type._unreal)}'!"
             )
 
         return expected_type(fstruct)  # type: ignore
     
     def convert_arg(
         arg: Any,
-        field: str,
+        field_error: str,
     ) -> Any:
         """
         Helper function to handle FArray, FStruct and FScriptInterface arguments.
@@ -205,9 +205,9 @@ def _define_struct(struct: unrealsdk.UStruct) -> None:
             The new argument.
         """
         if isinstance(arg, unrealsdk.FArray):
-            return [convert_arg(a, f"{field}[{idx}]") for idx, a in enumerate(arg)]
+            return [convert_arg(a, f"{field_error}[{idx}]") for idx, a in enumerate(arg)]
         if isinstance(arg, unrealsdk.FStruct):
-            return convert_fstruct(arg, field, _all_structs[arg.structType.Name])
+            return convert_fstruct(arg, field_error, _all_structs[arg.structType.Name])
         if isinstance(arg, unrealsdk.FScriptInterface):
             return arg.ObjectPointer
         return arg
@@ -224,19 +224,18 @@ def _define_struct(struct: unrealsdk.UStruct) -> None:
 
         # Expand any nested fstructs
         args = [
-            val if idx > len(fields) else
-            convert_arg(val, fields[idx])
-            for idx, val in enumerate(args)
-        ]
+			convert_arg(val, fields[idx])
+			for idx, val in enumerate(args)
+		]
         kwargs = {
-            key: (
-                convert_fstruct(val, key, type(defaults[fields.index(key)]))
-                # If we have an invalid keyword arg, let the base __new__ deal with it
-                if isinstance(val, unrealsdk.FStruct) and key in fields else
-                val
-            )
-            for key, val in kwargs.items()
-        }
+			key: (
+				val
+				# If we have an invalid keyword arg, let the base __new__ deal with it
+				if key not in fields else
+				convert_arg(val, key)
+			)
+			for key, val in kwargs.items()
+		}
 
         return old_new(cls, *args, **kwargs)  # type: ignore
 
