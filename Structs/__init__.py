@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Dict, NamedTuple, Set, Tuple, Type
 
 from Mods.ModMenu import ModPriorities, ModTypes, RegisterMod, SDKMod
 
-__version_info__: Tuple[int, ...] = (1, 0)
+__version_info__: Tuple[int, ...] = (1, 1)
 __version__: str = ".".join(map(str, __version_info__))
 
 
@@ -186,11 +186,8 @@ def _define_struct(struct: unrealsdk.UStruct) -> None:
             )
 
         return expected_type(fstruct)  # type: ignore
-    
-    def convert_arg(
-        arg: Any,
-        field_error: str,
-    ) -> Any:
+
+    def convert_arg(arg: Any, field_error: str) -> Any:
         """
         Helper function to handle FArray, FStruct and FScriptInterface arguments.
 
@@ -200,7 +197,8 @@ def _define_struct(struct: unrealsdk.UStruct) -> None:
 
         Args:
             arg: The Argument to handle.
-            field: The name of the field this struct was extracted from, used for error messages.
+            field_error: The name of the field this struct was extracted from, used for error
+                         messages.
         Returns:
             The new argument.
         """
@@ -224,18 +222,18 @@ def _define_struct(struct: unrealsdk.UStruct) -> None:
 
         # Expand any nested fstructs
         args = [
-			convert_arg(val, fields[idx])
-			for idx, val in enumerate(args)
-		]
+            convert_arg(val, fields[idx])
+            for idx, val in enumerate(args)
+        ]
         kwargs = {
-			key: (
-				val
-				# If we have an invalid keyword arg, let the base __new__ deal with it
-				if key not in fields else
-				convert_arg(val, key)
-			)
-			for key, val in kwargs.items()
-		}
+            key: (
+                convert_arg(val, key)
+                if key in fields else
+                # If we have an invalid keyword arg, let the base __new__ deal with it
+                val
+            )
+            for key, val in kwargs.items()
+        }
 
         return old_new(cls, *args, **kwargs)  # type: ignore
 
