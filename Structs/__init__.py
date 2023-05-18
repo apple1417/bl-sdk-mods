@@ -205,7 +205,7 @@ def _define_struct(struct: unrealsdk.UStruct) -> None:
         if isinstance(arg, unrealsdk.FArray):
             return [convert_arg(a, f"{field_error}[{idx}]") for idx, a in enumerate(arg)]
         if isinstance(arg, unrealsdk.FStruct):
-            return convert_fstruct(arg, field_error, _all_structs[arg.structType.Name])
+            return convert_fstruct(arg, field_error, _all_structs[_get_struct_name(arg.structType)])
         if isinstance(arg, unrealsdk.FScriptInterface):
             return arg.ObjectPointer
         return arg
