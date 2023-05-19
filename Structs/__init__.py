@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Dict, NamedTuple, Set, Tuple, Type
 
 from Mods.ModMenu import ModPriorities, ModTypes, RegisterMod, SDKMod
 
-__version_info__: Tuple[int, ...] = (1, 0)
+__version_info__: Tuple[int, ...] = (1, 1)
 __version__: str = ".".join(map(str, __version_info__))
 
 
@@ -159,7 +159,7 @@ def _define_struct(struct: unrealsdk.UStruct) -> None:
 
     def convert_fstruct(
         fstruct: unrealsdk.FStruct,
-        field: str,
+        field_error: str,
         expected_type: Type[Any],
     ) -> NamedTuple:
         """
@@ -176,16 +176,39 @@ def _define_struct(struct: unrealsdk.UStruct) -> None:
         # The sdk can handle other invalid types
         if not issubclass(expected_type, tuple):
             raise TypeError(
-                f"Got a struct '{struct.PathName(fstruct.structType)}' to field '{field}',"
+                f"Got a struct '{struct.PathName(fstruct.structType)}' to field '{field_error}',"
                 f" expected '{expected_type.__name__}'!"
             )
         if fstruct.structType != expected_type._unreal:  # type: ignore
             raise TypeError(
                 f"Got struct of incompatible type '{struct.PathName(fstruct.structType)}' to"  # type: ignore
-                f" field '{field}', expected '{struct.PathName(expected_type._unreal)}'!"
+                f" field '{field_error}', expected '{struct.PathName(expected_type._unreal)}'!"
             )
 
         return expected_type(fstruct)  # type: ignore
+
+    def convert_arg(arg: Any, field_error: str) -> Any:
+        """
+        Helper function to handle FArray, FStruct and FScriptInterface arguments.
+
+        Recursively converts and FArray into an array.
+        Converts an FStruct arg into a named tuple.
+        Changes an FScriptInterface into the ObjectPointer of that FScriptInterface
+
+        Args:
+            arg: The Argument to handle.
+            field_error: The name of the field this struct was extracted from, used for error
+                         messages.
+        Returns:
+            The new argument.
+        """
+        if isinstance(arg, unrealsdk.FArray):
+            return [convert_arg(a, f"{field_error}[{idx}]") for idx, a in enumerate(arg)]
+        if isinstance(arg, unrealsdk.FStruct):
+            return convert_fstruct(arg, field_error, _all_structs[_get_struct_name(arg.structType)])
+        if isinstance(arg, unrealsdk.FScriptInterface):
+            return arg.ObjectPointer
+        return arg
 
     @wraps(old_new)
     def new(cls: Type[NamedTuple], *args: Any, **kwargs: Any) -> NamedTuple:
@@ -199,17 +222,14 @@ def _define_struct(struct: unrealsdk.UStruct) -> None:
 
         # Expand any nested fstructs
         args = [
-            convert_fstruct(val, fields[idx], type(defaults[idx]))  # type: ignore
-            # If we have too many args, let the base __new__ deal with it
-            if isinstance(val, unrealsdk.FStruct) and idx < len(fields) else
-            val
+            convert_arg(val, fields[idx])
             for idx, val in enumerate(args)
         ]
         kwargs = {
             key: (
-                convert_fstruct(val, key, type(defaults[fields.index(key)]))
+                convert_arg(val, key)
+                if key in fields else
                 # If we have an invalid keyword arg, let the base __new__ deal with it
-                if isinstance(val, unrealsdk.FStruct) and key in fields else
                 val
             )
             for key, val in kwargs.items()

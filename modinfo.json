@@ -386,9 +386,10 @@
         "A library which imports all Unrealscript structs into Python as named tuples."
       ],
       "types": ["Library"],
-      "latest": "1.0",
+      "latest": "1.1",
       "versions": {
-        "1.0": "https://github.com/apple1417/bl-sdk-mods/raw/master/Structs/Structs.zip"
+        "1.1": "https://github.com/apple1417/bl-sdk-mods/raw/master/Structs/Structs.zip",
+        "1.0": "https://github.com/apple1417/bl-sdk-mods/raw/9b7025d970ec9b9132abac8d433d44e1e4388e96/Structs/Structs.zip"
       },
       "requirements": {}
     },
