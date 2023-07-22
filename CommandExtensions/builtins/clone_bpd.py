@@ -154,7 +154,7 @@ parser.add_argument(
     help="Suppress the error message when an object already exists.",
 )
 parser.add_argument(
-    "-h",
+    "-r",
     "--no-reccursive",
     action="store_true",
     help="Stops from recursively cloning the BPD of any skills linked to via the original BPD.",
