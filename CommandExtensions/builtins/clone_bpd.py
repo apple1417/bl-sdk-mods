@@ -12,6 +12,7 @@ We pass a known clones dict between functions so that we don't clone the same ob
 stored in two different locations)
 """
 ClonesDict = Dict[unrealsdk.UObject, unrealsdk.UObject]
+recursive_cloning: bool = True
 
 
 # There are a bunch of different fields skills can be stored in, hence the field arg
@@ -36,7 +37,7 @@ def fixup_skill_field(field: str, behavior: unrealsdk.UObject, known_clones: Clo
         skill,
         behavior,
         # Empty string gives us the auto numbering back
-        "" if skill.Name == skill.Class.Name else skill.Name
+        "" if skill.Name == skill.Class.Name else skill.Name,
     )
     if cloned_skill is None:
         return
@@ -52,11 +53,10 @@ def fixup_skill_field(field: str, behavior: unrealsdk.UObject, known_clones: Clo
         cloned_skill.BehaviorProviderDefinition = known_clones[bpd]
         return
 
-    cloned_bpd = clone_object(
-        bpd,
-        cloned_skill,
-        "" if bpd.Name == bpd.Class.Name else bpd.Name
-    )
+    if not recursive_cloning:
+        return
+
+    cloned_bpd = clone_object(bpd, cloned_skill, "" if bpd.Name == bpd.Class.Name else bpd.Name)
     if cloned_bpd is None:
         return
     known_clones[bpd] = cloned_bpd
@@ -85,6 +85,7 @@ def fixup_bpd(cloned: unrealsdk.UObject, known_clones: ClonesDict) -> None:
         cloned: The cloned BPD.
         known_clones: A dict of objects to their clones, used to prevent double-cloning.
     """
+    cloned_classes = {}
     for sequence in cloned.BehaviorSequences:
         # There are a bunch of other fields, but this seems to be the only used one
         for data in sequence.BehaviorData2:
@@ -96,13 +97,15 @@ def fixup_bpd(cloned: unrealsdk.UObject, known_clones: ClonesDict) -> None:
                 data.Behavior = known_clones[behavior]
                 continue
 
+            if behavior.Class.Name not in cloned_classes:
+                cloned_classes[behavior.Class.Name] = 0
+
             cloned_behavior = clone_object(
-                behavior,
-                cloned,
-                "" if behavior.Name == behavior.Class.Name else behavior.Name
+                behavior, cloned, f"{behavior.Class.Name}_{cloned_classes[behavior.Class.Name]}"
             )
             if cloned_behavior is None:
                 continue
+            cloned_classes[behavior.Class.Name] += 1
             known_clones[behavior] = cloned_behavior
 
             data.Behavior = cloned_behavior
@@ -113,6 +116,8 @@ def fixup_bpd(cloned: unrealsdk.UObject, known_clones: ClonesDict) -> None:
 
 
 def handler(args: argparse.Namespace) -> None:
+    global recursive_cloning
+    recursive_cloning = not args.no_reccursive
     src = parse_object(args.base)
     if src is None:
         return
@@ -138,12 +143,19 @@ parser = RegisterConsoleCommand(
         "Creates a clone of a BehaviourProvidierDefinition, as well as recursively cloning some of"
         " the objects making it up. This may not match the exact layout of the original objects,"
         " dump them manually to check what their new names are."
-    )
+    ),
 )
 parser.add_argument("base", help="The bpd to create a copy of.")
 parser.add_argument("clone", help="The name of the clone to create.")
 parser.add_argument(
-    "-x", "--suppress-exists",
+    "-x",
+    "--suppress-exists",
     action="store_true",
-    help="Suppress the error message when an object already exists."
+    help="Suppress the error message when an object already exists.",
+)
+parser.add_argument(
+    "-h",
+    "--no-reccursive",
+    action="store_true",
+    help="Stops from recursively cloning the BPD of any skills linked to via the original BPD.",
 )
