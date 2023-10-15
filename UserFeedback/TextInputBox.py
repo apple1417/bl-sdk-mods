@@ -3,6 +3,8 @@ from typing import ClassVar, Dict, List, Optional, Tuple
 
 from .GFxMovie import GFxMovie
 
+import subprocess
+
 
 class TextInputBox(GFxMovie):
     """
@@ -115,6 +117,7 @@ class TextInputBox(GFxMovie):
         self._Message = list(DefaultMessage)
         self._CursorPos = 0
         self._IsShiftPressed = False
+        self._IsControlPressed = False
         self._TrainingBox = None
 
     def Show(self) -> None:
@@ -122,6 +125,7 @@ class TextInputBox(GFxMovie):
         self._Message = list(self.DefaultMessage)
         self._CursorPos = len(self._Message)
         self._IsShiftPressed = False
+        self._IsControlPressed = False
 
         self._TrainingBox = unrealsdk.GetEngine().GamePlayers[0].Actor.GFxUIManager.ShowTrainingDialog(
             self.DefaultMessage + "<u>  </u>",
@@ -226,9 +230,31 @@ class TextInputBox(GFxMovie):
                 self._IsShiftPressed = False
             return
 
+        if key in ("LeftControl", "RightControl"):
+            if event == 0:
+                self._IsControlPressed = True
+            elif event == 1:
+                self._IsControlPressed = False
+            return
+
         if event != 0 and event != 2:
             return
 
+        if self._IsControlPressed:
+            if key == "C":
+                subprocess.run(["clip"], text=True, input="".join(self._Message))
+                return
+            elif key == "V":
+                shell = subprocess.run(["powershell", "get-clipboard"], text=True, capture_output=True)
+                if shell.returncode != 0:
+                    return
+                for character in shell.stdout[:-1]:
+                    if not self.IsAllowedToWrite(character, "".join(self._Message), self._CursorPos):
+                        break
+                    self._Message.insert(self._CursorPos, character)
+                    self._CursorPos += 1
+            else:
+                return
         if key == "Left":
             self._CursorPos = max(self._CursorPos - 1, 0)
         elif key == "Right":
