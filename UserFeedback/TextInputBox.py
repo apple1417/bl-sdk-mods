@@ -3,35 +3,37 @@ from typing import ClassVar, Dict, List, Optional, Tuple
 
 from .GFxMovie import GFxMovie
 
-import os, sys
+import os
+import sys
 
 _lib_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ctypes")
 sys.path.append(_lib_path)
-from . import ctypes
-from .ctypes import windll
+from .ctypes import windll, create_string_buffer, memmove  # noqa: E402
 sys.path.remove(_lib_path)
 
-def _get_clipboard():
-    text = None
+
+def _get_clipboard() -> Optional[str]:
+    contents: Optional[str] = None
     windll.user32.OpenClipboard(None)
     handle = windll.user32.GetClipboardData(13)
     pcontents = windll.kernel32.GlobalLock(handle)
     size = windll.kernel32.GlobalSize(handle)
     if pcontents and size:
-        raw_data = ctypes.create_string_buffer(size)
-        ctypes.memmove(raw_data, pcontents, size)
-        text = raw_data.raw.decode('utf-16le').rstrip(u'\0')
+        raw_data = create_string_buffer(size)
+        memmove(raw_data, pcontents, size)
+        contents = raw_data.raw.decode('utf-16le').rstrip(u'\0')
     windll.kernel32.GlobalUnlock(handle)
     windll.user32.CloseClipboard()
-    return text
+    return contents
 
-def _set_clipboard(contents: str):
+
+def _set_clipboard(contents: str) -> None:
     data = contents.encode('utf-16le')
     windll.user32.OpenClipboard(None)
     windll.user32.EmptyClipboard()
     handle = windll.kernel32.GlobalAlloc(0x0042, len(data) + 2)
     pcontents = windll.kernel32.GlobalLock(handle)
-    ctypes.memmove(pcontents, data, len(data))
+    memmove(pcontents, data, len(data))
     windll.kernel32.GlobalUnlock(handle)
     windll.user32.SetClipboardData(13, handle)
     windll.user32.CloseClipboard()
@@ -275,8 +277,12 @@ class TextInputBox(GFxMovie):
             if key == "C":
                 _set_clipboard("".join(self._Message))
                 return
+            elif key == "X":
+                _set_clipboard("".join(self._Message))
+                self._Message = []
+                self._CursorPos = 0
             elif key == "V":
-                clipboard = _get_clipboard()
+                clipboard = _get_clipboard().replace("\r\n", "\n")
                 if clipboard is None or clipboard == "":
                     return
                 for character in clipboard:
