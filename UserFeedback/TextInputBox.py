@@ -3,7 +3,38 @@ from typing import ClassVar, Dict, List, Optional, Tuple
 
 from .GFxMovie import GFxMovie
 
-import subprocess
+import os, sys
+
+_lib_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ctypes")
+sys.path.append(_lib_path)
+from . import ctypes
+from .ctypes import windll
+sys.path.remove(_lib_path)
+
+def _get_clipboard():
+    text = None
+    windll.user32.OpenClipboard(None)
+    handle = windll.user32.GetClipboardData(13)
+    pcontents = windll.kernel32.GlobalLock(handle)
+    size = windll.kernel32.GlobalSize(handle)
+    if pcontents and size:
+        raw_data = ctypes.create_string_buffer(size)
+        ctypes.memmove(raw_data, pcontents, size)
+        text = raw_data.raw.decode('utf-16le').rstrip(u'\0')
+    windll.kernel32.GlobalUnlock(handle)
+    windll.user32.CloseClipboard()
+    return text
+
+def _set_clipboard(contents: str):
+    data = contents.encode('utf-16le')
+    windll.user32.OpenClipboard(None)
+    windll.user32.EmptyClipboard()
+    handle = windll.kernel32.GlobalAlloc(0x0042, len(data) + 2)
+    pcontents = windll.kernel32.GlobalLock(handle)
+    ctypes.memmove(pcontents, data, len(data))
+    windll.kernel32.GlobalUnlock(handle)
+    windll.user32.SetClipboardData(13, handle)
+    windll.user32.CloseClipboard()
 
 
 class TextInputBox(GFxMovie):
@@ -242,20 +273,20 @@ class TextInputBox(GFxMovie):
 
         if self._IsControlPressed:
             if key == "C":
-                subprocess.run(["clip"], text=True, input="".join(self._Message))
+                _set_clipboard("".join(self._Message))
                 return
             elif key == "V":
-                shell = subprocess.run(["powershell", "get-clipboard"], text=True, capture_output=True)
-                if shell.returncode != 0:
+                clipboard = _get_clipboard()
+                if clipboard is None or clipboard == "":
                     return
-                for character in shell.stdout[:-1]:
+                for character in clipboard:
                     if not self.IsAllowedToWrite(character, "".join(self._Message), self._CursorPos):
                         break
                     self._Message.insert(self._CursorPos, character)
                     self._CursorPos += 1
             else:
                 return
-        if key == "Left":
+        elif key == "Left":
             self._CursorPos = max(self._CursorPos - 1, 0)
         elif key == "Right":
             self._CursorPos = min(self._CursorPos + 1, len(self._Message))
