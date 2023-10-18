@@ -449,9 +449,10 @@
       ],
       "tagline": "A library adding several ways to show feedback to and get input from your users.",
       "types": ["Library"],
-      "latest": "1.5",
+      "latest": "1.6",
       "versions": {
-        "1.5": "https://github.com/apple1417/bl-sdk-mods/raw/master/UserFeedback/UserFeedback.zip"
+        "1.6": "https://github.com/apple1417/bl-sdk-mods/raw/master/UserFeedback/UserFeedback.zip",
+        "1.5": "https://github.com/apple1417/bl-sdk-mods/raw/a45fde7c5edc2224c15ac0a775076aacd3d40a0a/UserFeedback/UserFeedback.zip"
       },
       "requirements": {}
     }

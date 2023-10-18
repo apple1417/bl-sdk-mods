@@ -14,7 +14,7 @@ from .TextInputBox import TextInputBox as TextInputBox  # noqa: F401
 from .TrainingBox import TrainingBox as TrainingBox  # noqa: F401
 
 VersionMajor: int = 1
-VersionMinor: int = 5
+VersionMinor: int = 6
 
 
 # Provide an entry in the mods list just so users can see that this is loaded

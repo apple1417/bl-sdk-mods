@@ -1,5 +1,8 @@
 ## Changelog
 
+### User Feedback v1.6
+Adds the ability for a text input box to do basic copy/paste/cutting - thanks to @mopioid
+
 ### User Feedback v1.5
 Updated to use some of the new features from SDK version 0.7.8.
 
