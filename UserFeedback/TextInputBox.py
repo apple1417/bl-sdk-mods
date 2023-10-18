@@ -3,6 +3,41 @@ from typing import ClassVar, Dict, List, Optional, Tuple
 
 from .GFxMovie import GFxMovie
 
+import os
+import sys
+
+_lib_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ctypes")
+sys.path.append(_lib_path)
+from .ctypes import windll, create_string_buffer, memmove  # noqa: E402
+sys.path.remove(_lib_path)
+
+
+def _get_clipboard() -> Optional[str]:
+    contents: Optional[str] = None
+    windll.user32.OpenClipboard(None)
+    handle = windll.user32.GetClipboardData(13)
+    pcontents = windll.kernel32.GlobalLock(handle)
+    size = windll.kernel32.GlobalSize(handle)
+    if pcontents and size:
+        raw_data = create_string_buffer(size)
+        memmove(raw_data, pcontents, size)
+        contents = raw_data.raw.decode('utf-16le').rstrip(u'\0')
+    windll.kernel32.GlobalUnlock(handle)
+    windll.user32.CloseClipboard()
+    return contents
+
+
+def _set_clipboard(contents: str) -> None:
+    data = contents.encode('utf-16le')
+    windll.user32.OpenClipboard(None)
+    windll.user32.EmptyClipboard()
+    handle = windll.kernel32.GlobalAlloc(0x0042, len(data) + 2)
+    pcontents = windll.kernel32.GlobalLock(handle)
+    memmove(pcontents, data, len(data))
+    windll.kernel32.GlobalUnlock(handle)
+    windll.user32.SetClipboardData(13, handle)
+    windll.user32.CloseClipboard()
+
 
 class TextInputBox(GFxMovie):
     """
@@ -115,6 +150,7 @@ class TextInputBox(GFxMovie):
         self._Message = list(DefaultMessage)
         self._CursorPos = 0
         self._IsShiftPressed = False
+        self._IsControlPressed = False
         self._TrainingBox = None
 
     def Show(self) -> None:
@@ -122,6 +158,7 @@ class TextInputBox(GFxMovie):
         self._Message = list(self.DefaultMessage)
         self._CursorPos = len(self._Message)
         self._IsShiftPressed = False
+        self._IsControlPressed = False
 
         self._TrainingBox = unrealsdk.GetEngine().GamePlayers[0].Actor.GFxUIManager.ShowTrainingDialog(
             self.DefaultMessage + "<u>  </u>",
@@ -226,10 +263,36 @@ class TextInputBox(GFxMovie):
                 self._IsShiftPressed = False
             return
 
+        if key in ("LeftControl", "RightControl"):
+            if event == 0:
+                self._IsControlPressed = True
+            elif event == 1:
+                self._IsControlPressed = False
+            return
+
         if event != 0 and event != 2:
             return
 
-        if key == "Left":
+        if self._IsControlPressed:
+            if key == "C":
+                _set_clipboard("".join(self._Message))
+                return
+            elif key == "X":
+                _set_clipboard("".join(self._Message))
+                self._Message = []
+                self._CursorPos = 0
+            elif key == "V":
+                clipboard = _get_clipboard().replace("\r\n", "\n")
+                if clipboard is None or clipboard == "":
+                    return
+                for character in clipboard:
+                    if not self.IsAllowedToWrite(character, "".join(self._Message), self._CursorPos):
+                        break
+                    self._Message.insert(self._CursorPos, character)
+                    self._CursorPos += 1
+            else:
+                return
+        elif key == "Left":
             self._CursorPos = max(self._CursorPos - 1, 0)
         elif key == "Right":
             self._CursorPos = min(self._CursorPos + 1, len(self._Message))
