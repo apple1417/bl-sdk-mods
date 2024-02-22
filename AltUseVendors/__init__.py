@@ -18,7 +18,7 @@ if (VERSION_MAJOR, VERSION_MINOR) < (2, 4):
     # Needed for Hook
     raise ImportError("Alt Use Vendors requires at least Mod Menu version 2.4")
 
-from Mods.ModMenu import EnabledSaveType, Hook, Mods, ModTypes, RegisterMod, SDKMod
+from Mods.ModMenu import EnabledSaveType, Game, Hook, Mods, ModTypes, RegisterMod, SDKMod
 
 try:
     from Mods.Enums import (EChangeStatus, ECurrencyType, EInteractionIcons, ENetRole, EShopType,
@@ -73,6 +73,29 @@ AMMO_COUNTS: Dict[str, AmmoInfo] = {
 VIAL_HEAL_PERCENT: float = 0.25
 
 
+# Sound AkEvents for playing
+AKE_BUY: str = "Ake_UI.UI_Vending.Ak_Play_UI_Vending_Buy"
+AKE_SELL: str = "Ake_UI.UI_Vending.Ak_Play_UI_Vending_Sell"
+AKE_DICT = {
+    Game.BL2: {
+        "InteractiveObj_VendingMachine_GrenadesAndAmmo": "Ake_VOCT_Contextual.Ak_Play_VOCT_Marcus_Vending_Munition_Purchase",
+        "InteractiveObj_VendingMachine_HealthItems": "Ake_VOCT_Contextual.Ak_Play_VOCT_Zed_Store_Welcome",
+        #"VendingMachine_Weapons_Definition": "Ake_VOCT_Contextual.Ak_Play_VOCT_Marcus_Vending_Munition_Bye",
+        # DLC Vendors
+        "IO_Aster_VendingMachine_GrenadesAndAmmo": "Ake_Aster_VO.VOCT.Ak_Play_VOCT_Aster_Marcus_Store_Purchase",
+        "IO_Aster_VendingMachine_HealthItems": "Ake_Aster_VO.VOCT.Ak_Play_VOCT_Aster_Zed_Store_Purchase",
+        #"VendingMachine_Aster_Weapons_Definition": "Ake_Aster_VO.VOCT.Ak_Play_VOCT_Aster_Marcus_Store_Bye",
+        #"VendingMachine_TorgueToken": "Ake_Iris_VO.Ak_Play_Iris_TorgueVendingMachine_Purchase",
+    },
+    Game.TPS: {
+        "InteractiveObj_VendingMachine_GrenadesAndAmmo": "Ake_VOCT_Contextual.Ak_Play_VOCT_Marcus_Vending_Munition_Purchase",
+        "InteractiveObj_VendingMachine_HealthItems": "Ake_Cork_VOCT_Contextuals.Cork_VOCT_NurseNina.Ak_Play_VOCT_Cork_NurseNina_Store_Purchase",
+    },
+    Game.AoDK: {
+        # Don't know other game AkEvent names
+    }
+}
+
 def get_trash_value(PC: WillowPlayerController, vendor: WillowVendingMachine) -> int:
     """
     Gets the value of selling all trash in the player's inventory.
@@ -106,6 +129,7 @@ def sell_trash(PC: WillowPlayerController, vendor: WillowVendingMachine) -> None
         vendor: The vendor they're selling at.
     """
     PC.GetPawnInventoryManager().SellAllTrash()
+    PC.pawn.PlayAkEvent(unrealsdk.FindObject("AkEvent", AKE_SELL))
 
 
 def iter_ammo_data(
@@ -183,6 +207,7 @@ def refill_ammo(PC: WillowPlayerController, vendor: WillowVendingMachine) -> Non
     """
     for _, _, pool in iter_ammo_data(PC, vendor):
         pool.SetCurrentValue(pool.GetMaxValue())
+    PC.pawn.PlayAkEvent(unrealsdk.FindObject("AkEvent", AKE_BUY))
 
 
 def get_heal_cost(PC: WillowPlayerController, vendor: WillowVendingMachine) -> int:
@@ -225,6 +250,7 @@ def do_heal(PC: WillowPlayerController, vendor: WillowVendingMachine) -> None:
         vendor: The vendor they're healing at.
     """
     PC.Pawn.SetHealth(PC.Pawn.GetMaxHealth())
+    PC.pawn.PlayAkEvent(unrealsdk.FindObject("AkEvent", AKE_BUY))
 
 
 SHOP_INFO_MAP: Dict[EShopType, ShopInfo] = {  # type: ignore
@@ -377,6 +403,10 @@ class AltUseVendors(SDKMod):
             caller.SetPendingTransactionStatus(ETransactionStatus.TS_TransactionComplete)
 
         info.purchase_function(caller, vendor)
+
+        # Play the dialogue sound if one is given for this vendor
+        if vendor.InteractiveObjectDefinition.name in AKE_DICT[Game.GetCurrent()]:
+            vendor.PlayAkEvent(unrealsdk.FindObject("AkEvent", AKE_DICT[Game.GetCurrent()][vendor.InteractiveObjectDefinition.name]))
 
         self.update_vendor_costs(caller, vendor.ShopType)
 
