@@ -76,25 +76,41 @@ VIAL_HEAL_PERCENT: float = 0.25
 # Sound AkEvents for playing
 AKE_BUY: str = "Ake_UI.UI_Vending.Ak_Play_UI_Vending_Buy"
 AKE_SELL: str = "Ake_UI.UI_Vending.Ak_Play_UI_Vending_Sell"
-AKE_DICT = {
+AKE_VOICELINE_BY_VENDOR = {
     Game.BL2: {
         "InteractiveObj_VendingMachine_GrenadesAndAmmo": "Ake_VOCT_Contextual.Ak_Play_VOCT_Marcus_Vending_Munition_Purchase",
         "InteractiveObj_VendingMachine_HealthItems": "Ake_VOCT_Contextual.Ak_Play_VOCT_Zed_Store_Welcome",
-        #"VendingMachine_Weapons_Definition": "Ake_VOCT_Contextual.Ak_Play_VOCT_Marcus_Vending_Munition_Bye",
-        # DLC Vendors
         "IO_Aster_VendingMachine_GrenadesAndAmmo": "Ake_Aster_VO.VOCT.Ak_Play_VOCT_Aster_Marcus_Store_Purchase",
         "IO_Aster_VendingMachine_HealthItems": "Ake_Aster_VO.VOCT.Ak_Play_VOCT_Aster_Zed_Store_Purchase",
-        #"VendingMachine_Aster_Weapons_Definition": "Ake_Aster_VO.VOCT.Ak_Play_VOCT_Aster_Marcus_Store_Bye",
-        #"VendingMachine_TorgueToken": "Ake_Iris_VO.Ak_Play_Iris_TorgueVendingMachine_Purchase",
     },
     Game.TPS: {
         "InteractiveObj_VendingMachine_GrenadesAndAmmo": "Ake_VOCT_Contextual.Ak_Play_VOCT_Marcus_Vending_Munition_Purchase",
         "InteractiveObj_VendingMachine_HealthItems": "Ake_Cork_VOCT_Contextuals.Cork_VOCT_NurseNina.Ak_Play_VOCT_Cork_NurseNina_Store_Purchase",
+        "InteractiveObj_VendingMachine_GrenadesAndAmmo_Marigold": "Ake_VOCT_Contextual.Ak_Play_VOCT_Marcus_Vending_Munition_Purchase",
+        "InteractiveObj_VendingMachine_HealthItems_Marigold": "Ake_Cork_VOCT_Contextuals.Cork_VOCT_NurseNina.Ak_Play_VOCT_Cork_NurseNina_Store_Purchase",
+        "InteractiveObj_VendingMachine_GrenadesAndAmmo_Marigold_BL1": "Ake_VOCT_Contextual.Ak_Play_VOCT_Marcus_Vending_Munition_Purchase",
+        "InteractiveObj_VendingMachine_HealthItems_Marigold_BL1": "Ake_Marigold_VOCT_Contextuals.Dlc_Marigold_VOCT_Zed.Ak_Play_Dlc_Marigold_VOCT_Zed_Vending_Welcome",
     },
     Game.AoDK: {
-        # Don't know other game AkEvent names
+        "IO_Aster_VendingMachine_GrenadesAndAmmo": "Ake_Aster_VO.VOCT.Ak_Play_VOCT_Aster_Marcus_Store_Purchase",
+        "IO_Aster_VendingMachine_HealthItems": "Ake_Aster_VO.VOCT.Ak_Play_VOCT_Aster_Zed_Store_Purchase",
     }
-}
+}[Game.GetCurrent()]
+LOADED_AKEVENTS = {}
+
+def find_and_play_akevent(caller:unrealsdk.UObject, eventName: str) -> None:
+    """
+    Finds an AkEvent object if not already stored in LOADED_AKEVENTS, then plays it.
+    """
+    if eventName is not None:
+        event = LOADED_AKEVENTS.get(eventName)
+        if event is None:
+            event = unrealsdk.FindObject("AkEvent", eventName)
+            unrealsdk.KeepAlive(event)
+            LOADED_AKEVENTS[eventName]=event
+        if event is not None:
+            caller.PlayAkEvent(event)
+
 
 def get_trash_value(PC: WillowPlayerController, vendor: WillowVendingMachine) -> int:
     """
@@ -129,7 +145,7 @@ def sell_trash(PC: WillowPlayerController, vendor: WillowVendingMachine) -> None
         vendor: The vendor they're selling at.
     """
     PC.GetPawnInventoryManager().SellAllTrash()
-    PC.pawn.PlayAkEvent(unrealsdk.FindObject("AkEvent", AKE_SELL))
+    find_and_play_akevent(PC.Pawn, AKE_SELL)
 
 
 def iter_ammo_data(
@@ -207,7 +223,7 @@ def refill_ammo(PC: WillowPlayerController, vendor: WillowVendingMachine) -> Non
     """
     for _, _, pool in iter_ammo_data(PC, vendor):
         pool.SetCurrentValue(pool.GetMaxValue())
-    PC.pawn.PlayAkEvent(unrealsdk.FindObject("AkEvent", AKE_BUY))
+    find_and_play_akevent(PC.Pawn, AKE_BUY)
 
 
 def get_heal_cost(PC: WillowPlayerController, vendor: WillowVendingMachine) -> int:
@@ -250,7 +266,7 @@ def do_heal(PC: WillowPlayerController, vendor: WillowVendingMachine) -> None:
         vendor: The vendor they're healing at.
     """
     PC.Pawn.SetHealth(PC.Pawn.GetMaxHealth())
-    PC.pawn.PlayAkEvent(unrealsdk.FindObject("AkEvent", AKE_BUY))
+    find_and_play_akevent(PC.Pawn, AKE_BUY)
 
 
 SHOP_INFO_MAP: Dict[EShopType, ShopInfo] = {  # type: ignore
@@ -405,8 +421,8 @@ class AltUseVendors(SDKMod):
         info.purchase_function(caller, vendor)
 
         # Play the dialogue sound if one is given for this vendor
-        if vendor.InteractiveObjectDefinition.name in AKE_DICT[Game.GetCurrent()]:
-            vendor.PlayAkEvent(unrealsdk.FindObject("AkEvent", AKE_DICT[Game.GetCurrent()][vendor.InteractiveObjectDefinition.name]))
+        dialogEvent = AKE_VOICELINE_BY_VENDOR.get(vendor.InteractiveObjectDefinition.Name)
+        find_and_play_akevent(vendor, dialogEvent)
 
         self.update_vendor_costs(caller, vendor.ShopType)
 
