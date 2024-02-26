@@ -18,7 +18,7 @@ if (VERSION_MAJOR, VERSION_MINOR) < (2, 4):
     # Needed for Hook
     raise ImportError("Alt Use Vendors requires at least Mod Menu version 2.4")
 
-from Mods.ModMenu import EnabledSaveType, Hook, Mods, ModTypes, RegisterMod, SDKMod
+from Mods.ModMenu import EnabledSaveType, Game, Hook, Mods, ModTypes, RegisterMod, SDKMod
 
 try:
     from Mods.Enums import (EChangeStatus, ECurrencyType, EInteractionIcons, ENetRole, EShopType,
@@ -28,6 +28,8 @@ except ImportError:
     webbrowser.open("https://bl-sdk.github.io/requirements/?mod=Alt%20Use%20Vendors&all")
     raise ImportError("Alt Use Vendors requires at least Enums version 1.0")
 
+
+AkEvent: TypeAlias = unrealsdk.UObject
 AmmoResourcePool: TypeAlias = unrealsdk.UObject
 InteractionIconDefinition: TypeAlias = unrealsdk.UObject
 WillowInventory: TypeAlias = unrealsdk.UObject
@@ -73,6 +75,64 @@ AMMO_COUNTS: Dict[str, AmmoInfo] = {
 VIAL_HEAL_PERCENT: float = 0.25
 
 
+# Sound AkEvents for playing
+AKE_BUY: str = "Ake_UI.UI_Vending.Ak_Play_UI_Vending_Buy"
+AKE_SELL: str = "Ake_UI.UI_Vending.Ak_Play_UI_Vending_Sell"
+AKE_INTERACT_BY_VENDOR_NAME: Dict[str, str] = {
+    Game.BL2: {
+        "InteractiveObj_VendingMachine_GrenadesAndAmmo": "Ake_VOCT_Contextual.Ak_Play_VOCT_Marcus_Vending_Munition_Purchase",
+        "InteractiveObj_VendingMachine_HealthItems": "Ake_VOCT_Contextual.Ak_Play_VOCT_Zed_Store_Welcome",
+        "VendingMachine_Weapons_Definition": "Ake_VOCT_Contextual.Ak_Play_VOCT_Marcus_Vending_Munition_Bye",
+        "IO_Aster_VendingMachine_GrenadesAndAmmo": "Ake_Aster_VO.VOCT.Ak_Play_VOCT_Aster_Marcus_Store_Purchase",
+        "IO_Aster_VendingMachine_HealthItems": "Ake_Aster_VO.VOCT.Ak_Play_VOCT_Aster_Zed_Store_Purchase",
+        "VendingMachine_Aster_Weapons_Definition": "Ake_Aster_VO.VOCT.Ak_Play_VOCT_Aster_Marcus_Store_Bye",
+        "VendingMachine_TorgueToken": "Ake_Iris_VO.Ak_Play_Iris_TorgueVendingMachine_Purchase",
+    },
+    Game.TPS: {
+        "InteractiveObj_VendingMachine_GrenadesAndAmmo": "Ake_VOCT_Contextual.Ak_Play_VOCT_Marcus_Vending_Munition_Purchase",
+        "InteractiveObj_VendingMachine_HealthItems": "Ake_Cork_VOCT_Contextuals.Cork_VOCT_NurseNina.Ak_Play_VOCT_Cork_NurseNina_Store_Purchase",
+        "VendingMachine_Weapons_Definition": "Ake_VOCT_Contextual.Ak_Play_VOCT_Marcus_Vending_Munition_Bye",
+        "InteractiveObj_VendingMachine_GrenadesAndAmmo_Marigold": "Ake_VOCT_Contextual.Ak_Play_VOCT_Marcus_Vending_Munition_Purchase",
+        "InteractiveObj_VendingMachine_HealthItems_Marigold": "Ake_Cork_VOCT_Contextuals.Cork_VOCT_NurseNina.Ak_Play_VOCT_Cork_NurseNina_Store_Purchase",
+        "VendingMachine_Weapons_Definition_Marigold": "Ake_VOCT_Contextual.Ak_Play_VOCT_Marcus_Vending_Munition_Bye",
+        "InteractiveObj_VendingMachine_GrenadesAndAmmo_Marigold_BL1": "Ake_VOCT_Contextual.Ak_Play_VOCT_Marcus_Vending_Munition_Purchase",
+        "InteractiveObj_VendingMachine_HealthItems_Marigold_BL1": "Ake_Marigold_VOCT_Contextuals.Dlc_Marigold_VOCT_Zed.Ak_Play_Dlc_Marigold_VOCT_Zed_Vending_Welcome",
+        "VendingMachine_Weapons_Definition_Marigold_BL1": "Ake_VOCT_Contextual.Ak_Play_VOCT_Marcus_Vending_Munition_Bye",
+    },
+    Game.AoDK: {
+        "IO_Aster_VendingMachine_GrenadesAndAmmo": "Ake_Aster_VO.VOCT.Ak_Play_VOCT_Aster_Marcus_Store_Purchase",
+        "IO_Aster_VendingMachine_HealthItems": "Ake_Aster_VO.VOCT.Ak_Play_VOCT_Aster_Zed_Store_Purchase",
+        "VendingMachine_Aster_Weapons_Definition": "Ake_Aster_VO.VOCT.Ak_Play_VOCT_Aster_Marcus_Store_Bye",
+    }
+}[Game.GetCurrent()]
+
+
+# AkEvents are not loaded by default, and we don't want to do an "expensive" find object call, or a
+# truely expensive load package, so we'll just cache them (and keep alive) as we use them
+akevent_cache: Dict[str, AkEvent] = {}
+
+def find_and_play_akevent(PC: WillowPlayerController, event_name: str) -> None:
+    """
+    Attempts to find and play an AkEvent.
+
+    Silently drops it on failure.
+
+    Args:
+        PC: The player controller to play at.
+        event_name: The object name of the event to play.
+    """
+
+    event = akevent_cache.get(event_name)
+    if event is None:
+        event = unrealsdk.FindObject("AkEvent", event_name)
+        if event is None:
+            return
+        unrealsdk.KeepAlive(event)
+        akevent_cache[event_name] = event
+
+    PC.Pawn.PlayAkEvent(event)
+
+
 def get_trash_value(PC: WillowPlayerController, vendor: WillowVendingMachine) -> int:
     """
     Gets the value of selling all trash in the player's inventory.
@@ -99,13 +159,14 @@ def get_trash_value(PC: WillowPlayerController, vendor: WillowVendingMachine) ->
 
 def sell_trash(PC: WillowPlayerController, vendor: WillowVendingMachine) -> None:
     """
-    Sells all trash in the player's inventory, and gives payment
+    Sells all trash in the player's inventory, and gives payment.
 
     Args:
         PC: The player controller whose trash to sell.
         vendor: The vendor they're selling at.
     """
     PC.GetPawnInventoryManager().SellAllTrash()
+    find_and_play_akevent(PC, AKE_SELL)
 
 
 def iter_ammo_data(
@@ -183,6 +244,7 @@ def refill_ammo(PC: WillowPlayerController, vendor: WillowVendingMachine) -> Non
     """
     for _, _, pool in iter_ammo_data(PC, vendor):
         pool.SetCurrentValue(pool.GetMaxValue())
+    find_and_play_akevent(PC, AKE_BUY)
 
 
 def get_heal_cost(PC: WillowPlayerController, vendor: WillowVendingMachine) -> int:
@@ -225,6 +287,7 @@ def do_heal(PC: WillowPlayerController, vendor: WillowVendingMachine) -> None:
         vendor: The vendor they're healing at.
     """
     PC.Pawn.SetHealth(PC.Pawn.GetMaxHealth())
+    find_and_play_akevent(PC, AKE_BUY)
 
 
 SHOP_INFO_MAP: Dict[EShopType, ShopInfo] = {  # type: ignore
@@ -259,7 +322,7 @@ class AltUseVendors(SDKMod):
     Description: str = (
         "Adds alt use binds to vendors, like in BL3/Wonderlands."
     )
-    Version: str = "2.1"
+    Version: str = "2.2"
 
     Types: ModTypes = ModTypes.Utility
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
@@ -377,6 +440,13 @@ class AltUseVendors(SDKMod):
             caller.SetPendingTransactionStatus(ETransactionStatus.TS_TransactionComplete)
 
         info.purchase_function(caller, vendor)
+
+        vendor_name = vendor.InteractiveObjectDefinition.Name
+        interact_event = AKE_INTERACT_BY_VENDOR_NAME.get(vendor_name)
+        if interact_event is None:
+            unrealsdk.Log(f"[Alt Use Vendors] Couldn't find interact voice line for {vendor_name}")
+        else:
+            find_and_play_akevent(caller, interact_event)
 
         self.update_vendor_costs(caller, vendor.ShopType)
 
