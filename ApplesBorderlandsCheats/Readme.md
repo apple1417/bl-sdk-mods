@@ -1,5 +1,8 @@
 ## Changelog
 
+### Apple's Borderlands Cheats v1.13
+Fixed `One Shot Mode` not getting loaded properly.
+
 ### Apple's Borderlands Cheats v1.12
 Fixed `Infinite Ammo` not applying to offhand weapons.
 

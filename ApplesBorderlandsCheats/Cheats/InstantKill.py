@@ -11,6 +11,7 @@ class OneShot(ABCToggleableCheat):
     KeybindName = "Toggle One Shot Mode"
 
     def __init__(self) -> None:
+        super().__init__()
         self.CheatOptions = [Options.Hidden("Disable One Shot Mode in TPS", StartingValue=False)]
 
     def GetHooks(self) -> Dict[str, SDKHook]:
