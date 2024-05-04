@@ -44,7 +44,7 @@ class ApplesBorderlandsCheats(SDKMod):
     Description: str = (
         "Adds keybinds performing various cheaty things"
     )
-    Version: str = "1.12"
+    Version: str = "1.13"
 
     Types: ModTypes = ModTypes.Utility
     SaveEnabledState: EnabledSaveType = EnabledSaveType.LoadWithSettings
