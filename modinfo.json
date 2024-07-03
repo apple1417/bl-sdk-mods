@@ -343,28 +343,6 @@
       "requirements": {}
     },
     {
-      "name": "Side Mission Randomizer",
-      "description": [
-        "Ever felt it was too easy to unlock all your favourite side missions? This mod randomizes",
-        " their progression order (it doesn't affect what's in the missions). Turns the lovely",
-        " (mostly) linear progression graph into a spaghetti nightmare.\n",
-        "\n",
-        "This mod will create other mods in the sdk mod menu for each seed you generate, only one",
-        " of which can be active at a time. If you want to share a seed with friends, select the",
-        " main mod, open the settings file, and copy paste it over into their settings file.\n",
-        "\n",
-        "If you want to spoil yourself you can also generate a dump of the exact mission",
-        " progression."
-      ],
-      "tagline": "Randomizes the Side Mission progression order.",
-      "types": ["Gameplay"],
-      "latest": "1.4",
-      "versions": {
-        "1.4": "https://github.com/apple1417/bl-sdk-mods/raw/master/SideMissionRandomizer/SideMissionRandomizer.zip"
-      },
-      "requirements": {}
-    },
-    {
       "name": "Spawn Multiplier",
       "description": [
         "Adds an option to let you easily multiply the amount of spawns you're getting. Updates",
