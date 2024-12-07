@@ -13,4 +13,4 @@ Also remove the small MoTD DLC ads (thanks to mopioid).
 Updated for SDK versions 0.7.4-0.7.6.
 
 ### No BL3 Ads v1.0
-Inital Release.
+Initial Release.

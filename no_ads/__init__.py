@@ -5,9 +5,8 @@ if True:
 
 from typing import Any
 
-from unrealsdk.hooks import Block
-
 from mods_base import build_mod, hook
+from unrealsdk.hooks import Block
 
 __version__: str
 __version_info__: tuple[int, ...]
