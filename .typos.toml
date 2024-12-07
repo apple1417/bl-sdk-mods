@@ -4,13 +4,37 @@ extend-exclude = [
     "minhook",
     "pybind11",
     "LICENSE",
-    ".typos.toml"
+    ".typos.toml",
+
+    "AltUseVendors",
+    "ApplesBorderlandsCheats",
+    "CommandExtensions",
+    "EnemyLevelRandomizer",
+    "Enums",
+    "EquipLocker",
+    "HideUndiscoveredMissions",
+    "ItemLevelUncapper",
+    "Mario",
+    "OHKO",
+    "OfflineHelpers",
+    "Onezerker",
+    "PythonPartNotifier",
+    "RoundsPerMinute",
+    "SanitySaver",
+    "ScalingAdjuster",
+    "SpawnMultiplier",
+    "Structs",
+    "TextModLoader",
+    "TrueDamageLogger",
+    "UserFeedback",
 ]
 
 [default]
 extend-ignore-re = [
     # Ignore markdown links to github commits/trees
     "\\[[0-9a-fA-F]+?\\]\\(https://github.com/.+?/.+?/(commit|tree)/.+?\\)",
+    # Ignore this specific hook string, which gearbox typo'd
+    "\"WillowGame\\.WillowPlayerController:CanAcessOakUpsell\""
 ]
 
 [default.extend-identifiers]

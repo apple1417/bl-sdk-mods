@@ -223,7 +223,7 @@ jobs:
     - name: Run clang-format
       run: |
         $all_files=$(Get-ChildItem                                                  `
-                      $(Get-ChildItem . -Directory -Exclude ".*")                   `
+                      $(Get-ChildItem . -Directory -Exclude ".*",CommandExtensions,TextModLoader) `
                       -File                                                         `
                       -Recurse                                                      `
                       -Include ("*.c", "*.cpp", "*.h", "*.hpp")                     `
@@ -278,7 +278,7 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' && github.repository == 'apple1417/oak-sdk-mods'
+    if: github.ref == 'refs/heads/master' && github.repository == 'apple1417/willow2-sdk-mods'
 
     needs:
       - build-ubuntu
