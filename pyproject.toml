@@ -3,6 +3,11 @@ pythonVersion = "3.13"
 typeCheckingMode = "strict"
 pythonPlatform = "Windows"
 
+extraPaths = [
+    ".willow2-mod-manager/src",
+    ".willow2-mod-manager/libs/pyunrealsdk/stubs",
+]
+
 exclude = [
     "**/__pycache__",
     "**/.*",
