@@ -1,5 +1,8 @@
 ## Changelog
 
+### No Ads v2
+Upgraded to v3 sdk.
+
 ### No Ads v1.3
 Updated to use some of the new features from SDK version 0.7.8.
 
