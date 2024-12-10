@@ -1,6 +1,6 @@
 ---
 WarningsAsErrors:    ""
-HeaderFilterRegex:   "src/*.h"
+HeaderFilterRegex:   "\\[^.].*\\.h"
 Checks: >
     -*,
     bugprone-*

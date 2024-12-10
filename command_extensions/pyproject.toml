@@ -1,0 +1,16 @@
+[project]
+name = "command_extensions"
+version = "2"
+authors = [{ name = "apple1417" }]
+description = """\
+Adds a few new console commands, and provides functionality for other mods to do the same.
+"""
+
+[project.urls]
+Changelog = "https://github.com/apple1417/willow2-sdk-mods/blob/master/command_extensions/Readme.md"
+
+[tool.sdkmod]
+name = "Command Extensions"
+license = {name = "GPL3", url = "https://choosealicense.com/licenses/gpl-3.0/" }
+coop_support = "ClientSide"
+download = "https://github.com/apple1417/willow2-sdk-mods/releases/download/nightly/command_extensions.sdkmod"

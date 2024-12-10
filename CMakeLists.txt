@@ -5,6 +5,8 @@ project(willow2_sdk_mods)
 add_subdirectory(.willow2-mod-manager EXCLUDE_FROM_ALL)
 set_target_properties(pluginloader_no_proxy PROPERTIES EXCLUDE_FROM_ALL true)
 
+add_subdirectory(.libs/pugixml EXCLUDE_FROM_ALL)
+
 file(GLOB_RECURSE subfolders RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*/CMakeLists.txt")
 foreach(cmakelists ${subfolders})
     if (${cmakelists} MATCHES "^\\.")

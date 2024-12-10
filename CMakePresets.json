@@ -7,12 +7,12 @@
       "binaryDir": "${sourceDir}/.out/build/${presetName}",
       "installDir": "${sourceDir}/.out/install/${presetName}",
       "architecture": {
-        "value": "x64",
+        "value": "Win32",
         "strategy": "external"
       }
     },
     {
-      "name": "_clang_x64",
+      "name": "_clang_x86",
       "hidden": true,
       "condition": {
         "type": "equals",
@@ -20,37 +20,37 @@
         "rhs": ""
       },
       "generator": "Ninja",
-      "toolchainFile": ".willow2-mod-manager/libs/pyunrealsdk/common_cmake/clang-x64.cmake"
+      "toolchainFile": ".willow2-mod-manager/libs/pyunrealsdk/common_cmake/clang-x86.cmake"
     },
     {
-      "name": "_clang_cross_x64",
+      "name": "_clang_cross_x86",
       "hidden": true,
       "condition": {
         "type": "notEquals",
         "lhs": "${hostSystemName}",
         "rhs": "Windows"
       },
-      "toolchainFile": ".willow2-mod-manager/libs/pyunrealsdk/common_cmake/clang-cross-x64.cmake"
+      "toolchainFile": ".willow2-mod-manager/libs/pyunrealsdk/common_cmake/clang-cross-x86.cmake"
     },
     {
-      "name": "_mingw_x64",
+      "name": "_mingw_x86",
       "hidden": true,
       "condition": {
         "type": "notEquals",
         "lhs": "${hostSystemName}",
         "rhs": "Windows"
       },
-      "toolchainFile": ".willow2-mod-manager/libs/pyunrealsdk/common_cmake/x86_64-w64-mingw32.cmake"
+      "toolchainFile": ".willow2-mod-manager/libs/pyunrealsdk/common_cmake/i686-w64-mingw32.cmake"
     },
     {
-      "name": "_llvm_mingw_x64",
+      "name": "_llvm_mingw_x86",
       "hidden": true,
       "condition": {
         "type": "notEquals",
         "lhs": "${hostSystemName}",
         "rhs": "Windows"
       },
-      "toolchainFile": ".willow2-mod-manager/libs/pyunrealsdk/common_cmake/llvm-x86_64-w64-mingw32.cmake"
+      "toolchainFile": ".willow2-mod-manager/libs/pyunrealsdk/common_cmake/llvm-i686-w64-mingw32.cmake"
     },
     {
       "name": "_msvc",
@@ -84,7 +84,7 @@
       "name": "clang-debug",
       "inherits": [
         "_base",
-        "_clang_x64",
+        "_clang_x86",
         "_debug"
       ]
     },
@@ -92,7 +92,7 @@
       "name": "clang-release",
       "inherits": [
         "_base",
-        "_clang_x64",
+        "_clang_x86",
         "_release"
       ]
     },
@@ -100,7 +100,7 @@
       "name": "clang-cross-debug",
       "inherits": [
         "_base",
-        "_clang_cross_x64",
+        "_clang_cross_x86",
         "_debug"
       ]
     },
@@ -108,7 +108,7 @@
       "name": "clang-cross-release",
       "inherits": [
         "_base",
-        "_clang_cross_x64",
+        "_clang_cross_x86",
         "_release"
       ]
     },
@@ -116,7 +116,7 @@
       "name": "mingw-debug",
       "inherits": [
         "_base",
-        "_mingw_x64",
+        "_mingw_x86",
         "_debug"
       ]
     },
@@ -124,7 +124,7 @@
       "name": "mingw-release",
       "inherits": [
         "_base",
-        "_mingw_x64",
+        "_mingw_x86",
         "_release"
       ]
     },
@@ -132,7 +132,7 @@
       "name": "llvm-mingw-debug",
       "inherits": [
         "_base",
-        "_llvm_mingw_x64",
+        "_llvm_mingw_x86",
         "_debug"
       ]
     },
@@ -140,7 +140,7 @@
       "name": "llvm-mingw-release",
       "inherits": [
         "_base",
-        "_llvm_mingw_x64",
+        "_llvm_mingw_x86",
         "_release"
       ]
     },
