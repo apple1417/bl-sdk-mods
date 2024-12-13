@@ -15,6 +15,15 @@
 
 #ifdef __cplusplus
 
+#include <algorithm>
+#include <cctype>
+#include <iterator>
+#include <string>
+#include <string_view>
+#include <unordered_set>
+#include <utility>
+#include <vector>
+
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/stl/filesystem.h>
@@ -23,7 +32,7 @@
 namespace py = pybind11;
 using namespace pybind11::literals;
 
-#include <string>
+#include <pugixml.hpp>
 
 #endif
 
