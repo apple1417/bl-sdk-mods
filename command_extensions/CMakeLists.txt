@@ -1,7 +1,5 @@
-pyunrealsdk_add_module(file_parser
-    file_parser/main.cpp
-    file_parser/blcmm_preprocessor/blcmm.cpp
-)
+file(GLOB_RECURSE sources CONFIGURE_DEPENDS "file_parser/*.cpp" "file_parser/*.h")
+pyunrealsdk_add_module(file_parser ${sources})
 
 # Slight hack: we don't actually rely on pyunrealsdk, but using it's helper function sets up
 # everything for us, so just redefine the link libraries here to not rely on it

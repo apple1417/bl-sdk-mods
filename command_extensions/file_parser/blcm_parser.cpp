@@ -55,7 +55,7 @@ struct CommandBlock {
 
         this->cached_commands.clear();
         this->any_enabled = false;
-        this->any_disabled = true;
+        this->any_disabled = false;
     }
 
     /**
@@ -129,23 +129,21 @@ struct CommandBlock {
     /**
      * @brief Handles encountering a custom command.
      *
-     * @param match The matched command.
+     * @param cmd The command which was matched.
+     * @param line The full line which was matched.
+     * @param match The match object.
      */
-    void handle_standard_command(CommandMatch&& match) {
-        if (!match) {
-            return;
-        }
-
+    void handle_standard_command(std::string_view cmd,
+                                 std::string_view line,
+                                 CommandMatch&& match) {
         static const constexpr CaseInsensitiveStringView enable_on = "CE_EnableOn";
-        if (match.cmd == enable_on) {
-            auto new_strategy = match.cmd.substr(match.cmd_len);
-
-            this->update_enable_strategy(new_strategy);
+        if (cmd == enable_on) {
+            this->update_enable_strategy(line.substr(match.cmd_len));
             return;
         }
         static const constexpr CaseInsensitiveStringView new_cmd = "CE_NewCmd";
-        if (match.cmd == new_cmd) {
-            add_new_command(match.cmd.substr(match.cmd_len));
+        if (cmd == new_cmd) {
+            add_new_command(line.substr(match.cmd_len));
             return;
         }
 
@@ -153,10 +151,11 @@ struct CommandBlock {
             case EnableStrategy::ALL:
             case EnableStrategy::ANY:
             case EnableStrategy::NEXT:
-                this->cached_commands.push_back(match);
+                this->cached_commands.emplace_back(std::move(match));
+                break;
 
             case EnableStrategy::FORCE:
-                this->output.push_back(match);
+                this->output.emplace_back(std::move(match));
                 break;
         }
     }
@@ -186,7 +185,11 @@ void handle_category(const pugi::xml_node& category,
 
         static const constexpr CaseInsensitiveStringView comment = "comment";
         if (child_name == comment) {
-            block.handle_standard_command(CommandMatch(child.child_value()));
+            std::string_view line = child.child_value();
+            auto [cmd, match] = try_match_command(line);
+            if (!cmd.empty()) {
+                block.handle_standard_command(cmd, line, std::move(match));
+            }
             return;
         }
 

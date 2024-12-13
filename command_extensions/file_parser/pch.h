@@ -1,6 +1,12 @@
 #ifndef FILE_PARSER_PCH_H
 #define FILE_PARSER_PCH_H
 
+#ifdef _WIN32
+#include <winerror.h>
+#else
+#include <errno.h>
+#endif
+
 #ifdef __clang__
 // Python, detecting `_MSC_VER`, tries to use `__int64`, which is an MSVC extension
 #pragma clang diagnostic push
@@ -17,6 +23,8 @@
 
 #include <algorithm>
 #include <cctype>
+#include <filesystem>
+#include <fstream>
 #include <iterator>
 #include <string>
 #include <string_view>

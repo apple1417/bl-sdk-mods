@@ -13,6 +13,8 @@ struct CaseInsensitiveTraits : public std::char_traits<char> {
 };
 struct CaseInsensitiveString : public std::basic_string<char, CaseInsensitiveTraits> {
     using std::basic_string<char, CaseInsensitiveTraits>::basic_string;
+
+    CaseInsensitiveString(std::string_view str);
 };
 struct CaseInsensitiveStringView : public std::basic_string_view<char, CaseInsensitiveTraits> {
     using std::basic_string_view<char, CaseInsensitiveTraits>::basic_string_view;
@@ -26,7 +28,7 @@ struct CaseInsensitiveStringView : public std::basic_string_view<char, CaseInsen
  *
  * @param commands The set of commands to match.
  */
-void update_commands(std::vector<CaseInsensitiveString>& commands);
+void update_commands(const std::vector<std::string_view>& commands);
 
 /**
  * @brief Adds an individual new command to the list.
@@ -36,25 +38,18 @@ void update_commands(std::vector<CaseInsensitiveString>& commands);
 void add_new_command(CaseInsensitiveStringView cmd);
 
 struct CommandMatch {
-    std::string_view cmd;
     py::object py_cmd;
     py::object line;
     Py_ssize_t cmd_len;
-
-    /**
-     * @brief Attempts to match a line to a command.
-     *
-     * @param line The line to match.
-     */
-    CommandMatch(std::string_view line);
-
-    /**
-     * @brief Checks if this match was successful.
-     *
-     * @return True on successful match.
-     */
-    operator bool() const;
 };
+
+/**
+ * @brief Attempts to match a line to a command.
+ *
+ * @param line The line to match.
+ * @return The command string and a match object. On error, leaves the command string empty.
+ */
+std::pair<std::string_view, CommandMatch> try_match_command(std::string_view line);
 
 }  // namespace ce
 

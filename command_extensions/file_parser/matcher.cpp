@@ -25,6 +25,9 @@ int CaseInsensitiveTraits::compare(const char* chr_a, const char* chr_b, size_t 
     return 0;
 }
 
+CaseInsensitiveString::CaseInsensitiveString(std::string_view str)
+    : CaseInsensitiveString(str.data(), str.size()) {}
+
 CaseInsensitiveStringView::CaseInsensitiveStringView(std::string_view str)
     : CaseInsensitiveStringView(str.data(), str.size()) {}
 
@@ -46,8 +49,13 @@ std::vector<CaseInsensitiveString> sorted_commands;
 
 }  // namespace
 
-void update_commands(std::vector<CaseInsensitiveString>& commands) {
-    sorted_commands = std::move(commands);
+void update_commands(const std::vector<std::string_view>& commands) {
+    sorted_commands.clear();
+    sorted_commands.reserve(commands.size());
+
+    std::transform(commands.begin(), commands.end(), std::back_inserter(sorted_commands),
+                   [](auto cmd) { return CaseInsensitiveString{cmd}; });
+
     std::sort(sorted_commands.begin(), sorted_commands.end());
 }
 
@@ -76,37 +84,36 @@ void add_new_command(CaseInsensitiveStringView cmd) {
 
 #pragma endregion
 
-#pragma region Command Matching
-
-CommandMatch::CommandMatch(std::string_view line) : cmd_len(0) {
+std::pair<std::string_view, CommandMatch> try_match_command(std::string_view line) {
     auto non_space =
         std::find_if_not(line.begin(), line.end(), [](auto chr) { return std::isspace(chr); });
     if (non_space == line.end()) {
-        return;
+        return {};
     }
 
     auto cmd_end = std::find_if(non_space, line.end(), [](auto chr) { return std::isspace(chr); });
     if (cmd_end == line.end()) {
-        return;
+        return {};
     }
 
-    CaseInsensitiveStringView cmd{non_space, cmd_end};
-    if (!std::binary_search(sorted_commands.begin(), sorted_commands.end(), cmd)) {
-        return;
+    if (!std::binary_search(sorted_commands.begin(), sorted_commands.end(),
+                            CaseInsensitiveStringView{non_space, cmd_end})) {
+        return {};
     }
 
-    this->cmd = {non_space, cmd_end};
-    this->py_cmd = py::reinterpret_steal<py::object>(
-        PyUnicode_DecodeLocaleAndSize(cmd.data(), (Py_ssize_t)cmd.size(), nullptr));
-    this->line = py::reinterpret_steal<py::object>(
-        PyUnicode_DecodeLocaleAndSize(line.data(), (Py_ssize_t)line.size(), nullptr));
-    this->cmd_len = cmd_end - line.begin();
-}
+    // We want to use these Python conversion functions since they automatically handle the locale
+    // for us (using the system one like blcmm does)
+    // Unfortunately Python requires a null terminator :/
+    std::string cmd_str{non_space, cmd_end};
+    std::string line_str{line};
 
-CommandMatch::operator bool() const {
-    return (bool)this->py_cmd;
-}
+    CommandMatch match{py::reinterpret_steal<py::object>(PyUnicode_DecodeLocaleAndSize(
+                           cmd_str.data(), (Py_ssize_t)cmd_str.size(), nullptr)),
+                       py::reinterpret_steal<py::object>(PyUnicode_DecodeLocaleAndSize(
+                           line_str.data(), (Py_ssize_t)line_str.size(), nullptr)),
+                       cmd_end - line.begin()};
 
-#pragma endregion
+    return std::make_pair(std::string_view{non_space, cmd_end}, match);
+}
 
 }  // namespace ce

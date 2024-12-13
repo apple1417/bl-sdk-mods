@@ -8,14 +8,14 @@ std::vector<CommandMatch> parse_file_line_by_line(std::istream& stream) {
 
     std::string line;
     while (std::getline(stream, line)) {
-        auto match = CommandMatch(line);
-        if (!match) {
+        auto [cmd, match] = try_match_command(line);
+        if (cmd.empty()) {
             continue;
         }
 
         static const constexpr CaseInsensitiveStringView new_cmd = "CE_NewCmd";
-        if (match.cmd == new_cmd) {
-            add_new_command(match.cmd.substr(match.cmd_len));
+        if (cmd == new_cmd) {
+            add_new_command(std::string_view{line}.substr(match.cmd_len));
             continue;
         }
 
