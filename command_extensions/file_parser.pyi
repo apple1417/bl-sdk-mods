@@ -19,14 +19,14 @@ class EnableStrategy:
 
 class BLCMParserError(RuntimeError): ...
 
-def parse(filename: PathLike[str]) -> list[tuple[str, str, int]]:
+def parse(file_path: PathLike[str]) -> list[tuple[str, str, int]]:
     """
     Parses custom commands out of mod file.
 
     Must have called update_commands() first, otherwise this won't match anything.
 
     Args:
-        filename: The file to parse.
+        file_path: The file to parse.
     Returns:
         A list of 3-tuples, of the raw command name, the full line, and the command length.
     """

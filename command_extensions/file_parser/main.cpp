@@ -29,12 +29,12 @@ PYBIND11_MODULE(file_parser, mod) {
 
     mod.def(
         "parse",
-        [](const std::filesystem::path& filename) {
-            if (!std::filesystem::exists(filename)) {
-                throw file_not_found(filename);
+        [](const std::filesystem::path& file_path) {
+            if (!std::filesystem::exists(file_path)) {
+                throw file_not_found(file_path);
             }
 
-            std::ifstream file{filename};
+            std::ifstream file{file_path};
 
             std::string line;
             std::getline(file, line);
@@ -60,10 +60,10 @@ PYBIND11_MODULE(file_parser, mod) {
         "Must have called update_commands() first, otherwise this won't match anything.\n"
         "\n"
         "Args:\n"
-        "    filename: The file to parse.\n"
+        "    file_path: The file to parse.\n"
         "Returns:\n"
         "    A list of 3-tuples, of the raw command name, the full line, and the command length.",
-        "filename"_a);
+        "file_path"_a);
 
     mod.def("update_commands", update_commands,
             "Updates the commands which are matched by parse().\n"
