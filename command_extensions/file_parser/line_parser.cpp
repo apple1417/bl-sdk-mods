@@ -13,6 +13,11 @@ std::vector<CommandMatch> parse_file_line_by_line(std::istream& stream) {
             continue;
         }
 
+        static const constexpr CaseInsensitiveStringView enable_on = "CE_EnableOn";
+        if (cmd == enable_on) {
+            // Nothing to do in the line-based parser, but we should not return this command back
+            continue;
+        }
         static const constexpr CaseInsensitiveStringView new_cmd = "CE_NewCmd";
         if (cmd == new_cmd) {
             add_new_command(std::string_view{line}.substr(match.cmd_len));

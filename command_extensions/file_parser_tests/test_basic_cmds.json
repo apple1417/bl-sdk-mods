@@ -1,0 +1,27 @@
+{
+    "commands": [
+        "clone"
+    ],
+    "output": [
+        [
+            "clone",
+            "clone a",
+            5
+        ],
+        [
+            "clone",
+            "clone\tb",
+            5
+        ],
+        [
+            "clone",
+            "  clone    c d e  ",
+            7
+        ],
+        [
+            "clone",
+            "clone",
+            5
+        ]
+    ]
+}

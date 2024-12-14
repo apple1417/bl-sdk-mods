@@ -1,0 +1,28 @@
+{
+    "commands": [
+        "CE_NewCmd",
+        "old_cmd"
+    ],
+    "output": [
+        [
+            "old_cmd",
+            "old_cmd 1",
+            7
+        ],
+        [
+            "new_CMD",
+            "new_CMD 3",
+            7
+        ],
+        [
+            "old_cmd",
+            "old_cmd 7",
+            7
+        ],
+        [
+            "newer_cmd",
+            "newer_cmd 8",
+            9
+        ]
+    ]
+}

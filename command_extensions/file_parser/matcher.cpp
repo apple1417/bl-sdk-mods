@@ -68,10 +68,10 @@ void add_new_command(CaseInsensitiveStringView cmd) {
     auto cmd_name_end =
         std::find_if(non_space, cmd.end(), [](auto chr) { return std::isspace(chr); });
     if (cmd_name_end != cmd.end()) {
-        // Make sure there are no extra spaces
-        auto next_space =
-            std::find_if(cmd_name_end, cmd.end(), [](auto chr) { return std::isspace(chr); });
-        if (next_space != cmd.end()) {
+        // Make sure there are no extra characters after this
+        auto next_char =
+            std::find_if_not(cmd_name_end, cmd.end(), [](auto chr) { return std::isspace(chr); });
+        if (next_char != cmd.end()) {
             // Give up
             return;
         }
@@ -79,7 +79,8 @@ void add_new_command(CaseInsensitiveStringView cmd) {
 
     CaseInsensitiveString cmd_name{non_space, cmd_name_end};
     sorted_commands.insert(
-        std::lower_bound(sorted_commands.begin(), sorted_commands.end(), cmd_name), cmd_name);
+        std::lower_bound(sorted_commands.begin(), sorted_commands.end(), cmd_name),
+        std::move(cmd_name));
 }
 
 #pragma endregion
@@ -92,9 +93,6 @@ std::pair<std::string_view, CommandMatch> try_match_command(std::string_view lin
     }
 
     auto cmd_end = std::find_if(non_space, line.end(), [](auto chr) { return std::isspace(chr); });
-    if (cmd_end == line.end()) {
-        return {};
-    }
 
     if (!std::binary_search(sorted_commands.begin(), sorted_commands.end(),
                             CaseInsensitiveStringView{non_space, cmd_end})) {

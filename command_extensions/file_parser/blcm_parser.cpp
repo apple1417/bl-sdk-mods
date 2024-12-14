@@ -165,21 +165,21 @@ struct CommandBlock {
  * @brief Recusively look through BLCMM categories and extract all enabled commands within them.
  *
  * @param category The XML category to look through.
- * @param strategy The current enable strategy.
+ * @param input_strategy The current enable strategy.
  * @param output The list of commands to output to.
  * @param profile The file's selected profile.
  * @param cmd_names The set of valid command names.
  */
 void handle_category(const pugi::xml_node& category,
-                     EnableStrategy strategy,
+                     EnableStrategy input_strategy,
                      std::vector<CommandMatch>& output,
                      std::string_view profile) {
-    CommandBlock block{output, strategy};
+    CommandBlock block{output, input_strategy};
 
     auto handle_child_element = [&](std::string_view child_name, const pugi::xml_node& child) {
         static const constexpr CaseInsensitiveStringView category = "category";
         if (child_name == category) {
-            handle_category(child, strategy, output, profile);
+            handle_category(child, block.strategy, output, profile);
             return;
         }
 

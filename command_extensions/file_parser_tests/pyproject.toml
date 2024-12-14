@@ -1,0 +1,2 @@
+# This file only exits to prevent pytest's test discovery trying to recurse up a level, and failing
+# to import command extensions proper

@@ -18,7 +18,7 @@ pybind11::error_already_set file_not_found(const std::filesystem::path& filename
 }
 
 PYBIND11_MODULE(file_parser, mod) {
-    py::register_exception<blcm_preprocessor::ParserError>(mod, "BLCMMParserError",
+    py::register_exception<blcm_preprocessor::ParserError>(mod, "BLCMParserError",
                                                            PyExc_RuntimeError);
 
     py::enum_<EnableStrategy>(mod, "EnableStrategy")

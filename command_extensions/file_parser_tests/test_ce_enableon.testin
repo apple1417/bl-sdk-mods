@@ -1,0 +1,3 @@
+set a b c
+CE_EnableOn Force
+clone x y

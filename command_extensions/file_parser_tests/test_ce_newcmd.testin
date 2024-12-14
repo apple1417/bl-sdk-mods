@@ -1,0 +1,10 @@
+old_cmd 1
+new_cmd 2
+ce_newcmd new_cmd
+new_CMD 3
+newer_cmd 4
+    CE_NewCmd    newer_cmd 5
+newer_cmd 6
+old_cmd 7
+CE_NewCmd newer_cmd
+newer_cmd 8

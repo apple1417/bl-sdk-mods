@@ -27,6 +27,7 @@ __pycache__
 
 
 *.pyd
+*.so
 *.sdkmod
 *.zip
 SanitySaver/Saves

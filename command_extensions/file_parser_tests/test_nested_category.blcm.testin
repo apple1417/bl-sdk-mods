@@ -1,0 +1,50 @@
+<BLCMM v="1">
+#<!!!You opened a file saved with BLCMM in FilterTool. Please update to BLCMM to properly open this file!!!>
+	<head>
+		<type name="BL2" offline="true"/>
+		<profiles>
+			<profile name="default" current="true"/>
+		</profiles>
+	</head>
+	<body>
+		<category name="root">
+			<category name="outer doesn't go in">
+				<comment>clone a</comment>
+				<code profiles="default">set x y z</code>
+				<category name="inner">
+					<comment>clone b</comment>
+					<code profiles="">set x y z</code>
+				</category>
+			</category>
+			<category name="inner doesn't go out">
+				<comment>clone c</comment>
+				<code profiles="">set x y z</code>
+				<category name="inner">
+					<comment>clone d</comment>
+					<code profiles="default">set x y z</code>
+				</category>
+			</category>
+			<category name="enableon goes inward">
+				<comment>CE_EnableOn Force</comment>
+				<comment>clone e</comment>
+				<category name="inner">
+					<comment>clone f</comment>
+				</category>
+				<comment>clone g</comment>
+			</category>
+			<category name="enableon doesn't go out">
+				<comment>clone h</comment>
+				<category name="inner">
+					<comment>CE_EnableOn Force</comment>
+					<comment>clone i</comment>
+				</category>
+				<comment>clone j</comment>
+			</category>
+		</category>
+	</body>
+</BLCMM>
+
+#Commands:
+set x y z
+set x y z
+

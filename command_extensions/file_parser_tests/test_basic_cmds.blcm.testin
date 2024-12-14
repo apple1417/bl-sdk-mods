@@ -1,0 +1,29 @@
+<BLCMM v="1">
+#<!!!You opened a file saved with BLCMM in FilterTool. Please update to BLCMM to properly open this file!!!>
+	<head>
+		<type name="BL2" offline="true"/>
+		<profiles>
+			<profile name="default" current="true"/>
+		</profiles>
+	</head>
+	<body>
+		<category name="root">
+			<category name="enabled">
+				<comment>clone a    </comment>
+				<comment>  clone b</comment>
+				<comment>say 123</comment>
+				<code profiles="default">set x y z</code>
+				<comment>CLONE w </comment>
+			</category>
+			<category name="disabled">
+				<code profiles="">set a b c</code>
+				<comment>clone x</comment>
+			</category>
+		</category>
+	</body>
+</BLCMM>
+
+#Commands:
+say 123
+set x y z
+

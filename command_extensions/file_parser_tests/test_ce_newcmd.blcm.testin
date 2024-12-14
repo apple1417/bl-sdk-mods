@@ -1,0 +1,28 @@
+<BLCMM v="1">
+#<!!!You opened a file saved with BLCMM in FilterTool. Please update to BLCMM to properly open this file!!!>
+	<head>
+		<type name="BL2" offline="true"/>
+		<profiles>
+			<profile name="default" current="true"/>
+		</profiles>
+	</head>
+	<body>
+		<category name="root">
+			<comment>old_cmd 1</comment>
+			<comment>new_cmd 2</comment>
+			<comment>ce_newcmd new_cmd</comment>
+			<comment>new_CMD 3</comment>
+			<comment>newer_cmd 4</comment>
+			<comment>    CE_NewCmd    newer_cmd 5</comment>
+			<comment>newer_cmd 6</comment>
+			<comment>old_cmd 7</comment>
+			<comment>CE_NewCmd newer_cmd</comment>
+			<comment>newer_cmd 8</comment>
+			<code profiles="default">set a b c</code>
+		</category>
+	</body>
+</BLCMM>
+
+#Commands:
+set a b c
+

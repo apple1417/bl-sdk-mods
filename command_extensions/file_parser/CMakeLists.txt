@@ -1,5 +1,5 @@
-if(0)
-# This CMakeLists can be used to compile the parser as a linux native module - useful for debugging
+if(DEFINED CE_FILE_PARSER_NATIVE_LINUX)
+# This CMakeLists can be used to compile the parser as a linux native module - for tests/debugging
 
 cmake_minimum_required(VERSION 3.24)
 project(file_parser)
@@ -23,11 +23,12 @@ set_target_properties(file_parser PROPERTIES
 
 target_compile_definitions(file_parser PUBLIC PYBIND11_DETAILED_ERROR_MESSAGES=1)
 
+cmake_path(GET CMAKE_CURRENT_SOURCE_DIR PARENT_PATH install_dir)
 install(
     TARGETS
         file_parser
     DESTINATION
-        ${CMAKE_CURRENT_SOURCE_DIR}
+        "${install_dir}"
 )
 
 endif()

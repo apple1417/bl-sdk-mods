@@ -1,0 +1,38 @@
+{
+    "commands": [
+        "CE_EnableOn",
+        "clone"
+    ],
+    "output": [
+        [
+            "clone",
+            "clone a",
+            5
+        ],
+        [
+            "clone",
+            "clone d",
+            5
+        ],
+        [
+            "clone",
+            "clone e",
+            5
+        ],
+        [
+            "clone",
+            "clone f",
+            5
+        ],
+        [
+            "clone",
+            "clone g",
+            5
+        ],
+        [
+            "clone",
+            "clone i",
+            5
+        ]
+    ]
+}

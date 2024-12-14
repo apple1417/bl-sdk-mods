@@ -1,0 +1,6 @@
+clone a
+clone	b
+  clone    c d e  
+# clone
+set clone
+clone

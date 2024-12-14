@@ -1,0 +1,87 @@
+<BLCMM v="1">
+#<!!!You opened a file saved with BLCMM in FilterTool. Please update to BLCMM to properly open this file!!!>
+	<head>
+		<type name="BL2" offline="true"/>
+		<profiles>
+			<profile name="default" current="true"/>
+		</profiles>
+	</head>
+	<body>
+		<category name="root">
+			<category name="all">
+				<category name="1">
+					<comment>CE_EnableOn All</comment>
+					<comment>clone 1</comment>
+					<code profiles="default">set a b c</code>
+					<code profiles="default">set d e f</code>
+				</category>
+				<category name="2">
+					<comment>CE_EnableOn All</comment>
+					<comment>clone 2</comment>
+					<code profiles="default">set a b c</code>
+					<code profiles="">set d e f</code>
+				</category>
+				<category name="3">
+					<comment>CE_EnableOn All</comment>
+					<comment>clone 3</comment>
+					<code profiles="">set a b c</code>
+					<code profiles="">set d e f</code>
+				</category>
+			</category>
+			<category name="any">
+				<category name="1">
+					<comment>CE_EnableOn Any</comment>
+					<comment>clone 4</comment>
+					<code profiles="default">set a b c</code>
+					<code profiles="default">set d e f</code>
+				</category>
+				<category name="2">
+					<comment>CE_EnableOn Any</comment>
+					<comment>clone 5</comment>
+					<code profiles="default">set a b c</code>
+					<code profiles="">set d e f</code>
+				</category>
+				<category name="3">
+					<comment>CE_EnableOn Any</comment>
+					<comment>clone 6</comment>
+					<code profiles="">set a b c</code>
+					<code profiles="">set d e f</code>
+				</category>
+			</category>
+			<category name="force">
+				<category name="1">
+					<comment>CE_EnableOn Force</comment>
+					<comment>clone 7</comment>
+					<code profiles="default">set a b c</code>
+				</category>
+				<category name="2">
+					<comment>CE_EnableOn Force</comment>
+					<comment>clone 8</comment>
+				</category>
+			</category>
+			<category name="next">
+				<comment>CE_EnableOn Next</comment>
+				<comment>clone 9</comment>
+				<comment>clone 10</comment>
+				<code profiles="default">set a b c</code>
+				<comment>clone 11</comment>
+				<code profiles="default">set a b c</code>
+				<code profiles="">set d e f</code>
+				<comment>clone 12</comment>
+				<code profiles="">set a b c</code>
+			</category>
+		</category>
+	</body>
+</BLCMM>
+
+#Commands:
+set a b c
+set d e f
+set a b c
+set a b c
+set d e f
+set a b c
+set a b c
+set a b c
+set a b c
+
