@@ -16,6 +16,17 @@ from unrealsdk import logging
 from unrealsdk.unreal import BoundFunction, UObject, WrappedStruct
 
 from . import file_parser
+from .builtins.chat import chat
+from .builtins.clone import clone, clone_dbg_suppress_exists
+from .builtins.clone_bpd import clone_bpd
+from .builtins.exec_raw import exec_raw
+from .builtins.keep_alive import keep_alive
+from .builtins.load_package import load_package
+from .builtins.pyb import pyb
+from .builtins.regen_balance import regen_balance
+from .builtins.set_early import set_early
+from .builtins.suppress_chat import server_say_hook, suppress_next_chat
+from .builtins.unlock_package import unlock_package
 
 # region Public Interface
 
@@ -173,6 +184,8 @@ def execute_file(file_path: Path) -> None:
                 try:
                     exec(line[cmd_len:].lstrip(), py_globals)  # noqa: S102
                 except Exception:  # noqa: BLE001
+                    logging.error("Error occured during 'py' command:")
+                    logging.error(line)
                     traceback.print_exc()
 
             case "pyexec":
@@ -182,6 +195,8 @@ def execute_file(file_path: Path) -> None:
                         # To match pyunrealsdk, each pyexec gets a new empty of globals
                         exec(file.read(), {"__file__": str(path)})  # noqa: S102
                 except Exception:  # noqa: BLE001
+                    logging.error("Error occured during 'pyexec' command:")
+                    logging.error(line)
                     traceback.print_exc()
 
             case _:
@@ -285,5 +300,28 @@ ce_newcmd.add_argument("cmd")
 # ==================================================================================================
 
 
-mod = build_mod(cls=Library)
+mod = build_mod(
+    cls=Library,
+    commands=(
+        ce_debug,
+        ce_enableon,
+        ce_newcmd,
+        chat,
+        clone_bpd,
+        clone_dbg_suppress_exists,
+        clone,
+        exec_raw,
+        keep_alive,
+        load_package,
+        pyb,
+        regen_balance,
+        set_early,
+        suppress_next_chat,
+        unlock_package,
+    ),
+    hooks=(
+        exec_command_hook,
+        server_say_hook,
+    ),
+)
 autoregister(mod)
