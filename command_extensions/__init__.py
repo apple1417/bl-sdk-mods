@@ -11,11 +11,12 @@ from pathlib import Path
 from typing import Any, overload
 
 import unrealsdk
+from legacy_compat import add_compat_module
 from mods_base import AbstractCommand, Library, Mod, build_mod, command, hook
 from unrealsdk import logging
 from unrealsdk.unreal import BoundFunction, UObject, WrappedStruct
 
-from . import file_parser
+from . import builtins, file_parser
 from .builtins.chat import chat
 from .builtins.clone import clone, clone_dbg_suppress_exists
 from .builtins.clone_bpd import clone_bpd
@@ -37,6 +38,7 @@ __all__: tuple[str, ...] = (
     "__version__",
     "__version_info__",
     "autoregister",
+    "builtins",
     "deregister",
     "register",
 )
@@ -299,6 +301,11 @@ ce_newcmd.add_argument("cmd")
 # endregion
 # ==================================================================================================
 
+# Avoid circular import
+from . import legacy_compat, legacy_compat_builtins  # noqa: E402
+
+add_compat_module("Mods.CommandExtensions", legacy_compat)
+add_compat_module("Mods.CommandExtensions.builtins", legacy_compat_builtins)
 
 mod = build_mod(
     cls=Library,
