@@ -21,9 +21,9 @@ enabled (and won't suddenly re-enable soon).
 
 ### Command Extensions v2
 - Complete rewrite for v3 sdk.
-- Added the `CE_NewCmd` command, for use in mod files that attempt to regsiter their own commands.
+- Added the `CE_NewCmd` command, for use in mod files that attempt to register their own commands.
 - Deprecated the `--suppress-exists` arg on `clone_bpd` and `clone`, existing uses are noop'd. While
-  developing, you can use the `clone_dbg_suppress_exists` command instead, which supresses the
+  developing, you can use the `clone_dbg_suppress_exists` command instead, which suppresses the
   warning for all clone commands.
 - Removed the `set_material` command.
 
@@ -71,4 +71,4 @@ enabled (and won't suddenly re-enable soon).
 - Switched the demo mod file to "online" mode.
 
 ### Command Extensions v1.0
-- Inital Release.
+- Initial Release.

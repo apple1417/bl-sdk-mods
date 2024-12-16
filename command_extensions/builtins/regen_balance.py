@@ -186,7 +186,7 @@ def gather_parts_lists(
     Given a balance, work out what it's final parts list should be.
 
     Args:
-        final_bal: The balance to gather tha parts lists of.
+        final_bal: The balance to gather the parts lists of.
         item_type: What item type this balance is.
     Returns:
         A parts list dict, or None on error.

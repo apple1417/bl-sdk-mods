@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "line_parser.h"
 #include "matcher.h"
 
 namespace ce {

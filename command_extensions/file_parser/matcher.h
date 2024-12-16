@@ -37,7 +37,17 @@ void update_commands(const std::vector<std::string_view>& commands);
  */
 void add_new_command(CaseInsensitiveStringView cmd);
 
-struct CommandMatch {
+// By default, pybind tries to compile with visibility hidden
+// If we have default visibility in a type holding pybind objects as members, this may cause a
+// warning, since our type has greater visibility than it's members
+// This macro sets the right visibility
+#if defined(__MINGW32__)
+#define PY_OBJECT_VISIBILITY __attribute__((visibility("hidden")))
+#else
+#define PY_OBJECT_VISIBILITY
+#endif
+
+struct PY_OBJECT_VISIBILITY CommandMatch {
     py::object py_cmd;
     py::object line;
     Py_ssize_t cmd_len;

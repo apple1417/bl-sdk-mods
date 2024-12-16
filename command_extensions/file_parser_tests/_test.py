@@ -59,7 +59,7 @@ class TestData:
 
         Args:
             input_path: The input file path.
-            data_path: The corosponding test data path.
+            data_path: The corresponding test data path.
         """
         self.path = input_path
 
@@ -83,11 +83,11 @@ def gather_test_data() -> list[TestData]:
         ),
     ]
 
-    for input_path in Path(__file__).parent.glob("**/*.testin"):
+    for input_path in Path(__file__).parent.glob("**/*.test_in"):
         data_path = input_path.with_suffix(".json")
         if not data_path.exists():
             warnings.warn(
-                f"Skipping '{input_path}' because it does not have a corosponding data file.",
+                f"Skipping '{input_path}' because it does not have a corresponding data file.",
                 stacklevel=1,
             )
             continue
@@ -97,7 +97,7 @@ def gather_test_data() -> list[TestData]:
     return all_test_data
 
 
-def test_non_existant_file() -> None:
+def test_non_existent_file() -> None:
     dummy_path = Path("dummy")
     assert not dummy_path.exists()
 

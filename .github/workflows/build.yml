@@ -29,12 +29,14 @@ jobs:
     - name: Setup Clang
       if: startswith(matrix.preset, 'clang')
       uses: egor-tensin/setup-clang@v1
+      with:
+        platform: x86
 
     - name: Add MSVC to PATH
       if: startswith(matrix.preset, 'msvc')
       uses: TheMrMilchmann/setup-msvc-dev@v3
       with:
-        arch: x64
+        arch: x86
 
     - name: Setup CMake and Ninja
       uses: lukka/get-cmake@latest
@@ -104,11 +106,13 @@ jobs:
       if: startswith(matrix.preset, 'mingw')
       uses: egor-tensin/setup-mingw@v2
       with:
-        platform: x64
+        platform: x86
 
     - name: Setup Clang
       if: startswith(matrix.preset, 'clang-cross')
       uses: egor-tensin/setup-clang@v1
+      with:
+        platform: x86
 
     - name: Restore win sdk cache
       if: startswith(matrix.preset, 'clang-cross')
@@ -137,7 +141,7 @@ jobs:
       run: >
         ./prepare_releases.py
         --preset ${{ matrix.preset }}
-        --configure -C-G=Ninja -C-DMSVC_WINE_ENV_SCRIPT=$(readlink -f ~)/win-sdk/bin/x64/msvcenv.sh
+        --configure -C-G=Ninja -C-DMSVC_WINE_ENV_SCRIPT=$(readlink -f ~)/win-sdk/bin/x86/msvcenv.sh
         --build
 
     - name: Upload Artifact
@@ -255,6 +259,15 @@ jobs:
       uses: actions/checkout@v4
       with:
         submodules: recursive
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ">=3.13"
+        cache: pip
+
+    - name: Setup Pip
+      run: pip install pytest
 
     - name: Run pyright
       uses: jakebailey/pyright-action@v2

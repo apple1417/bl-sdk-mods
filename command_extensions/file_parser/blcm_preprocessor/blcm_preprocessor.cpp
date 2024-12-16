@@ -168,7 +168,7 @@ void process_tag_content(std::string_view line,
         return;
     }
 
-    std::string_view content{ittr, line.end()};
+    const std::string_view content{ittr, line.end()};
 
     // Make sure the line ends with a valid closing tag
     auto closing_tag_start = content.rfind("</");
@@ -206,7 +206,7 @@ bool preprocess_line(std::string_view line,
     auto tag_start = line.find_first_of('<');
     if (tag_start == std::string_view::npos) {
         throw ParserError(
-            std::format("Failed to parse line (couldn't find inital tag):\n{}", line));
+            std::format("Failed to parse line (couldn't find initial tag):\n{}", line));
     }
 
     // Ignore the filtertool warning - which starts one char before the opening bracket
@@ -217,7 +217,7 @@ bool preprocess_line(std::string_view line,
     auto tag_name_end = line.find_first_of("> \t", tag_start);
     if (tag_name_end == std::string_view::npos) {
         throw ParserError(
-            std::format("Failed to parse line (inital tag doesn't close):\n{}", line));
+            std::format("Failed to parse line (initial tag doesn't close):\n{}", line));
     }
 
     // Note this may include a leading `/` if looking at a closing tag
@@ -280,7 +280,7 @@ void preprocess(std::istream& blcmm_input, std::ostream& xml_output) {
     }
 }
 
-bool in_comma_seperated_list(std::string_view value, std::string_view list) {
+bool in_comma_separated_list(std::string_view value, std::string_view list) {
     for (size_t entry_start = 0; entry_start < list.size();) {
         auto entry_end = list.find_first_of(',', entry_start);
         if (list.substr(entry_start, entry_end - entry_start) == value) {

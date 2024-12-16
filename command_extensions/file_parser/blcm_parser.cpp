@@ -64,29 +64,28 @@ struct CommandBlock {
      * @param val The strategy to swap to.
      */
     void update_enable_strategy(CaseInsensitiveStringView val) {
-        auto non_space =
-            std::find_if_not(val.begin(), val.end(), [](auto chr) { return std::isspace(chr); });
+        auto non_space = std::ranges::find_if_not(val, [](auto chr) { return std::isspace(chr); });
         if (non_space == val.end()) {
             return;
         }
-        auto strat_end =
+        auto strategy_end =
             std::find_if(non_space, val.end(), [](auto chr) { return std::isspace(chr); });
 
-        auto strategy_name = CaseInsensitiveStringView{non_space, strat_end};
+        auto strategy_name = CaseInsensitiveStringView{non_space, strategy_end};
 
-        static const constexpr CaseInsensitiveStringView strat_all = "All";
-        static const constexpr CaseInsensitiveStringView strat_any = "Any";
-        static const constexpr CaseInsensitiveStringView strat_force = "Force";
-        static const constexpr CaseInsensitiveStringView strat_next = "Next";
+        static const constexpr CaseInsensitiveStringView strategy_all = "All";
+        static const constexpr CaseInsensitiveStringView strategy_any = "Any";
+        static const constexpr CaseInsensitiveStringView strategy_force = "Force";
+        static const constexpr CaseInsensitiveStringView strategy_next = "Next";
 
         EnableStrategy new_strategy{};
-        if (strategy_name == strat_all) {
+        if (strategy_name == strategy_all) {
             new_strategy = EnableStrategy::ALL;
-        } else if (strategy_name == strat_any) {
+        } else if (strategy_name == strategy_any) {
             new_strategy = EnableStrategy::ANY;
-        } else if (strategy_name == strat_force) {
+        } else if (strategy_name == strategy_force) {
             new_strategy = EnableStrategy::FORCE;
-        } else if (strategy_name == strat_next) {
+        } else if (strategy_name == strategy_next) {
             new_strategy = EnableStrategy::NEXT;
         } else {
             return;
@@ -162,7 +161,7 @@ struct CommandBlock {
 };
 
 /**
- * @brief Recusively look through BLCMM categories and extract all enabled commands within them.
+ * @brief Recursively look through BLCMM categories and extract all enabled commands within them.
  *
  * @param category The XML category to look through.
  * @param input_strategy The current enable strategy.
@@ -185,7 +184,7 @@ void handle_category(const pugi::xml_node& category,
 
         static const constexpr CaseInsensitiveStringView comment = "comment";
         if (child_name == comment) {
-            std::string_view line = child.child_value();
+            const std::string_view line = child.child_value();
             auto [cmd, match] = try_match_command(line);
             if (!cmd.empty()) {
                 block.handle_standard_command(cmd, line, std::move(match));
@@ -195,7 +194,7 @@ void handle_category(const pugi::xml_node& category,
 
         static const constexpr CaseInsensitiveStringView code = "code";
         if (child_name == code) {
-            auto is_enabled = blcm_preprocessor::in_comma_seperated_list(
+            auto is_enabled = blcm_preprocessor::in_comma_separated_list(
                 profile, child.attribute("profiles").as_string());
 
             block.handle_standard_command(is_enabled);
@@ -205,7 +204,7 @@ void handle_category(const pugi::xml_node& category,
 
     // Main pass through
     for (auto child : category) {
-        std::string_view child_name = child.name();
+        const std::string_view child_name = child.name();
 
         // If the child element is a hotfix, all of it's children are on this layer logically
         static const constexpr CaseInsensitiveStringView hotfix = "hotfix";

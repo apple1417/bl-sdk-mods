@@ -1,5 +1,5 @@
 # File Parser Tests
-These tests run on the file parser module, in a regular Python intepreter.
+These tests run on the file parser module, in a regular Python interpreter.
 
 To run:
 ```sh
@@ -7,8 +7,8 @@ pip install pytest
 pytest command_extensions/file_parser_tests
 ```
 
-Generally, tests consist of a `.testin` and `.json` pair. The `.testin` file is the raw mod file to
-be parsed. The `.json` contains the commands to be enabled, as a list of strings under the
+Generally, tests consist of a `.test_in` and `.json` pair. The `.test_in` file is the raw mod file
+to be parsed. The `.json` contains the commands to be enabled, as a list of strings under the
 `commands` key, and the expected results under the `output` key (using a list of lists instead of
 a list of tuples).
 

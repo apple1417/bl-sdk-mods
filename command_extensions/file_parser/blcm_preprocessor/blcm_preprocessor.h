@@ -23,14 +23,14 @@ class ParserError : public std::runtime_error {
 void preprocess(std::istream& blcmm_input, std::ostream& xml_output);
 
 /**
- * @brief Checks if a string is in a comma seperated list.
+ * @brief Checks if a string is in a comma separated list.
  * @note Intended to be used to check if a command is active in the current profile.
  *
  * @param value The value to search for.
- * @param list The comma seperated list to search through.
+ * @param list The comma separated list to search through.
  * @return True if the value is found in the list, false otherwise.
  */
-bool in_comma_seperated_list(std::string_view value, std::string_view list);
+bool in_comma_separated_list(std::string_view value, std::string_view list);
 
 }  // namespace blcm_preprocessor
 

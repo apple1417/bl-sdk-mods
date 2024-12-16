@@ -41,8 +41,8 @@ bool CaseInsensitiveStringView::operator==(std::string_view str) const {
 
 namespace {
 
-// To match strings somewhat efficently we'll use a binary search - while not profiled I don't think
-// we have enough strings and enough matching prefixes to make a full radix trie worth it.
+// To match strings somewhat efficiently we'll use a binary search - while not profiled I don't
+// think we have enough strings and enough matching prefixes to make a full radix trie worth it.
 
 // For this we need to keep our list of commands sorted.
 std::vector<CaseInsensitiveString> sorted_commands;
@@ -53,15 +53,13 @@ void update_commands(const std::vector<std::string_view>& commands) {
     sorted_commands.clear();
     sorted_commands.reserve(commands.size());
 
-    std::transform(commands.begin(), commands.end(), std::back_inserter(sorted_commands),
-                   [](auto cmd) { return CaseInsensitiveString{cmd}; });
-
-    std::sort(sorted_commands.begin(), sorted_commands.end());
+    std::ranges::transform(commands, std::back_inserter(sorted_commands),
+                           [](auto cmd) { return CaseInsensitiveString{cmd}; });
+    std::ranges::sort(sorted_commands);
 }
 
 void add_new_command(CaseInsensitiveStringView cmd) {
-    auto non_space =
-        std::find_if_not(cmd.begin(), cmd.end(), [](auto chr) { return std::isspace(chr); });
+    auto non_space = std::ranges::find_if_not(cmd, [](auto chr) { return std::isspace(chr); });
     if (non_space == cmd.end()) {
         return;
     }
@@ -78,22 +76,21 @@ void add_new_command(CaseInsensitiveStringView cmd) {
     }
 
     CaseInsensitiveString cmd_name{non_space, cmd_name_end};
-    sorted_commands.insert(
-        std::lower_bound(sorted_commands.begin(), sorted_commands.end(), cmd_name),
-        std::move(cmd_name));
+    sorted_commands.insert(std::ranges::lower_bound(sorted_commands, cmd_name),
+                           std::move(cmd_name));
 }
 
 #pragma endregion
 
 std::pair<std::string_view, CommandMatch> try_match_command(std::string_view line) {
-    auto non_space =
-        std::find_if_not(line.begin(), line.end(), [](auto chr) { return std::isspace(chr); });
+    auto non_space = std::ranges::find_if_not(line, [](auto chr) { return std::isspace(chr); });
     if (non_space == line.end()) {
         return {};
     }
 
     auto cmd_end = std::find_if(non_space, line.end(), [](auto chr) { return std::isspace(chr); });
 
+    // NOLINTNEXTLINE(modernize-use-ranges)
     if (!std::binary_search(sorted_commands.begin(), sorted_commands.end(),
                             CaseInsensitiveStringView{non_space, cmd_end})) {
         return {};
@@ -105,11 +102,12 @@ std::pair<std::string_view, CommandMatch> try_match_command(std::string_view lin
     std::string cmd_str{non_space, cmd_end};
     std::string line_str{line};
 
-    CommandMatch match{py::reinterpret_steal<py::object>(PyUnicode_DecodeLocaleAndSize(
-                           cmd_str.data(), (Py_ssize_t)cmd_str.size(), nullptr)),
-                       py::reinterpret_steal<py::object>(PyUnicode_DecodeLocaleAndSize(
-                           line_str.data(), (Py_ssize_t)line_str.size(), nullptr)),
-                       cmd_end - line.begin()};
+    const CommandMatch match{
+        .py_cmd = py::reinterpret_steal<py::object>(
+            PyUnicode_DecodeLocaleAndSize(cmd_str.data(), (Py_ssize_t)cmd_str.size(), nullptr)),
+        .line = py::reinterpret_steal<py::object>(
+            PyUnicode_DecodeLocaleAndSize(line_str.data(), (Py_ssize_t)line_str.size(), nullptr)),
+        .cmd_len = cmd_end - line.begin()};
 
     return std::make_pair(std::string_view{non_space, cmd_end}, match);
 }

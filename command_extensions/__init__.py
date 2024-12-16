@@ -190,7 +190,7 @@ def execute_file(file_path: Path) -> None:
                 try:
                     exec(line[cmd_len:].lstrip(), py_globals)  # noqa: S102
                 except Exception:  # noqa: BLE001
-                    logging.error("Error occured during 'py' command:")
+                    logging.error("Error occurred during 'py' command:")
                     logging.error(line)
                     traceback.print_exc()
 
@@ -201,7 +201,7 @@ def execute_file(file_path: Path) -> None:
                         # To match pyunrealsdk, each pyexec gets a new empty of globals
                         exec(file.read(), {"__file__": str(path)})  # noqa: S102
                 except Exception:  # noqa: BLE001
-                    logging.error("Error occured during 'pyexec' command:")
+                    logging.error("Error occurred during 'pyexec' command:")
                     logging.error(line)
                     traceback.print_exc()
 

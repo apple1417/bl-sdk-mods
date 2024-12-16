@@ -136,7 +136,7 @@ of the original objects, dump them manually to check what their new names are.
 ## `clone_dbg_suppress_exists`
 usage: `clone_dbg_suppress_exists [-h] {Enable,Disable}`
 
-Supresses the 'object already exists' errors which may occur while cloning.
+Suppresses the 'object already exists' errors which may occur while cloning.
 Only intended for debug usage.
 
 | positional arguments |      |
@@ -181,7 +181,7 @@ usage: `load_package [-h] [--list] [package]`
 Loads a package and all objects contained within it. This freezes the game as
 it loads; it should be used sparingly. Supports using glob-style wildcards to
 load up to 10 packages at once, though being explicit should still be
-prefered.
+preferred.
 
 | positional arguments |                                                                                               |
 | :------------------- | :-------------------------------------------------------------------------------------------- |
@@ -299,7 +299,7 @@ whitespace is ignored.
 
 BLCMM files use a bit more involved parsing. Custom commands can be enabled and disabled by toggling
 the category they're in. This requires a bit a workaround however, which might cause some
-interesting behaviour. BLCMM unfortuantly only stores if individual set commands enabled. Our custom
+interesting behaviour. BLCMM unfortunately only stores if individual set commands enabled. Our custom
 commands are technically comments, so they don't get this, and categories themselves don't have a
 specific enabled state either. Instead, we have to determine if a custom command is enabled by if
 the regular set commands around it are.
@@ -318,7 +318,7 @@ considered to be enabled.
 ## Adding custom commands
 Command Extensions is built on top of the command system in `mods_base`. After creating a command
 normally, you must register it with command extensions in order to let it work from mod files. You
-can do this either by manually callling `command_extensions.register` and
+can do this either by manually calling `command_extensions.register` and
 `command_extensions.deregister`, or you can use `command_extensions.autoregister` to do so
 automatically when the command is enabled/disabled.
 

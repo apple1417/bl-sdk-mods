@@ -31,7 +31,7 @@ def pyb(args: argparse.Namespace) -> None:  # noqa: D103
         try:
             exec(joined, {})  # noqa: S102
         except Exception:  # noqa: BLE001
-            logging.error("Error occured during 'pyb' command:")
+            logging.error("Error occurred during 'pyb' command:")
             logging.error(joined)
             if len(cached_lines) > 1:
                 logging.error("=" * 80)

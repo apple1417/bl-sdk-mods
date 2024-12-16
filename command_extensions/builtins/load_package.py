@@ -22,7 +22,7 @@ all_upks = sorted(
     description=(
         "Loads a package and all objects contained within it. This freezes the game as it loads; it"
         " should be used sparingly. Supports using glob-style wildcards to load up to 10 packages"
-        " at once, though being explicit should still be prefered."
+        " at once, though being explicit should still be preferred."
     ),
 )
 def load_package(args: argparse.Namespace) -> None:  # noqa: D103

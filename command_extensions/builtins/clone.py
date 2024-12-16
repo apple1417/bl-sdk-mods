@@ -96,7 +96,7 @@ clone.add_argument(
 
 @command(
     description=(
-        "Supresses the 'object already exists' errors which may occur while cloning. Only intended"
+        "Suppresses the 'object already exists' errors which may occur while cloning. Only intended"
         " for debug usage."
     ),
 )

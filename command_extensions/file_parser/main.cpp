@@ -6,6 +6,8 @@
 
 namespace ce {
 
+namespace {
+
 pybind11::error_already_set file_not_found(const std::filesystem::path& filename) {
 #ifdef _WIN32
     PyErr_SetExcFromWindowsErrWithFilename(PyExc_FileNotFoundError, ERROR_FILE_NOT_FOUND,
@@ -16,6 +18,8 @@ pybind11::error_already_set file_not_found(const std::filesystem::path& filename
 #endif
     return {};
 }
+
+}  // namespace
 
 PYBIND11_MODULE(file_parser, mod) {
     py::register_exception<blcm_preprocessor::ParserError>(mod, "BLCMParserError",
@@ -41,17 +45,16 @@ PYBIND11_MODULE(file_parser, mod) {
             file.seekg(0);
 
             std::vector<CommandMatch> matches{};
-            if (line.rfind("<BLCMM", 0) == 0) {
-                matches = std::move(parse_blcmm_file(file));
+            if (line.starts_with("<BLCMM")) {
+                matches = parse_blcmm_file(file);
             } else {
-                matches = std::move(parse_file_line_by_line(file));
+                matches = parse_file_line_by_line(file);
             }
 
             std::vector<py::tuple> output;
-            std::transform(matches.begin(), matches.end(), std::back_inserter(output),
-                           [](auto& match) {
-                               return py::make_tuple(match.py_cmd, match.line, match.cmd_len);
-                           });
+            std::ranges::transform(matches, std::back_inserter(output), [](auto& match) {
+                return py::make_tuple(match.py_cmd, match.line, match.cmd_len);
+            });
 
             return output;
         },
