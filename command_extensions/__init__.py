@@ -90,14 +90,14 @@ def deregister(cmd: AbstractCommand) -> None:
 
 
 @overload
-def autoregister(obj: AbstractCommand, /) -> None: ...
+def autoregister(obj: AbstractCommand, /) -> AbstractCommand: ...
 
 
 @overload
-def autoregister(obj: Mod, /) -> None: ...
+def autoregister(obj: Mod, /) -> Mod: ...
 
 
-def autoregister(obj: AbstractCommand | Mod, /) -> None:
+def autoregister(obj: AbstractCommand | Mod, /) -> AbstractCommand | Mod:
     """
     Wraps the enable/disable methods to automatically (de)register commands when called.
 
@@ -106,11 +106,13 @@ def autoregister(obj: AbstractCommand | Mod, /) -> None:
     Args:
         obj: If a mod, autoregisters all commands currently set on it. If an individual command,
              autoregisters just that command.
+    Returns:
+        The same object which was passed, to enable use as a decorator.
     """
     if isinstance(obj, Mod):
         for cmd in mod.commands:
             autoregister(cmd)
-        return
+        return obj
 
     old_enable = obj.enable
     old_disable = obj.disable
@@ -130,6 +132,8 @@ def autoregister(obj: AbstractCommand | Mod, /) -> None:
 
     if obj.is_registered():
         register(obj)
+
+    return obj
 
 
 # endregion
@@ -237,16 +241,15 @@ def exec_command_hook(
         "Enables/disables Command Extension debug logging. This logs a copy of each command to be"
         " run, useful for checking that your blcm files are being handled correctly."
     ),
-    formatter_class=argparse.RawDescriptionHelpFormatter,
 )
 def ce_debug(args: argparse.Namespace) -> None:
     global debug_logging
     if args.value == "Enable":
         debug_logging = True
-        logging.info("CommandExtensions debug logging enabled")
+        logging.info("Command Extensions debug logging enabled")
     elif args.value == "Disable":
         debug_logging = False
-        logging.info("CommandExtensions debug logging disabled")
+        logging.info("Command Extensions debug logging disabled")
     else:
         logging.error(f"Unrecognised value '{args.value}'")
 
@@ -295,7 +298,7 @@ def ce_newcmd(_: argparse.Namespace) -> None:
     logging.error("'CE_NewCmd' can only be used in files.")
 
 
-ce_newcmd.add_argument("cmd")
+ce_newcmd.add_argument("cmd", help="The command being registered. May not contain whitespace.")
 
 
 # endregion

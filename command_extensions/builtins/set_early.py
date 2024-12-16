@@ -4,7 +4,7 @@ from mods_base import command, get_pc
 
 
 @command(
-    splitter=lambda m: [m],
+    splitter=lambda m: [m.lstrip()],
     description=(
         "Behaves exactly like a `set` command. Only useful in files, as it's run during custom"
         " command parsing instead of afterwards."

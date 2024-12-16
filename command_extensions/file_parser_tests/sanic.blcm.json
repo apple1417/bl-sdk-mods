@@ -10,12 +10,12 @@
     "output": [
         [
             "pyb",
-            "pyb if hasattr(Mods, \"ApplesBorderlandsCheats\"):",
+            "pyb from mods_base import get_pc",
             3
         ],
         [
             "pyb",
-            "pyb   unrealsdk.GetEngine().GamePlayers[0].Actor.GetTextChatMovie().AddChatMessageInternal(\"[Sanic]\", \"Wow you also have ABC installed\")",
+            "pyb get_pc().GetTextChatMovie().AddChatMessageInternal(\"[Sanic]\", \"Hello from Python\")",
             3
         ],
         [

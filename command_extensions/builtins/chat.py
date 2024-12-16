@@ -6,9 +6,9 @@ from mods_base import command, get_pc
 
 @command(
     description=(
-        "Similarly to the `say` command, writes a message in chat, but without chance of crashing"
-        " the game. Also lets you customize the message source. Note this does not use the same"
-        " parsing as the `say` command, make sure you quote your message if it includes spaces."
+        "Similarly to the `say` command, writes a message in chat, but lets you customize the"
+        " message source. Note this does not use the same parsing as the `say` command, make sure"
+        " you quote your message if it includes spaces."
     ),
 )
 def chat(args: argparse.Namespace) -> None:  # noqa: D103
