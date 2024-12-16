@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import itertools
 import re
 import shutil
 import subprocess
@@ -98,6 +99,14 @@ def iter_mod_files(mod_folder: Path, debug: bool) -> Iterator[Path]:
     Yields:
         Valid files to export.
     """
+    with (mod_folder / "pyproject.toml").open("rb") as file:
+        data = tomllib.load(file)
+        file_override = data.get("tool", {}).get("sdkmod_release_script", {}).get("files", [])
+        if file_override:
+            yield from itertools.chain.from_iterable(
+                mod_folder.glob(pattern) for pattern in file_override
+            )
+            return
 
     # Obey .gitignore rules
     for filename in subprocess.run(
