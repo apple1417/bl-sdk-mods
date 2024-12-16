@@ -14,7 +14,6 @@ exclude = [
 
     "AltUseVendors",
     "ApplesBorderlandsCheats",
-    "CommandExtensions",
     "EnemyLevelRandomizer",
     "EquipLocker",
     "HideUndiscoveredMissions",
@@ -40,9 +39,7 @@ line-length = 100
 extend-exclude = [
     "AltUseVendors",
     "ApplesBorderlandsCheats",
-    "CommandExtensions",
     "EnemyLevelRandomizer",
-    "Enums",
     "EquipLocker",
     "HideUndiscoveredMissions",
     "ItemLevelUncapper",
@@ -55,7 +52,6 @@ extend-exclude = [
     "SanitySaver",
     "ScalingAdjuster",
     "SpawnMultiplier",
-    "Structs",
     "TextModLoader",
     "TrueDamageLogger",
     "UserFeedback",

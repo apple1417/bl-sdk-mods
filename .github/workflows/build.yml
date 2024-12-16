@@ -223,7 +223,7 @@ jobs:
     - name: Run clang-format
       run: |
         $all_files=$(Get-ChildItem                                                  `
-                      $(Get-ChildItem . -Directory -Exclude ".*",CommandExtensions,TextModLoader) `
+                      $(Get-ChildItem . -Directory -Exclude ".*",TextModLoader)     `
                       -File                                                         `
                       -Recurse                                                      `
                       -Include ("*.c", "*.cpp", "*.h", "*.hpp")                     `
